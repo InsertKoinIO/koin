@@ -2,111 +2,128 @@
 title: Fragment Factory
 ---
 
-Since AndroidX has released `androidx.fragment` packages family to extend features around Android `Fragment`
+Koin integrates with [AndroidX FragmentFactory](https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory) to enable constructor injection in Fragments.
 
-https://developer.android.com/jetpack/androidx/releases/fragment
+:::info
+Fragment Factory uses DSL only. Annotation and Compiler Plugin DSL support is not yet available.
+:::
 
-## Fragment Factory
+## Setup
 
-Since `2.1.0-alpha-3` version, has been introduced the `FragmentFactory`, a class dedicated to create instance of `Fragment` class:
+### Add Dependency
 
-https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory
+```groovy
+implementation "io.insert-koin:koin-android:$koin_version"
+```
 
-Koin can bring a `KoinFragmentFactory` to help you inject your `Fragment` instances directly.
+### Configure Fragment Factory
 
-## Setup Fragment Factory
-
-At start, in your KoinApplication declaration, use the `fragmentFactory()` keyword to setting up a default `KoinFragmentFactory` instance:
+In your Koin configuration, enable the fragment factory:
 
 ```kotlin
- startKoin {
-    // setup a KoinFragmentFactory instance
+startKoin {
+    androidContext(this@MainApplication)
     fragmentFactory()
-
-    modules(...)
+    modules(appModule)
 }
 ```
 
-## Declare & Inject your Fragment
+## Declaring Fragments
 
-To declare a `Fragment` instance, just declare it as a `fragment` in your Koin module and use *constructor injection*.
-
-Given a `Fragment` class:
+Use the `fragment` DSL keyword with constructor injection:
 
 ```kotlin
-class MyFragment(val myService: MyService) : Fragment() {
+class MyFragment(
+    private val myService: MyService
+) : Fragment()
 
-
-}
-```
-
-```kotlin
 val appModule = module {
     single { MyService() }
     fragment { MyFragment(get()) }
 }
 ```
 
-## Get your Fragment
+## Using Fragments
 
-From your host `Activity` class, setting up your fragment factory with `setupKoinFragmentFactory()`:
+### Setup in Activity
+
+Call `setupKoinFragmentFactory()` **before** `super.onCreate()`:
 
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Koin Fragment Factory
+        // Must be called BEFORE super.onCreate()
         setupKoinFragmentFactory()
 
         super.onCreate(savedInstanceState)
-        //...
+        setContentView(R.layout.activity_main)
     }
 }
 ```
 
-And retrieve your `Fragment` with your `supportFragmentManager`:
+### Add Fragment
+
+Use the reified extension function:
 
 ```kotlin
 supportFragmentManager.beginTransaction()
-            .replace<MyFragment>(R.id.mvvm_frame)
-            .commit()
+    .replace<MyFragment>(R.id.container)
+    .commit()
 ```
 
-Put your `bundle` or `tag` using the overloaded optional params:
+With arguments and tag:
 
 ```kotlin
 supportFragmentManager.beginTransaction()
-            .replace<MyFragment>(
-                containerViewId = R.id.mvvm_frame,
-                args = MyBundle(),
-                tag = MyString()
-            )
+    .replace<MyFragment>(
+        containerViewId = R.id.container,
+        args = bundleOf("key" to "value"),
+        tag = "my_fragment"
+    )
+    .commit()
 ```
 
-## Fragment Factory & Koin Scopes
+## Fragment Factory with Scopes
 
-If you want to use the Koin Activity's Scope, you have to declare your fragment inside your scope as a `scoped` definition:
+To use Activity-scoped dependencies in your Fragment:
 
 ```kotlin
 val appModule = module {
     scope<MyActivity> {
+        scoped { ActivityService() }
         fragment { MyFragment(get()) }
     }
 }
 ```
 
-and setting up your Koin Fragment Factory with your scope: `setupKoinFragmentFactory(lifecycleScope)`
+Pass the scope to `setupKoinFragmentFactory()`:
 
 ```kotlin
-class MyActivity : AppCompatActivity() {
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
+
+    override val scope: Scope by activityScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Koin Fragment Factory
-        setupKoinFragmentFactory(lifecycleScope)
+        // Pass scope to fragment factory
+        setupKoinFragmentFactory(scope)
 
         super.onCreate(savedInstanceState)
-        //...
     }
 }
 ```
 
+## Quick Reference
+
+| Action | Code |
+|--------|------|
+| Declare fragment | `fragment { MyFragment(get()) }` |
+| Setup global factory | `setupKoinFragmentFactory()` |
+| Setup with scope | `setupKoinFragmentFactory(scope)` |
+| Add fragment | `.replace<MyFragment>(R.id.container)` |
+
+## Next Steps
+
+- **[AndroidX Fragment](https://developer.android.com/guide/fragments)** - Official Fragment documentation
+- **[Scopes](/docs/reference/koin-android/scope)** - Android scopes
+- **[ViewModel](/docs/reference/koin-android/viewmodel)** - ViewModel injection

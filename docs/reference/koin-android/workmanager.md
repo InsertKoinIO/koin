@@ -2,112 +2,165 @@
 title: WorkManager
 ---
 
-The `koin-androidx-workmanager` project is dedicated to bring Android WorkManager features.
+Koin integrates with [Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) to enable constructor injection in Workers.
 
-## WorkManager DSL
+## Setup
 
-## Setup WorkManager
+### Add Dependencies
 
-At start, in your KoinApplication declaration, use the `workManagerFactory()` keyword to a setup custom WorkManager instance:
+```groovy
+implementation "io.insert-koin:koin-android:$koin_version"
+implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+```
+
+### Configure WorkManager
+
+Set up the Koin WorkManager factory in your Application:
 
 ```kotlin
-class MainApplication : Application(), KoinComponent {
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
-            // setup a WorkManager instance
+            androidContext(this@MainApplication)
             workManagerFactory()
-            modules(...)
+            modules(appModule)
         }
-
-        setupWorkManagerFactory()
+    }
 }
 ```
 
-It's also important that you edit your AndroidManifest.xml to prevent
-Android initializing its default WorkManagerFactory, as shown in https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration#remove-default
-. Failing to do so will make the app crash.
+### Disable Default Initializer
 
+Add to your `AndroidManifest.xml` to disable the default WorkManager initializer:
 
 ```xml
-    <application . . .>
-        . . .
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
-        </provider>
-    </application>
+<provider
+    android:name="androidx.startup.InitializationProvider"
+    android:authorities="${applicationId}.androidx-startup"
+    android:exported="false"
+    tools:node="merge">
+    <meta-data
+        android:name="androidx.work.WorkManagerInitializer"
+        android:value="androidx.startup"
+        tools:node="remove" />
+</provider>
 ```
 
-## Declare ListenableWorker
+## Declaring Workers
+
+### Compiler Plugin DSL
+
+```kotlin
+class MyWorker(
+    context: Context,
+    workerParams: WorkerParameters,
+    private val myService: MyService
+) : CoroutineWorker(context, workerParams) {
+
+    override suspend fun doWork(): Result {
+        myService.performTask()
+        return Result.success()
+    }
+}
+
+val appModule = module {
+    single<MyService>()
+    worker<MyWorker>()
+}
+```
+
+### Annotations
+
+```kotlin
+@KoinWorker
+class MyWorker(
+    context: Context,
+    workerParams: WorkerParameters,
+    private val myService: MyService
+) : CoroutineWorker(context, workerParams) {
+
+    override suspend fun doWork(): Result {
+        myService.performTask()
+        return Result.success()
+    }
+}
+
+@Singleton
+class MyService
+```
+
+### Classic DSL
 
 ```kotlin
 val appModule = module {
     single { MyService() }
-    worker { MyListenableWorker(get()) }
-}
-```
-
-
-
-### Creating extra work manager factories
-
-You can also write a WorkManagerFactory and hand it over to Koin. It will be added as a delegate.
-
-```kotlin
-class MainApplication : Application(), KoinComponent {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-           workManagerFactory(workFactory1, workFactory2)
-           . . .
-        }
-
-        setupWorkManagerFactory()
+    worker { params ->
+        MyWorker(
+            context = params.get(),
+            workerParams = params.get(),
+            myService = get()
+        )
     }
 }
-
 ```
 
-In case both Koin and workFactory1 provided WorkManagerFactory can instantiate a ListenableWorker, the factory provided by Koin will be the one used.
+## Enqueuing Work
 
-## A few assumptions
+Use WorkManager normally to enqueue your worker:
 
-### Add manifest changes in koin lib itself
-We can make it one step less for application developers if koin-androidx-workmanager's own manifest disables the default work manager. However, it can be confusing since if the app developer don't initialize koin's work manager infrastructure, he'll end up having no usable work manager factories.
-
-
-That's something that checkModules could help: if any class in the project implements ListenableWorker we inspect both manifest and code and make sure they make sense?
-
-### DSL Improvement option:
 ```kotlin
+val workRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
+WorkManager.getInstance(context).enqueue(workRequest)
+```
 
-val workerFactoryModule = module {
-   factory<WorkerFactory> { WorkerFactory1() }
-   factory<WorkerFactory> { WorkerFactory2() }
+## Worker with Parameters
+
+Pass parameters via WorkManager's input data:
+
+```kotlin
+@KoinWorker
+class SyncWorker(
+    context: Context,
+    workerParams: WorkerParameters,
+    private val repository: DataRepository
+) : CoroutineWorker(context, workerParams) {
+
+    override suspend fun doWork(): Result {
+        val userId = inputData.getString("USER_ID") ?: return Result.failure()
+        repository.syncUser(userId)
+        return Result.success()
+    }
 }
 ```
 
-then have koin internals do something like
+Enqueue with data:
 
 ```kotlin
-fun Application.setupWorkManagerFactory(
-  // no vararg for WorkerFactory
-) {
-. . .
-            getKoin().getAll<WorkerFactory>()
-                .forEach {
-                    delegatingWorkerFactory.addFactory(it)
-                }
-}
+val workRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+    .setInputData(workDataOf("USER_ID" to "123"))
+    .build()
+
+WorkManager.getInstance(context).enqueue(workRequest)
 ```
+
+## Quick Reference
+
+| Approach | Declaration |
+|----------|-------------|
+| Compiler Plugin DSL | `worker<MyWorker>()` |
+| Annotations | `@KoinWorker` |
+| Classic DSL | `worker { params -> MyWorker(params.get(), params.get(), get()) }` |
+
+| Setup | Code |
+|-------|------|
+| Enable factory | `workManagerFactory()` in startKoin |
+| Disable default | Remove `WorkManagerInitializer` in manifest |
+
+## Next Steps
+
+- **[Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)** - Official WorkManager documentation
+- **[Scopes](/docs/reference/koin-android/scope)** - Android scopes
+- **[ViewModel](/docs/reference/koin-android/viewmodel)** - ViewModel injection

@@ -1,303 +1,239 @@
 ---
-title: Koin for Jetpack Compose and Compose Multiplatform
+title: Koin for Compose
 ---
 
-This page describe how you can inject your dependencies for your [Android Jetpack Compose](https://developer.android.com/jetpack/compose) or your [Multiplaform Compose](https://www.jetbrains.com/lp/compose-mpp/) apps.
+# Koin for Compose
 
+Koin provides full support for Jetpack Compose and Compose Multiplatform applications with dedicated packages for dependency injection.
 
-## Koin Compose Multiplatform vs Koin Android Jetpack Compose
+## Packages Overview
 
-Since mid-2024, Compose applications can be done with the Koin Multiplatform API. All APIs are identical between Koin Jetpack Compose (koin-androidx-compose) and Koin Compose Multiplatform (koin-compose).
+| Package | Use Case |
+|---------|----------|
+| `koin-compose` | Base Compose API (multiplatform) |
+| `koin-compose-viewmodel` | ViewModel injection (multiplatform) |
+| `koin-compose-viewmodel-navigation` | ViewModel + Navigation 2.x |
+| `koin-compose-navigation3` | Navigation 3 integration (multiplatform) |
+| `koin-androidx-compose` | Android convenience (includes koin-compose + koin-compose-viewmodel) |
 
-### What Koin package for Compose?
-
-For a pure Android app that uses only the Android Jetpack Compose API, use the following packages:
-- `koin-androidx-compose` - to unlock Compose base API + Compose ViewModel API
-- `koin-androidx-compose-navigation` - Compose ViewModel API with Navigation API integration
-
-For an Android/Multiplatform app, use the following packages:
-- `koin-compose` - Compose base API
-- `koin-compose-viewmodel` - Compose ViewModel API
-- `koin-compose-viewmodel-navigation` - Compose ViewModel API with Navigation API integration
-
-## Starting over an existing Koin context
-
-By using the `startKoin` function previous to your Compose application, your application is ready to welcome Koin injection. Nothing is required anymore to setup your Koin context with Compose.
-
-:::note
-`KoinContext` and `KoinAndroidContext` are deprecated
+:::info
+All Compose APIs are defined in `koin-compose` and `koin-compose-viewmodel`. The `koin-androidx-compose` package is a convenience wrapper that includes both for Android projects.
 :::
 
+### Which Package Should I Use?
 
-## Starting Koin with a Compose App - KoinApplication
-If you don't have access to a space where you can run the `startKoin` function, you can relay on Compose and Koin to start your Koin configuration.
+**For Android-only projects:**
+```kotlin
+// Option 1: Android convenience package (includes koin-compose + koin-compose-viewmodel)
+implementation("io.insert-koin:koin-androidx-compose:$koin_version")
 
-The compose function `KoinApplication` helps to create a Koin application instance, as a Composable:
+// Option 2: Use multiplatform packages directly
+implementation("io.insert-koin:koin-compose:$koin_version")
+implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
+
+// Optional: Navigation integration
+implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
+```
+
+**For Compose Multiplatform projects:**
+```kotlin
+commonMain.dependencies {
+    implementation("io.insert-koin:koin-compose:$koin_version")
+    implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
+
+    // Optional: Navigation integration
+    implementation("io.insert-koin:koin-compose-viewmodel-navigation:$koin_version")
+}
+```
+
+## Platform Support
+
+| Platform | Compose Type | Status |
+|----------|-------------|--------|
+| Android | Jetpack Compose | Full support |
+| iOS | Compose Multiplatform | Full support |
+| Desktop | Compose Desktop | Full support |
+| Web | Compose for Web | Experimental |
+
+## Starting Koin
+
+### Option 1: startKoin (Android only or External Setup)
+
+Initialize Koin outside Compose for full control:
+
+```kotlin
+// Android Application class
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@MyApplication)
+            androidLogger()
+            modules(appModule)
+        }
+    }
+}
+
+// Compose UI uses Koin automatically
+@Composable
+fun App() {
+    val viewModel = koinViewModel<MyViewModel>()
+}
+```
+
+**Use when:** You need full control over Koin lifecycle, custom configuration, or integration with other frameworks.
+
+### Option 2: KoinApplication (Compose-Managed)
+
+Let Compose handle Koin setup automatically:
 
 ```kotlin
 @Composable
 fun App() {
-    KoinApplication(application = {
-        modules(...)
+    KoinApplication(configuration = koinConfiguration {
+        modules(appModule)
     }) {
-        
-        // your screens here ...
         MyScreen()
     }
 }
 ```
 
-The `KoinApplication` function will handle the start and stop of your Koin context, regarding the cycle of the Compose context. This function starts and stops a new Koin application context.
+**Advantages:**
+- No external setup required (no Application class needed)
+- Android Context injected automatically
+- Handles start/stop based on composition lifecycle
+- Manages configuration changes on Android
 
-:::info
-In an Android Application, the `KoinApplication` will handle any need to stop/restart Koin context regarding configuration changes or drop of Activities.
-:::
+**Use when:** You want the simplest setup with less control.
+
+Automatically injects `androidContext` and `androidLogger` on Android.
 
 :::note
-(Experimental API)
-You can use the `KoinMultiplatformApplication` to replace a multiplatform entry point: it's the same as `KoinApplication` but injects automatically `androidContext` and `androidLogger` for you.
+`KoinMultiplatformApplication` is deprecated. Use `KoinApplication` with `koinConfiguration` instead.
 :::
 
-## Compose Preview with KoinApplicationPreview
+## Basic Injection
 
-The `KoinApplicationPreview` compose function is dedicated to preview a Composable:
+### koinInject() - Get Dependencies
 
-```kotlin
-@Preview(name = "1 - Pixel 2 XL", device = Devices.PIXEL_2_XL, locale = "en")
-@Preview(name = "2 - Pixel 5", device = Devices.PIXEL_5, locale = "en", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "3 - Pixel 7 ", device = Devices.PIXEL_7, locale = "ru", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun previewVMComposable(){
-    KoinApplicationPreview(application = { modules(appModule) }) {
-        ViewModelComposable()
-    }
-}
-```
-
-## Injecting into a @Composable
-
-While writing your composable function, you gain access to the following Koin API: `koinInject()`, to inject instance from Koin container
-
-For a module that declares a 'MyService' component:
-
-```kotlin
-val androidModule = module {
-    single { MyService() }
-    // or constructor DSL
-    singleOf(::MyService)
-}
-```
-
-We can get your instance like that:
+Inject any Koin-managed dependency:
 
 ```kotlin
 @Composable
-fun App() {
-    val myService = koinInject<MyService>()
+fun UserScreen() {
+    val repository = koinInject<UserRepository>()
+    // Use repository...
 }
 ```
 
-
-To keep aligned on the functional aspect of Jetpack Compose, the best writing approach is to inject instances directly into functions parameters. This way allow to have default implementation with Koin, but keep open to inject instances how you want.
+**Best practice** - inject as default parameter:
 
 ```kotlin
 @Composable
-fun App(myService: MyService = koinInject()) {
-
+fun UserScreen(
+    repository: UserRepository = koinInject()
+) {
+    // Testable without Koin
 }
 ```
 
-### Injecting into a @Composable with Parameters
+### koinViewModel() - Get ViewModels
 
-While you request a new dependency from Koin, you may need to inject parameters. To do this you can use `parameters` parameter of the `koinInject` function, with the `parametersOf()` function like this:
+Inject ViewModels with proper lifecycle management:
 
 ```kotlin
 @Composable
-fun App() {
-    val myService = koinInject<MyService>(parameters = parametersOf("a_string"))
+fun UserScreen() {
+    val viewModel = koinViewModel<UserViewModel>()
+    val state by viewModel.state.collectAsState()
 }
 ```
 
 :::info
-You can use parameters with lambda injection like `koinInject<MyService>{ parametersOf("a_string") }`, but this can have a performance impact if your recomposing a lot around. This version with lambda needs to unwrap your parameters on call, to help avoid remembering your parameters.
-
-From version 4.0.2 of Koin, koinInject(Qualifier,Scope,ParametersHolder) is introduced to let you use parameters in the most efficient way
+See [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel) for all ViewModel APIs.
 :::
 
-### Injecting from Activity Scope - koinActivityInject (Android only)
+### With Parameters
 
-:::info
-This is an **Android-only** feature available in `koin-compose` starting from version 4.2.0.
-:::
-
-The `koinActivityInject()` function allows you to resolve dependencies scoped to the current Activity from within a Composable. This is useful when you need to share state or dependencies across multiple Composables within the same Activity.
-
-**Requirements:**
-- Your Activity must implement `AndroidScopeComponent` to provide its Koin scope
-- The dependency must be declared in an Activity scope
+Pass runtime parameters:
 
 ```kotlin
-// Define scoped dependencies
-val appModule = module {
-    scope<MainActivity> {
-        scoped { StateHolder() }
-    }
-}
-
-// Activity implementing AndroidScopeComponent
-class MainActivity : ComponentActivity(), AndroidScopeComponent {
-    override val scope: Scope by activityScope()
-
-    // ...
-}
-
-// Use in any Composable within the Activity
 @Composable
-fun MyScreen() {
-    val stateHolder: StateHolder = koinActivityInject()
-    // Use stateHolder...
+fun DetailScreen(itemId: String) {
+    val viewModel = koinViewModel<DetailViewModel> {
+        parametersOf(itemId)
+    }
 }
 ```
 
-The resolved instance is remembered across recompositions. You can also pass optional parameters:
+For better performance with frequent recomposition:
 
 ```kotlin
 @Composable
-fun MyScreen() {
-    val stateHolder: StateHolder = koinActivityInject(
-        qualifier = named("myQualifier"),
-        parameters = { parametersOf("param1") }
+fun DetailScreen(itemId: String) {
+    val viewModel = koinViewModel<DetailViewModel>(
+        parameters = parametersOf(itemId)
     )
 }
 ```
 
-## ViewModel for @Composable
+## Defining Modules
 
-The same way you have access to classical single/factory instances, you gain access to the following Koin ViewModel API:
-
-* `koinViewModel()` - inject ViewModel instance
-* `koinNavViewModel()` - inject ViewModel instance + Navigation arguments data (if you are using `Navigation` API)
-
-For a module that declares a 'MyViewModel' component:
+### Compiler Plugin DSL
 
 ```kotlin
-module {
-    viewModel { MyViewModel() }
-    // or constructor DSL
-    viewModelOf(::MyViewModel)
+val appModule = module {
+    single<UserRepository>()
+    viewModel<UserViewModel>()
 }
 ```
 
-We can get your instance like that:
+### Annotations
 
 ```kotlin
-@Composable
-fun App() {
-    val vm = koinViewModel<MyViewModel>()
+@Singleton
+class UserRepository
+
+@KoinViewModel
+class UserViewModel(
+    private val repository: UserRepository
+) : ViewModel()
+```
+
+### Classic DSL
+
+```kotlin
+val appModule = module {
+    singleOf(::UserRepository)
+    viewModelOf(::UserViewModel)
 }
 ```
 
-We can get your instance in the function parameters:
+## Quick Reference
 
-```kotlin
-@Composable
-fun App(vm : MyViewModel = koinViewModel()) {
+| Function | Purpose |
+|----------|---------|
+| `koinInject<T>()` | Inject any dependency |
+| `koinViewModel<T>()` | Inject ViewModel |
+| `koinNavViewModel<T>()` | ViewModel with Navigation args |
+| `koinActivityViewModel<T>()` | Activity-scoped ViewModel (Android) |
+| `rememberKoinModules()` | Load modules with composition |
+| `KoinScope {}` | Create scoped context |
 
-}
-```
+## Documentation
 
-:::note
-Lazy API are not supported with updates of Jetpack Compose
-:::
+| Topic | Description |
+|-------|-------------|
+| **[ViewModel](/docs/reference/koin-compose/compose-viewmodel)** | All ViewModel injection APIs |
+| **[Lifecycle & State](/docs/reference/koin-compose/compose-lifecycle)** | Recomposition, state, side effects |
+| **[Dynamic Modules](/docs/reference/koin-compose/compose-modules)** | rememberKoinModules, lazy loading |
+| **[Scopes](/docs/reference/koin-compose/compose-scopes)** | KoinScope, KoinNavigationScope, UnboundKoinScope |
+| **[Testing](/docs/reference/koin-compose/compose-testing)** | Previews, unit tests |
+| **[Isolated Context](/docs/reference/koin-compose/isolated-context)** | SDK isolation |
+| **[Navigation 3](/docs/reference/koin-compose/navigation3)** | Type-safe navigation (multiplatform) |
 
-### Shared Activity ViewModel (4.1 - Android)
+## Related
 
-You can now use the `koinActivityViewModel()` to inject a ViewModel from the same ViewModel host: Activity.
-
-```kotlin
-@Composable
-fun App() {
-    // hold ViewModel instance at Activity level
-    val vm = koinActivityViewModel<MyViewModel>()
-}
-```
-
-### ViewModel and SavedStateHandle for @Composable
-
-You can have a `SavedStateHandle` constructor parameter, which will be injected regarding the Compose environment (Navigation BackStack or ViewModel).
-Either it's injected via ViewModel `CreationExtras` or via Navigation `BackStackEntry`:
-
-```kotlin
-// Setting objectId argument in Navhost
-NavHost(
-    navController,
-    startDestination = "list"
-) {
-    composable("list") { backStackEntry ->
-        //...
-    }
-    composable("detail/{objectId}") { backStackEntry ->
-        val objectId = backStackEntry.arguments?.getString("objectId")?.toInt()
-        DetailScreen(navController, objectId!!)
-    }
-}
-
-// Injected Argument in ViewModel
-class DetailViewModel(
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
-
-    init {
-        println("$this - objectId: ${savedStateHandle.get<String>("objectId")}")
-    }
-}
-```
-
-:::note
-More details about SavedStateHandle injection difference: https://github.com/InsertKoinIO/koin/issues/1935#issuecomment-2362335705
-:::
-
-### Shared ViewModel and Navigation (Experimental)
-
-Koin Compose Naviation has now a `NavBackEntry.sharedKoinViewModel()` function, to allow to retrieve ViewModel already stored in current NavBackEntry. Inside your navigation part, just use `sharedKoinViewModel`:
-
-```kotlin
-navigation<Route.BookGraph>(
-                startDestination = Route.BookList
-            ) {
-                composable<Route.BookList>(
-                    exitTransition = { slideOutHorizontally() },
-                    popEnterTransition = { slideInHorizontally() }
-                ) {
-                    // Use SharedViewModel here ...
-
-                    val selectedBookViewModel =
-                        it.sharedKoinViewModel<SelectedBookViewModel>(navController)
-```
-
-## Module loading & unloading tied to Composable
-
-Koin offers you a way to load specific modules for a given Composable function. The `rememberKoinModules` function load Koin modules and remember on current Composable:
-
-```kotlin
-@Composable
-@Preview
-fun MyComponentComposable() {
-    // load module at first call of this component
-    rememberKoinModules(myModule)
-}
-```
-
-You can use one of the abandon function, to unload module on 2 aspects:
-- onForgotten - after a composition is dropped out
-- onAbandoned - composition has failed
-
-For this use `unloadOnForgotten` or `unloadOnAbandoned` argument for `rememberKoinModules`.
-
-## Creating Koin Scope with Composable
-
-The composable function `rememberKoinScope` and `KoinScope` allow to handle Koin Scope in a Composable, follow-up current to close scope once Composable is ended.
-
-:::info
-this API is still unstable for now
-:::
+- **[Core ViewModel](/docs/reference/koin-core/viewmodel)** - ViewModel declaration DSL
+- **[Android ViewModel](/docs/reference/koin-android/viewmodel)** - Android-specific features
+- **[KMP Setup](/docs/reference/koin-core/kmp-setup)** - Multiplatform configuration

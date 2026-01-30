@@ -1,161 +1,123 @@
 ---
-title: Multiple Koin Modules in Android
+title: Android Module Loading
 ---
 
-By using Koin, you describe definitions in modules. In this section we will see how to declare, organize & link your modules.
-
-## Using several modules
-
-Components don't have to be necessarily in the same module. A module is a logical space to help you organize your definitions, and can depend on definitions from another
-module. Definitions are lazy, and they are resolved only when a component requests them.
-
-Let's take an example, with linked components in separate modules:
-
-```kotlin
-// ComponentB <- ComponentA
-class ComponentA()
-class ComponentB(val componentA : ComponentA)
-
-val moduleA = module {
-    // Singleton ComponentA
-    single { ComponentA() }
-}
-
-val moduleB = module {
-    // Singleton ComponentB with linked instance ComponentA
-    single { ComponentB(get()) }
-}
-```
-
-We just have to declare list of used modules when we start our Koin container:
-
-```kotlin
-class MainApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            // ...
-
-            // Load modules
-            modules(moduleA, moduleB)
-        }
-        
-    }
-}
-```
-Up to you to organise your self per Gradle module, and gather several Koin modules.
-
-> Check [Koin Modules Section](/docs/reference/koin-core/modules) for more details
-
-## Module Includes (since 3.2)
-
-A new function `includes()` is available in the `Module` class, which lets you compose a module by including other modules in an organized and structured way.
-
-The two prominent use cases of the new feature are:
-- Split large modules into smaller and more focused ones.
-- In modularized projects, it allows you more fine control over a module visibility (see examples below).
-
-How does it work? Let's take some modules, and we include modules in `parentModule`:
-
-```kotlin
-// `:feature` module
-val childModule1 = module {
-    /* Other definitions here. */
-}
-val childModule2 = module {
-    /* Other definitions here. */
-}
-val parentModule = module {
-    includes(childModule1, childModule2)
-}
-
-// `:app` module
-startKoin { modules(parentModule) }
-```
-
-Notice we do not need to set up all modules explicitly: by including `parentModule`, all the modules declared in the `includes` will be automatically loaded (`childModule1` and `childModule2`).  In other words, Koin is effectively loading: `parentModule`, `childModule1` and `childModule2`.
-
-An important detail to observe is that you can use `includes` to add `internal` and `private` modules too - that gives you flexibility over what to expose in a modularized project.
+This guide covers Android-specific module loading with `androidContext()` and `androidLogger()`.
 
 :::info
-Module loading is now optimized to flatten all your module graphs and avoid duplicated definitions of modules.
+For core module concepts (declaration, includes, overrides), see [Modules](/docs/reference/koin-core/modules). For lazy module loading, see [Lazy Modules](/docs/reference/koin-core/lazy-modules).
 :::
 
-Finally, you can include multiple nested or duplicates modules, and Koin will flatten all the included modules removing duplicates:
+## Starting Koin on Android
+
+### With Annotations
 
 ```kotlin
-// :feature module
-val dataModule = module {
-    /* Other definitions here. */
-}
-val domainModule = module {
-    /* Other definitions here. */
-}
-val featureModule1 = module {
-    includes(domainModule, dataModule)
-}
-val featureModule2 = module {
-    includes(domainModule, dataModule)
+@KoinApplication
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin<MainApplication> {
+            androidLogger()
+            androidContext(this@MainApplication)
+        }
+    }
 }
 ```
 
+### With DSL
+
 ```kotlin
-// `:app` module
 class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
-            // ...
+            // Android logger
+            androidLogger()
+            // or with level
+            androidLogger(Level.DEBUG)
 
-            // Load modules
-             modules(featureModule1, featureModule2)
+            // Android context
+            androidContext(this@MainApplication)
+
+            // Modules
+            modules(appModule, networkModule, dataModule)
         }
-        
     }
 }
 ```
 
-Notice that all modules will be included only once: `dataModule`, `domainModule`, `featureModule1`, `featureModule2`.
+## Android-Specific Functions
 
+| Function | Description |
+|----------|-------------|
+| `androidContext()` | Provides Application context in definitions |
+| `androidApplication()` | Provides Application instance in definitions |
+| `androidLogger()` | Android Logcat logger for Koin |
 
-## Reducing Startup time with background module loading
-
-You can declare "lazy" Koin modules to avoid triggering any pre-allocation of resources and load them in parallel background coroutines. This helps avoid blocking the Android startup process and significantly reduces startup time when you have multiple modules.
-
-### Key Features
-
-- `lazyModule` - declare a Lazy Kotlin version of Koin Module
-- `Module.includes` - allow to include lazy Modules
-- `KoinApplication.lazyModules` - load lazy modules in parallel background coroutines (each module in its own job)
-- `Koin.waitAllStartJobs` - wait for all start jobs to complete
-- `Koin.runOnKoinStarted` - run block code after start completion
-
-### Parallel Loading Performance (4.2.0+)
-
-Starting from version 4.2.0, lazy modules are loaded **in parallel**, with each module getting its own coroutine job. This dramatically improves startup time:
+### Using Android Context
 
 ```kotlin
-// Multiple lazy loaded modules - all load in PARALLEL!
-val databaseModule = lazyModule {
-    singleOf(::DatabaseService)
+val androidModule = module {
+    single { DatabaseHelper(androidContext()) }
+    single { SharedPrefsManager(androidContext()) }
+    single { NotificationHelper(androidApplication()) }
+}
+```
+
+## Dynamic Module Loading
+
+Load or unload modules at runtime based on Activity lifecycle:
+
+```kotlin
+class FeatureActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Load feature-specific dependencies
+        loadKoinModules(featureModule)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clean up when leaving feature
+        unloadKoinModules(featureModule)
+    }
+}
+```
+
+### Use Cases
+
+- **Premium features** - Load only when user has subscription
+- **Debug tools** - Load only in debug builds
+- **Optional features** - Load on-demand
+
+```kotlin
+// Premium feature module
+val premiumModule = module {
+    viewModel<PremiumViewModel>()
+    single<PremiumRepository>()
 }
 
-val networkModule = lazyModule {
-    singleOf(::NetworkService)
+class PremiumActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (userHasPremium()) {
+            loadKoinModules(premiumModule)
+        }
+        super.onCreate(savedInstanceState)
+    }
 }
+```
 
-val analyticsModule = lazyModule {
-    singleOf(::AnalyticsService)
-}
+## Lazy Loading on Android
 
-val coreModule = module {
-    singleOf(::CoreService)
-}
+For background module loading, use lazy modules:
 
+```kotlin
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -164,36 +126,22 @@ class MainApplication : Application() {
             androidLogger()
             androidContext(this@MainApplication)
 
-            // Core module loads immediately
+            // Critical modules load immediately
             modules(coreModule)
 
-            // All lazy modules load in parallel in background
-            lazyModules(databaseModule, networkModule, analyticsModule)
+            // Non-critical modules load in background
+            lazyModules(analyticsModule, syncModule)
         }
     }
 }
 ```
 
-**Performance Impact:**
-- With 10 modules that each take 100ms to load:
-  - Before 4.2.0: ~1000ms (sequential)
-  - After 4.2.0: ~100ms (parallel)
+:::info
+For complete lazy modules documentation including parallel loading, see [Lazy Modules](/docs/reference/koin-core/lazy-modules).
+:::
 
-### Waiting for completion
+## Next Steps
 
-You can wait for all lazy modules to finish loading before proceeding:
-
-```kotlin
-val koin = KoinPlatform.getKoin()
-
-// Block until all background loading is complete
-koin.waitAllStartJobs()
-
-// or run code after loading completes
-koin.runOnKoinStarted { koin ->
-    // All lazy modules are now loaded
-    koin.get<AnalyticsService>().trackAppStart()
-}
-```
-
-> See [Lazy Modules Documentation](/docs/reference/koin-core/lazy-modules) for more details on parallel loading and multiplatform support
+- **[Modules](/docs/reference/koin-core/modules)** - Core module concepts
+- **[Lazy Modules](/docs/reference/koin-core/lazy-modules)** - Background loading
+- **[Multi-Module Apps](/docs/reference/koin-android/multi-module)** - Gradle multi-module architecture

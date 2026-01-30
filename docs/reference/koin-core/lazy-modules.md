@@ -2,147 +2,314 @@
 title: Lazy Modules and Background Loading
 ---
 
-In this section we will see how to organize your modules with lazy loading approach and parallel initialization.
+Lazy modules enable asynchronous, parallel module loading to improve startup performance. Instead of loading all modules synchronously at startup, you can defer and parallelize module initialization.
+
+:::info
+This page uses the **Koin Compiler Plugin DSL** (`single<T>()`). See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
+:::
+
+## What Are Lazy Modules?
+
+Lazy modules delay module registration and instance creation until explicitly loaded. They're particularly useful for:
+
+- **Large applications** - Split initialization across multiple threads
+- **Performance optimization** - Reduce startup time
+- **Conditional features** - Load modules only when needed
+- **Background initialization** - Load non-critical modules asynchronously
 
 ## Defining Lazy Modules
 
-You can declare lazy Koin modules to avoid triggering any pre-allocation of resources and load them asynchronously in the background during Koin startup.
-
-- `lazyModule` - declare a Lazy Kotlin version of Koin Module
-- `Module.includes` - allow to include lazy Modules
-
-A good example is always better to understand:
+Create lazy modules with the `lazyModule` function:
 
 ```kotlin
-// Some lazy modules
-val m2 = lazyModule {
-    singleOf(::ClassB)
+// Lazy module - not loaded until explicitly requested
+val networkModule = lazyModule {
+    single<ApiClient>()
+    single<NetworkMonitor>()
 }
 
-// include m2 lazy module
-val m1 = lazyModule {
-    includes(m2)
-    singleOf(::ClassA) { bind<IClassA>() }
+val databaseModule = lazyModule {
+    single<Database>()
+    single<UserDao>()
+}
+```
+
+### Composing Lazy Modules
+
+Lazy modules support `includes()` just like regular modules:
+
+```kotlin
+val dataModule = lazyModule {
+    single<UserRepository>()
+}
+
+val featureModule = lazyModule {
+    includes(dataModule)  // Include other lazy modules
+    single<FeatureService>()
 }
 ```
 
 :::info
-LazyModule won't trigger any resources until it has been loaded by the following API
+Lazy modules won't allocate any resources until loaded via the `lazyModules()` function.
 :::
 
-## Parallel Loading with Kotlin Coroutines
+## Loading Lazy Modules
 
-Once you have declared some lazy modules, you can load them in parallel in the background from your Koin configuration.
+Load lazy modules using `lazyModules()` within your Koin configuration.
 
-### Key Functions
-
-- `KoinApplication.lazyModules` - load lazy modules in parallel background coroutines, using platform default Dispatchers
-- `Koin.waitAllStartJobs` - wait for all start jobs to complete (available on all platforms)
-- `Koin.runOnKoinStarted` - run block code after start completion (JVM only)
-
-### Parallel Loading Performance (4.2.0+)
-
-Starting from version 4.2.0, lazy modules are loaded **in parallel**, with each module getting its own coroutine job. This significantly improves startup time when you have multiple modules:
+### Basic Loading
 
 ```kotlin
-val module1 = lazyModule {
-    singleOf(::DatabaseService)
+val analyticsModule = lazyModule {
+    single<AnalyticsService>()
 }
 
-val module2 = lazyModule {
-    singleOf(::NetworkService)
-}
-
-val module3 = lazyModule {
-    singleOf(::AnalyticsService)
+val reportingModule = lazyModule {
+    single<CrashReporter>()
 }
 
 startKoin {
-    // All three modules load in parallel!
+    // Load critical modules immediately
+    modules(coreModule, networkModule)
+
+    // Load non-critical modules in background
+    lazyModules(analyticsModule, reportingModule)
+}
+```
+
+### Parallel Loading (4.2.0+)
+
+Since version 4.2.0, multiple lazy modules load **in parallel**, with each module in its own coroutine:
+
+```kotlin
+val module1 = lazyModule { single<DatabaseService>() }
+val module2 = lazyModule { single<NetworkService>() }
+val module3 = lazyModule { single<AnalyticsService>() }
+
+startKoin {
+    // All three modules load simultaneously!
     lazyModules(module1, module2, module3)
 }
 ```
 
 **Performance Impact:**
-- Single module: Same performance as before
-- Multiple modules: Loads N modules in parallel instead of sequentially
-- With 10 modules that each take 100ms to load:
-  - Before 4.2.0: ~1000ms (sequential)
-  - After 4.2.0: ~100ms (parallel)
 
-### Basic Usage
+| Scenario | Before 4.2.0 (Sequential) | After 4.2.0 (Parallel) |
+|----------|--------------------------|------------------------|
+| 1 module @ 100ms | 100ms | 100ms |
+| 3 modules @ 100ms each | 300ms | ~100ms |
+| 10 modules @ 100ms each | 1000ms | ~100ms |
+
+### Waiting for Completion
+
+#### All Platforms: `waitAllStartJobs()`
 
 ```kotlin
 startKoin {
-    // load lazy Modules in background (parallel)
-    lazyModules(m1, m2, m3)
+    lazyModules(module1, module2, module3)
 }
 
 val koin = KoinPlatform.getKoin()
 
-// wait for loading jobs to finish
+// Block until all lazy modules are loaded
 koin.waitAllStartJobs()
 
-// or run code after loading is done (JVM only)
-koin.runOnKoinStarted { koin ->
-    // run after background load complete
-}
+// Now safe to use dependencies from lazy modules
+val service = koin.get<AnalyticsService>()
 ```
 
-### Platform-Specific Behavior
+**Platform behavior:**
+- **JVM/Native**: True blocking with `runBlocking`
+- **JS**: Uses `GlobalScope.promise` (not truly blocking, logs warning)
 
-**Multiplatform Support (4.2.0+):**
-- `waitAllStartJobs()` is now available on **all platforms** (JVM, Native, JS)
-- JVM/Native: Uses true blocking with `runBlocking`
-- JS: Uses `GlobalScope.promise` (not truly blocking, logs a warning)
-
-**JVM-Only Functions:**
-- `runOnKoinStarted { }` - Only available on JVM platform
-
-### Custom Dispatcher
-
-You can specify a custom dispatcher for lazy module loading:
+#### JVM Only: `runOnKoinStarted()`
 
 ```kotlin
 startKoin {
-    // Load modules on IO dispatcher
-    lazyModules(m1, m2, dispatcher = Dispatchers.IO)
+    lazyModules(analyticsModule)
+}
+
+// JVM-only callback
+KoinPlatform.getKoin().runOnKoinStarted { koin ->
+    // Executes after all lazy modules finish loading
+    koin.get<AnalyticsService>().trackAppStart()
 }
 ```
 
-:::info
-Default dispatcher for coroutines engine is `Dispatchers.Default`
-:::
+#### Suspending Alternative: `awaitAllStartJobs()`
 
-### Suspending Alternative
-
-For platforms that don't support blocking or if you're already in a coroutine context, use the suspend functions:
+For coroutine contexts or platforms without blocking support:
 
 ```kotlin
-// Suspend version
-suspend fun initKoin() {
+suspend fun initializeApp() {
     startKoin {
-        lazyModules(m1, m2)
+        lazyModules(module1, module2)
     }
 
     // Await without blocking
     KoinPlatform.getKoin().awaitAllStartJobs()
+
+    // Safe to proceed
+    println("All modules loaded!")
 }
 ```
 
-### Limitation - Mixing Modules/Lazy Modules
+## Custom Dispatchers
 
-For now we advise to avoid mixing modules & lazy modules, in the startup. Avoid having `mainModule` requiring dependency in `lazyReporter`.
+Control which dispatcher runs lazy module loading:
 
 ```kotlin
+import kotlinx.coroutines.Dispatchers
+
 startKoin {
-    androidLogger()
-    androidContext(this@TestApp)
+    // Load on IO dispatcher instead of Default
+    lazyModules(
+        databaseModule,
+        networkModule,
+        dispatcher = Dispatchers.IO
+    )
+}
+```
+
+**Common dispatcher choices:**
+- `Dispatchers.Default` - CPU-intensive work (default)
+- `Dispatchers.IO` - I/O operations, file access, network
+- `Dispatchers.Main` - UI updates (Android/Desktop)
+
+:::info
+Default dispatcher is `Dispatchers.Default` if not specified.
+:::
+
+## Real-World Example
+
+```kotlin
+// Core modules - load immediately
+val coreModule = module {
+    single<AppConfig>()
+    single<UserSession>()
+}
+
+// Feature modules - load in background
+val analyticsModule = lazyModule {
+    single<AnalyticsEngine>()
+    single<EventTracker>()
+}
+
+val networkingModule = lazyModule {
+    single<ApiClient>()
+    single<WebSocketManager>()
+}
+
+val databaseModule = lazyModule {
+    single<Database>()
+    single<UserDao>()
+}
+
+// Android Application
+class MyApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@MyApp)
+
+            // Critical modules load immediately
+            modules(coreModule)
+
+            // Non-critical modules load in parallel in background
+            lazyModules(
+                analyticsModule,
+                networkingModule,
+                databaseModule,
+                dispatcher = Dispatchers.IO
+            )
+        }
+
+        // Optional: Wait for background loading to complete
+        lifecycleScope.launch {
+            KoinPlatform.getKoin().awaitAllStartJobs()
+            Log.d("Koin", "All modules loaded!")
+        }
+    }
+}
+```
+
+## Important Limitations
+
+### Avoid Cross-Dependencies
+
+Lazy modules and regular modules should be independent. Don't create dependencies from regular modules to lazy modules:
+
+```kotlin
+// ❌ BAD - mainModule depends on lazy module
+val lazyAnalytics = lazyModule {
+    single { AnalyticsService() }
+}
+
+val mainModule = module {
+    single { AppController(get<AnalyticsService>()) }  // May fail!
+}
+
+startKoin {
     modules(mainModule)
-    lazyModules(lazyReporter)
+    lazyModules(lazyAnalytics)
+}
+```
+
+```kotlin
+// ✅ GOOD - Keep dependencies separate
+val lazyAnalytics = lazyModule {
+    single { AnalyticsService() }
+}
+
+val mainModule = module {
+    single { AppController() }
+}
+
+startKoin {
+    modules(mainModule)
+    lazyModules(lazyAnalytics)
 }
 ```
 
 :::warning
-For now Koin doesn't check if your module depends on a lazy modules
+Koin doesn't currently validate dependencies between regular and lazy modules. Ensure regular modules don't depend on lazy module definitions.
 :::
+
+### Best Practice: Load Order
+
+1. **Immediate modules** - Critical services needed at startup
+2. **Lazy modules** - Non-critical, deferrable services
+3. **Wait if needed** - Use `waitAllStartJobs()` before accessing lazy definitions
+
+## When to Use Lazy Modules
+
+### Good Use Cases
+
+- **Analytics/Tracking** - Not needed for core functionality
+- **Crash Reporting** - Can initialize in background
+- **Feature Modules** - Modular features loaded on-demand
+- **Database/Network** - Heavy initialization that can be deferred
+- **Large Apps** - Split startup load across threads
+
+### Not Recommended
+
+- **Core Services** - Critical dependencies needed immediately
+- **Small Apps** - Overhead may exceed benefits
+- **Tightly Coupled Modules** - When modules have many cross-dependencies
+
+## API Reference
+
+| Function | Platform | Description |
+|----------|----------|-------------|
+| `lazyModules()` | All | Load lazy modules in background |
+| `waitAllStartJobs()` | All | Block until all lazy modules load |
+| `awaitAllStartJobs()` | All | Suspend until all lazy modules load |
+| `runOnKoinStarted()` | JVM only | Callback after loading completes |
+
+## See Also
+
+- **[Modules](/docs/reference/koin-core/modules)** - Module composition with `includes()`
+- **[Definitions](/docs/reference/koin-core/definitions)** - Eager vs lazy singletons
+- **[Starting Koin](/docs/reference/koin-core/starting-koin)** - Koin startup configuration

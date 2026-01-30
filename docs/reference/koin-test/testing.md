@@ -4,12 +4,12 @@ title: Injecting in Tests
 
 ## Making your test a KoinComponent with KoinTest
 
-*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing.md)
+*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing)
 
 By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
 
 * `by inject()` & `get()` - function to retrieve your instances from Koin
-* `checkModules` - help you check your configuration
+* `verify()` - help you verify your module configuration
 * `declareMock` & `declare` - to declare a mock or a new definition in the current context
 
 ```kotlin
@@ -145,16 +145,20 @@ When a mock is not enough and don't want to create a module just for this, you c
 
 ## Checking your Koin modules
 
-Koin offers a way to test if you Koin modules are good: `checkModules` - walk through your definition tree and check if each definition is bound
+Koin offers a way to test if your Koin modules are good: `verify()` - walk through your definition tree and check if each definition is bound.
 
 ```kotlin
-    @Test
-    fun `check MVP hierarchy`() {
-        checkModules {
-            modules(myModule1, myModule2 ...)
-        } 
-    }
+@Test
+fun checkKoinModules() {
+    myModule.verify()
+}
 ```
+
+:::info
+The `checkModules()` API is deprecated. Use `verify()` instead. See [Module Verification](/docs/reference/koin-test/verify) for details.
+
+Both verification APIs will be replaced by native compile-time safety in the Koin Compiler Plugin.
+:::
 
 ## Starting & stopping Koin for your tests
 

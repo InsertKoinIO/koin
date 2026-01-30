@@ -2,76 +2,79 @@
 title: Context Isolation
 ---
 
-## What is Context Isolation?
+Context isolation allows SDK makers to use Koin without conflicting with the host application's Koin instance.
 
-For SDK Makers, you can also work with Koin in a non-global way: use Koin for the DI of your library and avoid any conflict by people using your library and Koin by isolating your context.
+:::info
+For general Koin setup, see **[Starting Koin](/docs/reference/koin-core/starting-koin)**.
+:::
 
-In a standard way, we can start Koin like that:
+## When to Use Context Isolation
 
-```kotlin
-// start a KoinApplication and register it in Global context
-startKoin {
+- **SDK/Library Development** - Your library uses Koin internally
+- **Avoiding Conflicts** - Host app may also use Koin
+- **Encapsulation** - Keep your DI container private
 
-    // declare used modules
-    modules(...)
-}
-```
+## Creating an Isolated Context
 
-This uses the default Koin context to register your dependencies.
-
-But if we want to use an isolated Koin instance, you need to declare an instance and store it in a class to hold your instance.
-You will have to keep your Koin Application instance available in your library and pass it to your custom KoinComponent implementation:
-
-The `MyIsolatedKoinContext` class is holding our Koin instance here:
+Instead of using `startKoin` (which registers in GlobalContext), use `koinApplication`:
 
 ```kotlin
-// Get a Context for your Koin instance
-object MyIsolatedKoinContext {
+// Isolated Koin context for your SDK
+object MySdkKoinContext {
 
     private val koinApp = koinApplication {
-        // declare used modules
-        modules(coffeeAppModule)
+        modules(sdkModule)
     }
 
-    val koin = koinApp.koin 
+    val koin = koinApp.koin
+}
+
+val sdkModule = module {
+    single<SdkService>()
+    single<SdkRepository>()
 }
 ```
 
-Let's use `MyIsolatedKoinContext` to define our `IsolatedKoinComponent` class, a KoinComponent that will use our isolated context:
+## Custom KoinComponent
+
+Create a custom `KoinComponent` that uses your isolated context:
 
 ```kotlin
-internal interface IsolatedKoinComponent : KoinComponent {
+internal interface SdkKoinComponent : KoinComponent {
+    // Override to use isolated context
+    override fun getKoin(): Koin = MySdkKoinContext.koin
+}
 
-    // Override default Koin instance
-    override fun getKoin(): Koin = MyIsolatedKoinContext.koin
+// Usage in your SDK classes
+class MySdkClass : SdkKoinComponent {
+    private val service: SdkService by inject()  // Uses isolated context
 }
 ```
 
-Everything is ready, just use `IsolatedKoinComponent` to retrieve instances from isolated context:
+## Testing Isolated Context
+
+Override `getKoin()` in tests to use the isolated context:
 
 ```kotlin
-class MyKoinComponent : IsolatedKoinComponent {
-    // inject & get will target MyKoinContext
-}
-```
-
-## Testing
-
-To test classes that are retrieving dependencies with `by inject()` delegate override `getKoin()` method and define custom Koin module:
-
-```kotlin
-class MyClassTest : KoinTest {
-    // Koin Context used to retrieve dependencies
-    override fun getKoin(): Koin = MyIsolatedKoinContext.koin
+class SdkTest : KoinTest {
+    override fun getKoin(): Koin = MySdkKoinContext.koin
 
     @Before
     fun setUp() {
-       // Define custom Koin module
-        val module = module {
-            // Register dependencies
+        val testModule = module {
+            single<SdkService> { MockSdkService() }
         }
+        koin.loadModules(listOf(testModule))
+    }
 
-        koin.loadModules(listOf(module))
+    @After
+    fun tearDown() {
+        koin.unloadModules(listOf(testModule))
     }
 }
 ```
+
+## See Also
+
+- **[Starting Koin](/docs/reference/koin-core/starting-koin)** - Standard Koin setup
+- **[Compose Isolated Context](/docs/reference/koin-compose/isolated-context)** - Isolation in Compose apps

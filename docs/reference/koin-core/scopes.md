@@ -2,236 +2,416 @@
 title: Scopes
 ---
 
-Koin brings a simple API to let you define instances that are tied to a limit lifetime.
+# Scopes
 
-## What is a scope?
+Scopes control the lifecycle of your dependencies. This guide covers how to define, create, and manage scopes.
 
-Scope is a fixed duration of time or method calls in which an object exists.
-Another way to look at this is to think of scope as the amount of time an object’s state persists.
-When the scope context ends, any objects bound under that scope cannot be injected again (they are dropped from the container).
+## Understanding Scopes
 
-## Scope definition
+| Scope Type | Lifecycle | Example |
+|------------|-----------|---------|
+| **Single** (Singleton) | App lifetime | Database, ApiClient |
+| **Factory** | Per request | Presenters, Use Cases |
+| **Scoped** | Per scope | Activity-bound, Session-bound |
 
-By default, in Koin, we have 3 kind of scopes:
+## When to Use Scopes
 
-- `single` definition, create an object that persistent with the entire container lifetime (can't be dropped).
-- `factory` definition, create a new object each time. Short live. No persistence in the container (can't be shared).
-- `scoped` definition, create an object that persistent tied to the associated scope lifetime.
+Use scopes when you need:
+- Instances that live longer than a factory but shorter than a singleton
+- Shared state within a specific context (Activity, Fragment, Session)
+- Automatic cleanup when a context ends
 
-To declare a scoped definition, use the `scoped` function like follow. A scope gathers scoped definitions as a logical unit of time.
+## Defining Scoped Definitions
 
-Declaring a scope for a given type, we need to use the `scope` keyword:
+### DSL
 
 ```kotlin
-module {
-    scope<MyType>{
-        scoped { Presenter() }
-        // ...
+val appModule = module {
+    // Scope for MyActivity
+    scope<MyActivity> {
+        scoped<Presenter>()
+        scoped<Navigator>()
+    }
+
+    // Named scope
+    scope(named("session")) {
+        scoped<SessionData>()
+        scoped<UserPreferences>()
     }
 }
 ```
 
-### Scope Id & Scope Name
+### Annotations
 
-A Koin Scope is defined by its: 
+| Annotation | DSL Equivalent | Purpose |
+|------------|----------------|---------|
+| `@Scope` | `scope<T> { }` | Specify which scope a class belongs to |
+| `@Scoped` | `scoped<T>()` | Define a scoped binding |
 
-- scope name - scope's qualifier
-- scope id - unique identifier of the scope instance
-
-:::note
- `scope<A> { }` is equivalent to `scope(named<A>()){ } `, but more convenient to write. Note that you can also use a string qualifier like: `scope(named("SCOPE_NAME")) { }`
-:::
-
-From a `Koin` instance, you can access:
-
-- `createScope(id : ScopeID, scopeName : Qualifier)` - create a closed scope instance with given id and scopeName
-- `getScope(id : ScopeID)` - retrieve a previously created scope with given id
-- `getOrCreateScope(id : ScopeID, scopeName : Qualifier)` - create or retrieve if already created, the closed scope instance with given id and scopeName
-
-:::note
-By default calling `createScope` on an object, doesn't pass the "source" of the scope. You need to pass it as parameters: `T.createScope(<source>)`
-:::
-
-### Scope Component: Associate a scope to a component [2.2.0]
-
-Koin has the concept of `KoinScopeComponent` to help bring a scope instance to its class:
+A scoped class needs both `@Scoped` and `@Scope`:
 
 ```kotlin
-class A : KoinScopeComponent {
-    override val scope: Scope by lazy { createScope(this) }
-}
+@Scope(MyActivityScope::class)
+@Scoped
+class Presenter(private val repository: UserRepository)
 
-class B
+@Scope(MyActivityScope::class)
+@Scoped
+class Navigator
 ```
 
-The `KoinScopeComponent` interface brings several extensions:
-- `createScope` to create scope from current component's scope Id & name
-- `get`, `inject` - to resolve instances from scope (equivalent to `scope.get()` & `scope.inject()`)
-
-Let's define a scope for A, to resolve B:
+Or use scope archetype annotations for common Android scopes (no `@Scoped` needed):
 
 ```kotlin
-module {
-    scope<A> {
-        scoped { B() } // Tied to A's scope
+// ViewModel scope
+@ViewModelScope
+class UserCache
+
+// Activity scope
+@ActivityScope
+class ActivityPresenter
+
+@ActivityRetainedScope
+class RetainedPresenter
+
+// Fragment scope
+@FragmentScope
+class FragmentPresenter
+```
+
+## Creating and Using Scopes
+
+### Manual Scope Management
+
+```kotlin
+// Create a scope
+val myScope = getKoin().createScope("my_scope_id", named("session"))
+
+// Get instances from scope
+val sessionData: SessionData = myScope.get()
+val prefs: UserPreferences = myScope.get()
+
+// Close when done
+myScope.close()
+```
+
+### Android Activity Scope
+
+```kotlin
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
+    // Automatically create and destroy Scope based on Activity Lifecycle
+    override val scope: Scope by activityScope()
+
+    // Scoped instances - created per Activity instance
+    private val presenter: Presenter by inject()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Scope automatically closed
     }
 }
 ```
 
-We can then resolve instance of `B` directly thanks to `org.koin.core.scope` `get` & `inject` extensions:
+### Android Fragment Scope
 
 ```kotlin
-class A : KoinScopeComponent {
-    override val scope: Scope by lazy { newScope(this) }
+class MyFragment : Fragment(), AndroidScopeComponent {
+    // Automatically create and destroy Scope based on Fragment Lifecycle
+    override val scope: Scope by fragmentScope()
 
-    // resolve B as inject
-    val b : B by inject() // inject from scope
+    private val presenter: Presenter by inject()
+}
+```
 
-    // Resolve B
-    fun doSomething(){
-        val b = get<B>()
-    }
+## Scope Types
 
-    fun close(){
-        scope.close() // don't forget to close current scope
+### Type-Based Scope
+
+```kotlin
+scope<MyActivity> {
+    scoped<ActivityPresenter>()
+}
+```
+
+The scope is identified by the type `MyActivity`. This scope is only triggered by `MyActivity`, whereas `activityScope` is a generic one.
+
+### Named Scope
+
+```kotlin
+scope(named("user_session")) {
+    scoped<SessionManager>()
+}
+```
+
+Use when the scope isn't tied to a specific type.
+
+### Qualifier-Based Scope
+
+```kotlin
+scope(named<MyQualifier>()) {
+    scoped<ScopedService>()
+}
+```
+
+## Scope Archetypes
+
+Koin provides dedicated DSL for common Android scope patterns. These archetypes simplify scope definition for ViewModel, Activity, and Fragment.
+
+### ViewModel Scope
+
+Define dependencies scoped to a ViewModel's lifecycle:
+
+```kotlin
+val appModule = module {
+    viewModelScope {
+        scoped<UserCache>()
+        scoped<UserRepository>()
+        viewModel<UserViewModel>()
     }
 }
 ```
 
-### Resolving dependencies within a scope
-
-To resolve a dependency using the scope's `get` & `inject` functions:  `val presenter = scope.get<Presenter>()` 
-
-The interest of a scope is to define a common logical unit of time for scoped definitions. It's allow also to resolve definitions from within the given scope
+The ViewModel automatically gets access to its scoped dependencies:
 
 ```kotlin
-// given the classes
-class ComponentA
-class ComponentB(val a : ComponentA)
+class UserViewModel(
+    private val cache: UserCache,      // Scoped to this ViewModel
+    private val repository: UserRepository
+) : ViewModel()
+```
 
-// module with scope
-module {
-    
-    scope<A> {
-        scoped { ComponentA() }
-        // will resolve from current scope instance
-        scoped { ComponentB(get()) }
+### Activity Scope
+
+Define dependencies scoped to an Activity's lifecycle:
+
+```kotlin
+val appModule = module {
+    activityScope {
+        scoped<ActivityPresenter>()
+        scoped<ActivityNavigator>()
     }
 }
 ```
 
-The dependency resolution is then straight forward:
+### Fragment Scope
+
+Define dependencies scoped to a Fragment's lifecycle:
 
 ```kotlin
-// create scope
-val myScope = koin.createScope<A>()
-
-// from the same scope
-val componentA = myScope.get<ComponentA>()
-val componentB = myScope.get<ComponentB>()
+val appModule = module {
+    fragmentScope {
+        scoped<FragmentPresenter>()
+    }
+}
 ```
+
+### Comparison
+
+| Archetype | DSL | Annotation | Lifecycle |
+|-----------|-----|------------|-----------|
+| ViewModel | `viewModelScope { }` | `@ViewModelScope` | ViewModel cleared |
+| Activity | `activityScope { }` | `@ActivityScope` | Activity destroyed |
+| Activity Retained | `activityRetainedScope { }` | `@ActivityRetainedScope` | Activity finished |
+| Fragment | `fragmentScope { }` | `@FragmentScope` | Fragment destroyed |
 
 :::info
- By default, all scopes fallback to resolve in the main scope if no definition is found in the current scope
+Scope archetypes are available in Koin 4.0+. They provide a cleaner syntax than manually defining `scope<T> { }` for common Android components.
 :::
 
-### Close a scope
+## Scope Linking
 
-Once you are finished with your scope instance, just close it with the `close()` function:
-
-```kotlin
-// from a KoinComponent
-val scope = getKoin().createScope<A>()
-
-// use it ...
-
-// close it
-scope.close()
-```
-
-:::info
- Beware that you can't inject instances anymore from a closed scope.
-:::
-
-### Getting scope's source value
-
-Koin Scope API in 2.1.4 allow you to pass the original source of a scope, in a definition. Let's take an example below.
-Let's have a singleton instance `A`:
+Link scopes to access parent scope definitions:
 
 ```kotlin
-class A
-class BofA(val a : A)
+val appModule = module {
+    // Activity scope
+    scope<MainActivity> {
+        scoped<ActivityData>()
+    }
 
-module {
-    single { A() }
-    scope<A> {
-        scoped { BofA(getSource() /* or even get() */) }
-
+    // Fragment scope linked to Activity
+    scope<UserFragment> {
+        scoped<FragmentPresenter>()
     }
 }
 ```
 
-By creating A's scope, we can forward the reference of the scope's source (A instance), to underlying definitions of the scope: `scoped { BofA(getSource()) }` or even `scoped { BofA(get()) }`
-
-This in order to avoid cascading parameter injection, and just retrieve our source value directly in scoped definition.
-
 ```kotlin
-val a = koin.get<A>()
-val b = a.scope.get<BofA>()
-assertTrue(b.a == a)
-```
+class UserFragment : Fragment(), AndroidScopeComponent {
+    override val scope: Scope by fragmentScope()
 
-:::note
- Difference between `getSource()` and `get()`: getSource will directly get the source value. Get will try to resolve any definition, and fallback to source
-value if possible. `getSource()` is then more efficient in terms of performances.
-:::
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-### Scope Linking
+        // Link to parent Activity scope
+        scope.linkTo((requireActivity() as AndroidScopeComponent).scope)
 
-Koin Scope API in 2.1 allow you to link a scope to another, and then allow to resolve joined definition space. Let's take an example.
-Here we are defining, 2 scopes spaces: a scope for A and a scope for B. In A's scope, we don't have access to C (defined in B's scope).
-
-```kotlin
-module {
-    single { A() }
-    scope<A> {
-        scoped { B() }
-    }
-    scope<B> {
-        scoped { C() }
+        // Now can access both Fragment and Activity scoped instances
+        val fragmentPresenter: FragmentPresenter by inject()
+        val activityData: ActivityData by inject()  // From linked scope
     }
 }
 ```
 
-With scope linking API, we can allow to resolve B's scope instance C, directly from A's scope. For this we use `linkTo()` on scope instance:
+## Scope Source
+
+Inject dependencies that are aware of their scope:
 
 ```kotlin
-val a = koin.get<A>()
-// let's get B from A's scope
-val b = a.scope.get<B>()
-// let's link A' scope to B's scope
-a.scope.linkTo(b.scope)
-// we got the same C instance from A or B scope
-assertTrue(a.scope.get<C>() == b.scope.get<C>())
-```
+class Presenter(
+    val scope: Scope  // Injected by Koin
+) {
+    fun clearScope() {
+        scope.close()
+    }
+}
 
-### Scope Archetypes
-
-Scope "Archetypes" are scope spaces for a generic kind of classes. For example, you can have Scope Archetypes for Android (Activity, Fragment, ViewModel) or even Ktor (RequestScope).
-Scope Archetype is Koin's `TypeQualifier` pass to different APIs, to request scope space for a given
-
-An archetype consists of:
-- Module DSL extension, to declare a scope for a given type:
-```kotlin
-// Declare a scope archetype for ActivityScopeArchetype (TypeQualifier(AppCompatActivity::class)
-fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
-    val qualifier = ActivityScopeArchetype
-    ScopeDSL(qualifier, this).apply(scopeSet)
+scope<MyActivity> {
+    scoped { Presenter(get()) }  // Scope injected
 }
 ```
-- An API that requests a Scope with the given specific Scope Archetype TypeQualifier:
+
+## Scope Instance ID
+
+Each scope instance has a unique ID:
+
 ```kotlin
-// Create scope with ActivityScopeArchetype archetype
-val scope = getKoin().createScope(getScopeId(), getScopeName(), this, ActivityScopeArchetype)
+// Create with explicit ID
+val scope1 = getKoin().createScope("scope_1", named("session"))
+val scope2 = getKoin().createScope("scope_2", named("session"))
+
+// Different instances, same scope type
+scope1.get<SessionData>() !== scope2.get<SessionData>()
 ```
 
+## Accessing Scoped Instances
+
+### From Within Scope
+
+```kotlin
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityScope()
+
+    // Directly inject scoped instances
+    private val presenter: Presenter by inject()
+}
+```
+
+### From Outside Scope
+
+```kotlin
+// Get or create scope
+val myScope = getKoin().getOrCreateScope("my_id", named("session"))
+
+// Get instance
+val session: SessionData = myScope.get()
+```
+
+### In Compose
+
+```kotlin
+@Composable
+fun MyScreen() {
+    // Create scope tied to Composable lifecycle
+    val scope = rememberKoinScope(named("screen_scope"))
+
+    // Get scoped instance
+    val presenter: ScreenPresenter = scope.get()
+}
+```
+
+## Scope Lifecycle
+
+### Closing Scopes
+
+When a scope closes:
+1. All scoped instances are released
+2. `onClose` callbacks are invoked
+3. Scope becomes unusable
+
+```kotlin
+val scope = getKoin().createScope("my_scope", named("session"))
+
+// Use the scope
+val data: SessionData = scope.get()
+
+// Close when done
+scope.close()  // SessionData instance released
+
+// This throws an exception
+// scope.get<SessionData>()  // Error: Scope is closed
+```
+
+### onClose Callback
+
+```kotlin
+scope(named("session")) {
+    scoped {
+        SessionData()
+    } onClose {
+        it?.cleanup()  // Called when scope closes
+    }
+}
+```
+
+## Common Patterns
+
+### Session Scope
+
+```kotlin
+val appModule = module {
+    scope(named("user_session")) {
+        scoped { SessionManager() }
+        scoped { UserPreferences(get()) }
+        scoped { CartRepository(get()) }
+    }
+}
+
+// Login
+fun onLogin(userId: String) {
+    val sessionScope = getKoin().createScope(userId, named("user_session"))
+    // Session instances now available
+}
+
+// Logout
+fun onLogout(userId: String) {
+    getKoin().getScopeOrNull(userId)?.close()
+    // Session instances released
+}
+```
+
+### Feature Scope
+
+```kotlin
+val appModule = module {
+    scope(named("checkout")) {
+        scoped { CheckoutNavigator() }
+        scoped { CheckoutPresenter(get()) }
+    }
+}
+
+class CheckoutActivity : AppCompatActivity(), AndroidScopeComponent {
+    override val scope: Scope by lazy {
+        getKoin().createScope("checkout_${hashCode()}", named("checkout"))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.close()
+    }
+}
+```
+
+## Best Practices
+
+1. **Use singletons sparingly** - Only for truly app-wide dependencies
+2. **Scope shared state** - When multiple components need the same instance
+3. **Close scopes explicitly** - Don't rely on garbage collection
+4. **Keep scopes focused** - Don't put everything in one scope
+5. **Use Android scope components** - For automatic lifecycle management
+
+## Next Steps
+
+- **[Koin for Android](/docs/integrations/android/android-scopes)** - Android-specific scopes
+- **[Koin for Compose](/docs/integrations/compose/compose-modules)** - Scopes in Compose
+- **[Best Practices](/docs/best-practices/custom-scopes)** - Scope patterns

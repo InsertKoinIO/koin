@@ -1,313 +1,483 @@
 ---
-title: Navigation 3 Integration
+title: Navigation 3
 ---
 
-Koin provides integration with [AndroidX Navigation 3](https://developer.android.com/jetpack/androidx/releases/navigation3) to help you build type-safe navigation graphs with dependency injection.
+# Navigation 3
+
+Koin provides integration with [AndroidX Navigation 3](https://developer.android.com/guide/navigation/navigation-3) for type-safe, multiplatform navigation with dependency injection.
+
+## What is Navigation 3?
+
+Navigation 3 is Jetpack's new navigation library designed specifically for Compose:
+
+- **Full back stack control** - Navigate by adding/removing items from a list
+- **Type-safe routes** - Routes are Kotlin classes with `@Serializable`
+- **Adaptive layouts** - Display multiple destinations simultaneously (list-detail)
+- **Automatic animations** - Built-in transition support
 
 ## Setup
 
-Add the Navigation 3 integration dependency to your project:
-
-### For Multiplatform Projects
+### Multiplatform Projects
 
 ```kotlin
+// shared/build.gradle.kts
 commonMain.dependencies {
     implementation("io.insert-koin:koin-compose-navigation3:$koin_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
 }
 ```
 
-### For Android-only Projects
+### Android-only Projects
 
 ```kotlin
 dependencies {
     implementation("io.insert-koin:koin-compose-navigation3:$koin_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
 }
 ```
 
-:::note
-This is an **experimental API** marked with `@KoinExperimentalAPI`. The Navigation 3 library is currently in alpha.
-:::
-
-## Key Concepts
-
-Navigation 3 integration introduces three main components:
-
-- **`EntryProvider`** - A function that maps route objects to navigation entries
-- **`EntryProviderInstaller`** - A function that registers navigation entries in Koin
-- **`navigation<T>`** - A DSL function to declare navigation destinations in Koin modules
-
-## Declaring Navigation Entries
-
-Use the `navigation<T>()` DSL function in your Koin modules to declare navigation destinations:
-
-### Basic Module-level Navigation
+Apply the serialization plugin:
 
 ```kotlin
-val appModule = module {
-    single { Navigator() }
-    viewModel { HomeViewModel() }
-    viewModel { DetailViewModel() }
-
-    // Declare navigation entries
-    navigation<HomeRoute> { route ->
-        HomeScreen(viewModel = koinViewModel())
-    }
-
-    navigation<DetailRoute> { route ->
-        DetailScreen(
-            viewModel = koinViewModel(),
-            itemId = route.itemId
-        )
-    }
+plugins {
+    kotlin("plugin.serialization")
 }
+```
 
-// Define your routes
+### Platform Support
+
+| Platform | Status |
+|----------|--------|
+| Android | Full support |
+| iOS | Full support |
+| Desktop | Full support |
+| Web | Full support |
+
+## Core Concepts
+
+### Routes as Kotlin Classes
+
+Define type-safe routes using `@Serializable`:
+
+```kotlin
 @Serializable
-object HomeRoute
+data object HomeRoute
+
+@Serializable
+data object ProfileRoute
 
 @Serializable
 data class DetailRoute(val itemId: String)
-```
-
-### Scoped Navigation
-
-You can also declare navigation entries within Koin scopes, useful for scoping ViewModels and dependencies to specific parts of your navigation graph:
-
-```kotlin
-val appModule = module {
-    // Activity scope
-    activityRetainedScope {
-        scoped { Navigator() }
-        viewModel { ProfileViewModel() }
-
-        navigation<ProfileRoute> { route ->
-            ProfileScreen(viewModel = koinViewModel())
-        }
-    }
-
-    // also with custom scope
-    // Activity scope
-    scope<ComponentActivity> {
-        scoped { Navigator() }
-        viewModel { ProfileViewModel() }
-
-        navigation<ProfileRoute> { route ->
-            ProfileScreen(viewModel = koinViewModel())
-        }
-    }
-}
-```
-
-## Using Navigation in Compose
-
-### Retrieving the EntryProvider
-
-Use the `koinEntryProvider()` composable function to retrieve the aggregated navigation entries from Koin:
-
-```kotlin
-@Composable
-fun App() {
-    val entryProvider = koinEntryProvider()
-
-    NavigationHost(
-        entryProvider = entryProvider,
-        startDestination = HomeRoute
-    ) {
-        // Navigation setup
-    }
-}
-```
-
-### With Custom Scope
-
-You can provide a specific Koin scope to retrieve entries from:
-
-```kotlin
-@Composable
-fun CheckoutFlow() {
-    val checkoutScope = rememberKoinScope(named("checkout"))
-    val entryProvider = koinEntryProvider(scope = checkoutScope.value)
-
-    NavigationHost(
-        entryProvider = entryProvider,
-        startDestination = CheckoutRoute.Start
-    ) {
-        // Checkout navigation
-    }
-}
-```
-
-## Android-specific: ComponentCallbacks Extensions
-
-For Android applications, you can use the `ComponentCallbacks` extensions to retrieve the entry provider from Activities or Fragments:
-
-```kotlin
-class MainActivity : ComponentActivity() {
-
-    // Lazy initialization
-    private val entryProvider by entryProvider()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            NavigationHost(
-                entryProvider = entryProvider,
-                startDestination = HomeRoute
-            )
-        }
-    }
-}
-```
-
-Or use eager initialization:
-
-```kotlin
-class MainActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val entryProvider = getEntryProvider()
-        setContent {
-            NavigationHost(
-                entryProvider = entryProvider,
-                startDestination = HomeRoute
-            )
-        }
-    }
-}
-```
-
-## Accessing Route Parameters
-
-Navigation 3 uses type-safe routes. Access route parameters directly from the route object:
-
-```kotlin
-@Serializable
-data class DetailRoute(
-    val itemId: String,
-    val fromSearch: Boolean = false
-)
-
-val appModule = module {
-    navigation<DetailRoute> { route ->
-        DetailScreen(
-            itemId = route.itemId,
-            fromSearch = route.fromSearch,
-            viewModel = koinViewModel()
-        )
-    }
-}
-```
-
-## Combining with Koin Scopes
-
-Navigation entries can leverage Koin's scoping capabilities:
-
-```kotlin
-val appModule = module {
-    // Define a scope archetype
-    scope<ComponentActivity> {
-        scoped { UserSession() }
-
-        viewModel { params ->
-            UserProfileViewModel(
-                userId = params.get(),
-                session = get()
-            )
-        }
-
-        navigation<UserProfileRoute> { route ->
-            UserProfileScreen(
-                viewModel = koinViewModel { parametersOf(route.userId) }
-            )
-        }
-    }
-}
-```
-
-## Complete Example
-
-Here's a complete example showing a typical navigation setup:
-
-```kotlin
-// Define routes
-@Serializable
-object HomeRoute
-
-@Serializable
-object ProfileRoute
-
-@Serializable
-data class DetailRoute(val id: String)
 
 @Serializable
 data class SettingsRoute(val section: String? = null)
+```
 
-// Koin module
-val navigationModule = module {
-    // Shared dependencies
-    single { ApiClient() }
+### Back Stack
 
-    // ViewModels
-    viewModel { HomeViewModel(get()) }
-    viewModel { ProfileViewModel(get()) }
-    viewModel { params -> DetailViewModel(get(), params.get()) }
-    viewModel { SettingsViewModel() }
+Navigation 3 uses a simple list-based back stack:
 
-    // Navigation entries
+```kotlin
+// Basic back stack
+val backStack = remember { mutableStateListOf<Any>(HomeRoute) }
+
+// Persistent back stack (survives config changes)
+val backStack = rememberNavBackStack(HomeRoute)
+
+// Navigate forward
+backStack.add(DetailRoute("123"))
+
+// Navigate back
+backStack.removeLastOrNull()
+```
+
+### NavDisplay
+
+`NavDisplay` renders the back stack with animations:
+
+```kotlin
+NavDisplay(
+    backStack = backStack,
+    onBack = { backStack.removeLastOrNull() },
+    entryProvider = { route -> /* NavEntry */ }
+)
+```
+
+## Koin Integration
+
+### Declaring Navigation Entries
+
+Use the `navigation<T>` DSL in your modules:
+
+```kotlin
+val appModule = module {
+    // Dependencies
+    single<ApiClient>()
+    viewModel<HomeViewModel>()
+    viewModel<DetailViewModel>()
+
+    // Navigation entries with Koin injection
     navigation<HomeRoute> { route ->
         HomeScreen(viewModel = koinViewModel())
+    }
+
+    navigation<DetailRoute> { route ->
+        DetailScreen(
+            itemId = route.itemId,
+            viewModel = koinViewModel { parametersOf(route.itemId) }
+        )
     }
 
     navigation<ProfileRoute> { route ->
         ProfileScreen(viewModel = koinViewModel())
     }
-
-    navigation<DetailRoute> { route ->
-        DetailScreen(
-            id = route.id,
-            viewModel = koinViewModel { parametersOf(route.id) }
-        )
-    }
-
-    navigation<SettingsRoute> { route ->
-        SettingsScreen(
-            initialSection = route.section,
-            viewModel = koinViewModel()
-        )
-    }
 }
+```
 
-// Compose app
+### Using koinEntryProvider
+
+Retrieve all navigation entries from Koin:
+
+```kotlin
 @Composable
 fun App() {
-    val entryProvider = koinEntryProvider()
-    val navController = rememberNavController()
+    val backStack = rememberNavBackStack(HomeRoute)
+    val entryProvider = koinEntryProvider<Any>()
 
-    NavigationHost(
-        navController = navController,
-        entryProvider = entryProvider,
-        startDestination = HomeRoute
-    ) {
-        // Navigation configuration
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider = entryProvider
+    )
+}
+```
+
+### Complete Example
+
+```kotlin
+// Routes
+@Serializable data object ConversationList
+@Serializable data class ConversationDetail(val id: Int)
+@Serializable data object Profile
+
+// Navigator class for cleaner navigation
+class Navigator(startDestination: Any) {
+    val backStack = mutableStateListOf(startDestination)
+
+    fun goTo(destination: Any) {
+        backStack.add(destination)
+    }
+
+    fun goBack() {
+        backStack.removeLastOrNull()
     }
 }
 
-// Main entry point
-fun main() = application {
-    KoinApplication(application = {
-        modules(navigationModule)
-    }) {
-        App()
+// Koin modules
+val appModule = module {
+    includes(conversationModule, profileModule)
+
+    activityRetainedScope {
+        scoped { Navigator(startDestination = ConversationList) }
+    }
+}
+
+val conversationModule = module {
+    activityRetainedScope {
+        navigation<ConversationList> {
+            val navigator = get<Navigator>()
+            ConversationListScreen(
+                onConversationClicked = { detail ->
+                    navigator.goTo(detail)
+                }
+            )
+        }
+
+        navigation<ConversationDetail> { route ->
+            val navigator = get<Navigator>()
+            ConversationDetailScreen(
+                conversationId = route.id,
+                onProfileClicked = { navigator.goTo(Profile) }
+            )
+        }
+    }
+}
+
+val profileModule = module {
+    activityRetainedScope {
+        navigation<Profile> {
+            ProfileScreen()
+        }
+    }
+}
+
+// Activity
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityRetainedScope()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            val navigator: Navigator = get()
+
+            Scaffold { padding ->
+                NavDisplay(
+                    backStack = navigator.backStack,
+                    modifier = Modifier.padding(padding),
+                    onBack = { navigator.goBack() },
+                    entryProvider = getEntryProvider()
+                )
+            }
+        }
     }
 }
 ```
 
+## Scoped Navigation
+
+Declare navigation entries within Koin scopes:
+
+```kotlin
+val appModule = module {
+    // Activity-retained scope (survives config changes)
+    activityRetainedScope {
+        scoped { UserSession() }
+        viewModel<ProfileViewModel>()
+
+        navigation<ProfileRoute> { route ->
+            ProfileScreen(viewModel = koinViewModel())
+        }
+    }
+
+    // Custom scope
+    scope<CheckoutFlow> {
+        scoped { CheckoutState() }
+        viewModel<CheckoutViewModel>()
+
+        navigation<CartRoute> { route ->
+            CartScreen(viewModel = koinViewModel())
+        }
+
+        navigation<PaymentRoute> { route ->
+            PaymentScreen(viewModel = koinViewModel())
+        }
+    }
+}
+```
+
+## ViewModel Integration
+
+### With Navigation Arguments
+
+Pass route data to ViewModels:
+
+```kotlin
+@Serializable
+data class DetailRoute(val itemId: String, val fromSearch: Boolean = false)
+
+class DetailViewModel(
+    val route: DetailRoute,
+    private val repository: Repository
+) : ViewModel() {
+    val item = repository.getItem(route.itemId)
+}
+
+val appModule = module {
+    viewModelOf(::DetailViewModel)
+
+    navigation<DetailRoute> { route ->
+        DetailScreen(
+            viewModel = koinViewModel { parametersOf(route) }
+        )
+    }
+}
+```
+
+### With Entry Decorators
+
+Use decorators for ViewModel state retention:
+
+```kotlin
+NavDisplay(
+    backStack = backStack,
+    onBack = { backStack.removeLastOrNull() },
+    entryDecorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberViewModelStoreNavEntryDecorator()
+    ),
+    entryProvider = entryProvider {
+        entry<DetailRoute> { route ->
+            val viewModel = koinViewModel<DetailViewModel> {
+                parametersOf(route)
+            }
+            DetailScreen(viewModel)
+        }
+    }
+)
+```
+
+## Animations
+
+### Default Transitions
+
+```kotlin
+NavDisplay(
+    backStack = backStack,
+    onBack = { backStack.removeLastOrNull() },
+    entryProvider = entryProvider,
+    // Forward navigation animation
+    transitionSpec = {
+        slideInHorizontally(initialOffsetX = { it }) togetherWith
+        slideOutHorizontally(targetOffsetX = { -it })
+    },
+    // Back navigation animation
+    popTransitionSpec = {
+        slideInHorizontally(initialOffsetX = { -it }) togetherWith
+        slideOutHorizontally(targetOffsetX = { it })
+    }
+)
+```
+
+### Per-Route Animations
+
+```kotlin
+navigation<ModalRoute>(
+    metadata = NavDisplay.transitionSpec {
+        slideInVertically(initialOffsetY = { it }) togetherWith
+        ExitTransition.KeepUntilTransitionsFinished
+    } + NavDisplay.popTransitionSpec {
+        EnterTransition.None togetherWith
+        slideOutVertically(targetOffsetY = { it })
+    }
+) { route ->
+    ModalScreen()
+}
+```
+
+## Adaptive Layouts
+
+### List-Detail Pattern
+
+Use scene strategies for adaptive layouts:
+
+```kotlin
+@Composable
+fun App() {
+    val backStack = rememberNavBackStack(ConversationList)
+    val listDetailStrategy = rememberListDetailSceneStrategy<Any>()
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        sceneStrategy = listDetailStrategy,
+        entryProvider = entryProvider {
+            entry<ConversationList>(
+                metadata = ListDetailSceneStrategy.listPane()
+            ) {
+                ConversationListScreen()
+            }
+
+            entry<ConversationDetail>(
+                metadata = ListDetailSceneStrategy.detailPane()
+            ) { route ->
+                ConversationDetailScreen(route.id)
+            }
+        }
+    )
+}
+```
+
+### With Koin Modules
+
+```kotlin
+val appModule = module {
+    navigation<ConversationList>(
+        metadata = ListDetailSceneStrategy.listPane()
+    ) {
+        ConversationListScreen(
+            onItemClick = { get<Navigator>().goTo(it) }
+        )
+    }
+
+    navigation<ConversationDetail>(
+        metadata = ListDetailSceneStrategy.detailPane()
+    ) { route ->
+        ConversationDetailScreen(route.id)
+    }
+}
+```
+
+## Android Extensions
+
+### Lazy Entry Provider
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    // Lazy initialization
+    private val entryProvider by entryProvider<Any>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val backStack = rememberNavBackStack(HomeRoute)
+
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                entryProvider = entryProvider
+            )
+        }
+    }
+}
+```
+
+### Eager Entry Provider
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val entryProvider = getEntryProvider<Any>()
+
+        setContent {
+            NavDisplay(
+                backStack = backStack,
+                entryProvider = entryProvider,
+                onBack = { backStack.removeLastOrNull() }
+            )
+        }
+    }
+}
+```
+
+## API Reference
+
+### DSL Functions
+
+| Function | Description |
+|----------|-------------|
+| `Module.navigation<T> { }` | Declare navigation entry at module level |
+| `ScopeDSL.navigation<T> { }` | Declare navigation entry within a scope |
+
+### Composable Functions
+
+| Function | Description |
+|----------|-------------|
+| `koinEntryProvider<T>()` | Get aggregated entry provider from Koin |
+
+### Android Extensions
+
+| Function | Description |
+|----------|-------------|
+| `entryProvider<T>()` | Lazy entry provider delegate |
+| `getEntryProvider<T>()` | Eager entry provider |
+
 ## Migration from Navigation 2.x
 
-If you're migrating from the Navigation 2.x integration:
-
 ### Before (Navigation 2.x)
+
 ```kotlin
 NavHost(navController, startDestination = "home") {
     composable("home") {
@@ -321,62 +491,31 @@ NavHost(navController, startDestination = "home") {
 ```
 
 ### After (Navigation 3)
+
 ```kotlin
-// Define routes
-@Serializable
-object HomeRoute
+// Type-safe routes
+@Serializable data object HomeRoute
+@Serializable data class DetailRoute(val id: String)
 
-@Serializable
-data class DetailRoute(val id: String)
-
-// Declare in module
+// Module declaration
 val appModule = module {
-    navigation<HomeRoute> { route ->
-        HomeScreen(viewModel = koinViewModel())
-    }
-
+    navigation<HomeRoute> { HomeScreen(viewModel = koinViewModel()) }
     navigation<DetailRoute> { route ->
         DetailScreen(id = route.id, viewModel = koinViewModel())
     }
 }
 
-// Use in app
-@Composable
-fun App() {
-    val entryProvider = koinEntryProvider()
-    val navController = rememberNavController()
-
-    NavigationHost(
-        navController = navController,
-        entryProvider = entryProvider,
-        startDestination = HomeRoute
-    )
-}
+// Usage
+val backStack = rememberNavBackStack(HomeRoute)
+NavDisplay(
+    backStack = backStack,
+    onBack = { backStack.removeLastOrNull() },
+    entryProvider = koinEntryProvider()
+)
 ```
-
-## API Reference
-
-### DSL Functions
-
-- `Module.navigation<T>(definition)` - Declares a singleton navigation entry
-- `ScopeDSL.navigation<T>(definition)` - Declares a scoped navigation entry
-
-### Composable Functions
-
-- `koinEntryProvider(scope)` - Retrieves entry provider from given Koin scope
-
-### Android Extensions
-
-- `ComponentCallbacks.entryProvider()` - Lazy entry provider initialization
-- `ComponentCallbacks.getEntryProvider()` - Eager entry provider initialization
-
-## Limitations
-
-- Navigation 3 is currently in **alpha** - API may change
-- Type-safe navigation requires Kotlin serialization plugin
-- Some advanced Navigation 2.x features may not be available yet
 
 ## Resources
 
-- [AndroidX Navigation 3 Documentation](https://developer.android.com/jetpack/androidx/releases/navigation3)
+- [Navigation 3 Official Guide](https://developer.android.com/guide/navigation/navigation-3)
+- [Nav3 Recipes Repository](https://github.com/android/nav3-recipes)
 - [Koin Compose Documentation](/docs/reference/koin-compose/compose)

@@ -2,110 +2,147 @@
 title: Koin DSL
 ---
 
-Thanks to the power of Kotlin language, Koin provides a DSL to help you describe your app instead of annotate it or generate code for it. With its Kotlin DSL, Koin offers a smart functional API to achieve to prepare your dependency injection.
+Quick reference for Koin DSL. For detailed guides see **[Core - Definitions](/docs/reference/koin-core/definitions)** and **[Core - Modules](/docs/reference/koin-core/modules)**.
 
-## Application & Module DSL
+## DSL Approaches
 
-Koin offers several keywords to let you describe the elements of a Koin Application:
+| Approach | Syntax | Package |
+|----------|--------|---------|
+| **Classic DSL** | `single { Class(get()) }` | `org.koin.dsl` |
+| **Classic Autowire** | `singleOf(::Class)` | `org.koin.dsl` |
+| **Compiler Plugin** | `single<Class>()` | `org.koin.plugin.module.dsl` |
 
-- Application DSL, to describe the Koin container configuration
-- Module DSL, to describe the components that have to be injected
+:::tip
+The **Compiler Plugin DSL** provides auto-wiring and compile-time safety. See [Compiler Plugin Setup](/docs/setup/compiler-plugin).
+:::
 
 ## Application DSL
 
-A `KoinApplication` instance is a Koin container instance configuration. This will let you configure logging, properties loading and modules.
+A `KoinApplication` instance represents your configured Koin container. This lets you set up logging, load properties, and register modules.
 
-To build a new `KoinApplication`, use the following functions:
+### Creating a KoinApplication
 
-* `koinApplication { }` - create a `KoinApplication` container configuration 
-* `startKoin { }` - create a `KoinApplication` container configuration and register it in the `GlobalContext` to allow the use of GlobalContext API
+Choose between two approaches:
 
-To configure your `KoinApplication` instance, you can use any of the following functions :
-
-* `logger( )` - describe what level and Logger implementation to use (by default use the EmptyLogger)
-* `modules( )` - set a list of Koin modules to load in the container (list or vararg list)
-* `properties()` - load HashMap properties into Koin container
-* `fileProperties( )` - load properties from given file into Koin container
-* `environmentProperties( )` - load properties from OS environment into Koin container
-* `createEagerInstances()` - create eager instances (Single definitions marked as `createdAtStart`)
-
-## KoinApplication instance: Global vs Local
-
-As you can see above, we can describe a Koin container configuration in 2 ways: `koinApplication` or `startKoin` function. 
-
-- `koinApplication` describe a Koin container instance
-- `startKoin` describe a Koin container instance and register it in Koin `GlobalContext`
-
-By registering your container configuration into the `GlobalContext`, the global API can use it directly. Any `KoinComponent` refers to a `Koin` instance. By default, we use the one from `GlobalContext`.
-
-Check chapters about Custom Koin instance for more information.
-
-## Starting Koin
-
-Starting Koin means run a `KoinApplication` instance into the `GlobalContext`.
-
-To start Koin container with modules, we can just use the `startKoin` function like that:
+* `koinApplication { }` - Creates a standalone `KoinApplication` instance
+* `startKoin { }` - Creates a `KoinApplication` and registers it in the `GlobalContext`
 
 ```kotlin
-// start a KoinApplication in Global context
+// Standalone instance (useful for testing or custom contexts)
+val koinApp = koinApplication {
+    modules(myModule)
+}
+
+// Global instance (standard approach for applications)
 startKoin {
-    // declare used logger
     logger()
-    // declare used modules
-    modules(coffeeAppModule)
+    modules(myModule)
+}
+```
+
+### Configuration Functions
+
+Within `koinApplication` or `startKoin`, you can use:
+
+* `logger()` - Set the logging level and Logger implementation (default: EmptyLogger)
+* `modules()` - Load modules into the container (accepts list or vararg)
+* `properties()` - Load a HashMap of properties
+* `fileProperties()` - Load properties from a file
+* `environmentProperties()` - Load properties from OS environment variables
+* `createEagerInstances()` - Instantiate all definitions marked with `createdAtStart`
+* `allowOverride(Boolean)` - Enable/disable definition overriding (default: true since 3.1.0)
+
+### Global vs Local Context
+
+The key difference between `koinApplication` and `startKoin`:
+
+- **`startKoin`** - Registers the container in `GlobalContext`, making it accessible via `KoinComponent`, `by inject()`, and other global APIs
+- **`koinApplication`** - Creates an isolated instance you control directly
+
+```kotlin
+// Global context - standard usage
+startKoin {
+    logger()
+    modules(appModule)
+}
+
+// Later, anywhere in your app:
+class MyClass : KoinComponent {
+    val service: Service by inject() // Uses GlobalContext
+}
+```
+
+```kotlin
+// Local context - advanced usage (testing, multi-context apps)
+val customKoin = koinApplication {
+    modules(testModule)
+}.koin
+
+val service = customKoin.get<Service>() // Use specific instance
+```
+
+### Starting Koin
+
+A complete Koin setup example:
+
+```kotlin
+startKoin {
+    // Configure logging
+    logger(Level.INFO)
+
+    // Load properties
+    environmentProperties()
+
+    // Declare modules
+    modules(
+        networkModule,
+        databaseModule,
+        repositoryModule,
+        viewModelModule
+    )
+
+    // Create eager singletons
+    createEagerInstances()
 }
 ```
 
 ## Module DSL
 
-A Koin module gather definitions that you will inject/combine for your application. To create a new module, just use the following function:
+For comprehensive module and definition documentation, see:
+- **[Definitions](/docs/reference/koin-core/definitions)** - All definition types with DSL and Annotations
+- **[Modules](/docs/reference/koin-core/modules)** - Module organization and composition
+- **[Definitions Reference](/docs/reference/koin-core/definitions)** - Quick lookup table
 
-* `module { // module content }` - create a Koin Module
+### Quick Reference
 
-To describe your content in a module, you can use the following functions:
+| Definition | Classic Lambda | Classic Autowire | Compiler Plugin |
+|------------|----------------|------------------|-----------------|
+| Singleton | `single { Class(get()) }` | `singleOf(::Class)` | `single<Class>()` |
+| Factory | `factory { Class(get()) }` | `factoryOf(::Class)` | `factory<Class>()` |
+| Scoped | `scoped { Class(get()) }` | `scopedOf(::Class)` | `scoped<Class>()` |
+| ViewModel | `viewModel { VM(get()) }` | `viewModelOf(::VM)` | `viewModel<VM>()` |
 
-* `factory { //definition }` - provide a factory bean definition
-* `single { //definition  }` - provide a singleton bean definition (also aliased as `bean`)
-* `get()` - resolve a component dependency (also can use name, scope or parameters)
-* `bind()` - add type to bind for given bean definition
-* `binds()` - add types array for given bean definition
-* `scope { // scope group }` - define a logical group for `scoped` definition 
-* `scoped { //definition }`- provide a bean definition that will exist only in a scope
-
-Note: the `named()` function allow you to give a qualifier either by a string, an enum or a type. It is used to name your definitions.
-
-### Writing a module
-
-A Koin module is the *space to declare all your components*. Use the `module` function to declare a Koin module:
+### Basic Module
 
 ```kotlin
 val myModule = module {
-   // your dependencies here
+    single<Database>()
+    single<UserRepository>()
+    factory<UserPresenter>()
 }
 ```
 
-In this module, you can declare components as described below.
-
-### withOptions - DSL Options (since 3.2)
-
-Like for new [Constructor DSL](./dsl-update.md) definitions, you can specify definition options on "regular" definitions with
-the `withOptions` operator:
+### Module Composition
 
 ```kotlin
-module {
-    single { ClassA(get()) } withOptions { 
-        named("qualifier")
-        createdAtStart()
-    }
+val appModule = module {
+    includes(networkModule, databaseModule)
+    single<AppConfig>()
+}
+
+startKoin {
+    modules(appModule)
 }
 ```
 
-Within this option lambda, you can specify the following options:
-
-* `named("a_qualifier")` - give a String qualifier to the definition
-* `named<MyType>()` - give a Type qualifier to the definition
-* `bind<MyInterface>()` - add type to bind for given bean definition
-* `binds(arrayOf(...))` - add types array for given bean definition
-* `createdAtStart()` - create single instance at Koin start
-* `override()` - (4.2.0+) mark this definition as allowed to override, even when global `allowOverride` is false
-* `onClose { }` - register a callback to be invoked when the definition is closed/released
+See **[Modules - includes()](/docs/reference/koin-core/modules#module-composition-with-includes)** for details.
