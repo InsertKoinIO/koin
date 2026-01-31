@@ -43,10 +43,10 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            api(project(":android:koin-android"))
+            api(projects.android.koinAndroid)
         }
         commonMain.dependencies {
-            api(project(":compose:koin-compose"))
+            api(projects.compose.koinCompose)
             implementation(libs.androidx.navigation3.runtime)
         }
     }

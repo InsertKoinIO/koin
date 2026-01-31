@@ -34,7 +34,7 @@ tasks.withType<KotlinCompile>().all {
 }
 
 dependencies {
-    api(project(":android:koin-android"))
+    api(projects.android.koinAndroid)
 }
 
 // android sources

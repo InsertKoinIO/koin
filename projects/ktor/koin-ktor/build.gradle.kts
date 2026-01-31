@@ -38,7 +38,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:koin-core"))
+            api(projects.core.koinCore)
             // Ktor
             implementation(libs.ktor.core)
             implementation(libs.ktor.core.di)

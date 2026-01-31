@@ -40,8 +40,8 @@ tasks.withType<KotlinCompile>().all {
 }
 
 dependencies {
-    api(project(":compose:koin-compose"))
-    api(project(":compose:koin-compose-viewmodel"))
+    api(projects.compose.koinCompose)
+    api(projects.compose.koinComposeViewmodel)
 }
 
 // android sources

@@ -40,16 +40,16 @@ tasks.withType<KotlinCompile>().all {
 }
 
 dependencies {
-    api(project(":core:koin-core"))
-    api(project(":core:koin-core-viewmodel"))
+    api(projects.core.koinCore)
+    api(projects.core.koinCoreViewmodel)
     api(libs.android.appcompat)
     api(libs.android.activity)
     api(libs.android.fragment)
     api(libs.androidx.viewmodel)
 
     // tests
-    testImplementation(project(":core:koin-test"))
-    testImplementation(project(":core:koin-test-junit4"))
+    testImplementation(projects.core.koinTest)
+    testImplementation(projects.core.koinTestJunit4)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockito)

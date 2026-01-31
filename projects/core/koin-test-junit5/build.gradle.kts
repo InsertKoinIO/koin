@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":core:koin-test"))
+    api(projects.core.koinTest)
     api(libs.test.jupiter)
     testImplementation(libs.test.mockito)
 }

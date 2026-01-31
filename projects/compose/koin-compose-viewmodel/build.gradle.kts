@@ -43,8 +43,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":compose:koin-compose"))
-            api(project(":core:koin-core-viewmodel"))
+            api(projects.compose.koinCompose)
+            api(projects.core.koinCoreViewmodel)
             api(libs.jb.composeViewmodel)
         }
         androidMain.dependencies {

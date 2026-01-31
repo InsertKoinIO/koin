@@ -39,7 +39,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:koin-core-annotations"))
+            api(projects.core.koinCoreAnnotations)
         }
     }
 }

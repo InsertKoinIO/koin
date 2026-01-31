@@ -17,8 +17,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.benchmark.runtime)
-            api(project(":core:koin-core"))
-            api(project(":core:koin-core-coroutines"))
+            api(projects.core.koinCore)
+            api(projects.core.koinCoreCoroutines)
         }
         jvmMain.dependencies {
 

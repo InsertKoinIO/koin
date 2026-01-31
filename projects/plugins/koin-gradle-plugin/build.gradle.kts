@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:koin-test"))
+    implementation(projects.core.koinTest)
     implementation(gradleApi())
 }
 

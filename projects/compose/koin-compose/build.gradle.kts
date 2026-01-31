@@ -43,13 +43,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:koin-core"))
+            api(projects.core.koinCore)
             api(libs.jb.composeRuntime)
             api(libs.jb.composeFoundation)
         }
         androidMain.dependencies {
             api(libs.android.activity.compose)
-            api(project(":android:koin-android"))
+            api(projects.android.koinAndroid)
         }
         nativeMain.dependencies {
         }
