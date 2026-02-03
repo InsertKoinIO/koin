@@ -13,16 +13,13 @@ import java.util.*
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
 
-    properties.filter { (key, _) ->
+    properties.forEach { (key, value) ->
         if (key is String) {
-            return@filter true
+            saveProperty(key, value)
         }
         else {
             _koin.logger.debug("Skipping property $key")
-            return@filter false
         }
-    }.forEach { (key, value) ->
-        saveProperty(key as String, value)
     }
 }
 
