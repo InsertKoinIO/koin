@@ -51,7 +51,7 @@ class Scope(
     val scopeArchetype : TypeQualifier? = null,
     @PublishedApi
     internal val _koin: Koin,
-) : Lockable() {
+) : Lockable(), AutoCloseable {
 
     internal val linkedScopes = ArrayList<Scope>()
     @KoinInternalApi
@@ -431,7 +431,7 @@ class Scope(
     /**
      * Close all instances from this scope
      */
-    fun close() = KoinPlatformTools.synchronized(this) {
+    override fun close() = KoinPlatformTools.synchronized(this) {
         _koin.logger.debug("|- (-) Scope - id:'$id'")
 
         _callbacks.forEach { it.onScopeClose(this) }

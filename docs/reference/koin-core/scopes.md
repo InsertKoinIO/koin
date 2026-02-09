@@ -81,10 +81,23 @@ class FragmentPresenter
 
 ## Creating and Using Scopes
 
-### Manual Scope Management
+### Using Scopes with `use { }`
+
+`Scope` implements `AutoCloseable`, so you can use Kotlin's `use { }` block for safe, automatic cleanup. This is the recommended approach for short-lived scopes (request handling, transactions, batch jobs, etc.):
 
 ```kotlin
-// Create a scope
+getKoin().createScope("my_scope_id", named("session")).use { scope ->
+    val sessionData: SessionData = scope.get()
+    val prefs: UserPreferences = scope.get()
+}
+// scope is closed automatically, even on exceptions
+```
+
+### Manual Scope Management
+
+For longer-lived scopes, you can manage the lifecycle manually:
+
+```kotlin
 val myScope = getKoin().createScope("my_scope_id", named("session"))
 
 // Get instances from scope
@@ -324,18 +337,24 @@ fun MyScreen() {
 
 ### Closing Scopes
 
+`Scope` implements `AutoCloseable`. The recommended way to handle scope cleanup is with `use { }`:
+
+```kotlin
+getKoin().createScope("my_scope", named("session")).use { scope ->
+    val data: SessionData = scope.get()
+}
+// All scoped instances released automatically, even on exceptions
+```
+
 When a scope closes:
 1. All scoped instances are released
 2. `onClose` callbacks are invoked
 3. Scope becomes unusable
 
 ```kotlin
+// Manual close is also supported
 val scope = getKoin().createScope("my_scope", named("session"))
-
-// Use the scope
 val data: SessionData = scope.get()
-
-// Close when done
 scope.close()  // SessionData instance released
 
 // This throws an exception
@@ -406,7 +425,7 @@ class CheckoutActivity : AppCompatActivity(), AndroidScopeComponent {
 
 1. **Use singletons sparingly** - Only for truly app-wide dependencies
 2. **Scope shared state** - When multiple components need the same instance
-3. **Close scopes explicitly** - Don't rely on garbage collection
+3. **Close scopes explicitly** - Use `scope.use { }` for short-lived scopes, or call `close()` manually
 4. **Keep scopes focused** - Don't put everything in one scope
 5. **Use Android scope components** - For automatic lifecycle management
 
