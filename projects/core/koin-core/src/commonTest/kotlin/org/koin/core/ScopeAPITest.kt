@@ -127,6 +127,46 @@ class ScopeAPITest {
         assertTrue(closed)
     }
 
+    @Test
+    fun `scope implements AutoCloseable and works with use`() {
+        val scope = koin.createScope("myScope", scopeKey)
+        var closed = false
+        scope.registerCallback(object : ScopeCallback {
+            override fun onScopeClose(scope: Scope) {
+                closed = true
+            }
+        })
+
+        val result = scope.use {
+            it.get<A>()
+        }
+
+        assertNotNull(result)
+        assertTrue(closed)
+    }
+
+    @Test
+    fun `scope use closes on exception`() {
+        val scope = koin.createScope("myScope", scopeKey)
+        var closed = false
+        scope.registerCallback(object : ScopeCallback {
+            override fun onScopeClose(scope: Scope) {
+                closed = true
+            }
+        })
+
+        try {
+            scope.use {
+                error("test exception")
+            }
+            fail()
+        } catch (e: IllegalStateException) {
+            assertEquals("test exception", e.message)
+        }
+
+        assertTrue(closed)
+    }
+
     class MyScopeComponent(private val _koin: Koin) : KoinScopeComponent {
         override fun getKoin(): Koin = _koin
         override val scope: Scope = createScope()
