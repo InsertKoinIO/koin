@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
 
 ## Koin module: classic or constructor DSL?
 
-Here is the Koin moduel declaration for our app:
+Here is the Koin module declaration for our app:
 
 ```kotlin
 val appModule = module {
