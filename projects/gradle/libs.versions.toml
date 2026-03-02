@@ -3,7 +3,7 @@
 # /!\ Koin in gradle.properties /!\
 
 # Core
-kotlin = "2.3.20-Beta1"
+kotlin = "2.3.20-RC"
 binaryValidator = "0.18.1"
 publish = "2.0.0"
 coroutines = "1.10.2"
@@ -14,9 +14,9 @@ nmcp = "1.3.0"
 # Android
 agp = "8.13.2"
 android-appcompat = "1.7.1"
-android-activity = "1.12.2"
+android-activity = "1.12.4"
 android-fragment = "1.8.9"
-androidx-workmanager = "2.11.0"
+androidx-workmanager = "2.11.1"
 androidx-startup = "1.2.0"
 dagger = "2.56"
 
@@ -25,13 +25,13 @@ androidx-lifecycle = "2.10.0" # Keep in sync with "jb-lifecycle"
 jb-lifecycle = "2.9.6"
 
 # Navigation
-androidx-navigation = "2.9.6" # Keep in sync with "jb-navigation"
-androidx-navigation3 = "1.0.0"
-jb-navigation = "2.9.1"
+androidx-navigation = "2.9.7" # Keep in sync with "jb-navigation"
+androidx-navigation3 = "1.0.1"
+jb-navigation = "2.9.2"
 
 # Compose
 #androidx-compose = "1.8.1" # Keep in sync with "jb-compose"
-jb-compose = "1.10.0"
+jb-compose = "1.10.1"
 
 # Test
 stately = "2.1.0"
@@ -39,13 +39,13 @@ junit = "4.13.2"
 jupiter = "5.11.2" #5.12.0 causing issues
 mockito = "5.2.0"
 mockk = "1.14.7"
-robolectric = "4.16"
+robolectric = "4.16.1"
 # Ktor
 ktor = "3.4.0"
 slf4j = "2.0.17"
 uuidVersion = "0.8.4"
 
-benchmark = "0.4.15"
+benchmark = "0.4.16"
 
 [libraries]
 # Core
