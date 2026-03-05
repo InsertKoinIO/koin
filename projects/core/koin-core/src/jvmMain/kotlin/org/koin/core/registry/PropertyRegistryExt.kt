@@ -8,7 +8,7 @@ import org.koin.core.error.NoPropertyFileFoundException
 import java.util.*
 
 /**
- *Save properties values into PropertyRegister
+ * Save [Properties] values into PropertyRegistry
  */
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
