@@ -34,7 +34,7 @@ import kotlin.time.measureTime
  */
 @OptIn(KoinInternalApi::class)
 @KoinApplicationDslMarker
-open class KoinApplication protected constructor() {
+open class KoinApplication protected constructor() : AutoCloseable {
 
     val koin = Koin()
     private var allowOverride = true
@@ -136,7 +136,7 @@ open class KoinApplication protected constructor() {
         return this
     }
 
-    fun close() {
+    override fun close() {
         koin.close()
     }
 
