@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.currentComposer
 import org.koin.compose.application.rememberKoinApplication
@@ -62,6 +63,7 @@ private fun getDefaultRootScope() = KoinPlatform.getKoin().scopeRegistry.rootSco
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
+@ReadOnlyComposable
 fun getKoin(): Koin = currentComposer.run {
     try {
         consume(LocalKoinApplication).getValue()
@@ -79,6 +81,7 @@ fun getKoin(): Koin = currentComposer.run {
  */
 @OptIn(InternalComposeApi::class, KoinInternalApi::class)
 @Composable
+@ReadOnlyComposable
 fun currentKoinScope(): Scope = currentComposer.run {
     try {
         val currentScope = consume(LocalKoinScope).getValue()
@@ -154,6 +157,7 @@ fun KoinMultiplatformApplication(
  * - Help handle automatically Android Logger Anticipate Android context injection, to having to setup androidContext() and androidLogger
  */
 @Composable
+@ReadOnlyComposable
 @PublishedApi
 @KoinInternalApi
 internal expect fun composeMultiplatformConfiguration(

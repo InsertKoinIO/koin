@@ -1,8 +1,8 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import org.koin.core.Koin
-import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.KoinConfiguration
 import org.koin.core.logger.Level
@@ -11,6 +11,7 @@ import org.koin.dsl.includes
 import org.koin.mp.KoinPlatform
 
 @Composable
+@ReadOnlyComposable
 @KoinExperimentalAPI
 internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, config : KoinConfiguration) : KoinConfiguration {
     return koinConfiguration {
