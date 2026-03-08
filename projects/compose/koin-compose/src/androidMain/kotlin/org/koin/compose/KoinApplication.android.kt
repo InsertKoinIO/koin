@@ -5,6 +5,7 @@ import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import org.koin.dsl.KoinConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +19,7 @@ import org.koin.dsl.koinConfiguration
 import org.koin.dsl.includes
 
 @Composable
+@ReadOnlyComposable
 internal actual fun composeMultiplatformConfiguration(loggerLevel : Level, config : KoinConfiguration) : KoinConfiguration {
     val appContext = LocalContext.current.applicationContext ?: error("Android ApplicationContext not found in current Compose context!")
     return koinConfiguration {
