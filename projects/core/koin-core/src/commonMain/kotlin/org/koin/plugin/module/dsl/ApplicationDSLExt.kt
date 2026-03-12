@@ -7,6 +7,7 @@ import org.koin.dsl.includes
 import org.koin.dsl.koinApplication
 import org.koin.dsl.koinConfiguration
 import org.koin.mp.KoinPlatformTools
+import kotlin.reflect.KClass
 
 /**
  * Start Koin with modules discovered from @KoinApplication annotated class.
@@ -144,4 +145,52 @@ public fun <T : Any> KoinApplication.withConfiguration(appDeclaration: org.koin.
 public fun KoinApplication.withConfigurationWith(modules : List<Module>, appDeclaration: org.koin.dsl.KoinAppDeclaration? = null) {
     includes(appDeclaration)
     modules(modules)
+}
+
+/**
+ * Compiler Plugin Stub - Load the module generated from a single @Module annotated class into this KoinApplication.
+ * The compiler plugin transforms this call to inject the module generated from the type parameter T via IR.
+ *
+ * Replaces the previous `T().module` pattern with a type-safe reified call.
+ *
+ * Usage:
+ * ```kotlin
+ * startKoin {
+ *     modules<MyModule>()
+ * }
+ * // Plugin transforms to:
+ * // startKoin {
+ * //     modules(MyModule().module)
+ * // }
+ * ```
+ *
+ * @param T Type annotated with @Module
+ */
+public fun <T : Any> KoinApplication.modules() {
+    // Generate Call: modules(T::class().module)
+    USE_KOIN_COMPILER_PLUGIN("KoinApplication.modules<T>()")
+}
+
+/**
+ * Compiler Plugin Stub - Load modules generated from multiple @Module annotated classes into this KoinApplication.
+ * The compiler plugin transforms this call to inject the modules generated from the provided KClass references via IR.
+ *
+ * Replaces the previous `T().module` pattern with a type-safe call accepting multiple module classes.
+ *
+ * Usage:
+ * ```kotlin
+ * startKoin {
+ *     modules(ModuleA::class, ModuleB::class)
+ * }
+ * // Plugin transforms to:
+ * // startKoin {
+ * //     modules(ModuleA().module, ModuleB().module)
+ * // }
+ * ```
+ *
+ * @param modules KClass references of types annotated with @Module
+ */
+public fun KoinApplication.modules(vararg modules : KClass<*>) {
+    // Generate Call: modules(T::class().module, list ...)
+    USE_KOIN_COMPILER_PLUGIN("KoinApplication.modules(KClass...)")
 }
