@@ -9,6 +9,7 @@ javaPlatform {
 dependencies {
     constraints {
         api(project(":core:koin-core-annotations"))
+        api(project(":core:koin-annotations"))
         api(project(":core:koin-core"))
         api("io.insert-koin:koin-core-jvm:$version") //Check later KMP Bom
         api(project(":core:koin-core-coroutines"))
@@ -31,6 +32,7 @@ dependencies {
         api(project(":android:koin-dagger-bridge"))
 
         api(project(":compose:koin-compose"))
+        api(project(":compose:koin-compose-navigation3"))
         api(project(":compose:koin-compose-viewmodel"))
         api(project(":compose:koin-compose-viewmodel-navigation"))
         api(project(":compose:koin-androidx-compose"))

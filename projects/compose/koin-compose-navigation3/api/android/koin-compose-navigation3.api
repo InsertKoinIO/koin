@@ -1,0 +1,10 @@
+public final class org/koin/androidx/compose/navigation3/ComponentCallbacksExtKt {
+	public static final fun entryProvider (Landroid/content/ComponentCallbacks;Lkotlin/LazyThreadSafetyMode;)Lkotlin/Lazy;
+	public static synthetic fun entryProvider$default (Landroid/content/ComponentCallbacks;Lkotlin/LazyThreadSafetyMode;ILjava/lang/Object;)Lkotlin/Lazy;
+	public static final fun getEntryProvider (Landroid/content/ComponentCallbacks;)Lkotlin/jvm/functions/Function1;
+}
+
+public final class org/koin/compose/navigation3/EntryProviderKt {
+	public static final fun koinEntryProvider (Lorg/koin/core/scope/Scope;Landroidx/compose/runtime/Composer;II)Lkotlin/jvm/functions/Function1;
+}
+

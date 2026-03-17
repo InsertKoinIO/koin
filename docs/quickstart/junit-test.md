@@ -4,6 +4,10 @@ title: JUnit Tests
 
 > This tutorial lets you test a Kotlin application and use Koin inject and retrieve your components.
 
+:::note
+update - 2025-01-28
+:::
+
 ## Get the code
 
 :::info
@@ -28,50 +32,71 @@ dependencies {
 We reuse the `koin-core` getting-started project, to use the koin module:
 
 ```kotlin
-val helloModule = module {
-    single { HelloMessageData() }
-    single { HelloServiceImpl(get()) as HelloService }
+val appModule = module {
+    single<UserApplication>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
 }
 ```
 
-## Writing our first Test
+## Verifying your Modules
 
-To make our first test, let's write a simple Junit test file and extend it with `KoinTest`. We will be able then, to use `by inject()` operators.
+The simplest way to test your Koin configuration is to verify your modules. The `verify()` function performs a dry-run check to ensure all dependencies can be resolved:
 
 ```kotlin
-class HelloAppTest : KoinTest {
+class ModuleVerificationTest : AutoCloseKoinTest() {
 
-    val model by inject<HelloMessageData>()
-    val service by inject<HelloService>()
+    @Test
+    fun verifyModules() {
+        appModule.verify()
+    }
+}
+```
+
+This test will fail if any dependency definitions are invalid or if any required dependencies are missing.
+
+## Writing Tests with KoinTestRule
+
+To write tests that inject dependencies, extend `KoinTest` and use `KoinTestRule`:
+
+```kotlin
+class UserAppTest : KoinTest {
+
+    val userService by inject<UserService>()
+    val userRepository by inject<UserRepository>()
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
         printLogger()
-        modules(helloModule)
+        modules(appModule)
     }
 
     @Test
-    fun `unit test`() {
-        val helloApp = HelloApplication()
-        helloApp.sayHello()
+    fun `test user service`() {
+        // Load users via service
+        userService.loadUsers()
 
-        assertEquals(service, helloApp.helloService)
-        assertEquals("Hey, ${model.message}", service.hello())
+        // Verify user can be found
+        val user = userService.getUserOrNull("Alice")
+        assertNotNull(user)
+        assertEquals("Alice", user?.name)
     }
 }
 ```
 
-> We use the Koin KoinTestRule rule to start/stop our Koin context
+> We use the `KoinTestRule` to start/stop our Koin context for each test
 
-You can even make Mocks directly into MyPresenter, or test MyRepository. Those components doesn't have any link with Koin API.
+## Mocking Dependencies
+
+You can mock dependencies in your tests using `declareMock`. This replaces the real implementation with a mock:
 
 ```kotlin
-class HelloMockTest : KoinTest {
+class UserMockTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
         printLogger(Level.DEBUG)
-        modules(helloModule)
+        modules(appModule)
     }
 
     @get:Rule
@@ -81,13 +106,37 @@ class HelloMockTest : KoinTest {
 
     @Test
     fun `mock test`() {
-        val service = declareMock<HelloService> {
-            given(hello()).willReturn("Hello Mock")
+        // Declare a mock for UserRepository
+        val repository = declareMock<UserRepository> {
+            given(findUserOrNull(anyString())).willReturn(
+                User("Mock", "mock@example.com")
+            )
         }
 
-        HelloApplication().sayHello()
+        // Use the application with mocked repository
+        getKoin().get<UserApplication>().sayHello("Mock")
 
-        Mockito.verify(service,times(1)).hello()
+        // Verify the mock was called
+        Mockito.verify(repository, times(1)).findUserOrNull(anyString())
     }
 }
 ```
+
+The `MockProviderRule` configures Mockito as the mocking framework, and `declareMock` replaces the real `UserRepository` with a mock that returns controlled data.
+
+## Key Testing Concepts
+
+| Concept | Description |
+|---------|-------------|
+| `KoinTest` | Interface to extend for Koin testing support |
+| `AutoCloseKoinTest` | Auto-closes Koin after each test |
+| `KoinTestRule` | JUnit rule to start/stop Koin context |
+| `MockProviderRule` | Configures the mocking framework |
+| `verify()` | Validates module configuration without running |
+| `declareMock<T>()` | Replaces a definition with a mock |
+| `by inject<T>()` | Lazily injects a dependency in tests |
+
+## See Also
+
+- **[Testing Reference](/docs/reference/koin-test/testing)** - Complete testing documentation
+- **[Module Verification](/docs/reference/koin-test/verify)** - verify() and checkModules() details

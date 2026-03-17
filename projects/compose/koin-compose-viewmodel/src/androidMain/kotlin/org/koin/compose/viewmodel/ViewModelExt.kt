@@ -26,10 +26,18 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
 /**
- * Resolve ViewModel instance
+ * Resolves a [ViewModel] instance scoped to the current Activity.
  *
- * @param qualifier
- * @param parameters
+ * This function retrieves a ViewModel using the current [ComponentActivity] as the ViewModelStoreOwner,
+ * ensuring the ViewModel is scoped to the Activity's lifecycle.
+ *
+ * @param T The type of ViewModel to resolve.
+ * @param qualifier Optional [Qualifier] to distinguish between multiple definitions of the same type.
+ * @param key Optional key to identify the ViewModel instance.
+ * @param scope The Koin [Scope] to resolve from. Defaults to the current Koin scope.
+ * @param parameters Optional [ParametersDefinition] to pass dynamic parameters to the ViewModel.
+ * @return The resolved ViewModel instance of type [T].
+ * @throws IllegalStateException if the current Activity is not a [ComponentActivity].
  *
  * @author Arnaud Giuliani
  */
@@ -41,7 +49,7 @@ inline fun <reified T : ViewModel> koinActivityViewModel(
     noinline parameters: ParametersDefinition? = null,
 ): T = koinViewModel<T>(
     qualifier = qualifier,
-    viewModelStoreOwner = LocalActivity.current as ComponentActivity,
+    viewModelStoreOwner = LocalActivity.current as? ComponentActivity ?: error("LocalActivity is not a ComponentActivity"),
     key = key,
     scope = scope,
     parameters = parameters,

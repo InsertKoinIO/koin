@@ -2,339 +2,332 @@
 title: Android Scopes
 ---
 
+This guide covers Android-specific scope implementations. 
 
-## Working with the Android lifecycle
+:::info
+For core scope concepts, see [Scopes](/docs/reference/koin-core/scopes).
+:::
 
-Android components are mainly managed by their lifecycle: we can't directly instantiate an Activity nor a Fragment. The system
-make all creation and management for us, and make callbacks on methods: onCreate, onStart...
+## Overview
 
-That's why we can't describe our Activity/Fragment/Service in a Koin module. We need then to inject dependencies into properties and also
-respect the lifecycle: Components related to the UI parts must be released on soon as we don't need them anymore.
+Scopes in Koin allow you to manage the lifecycle of your dependencies to match Android component lifecycles. This prevents memory leaks and ensures proper resource management.
 
-Then we have:
+### Scope Hierarchy
 
-* long live components (Services, Data Repository ...) - used by several screens, never dropped
-* medium live components (user sessions ...) - used by several screens, must be dropped after an amount of time
-* short live components (views) - used by only one screen & must be dropped at the end of the screen
+| Scope Type | Lifetime | Survives Rotation | DSL | Annotation |
+|------------|----------|-------------------|-----|------------|
+| **Application** | Entire app | ✅ Yes | `single { }` | `@Singleton` |
+| **Activity** | Activity lifecycle | ❌ No | `activityScope { }` | `@ActivityScope` |
+| **Activity Retained** | Until finish() | ✅ Yes | `activityRetainedScope { }` | `@ActivityRetainedScope` |
+| **Fragment** | Fragment lifecycle | ❌ No | `fragmentScope { }` | `@FragmentScope` |
+| **ViewModel** | ViewModel lifecycle | ✅ Yes | `viewModelScope { }` | `@ViewModelScope` |
 
-Long live components can be easily described as `single` definitions. For medium and short live components we can have several approaches.
+### Scope Relationships
 
-In the case of MVP architecture style, the `Presenter` is a short live component to help/support the UI. The presenter must be created each time the screen is showing,
-and dropped once the screen is gone.
-
-A new Presenter is created each time
-
-```kotlin
-class DetailActivity : AppCompatActivity() {
-
-    // injected Presenter
-    override val presenter : Presenter by inject()
+```
+Application Scope (single { })
+    └── Activity Retained Scope (survives rotation)
+            └── Activity Scope
+                    ├── Fragment Scope 1
+                    └── Fragment Scope 2
+            └── ViewModel Scope (can't access Activity/Fragment scope)
 ```
 
-We can describe it in a module:
+:::info
+**Key Principle:** Child scopes can access parent scope definitions, but not vice versa.
+:::
 
+## Declaring Scoped Dependencies
 
-* as `factory` - to produce a new instance each time the `by inject()` or `get()` is called
-
-```kotlin
-val androidModule = module {
-
-    // Factory instance of Presenter
-    factory { Presenter() }
-}
-```
-
-* as `scope` - to produce an instance tied to a scope
+### Compiler Plugin DSL
 
 ```kotlin
-val androidModule = module {
+val appModule = module {
+    // Activity scope
+    activityScope {
+        scoped<ActivityPresenter>()
+        scoped<ActivityNavigator>()
+    }
 
-    scope<DetailActivity> {
-        scoped { Presenter() }
+    // Fragment scope
+    fragmentScope {
+        scoped<FragmentPresenter>()
+    }
+
+    // ViewModel scope
+    viewModelScope {
+        scoped<UserCache>()
+        viewModel<UserViewModel>()
     }
 }
 ```
 
-:::note
-Most of Android memory leaks come from referencing a UI/Android component from a non Android component. The system keeps a reference
-on it and can't totally drop it via garbage collection.
-:::
-
-## Scope for Android Components (since 3.2.1)
-
-### Declare an Android Scope
-
-To scope dependencies on an Android component, you have to declare a scope section with the `scope` block like follow:
+### Annotations
 
 ```kotlin
-class MyPresenter()
-class MyAdapter(val presenter : MyPresenter)
+// Activity scope
+@ActivityScope
+class ActivityPresenter(private val repository: UserRepository)
 
-module {
-  // Declare scope for MyActivity
-  scope<MyActivity> {
-   // get MyPresenter instance from current scope 
-   scoped { MyAdapter(get()) }
-   scoped { MyPresenter() }
-  }
- 
-  // or
-  activityScope {
-   scoped { MyAdapter(get()) }
-   scoped { MyPresenter() }
-  }
+@ActivityScope
+class ActivityNavigator
+
+// Activity retained scope (survives rotation)
+@ActivityRetainedScope
+class RetainedPresenter
+
+// Fragment scope
+@FragmentScope
+class FragmentPresenter
+
+// ViewModel scope
+@ViewModelScope
+class UserCache
+
+@KoinViewModel
+@ViewModelScope
+class UserViewModel(private val cache: UserCache) : ViewModel()
+```
+
+### Classic DSL
+
+```kotlin
+val appModule = module {
+    activityScope {
+        scoped { ActivityPresenter(get()) }
+        scoped { ActivityNavigator() }
+    }
+
+    fragmentScope {
+        scoped { FragmentPresenter(get()) }
+    }
+
+    viewModelScope {
+        scoped { UserCache() }
+        viewModel { UserViewModel(get()) }
+    }
 }
 ```
 
-### Android Scope Classes
+## Using Scopes in Android Components
 
-Koin offers `ScopeActivity`, `RetainedScopeActivity` and `ScopeFragment` classes to let you use directly a declared scope for Activity or Fragment:
+### Activity Scope
+
+```kotlin
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
+
+    // Create scope tied to Activity lifecycle
+    override val scope: Scope by activityScope()
+
+    // Inject from scope
+    private val presenter: ActivityPresenter by inject()
+}
+```
+
+Or use the convenience base class:
 
 ```kotlin
 class MyActivity : ScopeActivity() {
-    
-    // MyPresenter is resolved from MyActivity's scope 
-    val presenter : MyPresenter by inject()
+
+    // Scope is already set up
+    private val presenter: ActivityPresenter by inject()
 }
 ```
 
-Under the hood, Android scopes needs to be used with `AndroidScopeComponent` interface to implement `scope` field like this:
+### Activity Retained Scope
+
+Survives configuration changes (rotation, theme change):
 
 ```kotlin
-abstract class ScopeActivity(
-    @LayoutRes contentLayoutId: Int = 0,
-) : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
 
+    // Backed by ViewModel lifecycle - survives rotation
+    override val scope: Scope by activityRetainedScope()
+
+    private val presenter: RetainedPresenter by inject()
+}
+```
+
+Or use the convenience base class:
+
+```kotlin
+class MyActivity : RetainedScopeActivity() {
+
+    private val presenter: RetainedPresenter by inject()
+}
+```
+
+### Fragment Scope
+
+Fragment scopes are automatically linked to parent Activity scope:
+
+```kotlin
+class MyFragment : Fragment(), AndroidScopeComponent {
+
+    override val scope: Scope by fragmentScope()
+
+    // From fragment scope
+    private val presenter: FragmentPresenter by inject()
+
+    // Can also access Activity scope dependencies
+    private val activityPresenter: ActivityPresenter by inject()
+}
+```
+
+Or use the convenience base class:
+
+```kotlin
+class MyFragment : ScopeFragment() {
+
+    private val presenter: FragmentPresenter by inject()
+}
+```
+
+## Type-Based vs Archetype Scopes
+
+### Archetype Scope (Recommended)
+
+Generic scope that works with any Activity/Fragment:
+
+```kotlin
+module {
+    activityScope {
+        scoped<MyPresenter>()
+    }
+}
+
+// Works with any Activity
+class ActivityA : ScopeActivity() {
+    private val presenter: MyPresenter by inject()
+}
+
+class ActivityB : ScopeActivity() {
+    private val presenter: MyPresenter by inject()
+}
+```
+
+### Type-Based Scope
+
+Scope tied to a specific class:
+
+```kotlin
+module {
+    scope<MyActivity> {
+        scoped<MyPresenter>()
+    }
+}
+
+// Only works with MyActivity
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
     override val scope: Scope by activityScope()
+    private val presenter: MyPresenter by inject()
+}
+```
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+## ViewModel Scope
 
-        checkNotNull(scope)
+ViewModels cannot access Activity or Fragment scopes (to prevent memory leaks). Use ViewModel Scope for scoped dependencies:
+
+```kotlin
+module {
+    viewModelScope {
+        scoped<UserCache>()
+        scoped<UserRepository>()
+        viewModel<UserViewModel>()
     }
 }
 ```
 
-We need to use the `AndroidScopeComponent` interface and implement the `scope` property. This will setting up the default scope used by your class.
-
-### Android Scope API
-
-To create a Koin scope bound to an Android component, just use the following functions:
-- `createActivityScope()` - Create Scope for current Activity (scope section must be declared)
-- `createActivityRetainedScope()` - Create a retained Scope (backed by ViewModel lifecycle) for current Activity (scope section must be declared)
-- `createFragmentScope()` - Create Scope for current Fragment and link to parent Activity scope
-
-Those functions are available as delegate, to implement different kind of scope:
-
-- `activityScope()` - Create Scope for current Activity (scope section must be declared)
-- `activityRetainedScope()` - Create a retained Scope (backed by ViewModel lifecycle) for current Activity (scope section must be declared)
-- `fragmentScope()` - Create Scope for current Fragment and link to parent Activity scope
-
 ```kotlin
-class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+@ViewModelScope
+class UserCache
 
-    override val scope: Scope by activityScope()
-    
-}
+@ViewModelScope
+class UserRepository(private val cache: UserCache)
+
+@KoinViewModel
+@ViewModelScope
+class UserViewModel(
+    private val repository: UserRepository
+) : ViewModel()
 ```
 
-We can also to setting up a retained scope (backed by a ViewModel lifecycle) with the following:
+For detailed ViewModel scope usage, see [Scopes - ViewModel Scope](/docs/reference/koin-core/scopes#viewmodel-scope).
+
+## Scope Lifecycle
+
+### Handling Scope Close
+
+Override `onCloseScope()` to run cleanup before scope is destroyed:
 
 ```kotlin
-class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
-
-    override val scope: Scope by activityRetainedScope()
-}
-```
-
-:::note
-If you don't want to use Android Scope classes, you can work with your own and use `AndroidScopeComponent` with the Scope creation API
-:::
-
-### AndroidScopeComponent and handling Scope closing
-
-You can run code before Koin Scope is destroyed, by overriding the `onCloseScope` function from `AndroidScopeComponent`:
-
-```kotlin
-class MyActivity() : AppCompatActivity(contentLayoutId), AndroidScopeComponent {
+class MyActivity : AppCompatActivity(), AndroidScopeComponent {
 
     override val scope: Scope by activityScope()
 
     override fun onCloseScope() {
-        // Called before closing the Scope
+        // Called BEFORE scope.close()
+        // Scope is still accessible here
     }
 }
 ```
 
-:::note
-If you try to access Scope from `onDestroy()` function, the scope will already be closed.
+:::warning
+Don't access scope in `onDestroy()` - it's already closed at that point.
 :::
-
-### Scope Archetypes (4.1.0)
-
-As a new feature, you can now declare scope by **archetype**: you don't need to define a scope against a specific type, but for an "archetype" (a kind of scope class). You can declare a scope for "Activity", "Fragment", or "ViewModel".
-You can now use the following DSL sections:
-
-```kotlin
-module {
- activityScope {
-  // scoped instances for an activity
- }
-
- activityRetainedScope {
-  // scoped instances for an activity, retained scope
- }
-
- fragmentScope {
-  // scoped instances for Fragment
- }
-
- viewModelScope {
-  // scoped instances for ViewModel
- }
-}
-```
-
-This allows for better reuse of definitions between scopes easily. No need to use a specific type like `scope<>{ }`, apart from if you need scope on a precise object.
-
-:::info
-See [Android Scope API](#android-scope-api) to see how to use `by activityScope()`, `by activityRetainedScope()`, and `by fragmentScope()` functions to activate your Android scope. Those functions will trigger scope archetypes.
-:::
-
-For example, you can easily scope a defintion to an activity like that, with Scope Archetypes:
-
-```kotlin
-// declare Class Session in Activity scope
-module {
- activityScope {
-    scopedOf(::Session)
- }
-}
-
-// Inject the scoped Session object to the activity:
-class MyActivity : AppCompatActivity(), AndroidScopeComponent {
-    
-    // create Activity's scope
-    val scope: Scope by activityScope() 
-    
-    // inject from scope above
-    val session: Session by inject()
-}
-```
-
-### ViewModel Scope (updated in 4.1.0)
-
-ViewModel is only created against the root scope to avoid any leaking (leaking Activity or Fragment ...). This guards for the visibility problem, where the ViewModel could have access to incompatible scopes.
-
-:::warn
-ViewModel can't access to Activity or Fragment scope. Why? Because ViewModel is lasting long than Activity and Fragment, and then it would leak dependencies outside of proper scopes.
-If you need to bridge a dependency from outside a ViewModel scope, you can use "injected parameters" to pass some objects to your ViewModel: `viewModel { p ->  }`
-:::
-
-Declare your ViewModel scope as follows, tied to your ViewModel class or using the `viewModelScope` DSL section:
-
-```kotlin
-module {
-    viewModelOf(::MyScopeViewModel)
-    // scope for MyScopeViewModel only
-    scope<MyScopeViewModel> {
-        scopedOf(::Session)
-    }
-    // ViewModel Archetype scope - Scope for all ViewModel 
-    viewModelScope {
-        scopedOf(::Session)
-    }
-}
-```
-
-Once you have declared your ViewModel and your scoped components, you can _choose between_:
-- Manual API - Manually using the `KoinScopeComponent` and the `viewModelScope` function. This will handle the creation and destruction of your created ViewModel scope. But you will have to inject your scoped definitions by field, as you need to rely on `scope` property to inject your scoped definition:
-```kotlin
-class MyScopeViewModel : ViewModel(), KoinScopeComponent {
-    
-    // create ViewModel scope
-    override val scope: Scope = viewModelScope()
-    
-    // uses scope above to inject session
-    val session: Session by inject()
-}
-```
-- Automatic Scope Creation
-    - Activate the `viewModelScopeFactory` option (see [Koin Options](../koin-core/start-koin.md#koin-options---feature-flagging)) to automatically create a ViewModel scope on the fly.
-    - This allows to use of constructor injection
-```kotlin
-// activate ViewModel Scope factory
-startKoin {
-    options(
-        viewModelScopeFactory()
-    )
-}
-
-// Scope being created at factory level, automatically before injection
-class MyScopeViewModel(val session: Session) : ViewModel()
-```
-
-Now just call your ViewModel from your Activity or Fragment:
-
-```kotlin
-class MyActivity : AppCompatActivity() {
-    
-    // create MyScopeViewModel instance, and allocate MyScopeViewModel's scope
-    val vieModel: MyScopeViewModel by viewModel()
-}
-```
 
 ## Scope Links
 
-Scope links allow sharing instances between components with custom scopes. By default, Fragment's scope are linked to parent Activity scope.
-
-In a more extended usage, you can use a `Scope` instance across components. For example, if we need to share a `UserSession` instance.
-
-First, declare a scope definition:
+Share instances between components with custom scopes:
 
 ```kotlin
 module {
-    // Shared user session data
     scope(named("session")) {
-        scoped { UserSession() }
+        scoped<UserSession>()
     }
 }
 ```
-
-When needed to begin use a `UserSession` instance, create a scope for it:
 
 ```kotlin
-val ourSession = getKoin().createScope("ourSession",named("session"))
+class MyActivity : ScopeActivity() {
 
-// link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
-scope.linkTo(ourSession)
-```
+    fun startSession() {
+        val sessionScope = getKoin().createScope("session", named("session"))
 
-Then use it anywhere you need it:
+        // Link to current scope
+        scope.linkTo(sessionScope)
 
-```kotlin
-class MyActivity1 : ScopeActivity() {
-    
-    fun reuseSession(){
-        val ourSession = getKoin().createScope("ourSession",named("session"))
-        
-        // link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
-        scope.linkTo(ourSession)
-
-        // will look at MyActivity1's Scope + ourSession scope to resolve
-        val userSession = get<UserSession>()
-    }
-}
-class MyActivity2 : ScopeActivity() {
-
-    fun reuseSession(){
-        val ourSession = getKoin().createScope("ourSession",named("session"))
-        
-        // link ourSession scope to current `scope`, from ScopeActivity or ScopeFragment
-        scope.linkTo(ourSession)
-
-        // will look at MyActivity2's Scope + ourSession scope to resolve
-        val userSession = get<UserSession>()
+        // Now UserSession is accessible
+        val session: UserSession = get()
     }
 }
 ```
+
+## Quick Reference
+
+| Component | Delegate | Base Class |
+|-----------|----------|------------|
+| Activity | `by activityScope()` | `ScopeActivity` |
+| Activity (retained) | `by activityRetainedScope()` | `RetainedScopeActivity` |
+| Fragment | `by fragmentScope()` | `ScopeFragment` |
+
+| Scope | Survives Rotation | Use Case |
+|-------|-------------------|----------|
+| `activityScope` | ❌ No | UI state, presenters |
+| `activityRetainedScope` | ✅ Yes | Form state, pending requests |
+| `fragmentScope` | ❌ No | Fragment-specific presenters |
+| `viewModelScope` | ✅ Yes | ViewModel dependencies |
+
+## Best Practices
+
+1. **Use archetypes** - Prefer `activityScope { }` over `scope<MyActivity> { }` for reusability
+2. **Retained for rotation** - Use `activityRetainedScope` for state that should survive rotation
+3. **Don't leak** - Never inject Activity/Fragment into singletons
+4. **Close custom scopes** - Always close manually created scopes
+5. **Use onCloseScope** - For cleanup before scope destruction
+
+## Next Steps
+
+- **[Core Scopes](/docs/reference/koin-core/scopes)** - Scope fundamentals and ViewModel scope
+- **[ViewModel](/docs/reference/koin-android/viewmodel)** - ViewModel injection
+- **[Testing](/docs/reference/koin-test/testing)** - Testing scoped dependencies

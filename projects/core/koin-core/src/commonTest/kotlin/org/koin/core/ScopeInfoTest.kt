@@ -17,7 +17,7 @@ class ScopeInfoTest {
             printLogger(Level.DEBUG)
             modules(
                 module {
-                    factory { Simple.ComponentC(get()) }
+                    factory { Simple.ComponentC(it.get()) }
                     single { Simple.ComponentA() }
                     scope<Simple.ComponentA> {
                         scopedOf(Simple::ComponentB)

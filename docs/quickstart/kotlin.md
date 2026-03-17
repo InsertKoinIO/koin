@@ -9,6 +9,10 @@ title: Kotlin
 update - 2024-10-21
 :::
 
+:::tip
+Looking for the **annotations version** of this tutorial? Check out [Kotlin & Annotations](./kotlin-annotations.md) which uses Koin Annotations for compile-time verification and automatic module discovery.
+:::
+
 ## Get the code
 
 :::info
@@ -35,29 +39,29 @@ The idea of the application is to manage a list of users, and display it in our 
 
 ## The "User" Data
 
-We will manage a collection of Users. Here is the data class: 
+We will manage a collection of Users. Here is the data class:
 
 ```kotlin
-data class User(val name : String)
+data class User(val name: String, val email: String)
 ```
 
 We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
 
 ```kotlin
 interface UserRepository {
-    fun findUser(name : String): User?
-    fun addUsers(users : List<User>)
+    fun findUserOrNull(name: String): User?
+    fun addUsers(users: List<User>)
 }
 
 class UserRepositoryImpl : UserRepository {
 
     private val _users = arrayListOf<User>()
 
-    override fun findUser(name: String): User? {
+    override fun findUserOrNull(name: String): User? {
         return _users.firstOrNull { it.name == name }
     }
 
-    override fun addUsers(users : List<User>) {
+    override fun addUsers(users: List<User>) {
         _users.addAll(users)
     }
 }
@@ -69,7 +73,7 @@ Use the `module` function to declare a Koin module. A Koin module is the place w
 
 ```kotlin
 val appModule = module {
-    
+
 }
 ```
 
@@ -77,47 +81,73 @@ Let's declare our first component. We want a singleton of `UserRepository`, by c
 
 ```kotlin
 val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
+    single<UserRepositoryImpl>() bind UserRepository::class
 }
 ```
+
+:::info
+This tutorial uses the **Koin Compiler Plugin DSL** (`single<T>()`) which provides auto-wiring at compile time. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
+:::
 
 ## The UserService Component
 
-Let's write the UserService component to request the default user:
+Let's write the UserService component to manage user operations:
 
 ```kotlin
-class UserService(private val userRepository: UserRepository) {
+interface UserService {
+    fun getUserOrNull(name: String): User?
+    fun loadUsers()
+    fun prepareHelloMessage(user: User?): String
+}
 
-    fun getDefaultUser() : User = userRepository.findUser(DefaultData.DEFAULT_USER.name) ?: error("Can't find default user")
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService {
+
+    override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
+
+    override fun loadUsers() {
+        userRepository.addUsers(listOf(
+            User("Alice", "alice@example.com"),
+            User("Bob", "bob@example.com"),
+            User("Charlie", "charlie@example.com")
+        ))
+    }
+
+    override fun prepareHelloMessage(user: User?): String {
+        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
+    }
 }
 ```
 
-> UserRepository is referenced in UserPresenter`s constructor
+> UserRepository is referenced in UserServiceImpl's constructor
 
 We declare `UserService` in our Koin module. We declare it as a `single` definition:
 
 ```kotlin
 val appModule = module {
-     single<UserRepository> { UserRepositoryImpl() }
-     single { UserService(get()) }
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
 }
 ```
 
-> The `get()` function allow to ask Koin to resolve the needed dependency.
-
 ## Injecting Dependencies in UserApplication
 
-The `UserApplication` class will help bootstrap instances out of Koin. It will resolve the `UserService`, thanks to `KoinComponent` interface. This allows to inject it with the `by inject()` delegate function: 
+The `UserApplication` class will help bootstrap instances out of Koin. It will resolve the `UserService` through constructor injection:
 
 ```kotlin
-class UserApplication : KoinComponent {
+class UserApplication(
+    private val userService: UserService
+) {
 
-    private val userService : UserService by inject()
+    init {
+        userService.loadUsers()
+    }
 
     // display our data
-    fun sayHello(){
-        val user = userService.getDefaultUser()
-        val message = "Hello '$user'!"
+    fun sayHello(name: String) {
+        val user = userService.getUserOrNull(name)
+        val message = userService.prepareHelloMessage(user)
         println(message)
     }
 }
@@ -126,44 +156,57 @@ class UserApplication : KoinComponent {
 That's it, your app is ready.
 
 :::info
-The `by inject()` function allows us to retrieve Koin instances, in any class that extends `KoinComponent`
+Constructor injection is the preferred way to inject dependencies in Kotlin applications. Koin will automatically resolve and inject the `UserService` when creating `UserApplication`.
 :::
 
 
 ## Start Koin
 
-We need to start Koin with our application. Just call the `startKoin()` function in the application's main entry point, our `main` function:
+We need to start Koin with our application and add `UserApplication` to our module. Just call the `startKoin()` function in the application's main entry point, our `main` function:
 
 ```kotlin
+val appModule = module {
+    single<UserApplication>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+}
+
 fun main() {
     startKoin {
         modules(appModule)
     }
 
-    UserApplication().sayHello()
+    val userApplication = KoinPlatform.getKoin().get<UserApplication>()
+    userApplication.sayHello("Alice")
 }
 ```
 
 :::info
-The `modules()` function in `startKoin` load the given list of modules
+The `modules()` function in `startKoin` loads the given list of modules. We retrieve the `UserApplication` instance from Koin using `KoinPlatform.getKoin().get<UserApplication>()`.
 :::
 
-## Koin module: classic or constructor DSL?
+## Koin module: DSL comparison
 
-Here is the Koin module declaration for our app:
+Here is the Koin module declaration using **Classic DSL** (manual wiring):
 
 ```kotlin
 val appModule = module {
+    single { UserApplication(get()) }
     single<UserRepository> { UserRepositoryImpl() }
-    single { UserService(get()) }
+    single<UserService> { UserServiceImpl(get()) }
 }
 ```
 
-We can write it in a more compact way, by using constructors:
+With **Compiler Plugin DSL** (auto-wiring at compile time):
 
 ```kotlin
 val appModule = module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-    singleOf(::UserService)
+    single<UserApplication>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
 }
 ```
+
+:::tip
+The Compiler Plugin DSL requires the [Koin Compiler Plugin](/docs/setup/compiler-plugin). It provides compile-time dependency resolution and cleaner syntax.
+:::

@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.sample.sandbox.main.MainActivity
 import org.koin.sample.sandbox.mvp.MVPActivity
+import org.koin.sample.sandbox.mvvm.MVVMActivity
 import org.koin.test.AutoCloseKoinTest
 import org.robolectric.RobolectricTestRunner
 
@@ -23,7 +24,7 @@ class MainActivityTest: AutoCloseKoinTest() {
     }
 
     @Test
-    fun launch_view() {
+    fun launch_view_main() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         scenario.onActivity {
 
@@ -31,7 +32,7 @@ class MainActivityTest: AutoCloseKoinTest() {
     }
 
     @Test
-    fun launch_view_2() {
+    fun launch_view_mvp() {
         val scenario = ActivityScenario.launch(MVPActivity::class.java)
         scenario.onActivity {
 

@@ -17,6 +17,7 @@ package org.koin.ktor.plugin
 
 import io.ktor.server.application.*
 import org.koin.core.KoinApplication
+import org.koin.core.KoinKtorApplication
 import org.koin.core.annotation.KoinInternalApi
 
 /**
@@ -26,9 +27,10 @@ import org.koin.core.annotation.KoinInternalApi
  *
  */
 @OptIn(KoinInternalApi::class)
-val KoinIsolated = createApplicationPlugin(name = "Koin", createConfiguration = { KoinApplication.init() }) {
+val KoinIsolated = createApplicationPlugin(name = "Koin", createConfiguration = { KoinKtorApplication.init() }) {
     val koinApplication = setupKoinApplication()
     setupMonitoring(koinApplication)
     setupKoinScope(koinApplication)
+    koinApplication.ktorApplication = application
     koinApplication.koin.logger.info("Koin is using Ktor isolated context")
 }

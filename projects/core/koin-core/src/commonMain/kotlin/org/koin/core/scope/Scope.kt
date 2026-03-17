@@ -36,6 +36,7 @@ import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.Lockable
 import org.koin.mp.ThreadLocal
+import kotlin.concurrent.Volatile
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.measureTimedValue
@@ -66,8 +67,15 @@ class Scope(
 
     private val _callbacks = LinkedHashSet<ScopeCallback>()
 
+    @Volatile
     @KoinInternalApi
-    internal var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+    internal var _parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
+
+    @KoinInternalApi
+    internal val parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>
+        get() = _parameterStack ?: KoinPlatformTools.synchronized(this) {
+            _parameterStack ?: ThreadLocal<ArrayDeque<ParametersHolder>>().also { _parameterStack = it }
+        }
 
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
@@ -297,22 +305,22 @@ class Scope(
         }
     }
 
-    private fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder> {
+    internal fun onParameterOnStack(parameters: ParametersHolder): ArrayDeque<ParametersHolder> {
         val stack = getOrCreateParameterStack()
         stack.addFirst(parameters)
         return stack
     }
 
-    private fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
+    internal fun clearParameterStack(stack: ArrayDeque<ParametersHolder>) {
         stack.removeFirstOrNull()
         if (stack.isEmpty()) {
-            parameterStack?.remove()
-            parameterStack = null
+            parameterStack.remove()
+//            parameterStack = null
         }
     }
 
     private fun getOrCreateParameterStack(): ArrayDeque<ParametersHolder> {
-        return parameterStack?.get() ?: ArrayDeque<ParametersHolder>().let { parameterStack = ThreadLocal(); parameterStack?.set(it) ; it }
+        return parameterStack.get() ?: ArrayDeque<ParametersHolder>().let { parameterStack.set(it) ; it }
     }
 
     private fun <T> resolveFromContext(
@@ -396,6 +404,7 @@ class Scope(
      */
     fun <T> getAll(clazz: KClass<*>): List<T> {
         val context = ResolutionContext(_koin.logger, this, clazz)
+        context.scopeArchetype = this.scopeArchetype
         return _koin.instanceRegistry.getAll<T>(clazz, context) + linkedScopes.flatMap { scope -> scope.getAll(clazz) }
     }
 
@@ -431,8 +440,8 @@ class Scope(
 
         sourceValue = null
 
-        parameterStack?.get()?.clear()
-        parameterStack = null
+        _parameterStack?.get()?.clear()
+        _parameterStack = null
 
         _koin.scopeRegistry.deleteScope(this)
     }

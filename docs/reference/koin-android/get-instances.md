@@ -2,109 +2,208 @@
 title: Injecting in Android
 ---
 
-
-Once you have declared some modules, and you have started Koin, how can you retrieve your instances in your
-Android Activity Fragments or Services?
+Once you have declared some modules and started Koin, how can you retrieve your instances in your Android Activity, Fragments, or Services?
 
 ## Ready for Android Classes
 
-`Activity`, `Fragment` & `Service` are extended with the KoinComponents extension. Any `ComponentCallbacks` class is accessible for the Koin extensions.
-
-You gain access for the Kotlin extensions:
+`Activity`, `Fragment` & `Service` are extended with Koin extensions. Any `ComponentCallbacks` class has access to:
 
 * `by inject()` - lazy evaluated instance from Koin container
 * `get()` - eager fetch instance from Koin container
+* `by viewModel()` - lazy ViewModel instance
+* `getViewModel()` - eager ViewModel instance
 
-We can declare a property as lazy injected:
+## Defining Dependencies
+
+### Compiler Plugin DSL
 
 ```kotlin
-module {
-    // definition of Presenter
-    factory { Presenter() }
+val appModule = module {
+    factory<Presenter>()
+    viewModel<UserViewModel>()
 }
 ```
+
+### Annotations
+
+```kotlin
+@Factory
+class Presenter(private val repository: UserRepository)
+
+@KoinViewModel
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+```
+
+### Classic DSL
+
+```kotlin
+val appModule = module {
+    factory { Presenter(get()) }
+    viewModel { UserViewModel(get()) }
+}
+```
+
+## Injecting in Activity
 
 ```kotlin
 class DetailActivity : AppCompatActivity() {
 
     // Lazy inject Presenter
-    override val presenter : Presenter by inject()
+    private val presenter: Presenter by inject()
+
+    // Lazy inject ViewModel
+    private val viewModel: UserViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //...
+        super.onCreate(savedInstanceState)
+        // Use presenter and viewModel
     }
 }
 ```
 
-Or we can just directly get an instance:
+## Injecting in Fragment
 
 ```kotlin
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+class UserFragment : Fragment() {
 
-    // Retrieve a Presenter instance
-    val presenter : Presenter = get()
-}  
+    // Fragment's own ViewModel
+    private val viewModel: UserViewModel by viewModel()
+
+    // Shared ViewModel with Activity
+    private val sharedViewModel: SharedViewModel by activityViewModel()
+
+    // Regular dependency
+    private val presenter: Presenter by inject()
+}
 ```
+
+## Injecting in Service
+
+```kotlin
+class MyService : Service() {
+
+    private val repository: UserRepository by inject()
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        repository.doSomething()
+        return START_STICKY
+    }
+}
+```
+
+## Eager vs Lazy Injection
+
+```kotlin
+class DetailActivity : AppCompatActivity() {
+
+    // Lazy - created on first access
+    private val presenter: Presenter by inject()
+
+    // Eager - created immediately
+    private val service: MyService = get()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Or get eagerly in a function
+        val anotherPresenter: Presenter = get()
+    }
+}
+```
+
+| Method | When Created | Use Case |
+|--------|--------------|----------|
+| `by inject()` | On first access | Most cases, avoids unnecessary creation |
+| `get()` | Immediately | When you need the instance right away |
 
 :::info
-if your class doesn't have extensions, just implement the `KoinComponent` interface in it to `inject()` or `get()` an instance from another class.
+If your class doesn't have Koin extensions, implement the `KoinComponent` interface to access `inject()` or `get()`.
 :::
 
-## Using the Android Context in a Definition
+## Injection with Parameters
 
-Once your `Application` class configures Koin you can use the `androidContext` function to inject Android Context so that it can be resolved later when you need it in modules:
+Pass parameters at injection time:
 
 ```kotlin
-class MainApplication : Application() {
+@Factory
+class UserPresenter(
+    @InjectedParam val userId: String,
+    val repository: UserRepository
+)
+```
 
-    override fun onCreate() {
-        super.onCreate()
+```kotlin
+class UserActivity : AppCompatActivity() {
 
-        startKoin {
-            // inject Android context
-            androidContext(this@MainApplication)
-            // ...
-        }
-        
-    }
+    private val presenter: UserPresenter by inject { parametersOf("user_123") }
 }
 ```
 
-In your definitions,  The `androidContext()` & `androidApplication()` functions allows you to get the `Context` instance in a Koin module, to help you simply write expression that requires the `Application` instance.
+## Injection with Qualifiers
+
+When you have multiple definitions of the same type:
 
 ```kotlin
 val appModule = module {
-
-    // create a Presenter instance with injection of R.string.mystring resources from Android
-    factory {
-        MyPresenter(androidContext().resources.getString(R.string.mystring))
-    }
+    single<Database>(named("local")) { LocalDatabase() }
+    single<Database>(named("remote")) { RemoteDatabase() }
 }
 ```
-
-## Android Scope & Android Context resolution
-
-While you have a scope that is binding the `Context` type, you may need to resolve the `Context` but from different level.
-
-Let's take a config:
 
 ```kotlin
-class MyPresenter(val context : Context)
+class MyActivity : AppCompatActivity() {
 
-startKoin {
-  androidContext(context)
-  modules(
-    module {
-      scope<MyActivity> {
-        scoped { MyPresenter( <get() ???> ) }
-      }
-    }
-  )
+    private val localDb: Database by inject(named("local"))
+    private val remoteDb: Database by inject(named("remote"))
 }
 ```
 
-To resolve the right type in `MyPresenter`, use the following:
-- `get()` will resolve closest `Context` definition, here it will be the source scope `MyActivity`
-- `androidContext()` will also resolve closest `Context` definition, here it will be the source scope `MyActivity`
-- `androidApplication()` will also resolve `Application` definition, here it will be the source scope `context` object defined in Koin setup
+## Using Android Context in Definitions
+
+Once your `Application` class configures Koin with `androidContext`, you can resolve it in your definitions.
+
+### Annotations
+
+With annotations, simply declare a `Context` or `Application` parameter - it will be automatically injected:
+
+```kotlin
+@Factory
+class MyPresenter(private val context: Context)
+
+@Singleton
+class MyRepository(private val application: Application)
+```
+
+### DSL
+
+Use `androidContext()` or `androidApplication()` functions in your module:
+
+```kotlin
+val appModule = module {
+    factory {
+        MyPresenter(androidContext())
+    }
+    single {
+        MyRepository(androidApplication())
+    }
+}
+```
+
+## Android Scope & Context Resolution
+
+When you have a scope binding the `Context` type, you may need to resolve `Context` from different levels:
+
+```kotlin
+class MyPresenter(val context: Context)
+
+val appModule = module {
+    scope<MyActivity> {
+        scoped { MyPresenter(get()) }
+    }
+}
+```
+
+Context resolution:
+- `get()` - resolves closest `Context`, here `MyActivity`
+- `androidContext()` - resolves closest `Context`, here `MyActivity`
+- `androidApplication()` - resolves `Application` from Koin setup

@@ -16,15 +16,26 @@
 package org.koin.core.option
 
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.annotation.KoinViewModelScopeApi
 import org.koin.core.registry.OptionRegistry
 
 /**
  * Koin Options to be activated
  */
 enum class KoinOption {
+
+    /**
+     * see [viewModelScopeFactory]
+     */
     VIEWMODEL_SCOPE_FACTORY
 }
 
+/**
+ * Enable ViewModelScope feature - Creates a dedicated Scope for each ViewModel at creation time.
+ *
+ * @see KoinViewModelScopeApi for usage requirements
+ */
+@KoinViewModelScopeApi
 fun viewModelScopeFactory(): Pair<KoinOption, Boolean> {
     return KoinOption.VIEWMODEL_SCOPE_FACTORY to true
 }

@@ -1,0 +1,4 @@
+public final class org/koin/android/dagger/DaggerBridgeKt {
+	public static final fun dagger (Lorg/koin/core/scope/Scope;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+

@@ -18,21 +18,50 @@ package org.koin.androidx.scope.dsl
 import org.koin.androidx.scope.ActivityRetainedScopeArchetype
 import org.koin.androidx.scope.ActivityScopeArchetype
 import org.koin.androidx.scope.FragmentScopeArchetype
-import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.Module
 import org.koin.dsl.ScopeDSL
 
+/**
+ * Declare an Activity scope section.
+ *
+ * Dependencies declared inside this block are scoped to the Activity lifecycle.
+ *
+ * ```kotlin
+ * activityScope {
+ *     scoped { MyActivityDependency() }
+ * }
+ * ```
+ */
 fun Module.activityScope(scopeSet: ScopeDSL.() -> Unit) {
-    val qualifier = ActivityScopeArchetype
-    ScopeDSL(qualifier, this).apply(scopeSet)
+    ScopeDSL(ActivityScopeArchetype, this).apply(scopeSet)
 }
 
+/**
+ * Declare an Activity retained scope section.
+ *
+ * Dependencies declared inside this block survive configuration changes.
+ *
+ * ```kotlin
+ * activityRetainedScope {
+ *     scoped { MyRetainedDependency() }
+ * }
+ * ```
+ */
 fun Module.activityRetainedScope(scopeSet: ScopeDSL.() -> Unit) {
-    val qualifier = ActivityRetainedScopeArchetype
-    ScopeDSL(qualifier, this).apply(scopeSet)
+    ScopeDSL(ActivityRetainedScopeArchetype, this).apply(scopeSet)
 }
 
+/**
+ * Declare a Fragment scope section.
+ *
+ * Dependencies declared inside this block are scoped to the Fragment lifecycle.
+ *
+ * ```kotlin
+ * fragmentScope {
+ *     scoped { MyFragmentDependency() }
+ * }
+ * ```
+ */
 fun Module.fragmentScope(scopeSet: ScopeDSL.() -> Unit) {
-    val qualifier = FragmentScopeArchetype
-    ScopeDSL(qualifier, this).apply(scopeSet)
+    ScopeDSL(FragmentScopeArchetype, this).apply(scopeSet)
 }

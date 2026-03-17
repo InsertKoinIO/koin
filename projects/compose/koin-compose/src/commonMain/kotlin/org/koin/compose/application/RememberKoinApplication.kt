@@ -26,12 +26,13 @@ import org.koin.core.logger.Level
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.koinApplication
+import org.koin.mp.KoinPlatform
 
 @Composable
 @KoinInternalApi
 inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclaration): Koin {
     val wrapper = remember(koinAppDeclaration) {
-        CompositionKoinApplicationLoader(koinApplication(koinAppDeclaration))
+        CompositionKoinApplicationLoader(if (KoinPlatform.getKoinOrNull() == null) koinApplication(koinAppDeclaration) else null)
     }
     return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
 }
@@ -40,9 +41,9 @@ inline fun rememberKoinApplication(noinline koinAppDeclaration: KoinAppDeclarati
 @Composable
 @KoinInternalApi
 inline fun rememberKoinMPApplication(configuration: KoinConfiguration, logLevel: Level): Koin {
-    val configuration = composeMultiplatformConfiguration(logLevel, config = configuration)
-    val wrapper = remember(configuration,logLevel) {
-        CompositionKoinApplicationLoader(koinApplication(configuration))
+    val mergedConfiguration = composeMultiplatformConfiguration(logLevel, config = configuration)
+    val wrapper = remember(mergedConfiguration, logLevel) {
+        CompositionKoinApplicationLoader(if (KoinPlatform.getKoinOrNull() == null) koinApplication(mergedConfiguration) else null)
     }
     return wrapper.koin ?: error("Koin context has not been initialized in rememberKoinApplication")
 }

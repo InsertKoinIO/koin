@@ -1,6 +1,6 @@
 ![logo](./docs/img/koin_main_logo.png)
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![Github Actions](https://github.com/InsertKoinIO/koin/actions/workflows/build.yml/badge.svg)
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
@@ -20,7 +20,7 @@ Koin is a pragmatic, lightweight dependency injection framework for Kotlin devel
 Follow the dedicated [setup page](https://insert-koin.io/docs/setup/koin) to setup Koin for your project.
 Here are the currently available Koin versions:
 
-- **Stable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.1)](https://mvnrepository.com/artifact/io.insert-koin/koin-core/4.1.1)
+- **Stable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.2.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-core/4.1.1)
 - **Unstable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 
 Take a look at:

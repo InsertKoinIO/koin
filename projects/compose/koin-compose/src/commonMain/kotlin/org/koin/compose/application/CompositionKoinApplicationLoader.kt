@@ -10,7 +10,7 @@ import org.koin.mp.KoinPlatform
 
 @KoinInternalApi
 class CompositionKoinApplicationLoader(
-    val koinApplication: KoinApplication,
+    val koinApplication: KoinApplication? = null,
 ) : RememberObserver {
 
     var koin : Koin? = null
@@ -20,11 +20,14 @@ class CompositionKoinApplicationLoader(
     }
 
     override fun onAbandoned() {
+        koin?.logger?.warn("CompositionKoinApplicationLoader - onAbandoned - $this")
         stop()
     }
 
     override fun onForgotten() {
-        stop()
+        koin?.logger?.debug("CompositionKoinApplicationLoader - onForgotten - $this")
+        //don"t stop context, premature. Only de-allocate
+        koin = null
     }
 
     override fun onRemembered() {
@@ -32,22 +35,24 @@ class CompositionKoinApplicationLoader(
     }
 
     private fun start() {
-        if (KoinPlatform.getKoinOrNull() == null){
+        if (KoinPlatform.getKoinOrNull() == null && koinApplication != null){
             try {
                 koin = startKoin(koinApplication).koin
                 koin!!.logger.debug("$this -> attach Koin instance $koin")
             } catch (e: Exception) {
                 error("Can't start Koin from Compose context - $e")
             }
-        } else {
+        } else if (KoinPlatform.getKoinOrNull() != null) {
             koin = KoinPlatform.getKoin()
             koin!!.logger.debug("$this -> re-attach Koin instance $koin")
+        } else {
+            error("Can't start Koin context, no koinApplication argument found nor existing context")
         }
     }
 
     private fun stop() {
+        koin?.logger?.warn("CompositionKoinApplicationLoader - stop")
         koin = null
-        KoinPlatform.getKoinOrNull()?.logger?.debug("$this -> stop Koin Application $koinApplication")
         stopKoin()
     }
 }

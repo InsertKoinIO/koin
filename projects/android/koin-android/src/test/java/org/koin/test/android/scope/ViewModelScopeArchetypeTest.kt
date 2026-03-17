@@ -19,6 +19,7 @@ import org.koin.androidx.scope.dsl.fragmentScope
 import org.koin.androidx.scope.fragmentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinViewModelScopeApi
 import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -58,9 +59,9 @@ class FakeVMActivity : ComponentActivity() {
 }
 
 @RunWith(RobolectricTestRunner::class)
+@OptIn(KoinExperimentalAPI::class)
 class ViewModelScopeArchetypeTest {
 
-    @OptIn(KoinExperimentalAPI::class)
     @Before
     fun setup() {
         startKoin {
@@ -81,8 +82,8 @@ class ViewModelScopeArchetypeTest {
     fun `viewModelScope resolves`() {
         val koin = KoinPlatform.getKoin()
         val module = module {
-            viewModel { FakeVM(get()) }
             viewModelScope {
+                viewModel { FakeVM(get()) }
                 scoped { ScopedVM() }
             }
         }

@@ -2,165 +2,341 @@
 title: Compose Multiplatform - Shared UI
 ---
 
-> This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __15 min__ to do the tutorial.
+> This tutorial demonstrates a Compose Multiplatform application that displays museum art from The Metropolitan Museum of Art Collection API. It uses Koin for dependency injection across Android and iOS platforms with shared UI.
+> You need around __20 min__ to complete the tutorial.
 
 :::note
-update - 2024-10-21
+update - 2024-11-12
+:::
+
+:::tip
+Looking for the **annotations version** of this tutorial? Check out [Compose Multiplatform & Annotations](./compose-multiplatform-annotations.md) which uses Koin Annotations for compile-time verification and automatic module discovery.
 :::
 
 ## Get the code
 
 :::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/ComposeMultiplatform)
+[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose)
 :::
 
 ## Application Overview
 
-The idea of the application is to manage a list of users, and display it in our native UI, witha shared ViewModel:
+The application fetches museum art objects from a remote API and displays them in a list. Users can tap on an item to see detailed information:
 
-`Users -> UserRepository -> Shared Presenter -> Compose UI`
+`MuseumAPI -> MuseumStorage -> MuseumRepository -> ViewModels -> Compose UI`
 
-## The "User" Data
+**Technologies used:**
+- Compose Multiplatform for shared UI (Android & iOS)
+- Ktor for HTTP networking
+- Koin for dependency injection
+- Kotlin Coroutines & Flow for async operations
+- Navigation Compose for routing
 
-> All the common/shared code is located in `shared` Gradle project
+## The Data Layer
 
-We will manage a collection of Users. Here is the data class: 
+> All the common/shared code is located in `composeApp` Gradle project
+
+### MuseumObject Model
+
+The museum art object data class:
 
 ```kotlin
-data class User(val name : String)
+@Serializable
+data class MuseumObject(
+    val objectID: Int,
+    val title: String,
+    val artistDisplayName: String,
+    val medium: String,
+    val dimensions: String,
+    val objectURL: String,
+    val objectDate: String,
+    val primaryImage: String,
+    val primaryImageSmall: String,
+    val repository: String,
+    val department: String,
+    val creditLine: String,
+)
 ```
 
-We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
+### MuseumApi - Network Layer
+
+We create an API interface to fetch data from The Metropolitan Museum of Art API:
 
 ```kotlin
-interface UserRepository {
-    fun findUser(name : String): User?
-    fun addUsers(users : List<User>)
+interface MuseumApi {
+    suspend fun getData(): List<MuseumObject>
 }
 
-class UserRepositoryImpl : UserRepository {
-
-    private val _users = arrayListOf<User>()
-
-    override fun findUser(name: String): User? {
-        return _users.firstOrNull { it.name == name }
+class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
+    private companion object {
+        const val API_URL = "https://raw.githubusercontent.com/Kotlin/KMP-App-Template/main/list.json"
     }
 
-    override fun addUsers(users : List<User>) {
-        _users.addAll(users)
+    override suspend fun getData(): List<MuseumObject> {
+        return try {
+            client.get(API_URL).body()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            e.printStackTrace()
+            emptyList()
+        }
     }
 }
 ```
 
-## The Shared Koin module
+### MuseumStorage - Local Caching
 
-Use the `module` function to declare a Koin module. A Koin module is the place where we define all our components to be injected.
-
-Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`
+We create a storage interface to cache museum objects locally:
 
 ```kotlin
-module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+interface MuseumStorage {
+    suspend fun saveObjects(newObjects: List<MuseumObject>)
+    fun getObjectById(objectId: Int): Flow<MuseumObject?>
+    fun getObjects(): Flow<List<MuseumObject>>
+}
+
+class InMemoryMuseumStorage : MuseumStorage {
+    private val storedObjects = MutableStateFlow(emptyList<MuseumObject>())
+
+    override suspend fun saveObjects(newObjects: List<MuseumObject>) {
+        storedObjects.value = newObjects
+    }
+
+    override fun getObjectById(objectId: Int): Flow<MuseumObject?> {
+        return storedObjects.map { objects ->
+            objects.find { it.objectID == objectId }
+        }
+    }
+
+    override fun getObjects(): Flow<List<MuseumObject>> = storedObjects
 }
 ```
 
-## The Shared ViewModel
+### MuseumRepository
 
-Let's write a ViewModel component to display a user:
+The repository coordinates between the API and storage:
 
 ```kotlin
-class UserViewModel(private val repository: UserRepository) : ViewModel() {
+class MuseumRepository(
+    private val museumApi: MuseumApi,
+    private val museumStorage: MuseumStorage,
+) {
+    private val scope = CoroutineScope(SupervisorJob())
 
-    fun sayHello(name : String) : String{
-        val foundUser = repository.findUser(name)
-        val platform = getPlatform()
-        return foundUser?.let { "Hello '$it' from ${platform.name}" } ?: "User '$name' not found!"
+    init {
+        initialize()
+    }
+
+    fun initialize() {
+        scope.launch {
+            refresh()
+        }
+    }
+
+    suspend fun refresh() {
+        museumStorage.saveObjects(museumApi.getData())
+    }
+
+    fun getObjects(): Flow<List<MuseumObject>> = museumStorage.getObjects()
+
+    fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)
+}
+```
+
+## The Shared Koin Modules
+
+Use the `module` function to declare Koin modules. We organize our dependencies into separate modules for better structure.
+
+:::info
+This tutorial uses the **Koin Compiler Plugin DSL** (`single<T>()`, `viewModel<T>()`) which provides auto-wiring at compile time. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
+:::
+
+### Data Module
+
+```kotlin
+val dataModule = module {
+    // HttpClient for Ktor
+    single { create(::buildClient) }
+
+    // API, Storage, and Repository
+    single<KtorMuseumApi>() bind MuseumApi::class
+    single<InMemoryMuseumStorage>() bind MuseumStorage::class
+    single<MuseumRepository>() withOptions { createdAtStart() }
+}
+
+private fun buildClient(): HttpClient {
+    val json = Json { ignoreUnknownKeys = true }
+    return HttpClient {
+        install(ContentNegotiation) {
+            json(json, contentType = ContentType.Any)
+        }
     }
 }
 ```
 
-> UserRepository is referenced in UserPresenter`s constructor
+### ViewModel Module
 
-We declare `UserViewModel` in our Koin module. We declare it as a `viewModelOf` definition, to not keep any instance in memory and let the native system hold it:
+Let's create ViewModels for our two screens:
+
+```kotlin
+// List screen ViewModel
+class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
+    val objects: StateFlow<List<MuseumObject>> =
+        museumRepository.getObjects()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+}
+
+// Detail screen ViewModel
+class DetailViewModel(private val museumRepository: MuseumRepository) : ViewModel() {
+    fun getObject(objectId: Int): StateFlow<MuseumObject?> {
+        return museumRepository.getObjectById(objectId)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    }
+}
+```
+
+Declare them in the ViewModel module:
+
+```kotlin
+val viewModelModule = module {
+    viewModel<ListViewModel>()
+    viewModel<DetailViewModel>()
+}
+```
+
+### Platform-Specific Module
+
+For platform-specific components (Android vs iOS):
+
+```kotlin
+val nativeComponentModule = module {
+    single<NativeComponent>()
+}
+```
+
+### Main App Module
+
+Combine all modules:
 
 ```kotlin
 val appModule = module {
-    singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
-    viewModelOf(::UserViewModel)
+    includes(dataModule, viewModelModule, nativeComponentModule)
 }
 ```
 
 :::note
-The Koin module is available as function to run (`appModule` here), to be easily runned from iOS side, with `initKoin()` function. 
+The Koin modules are organized and can be initialized from both Android and iOS using the `initKoin()` function.
 :::
 
 
 ## Native Component
 
-The following native component is defined in Android and iOS:
+For platform-specific information (Android vs iOS), we use an expect/actual pattern:
 
 ```kotlin
-interface Platform {
-    val name: String
+// commonMain
+interface NativeComponent {
+    fun getInfo(): String
 }
 
-expect fun getPlatform(): Platform
+// androidMain
+class NativeComponent {
+    fun getInfo(): String = "Android ${android.os.Build.VERSION.SDK_INT}"
+}
+
+// iosMain
+class NativeComponent {
+    fun getInfo(): String = "iOS ${UIDevice.currentDevice.systemVersion}"
+}
 ```
 
-Both get local platform implementation
+## Injecting ViewModels in Compose
 
+> All the common Compose app is located in `commonMain` from `composeApp` Gradle module
 
-## Injecting in Compose
-
-> All the Common Compose app is located in `commonMain` from `composeApp` Gradle module:
-
-The `UserViewModel` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `koinViewModel` or `koinNavViewModel` compose function: 
+The ViewModels are injected using `koinViewModel()` in Compose:
 
 ```kotlin
 @Composable
-fun MainScreen() {
-
-    MaterialTheme {
-
-        val userViewModel = koinViewModel<UserViewModel>()
-        
-        //...
+fun App() {
+    MaterialTheme(
+        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    ) {
+        Surface {
+            val navController: NavHostController = rememberNavController()
+            NavHost(navController = navController, startDestination = ListDestination) {
+                composable<ListDestination> {
+                    val vm = koinViewModel<ListViewModel>()
+                    ListScreen(viewModel = vm, navigateToDetails = { objectId ->
+                        navController.navigate(DetailDestination(objectId))
+                    })
+                }
+                composable<DetailDestination> { backStackEntry ->
+                    val vm = koinViewModel<DetailViewModel>()
+                    DetailScreen(
+                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
+                        viewModel = vm,
+                        navigateBack = { navController.popBackStack() }
+                    )
+                }
+            }
+        }
     }
 }
 ```
 
-That's it, your app is ready.
+:::info
+The `koinViewModel()` function retrieves ViewModel instances and binds them to the Compose lifecycle.
+:::
 
-We need to start Koin with our Android application. Just call the `KoinApplication()` function in the compose application function `App`:
+## Starting Koin
+
+Initialize Koin with the `initKoin()` function:
 
 ```kotlin
-fun App() {
-    
-    KoinApplication(
-        application = {
-            modules(appModule)
-        }
-    )
-{
-// Compose content
-}
+fun initKoin(configuration: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(configuration)
+        modules(appModule)
+    }
+
+    val platformInfo = KoinPlatform.getKoin().get<NativeComponent>().getInfo()
+    println("Running on: $platformInfo")
 }
 ```
 
-:::info
-The `modules()` function load the given list of modules
-:::
+### Android Setup
 
-
-## Compose app in iOS
-
-> All the iOS app is located in `iosMain` folder
-
-The `MainViewController.kt` is ready to start Compose for iOS:
+In Android, Koin is initialized from the main Activity or Application class:
 
 ```kotlin
-// Koin.kt
+// Call from Android entry point
+initKoin()
+```
 
+### iOS Setup
+
+> All the iOS app is located in `iosApp` folder
+
+In iOS, initialize Koin from the SwiftUI App entry point:
+
+```swift
+@main
+struct iOSApp: App {
+    init() {
+        KoinKt.doInitKoin()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+```
+
+The Compose UI is started with:
+
+```kotlin
 fun MainViewController() = ComposeUIViewController { App() }
 ```

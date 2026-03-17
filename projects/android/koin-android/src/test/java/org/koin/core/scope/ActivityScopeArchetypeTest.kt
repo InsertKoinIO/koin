@@ -20,6 +20,7 @@ import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 import org.koin.test.android.scope.ScopeArchetypeDSLTest.MyFactoryClass
@@ -232,5 +233,29 @@ class ActivityScopeArchetypeTest {
         // Verify root scope resolution still works
         val rootValue = activityScope.get<String>()
         assertEquals("root-value", rootValue)
+    }
+
+    private data class Entry(val value : String)
+
+    @Test
+    fun `get all from archetype`() {
+
+        val koin = KoinPlatform.getKoin()
+        val testModule = module {
+            single<String> { "root-value" }
+            activityScope {
+                scoped(named("entry_1")) { Entry("entry_1") }
+                scoped(named("entry_2")) { Entry("entry_2") }
+                scoped(named("entry_3")) { Entry("entry_3") }
+            }
+        }
+        koin.loadModules(listOf(testModule))
+
+        val activity = FakeActivity()
+        val activityScope = activity.scope
+
+        val entries = activityScope.getAll<Entry>()
+        assertEquals(3,entries.size)
+        assertEquals((1..3).map { Entry("entry_$it") },entries)
     }
 }

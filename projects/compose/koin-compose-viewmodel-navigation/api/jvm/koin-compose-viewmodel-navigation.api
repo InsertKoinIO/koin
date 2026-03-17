@@ -1,0 +1,8 @@
+public final class org/koin/compose/scope/KoinNavigationScopeKt {
+	public static final fun KoinNavigationScope (Landroidx/navigation/NavBackStackEntry;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/koin/module/dsl/NavigationScopeDSLKt {
+	public static final fun navigationScope (Lorg/koin/core/module/Module;Lkotlin/jvm/functions/Function1;)V
+}
+

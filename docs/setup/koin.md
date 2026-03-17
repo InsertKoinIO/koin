@@ -10,39 +10,82 @@ You can find all Koin packages on [Maven Central](https://central.sonatype.com/s
 
 Here are the currently available Koin versions:
 
-- Koin Stable [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.0.3)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom) 
-- Koin Unstable Version [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-bom)
+- Koin Stable [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core?label=stable)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
+- Koin Latest [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 
-## Gradle Setup
+## Koin BOM (Recommended)
 
-### Kotlin
+:::info
+**Best Practice**: Use the Koin Bill of Materials (BOM) to manage all Koin library versions consistently. This is the recommended approach for all projects.
+:::
 
-Starting from 3.5.0 you can use BOM-version to manage all Koin library versions. When using the BOM in your app, you don't need to add any version to the Koin library dependencies themselves. When you update the BOM version, all the libraries that you're using are automatically updated to their new versions.
+The Koin Bill of Materials (BOM) lets you manage all of your Koin library versions by specifying only the BOM's version. The BOM itself has links to the stable versions of the different Koin libraries, in such a way that they work well together. When using the BOM in your app, you don't need to add any version to the Koin library dependencies themselves. When you update the BOM version, all the libraries that you're using are automatically updated to their new versions.
 
-Add `koin-bom` BOM and `koin-core` dependency to your application: 
-```kotlin
-implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
-implementation("io.insert-koin:koin-core")
-```
-If you are using version catalogs:
+### Using BOM with Version Catalogs (Recommended)
+
+In your `gradle/libs.versions.toml`:
+
 ```toml
 [versions]
-koin-bom = "x.x.x"
-...
+koin-bom = "4.1.1"  # Stable version
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
-...
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-ktor = { module = "io.insert-koin:koin-ktor" }
+koin-test = { module = "io.insert-koin:koin-test" }
 ```
+
+In your `build.gradle.kts`:
+
 ```kotlin
 dependencies {
-    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
+    // Add other Koin dependencies without versions
 }
 ```
 
-Or use an old way of specifying the exact dependency version for Koin:
+### Using BOM Without Version Catalogs
+
+```kotlin
+dependencies {
+    // Declare koin-bom version
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+
+    // Declare the koin dependencies without versions
+    implementation("io.insert-koin:koin-android")
+    implementation("io.insert-koin:koin-core-coroutines")
+    implementation("io.insert-koin:koin-androidx-workmanager")
+
+    // If you need to specify a different version for a specific dependency
+    implementation("io.insert-koin:koin-androidx-navigation:1.2.3-alpha03")
+
+    // Works with test libraries too!
+    testImplementation("io.insert-koin:koin-test-junit4")
+    testImplementation("io.insert-koin:koin-android-test")
+}
+```
+
+## Platform-Specific Setup
+
+### Kotlin
+
+Add the Koin BOM and `koin-core` dependency to your application:
+
+```kotlin
+dependencies {
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-core")
+}
+```
+
+Or specify the exact dependency version (not recommended):
+
 ```kotlin
 dependencies {
     implementation("io.insert-koin:koin-core:$koin_version")
@@ -61,7 +104,7 @@ fun main() {
 
 If you need testing capacity:
 
-```groovy
+```kotlin
 dependencies {
     // Koin Test features
     testImplementation("io.insert-koin:koin-test:$koin_version")
@@ -73,16 +116,17 @@ dependencies {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin App Tutorial](/docs/quickstart/kotlin)
+**Next Steps**: Continue with [Kotlin App Tutorial](/docs/quickstart/kotlin) or explore [Core Features](/docs/reference/koin-core/dsl).
 :::
 
-### **Android**
+### Android
 
 Add `koin-android` dependency to your Android application:
 
-```groovy
+```kotlin
 dependencies {
-    implementation("io.insert-koin:koin-android:$koin_android_version")
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-android")
 }
 ```
 
@@ -92,78 +136,109 @@ You are now ready to start Koin in your `Application` class:
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        
+
         startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
             modules(appModule)
         }
     }
 }
 ```
 
-If you need extra features, add the following needed package:
+If you need extra features, add the following packages:
 
-```groovy
+```kotlin
 dependencies {
     // Java Compatibility
-    implementation("io.insert-koin:koin-android-compat:$koin_android_version")
+    implementation("io.insert-koin:koin-android-compat")
     // Jetpack WorkManager
-    implementation("io.insert-koin:koin-androidx-workmanager:$koin_android_version")
+    implementation("io.insert-koin:koin-androidx-workmanager")
     // Navigation Graph
-    implementation("io.insert-koin:koin-androidx-navigation:$koin_android_version")
-    // App Startup
-    implementation("io.insert-koin:koin-androidx-startup:$koin_android_version")
+    implementation("io.insert-koin:koin-androidx-navigation")
+    // App Startup - Start Koin with AndroidX Startup
+    implementation("io.insert-koin:koin-androidx-startup")
 }
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Android App Tutorial](/docs/quickstart/android-viewmodel)
+**Next Steps**: Continue with [Android App Tutorial](/docs/quickstart/android-viewmodel) or see [Starting Koin on Android](/docs/reference/koin-android/start) for detailed integration.
 :::
 
-### **Jetpack Compose or Compose Multiplatform**
+### Jetpack Compose or Compose Multiplatform
 
-Add `koin-compose` dependency to your multiplatform application, for use Koin & Compose API:
+For **Compose Multiplatform** (Android, iOS, Desktop, Web), add these dependencies:
 
-```groovy
+```kotlin
 dependencies {
-    implementation("io.insert-koin:koin-compose:$koin_version")
-    implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
-    implementation("io.insert-koin:koin-compose-viewmodel-navigation:$koin_version")
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-compose")
+    implementation("io.insert-koin:koin-compose-viewmodel")
+    implementation("io.insert-koin:koin-compose-viewmodel-navigation")
 }
 ```
 
-If you are using pure Android Jetpack Compose, you can go with
+For **pure Android Jetpack Compose**, you can use:
 
-```groovy
+```kotlin
 dependencies {
-    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
-    implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-androidx-compose")
+    implementation("io.insert-koin:koin-androidx-compose-navigation")
 }
 ```
 
-### **Kotlin Multiplatform**
+For **Navigation 3 integration** (experimental):
 
-Add `koin-core` dependency to your multiplatform application, for shared Kotlin part:
-
-```groovy
+```kotlin
 dependencies {
-    implementation("io.insert-koin:koin-core:$koin_version")
+    // Navigation 3 support (alpha)
+    implementation("io.insert-koin:koin-compose-navigation3")
+}
+```
+
+:::warning
+Navigation 3 is in alpha. See [Navigation 3 Integration](/docs/reference/koin-compose/navigation3) for details.
+:::
+
+:::info
+**Next Steps**: Continue with [Compose Tutorial](/docs/quickstart/android-compose) or see [Koin Compose](/docs/reference/koin-compose/compose) for detailed integration.
+:::
+
+### Kotlin Multiplatform
+
+In your `shared/build.gradle.kts`, add `koin-core` dependency to commonMain:
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+            implementation("io.insert-koin:koin-core")
+        }
+
+        commonTest.dependencies {
+            implementation("io.insert-koin:koin-test")
+        }
+    }
 }
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Kotlin Multiplatform App Tutorial](/docs/quickstart/kmp)
+**Next Steps**: See [Kotlin Multiplatform with Koin](/docs/reference/koin-mp/kmp) for platform-specific setup, expect/actual patterns, and architecture guidance.
 :::
 
-### **Ktor**
+### Ktor
 
 Add `koin-ktor` dependency to your Ktor application:
 
-```groovy
+```kotlin
 dependencies {
-    // Koin for Ktor 
-    implementation("io.insert-koin:koin-ktor:$koin_ktor")
+    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
+    // Koin for Ktor
+    implementation("io.insert-koin:koin-ktor")
     // SLF4J Logger
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+    implementation("io.insert-koin:koin-logger-slf4j")
 }
 ```
 
@@ -179,28 +254,21 @@ fun Application.main() {
 ```
 
 :::info
-From now you can continue on Koin Tutorials to learn about using Koin: [Ktor App Tutorial](/docs/quickstart/ktor)
+**Next Steps**: Continue with [Ktor App Tutorial](/docs/quickstart/ktor) or see [Ktor Integration](/docs/reference/koin-ktor/ktor) for detailed setup.
 :::
 
+## Alternative: Direct Version Specification
 
-### **Koin BOM**
-The Koin Bill of Materials (BOM) lets you manage all of your Koin library versions by specifying only the BOM’s version. The BOM itself has links to the stable versions of the different Koin libraries, in such a way that they work well together. When using the BOM in your app, you don't need to add any version to the Koin library dependencies themselves. When you update the BOM version, all the libraries that you're using are automatically updated to their new versions.
+If you prefer not to use the BOM, you can specify versions directly for each dependency:
 
-```groovy
+```kotlin
 dependencies {
-    // Declare koin-bom version
-    implementation platform("io.insert-koin:koin-bom:$koin_bom")
-    
-    // Declare the koin dependencies that you need
-    implementation("io.insert-koin:koin-android")
-    implementation("io.insert-koin:koin-core-coroutines")
-    implementation("io.insert-koin:koin-androidx-workmanager")
-    
-    // If you need specify some version it's just point to desired version
-    implementation("io.insert-koin:koin-androidx-navigation:1.2.3-alpha03")
-    
-    // Works with test libraries too!
-    testImplementation("io.insert-koin:koin-test-junit4")
-    testImplementation("io.insert-koin:koin-android-test")
+    implementation("io.insert-koin:koin-core:$koin_version")
+    implementation("io.insert-koin:koin-android:$koin_version")
+    implementation("io.insert-koin:koin-compose:$koin_version")
 }
 ```
+
+:::note
+This approach requires manually keeping all Koin dependencies synchronized to compatible versions. **Using the BOM is strongly recommended** to avoid version conflicts.
+:::

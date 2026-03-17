@@ -15,25 +15,38 @@
  */
 package org.koin.ktor.di
 
-//import io.ktor.server.application.Application
-//import io.ktor.server.plugins.di.DependencyKey
-//import io.ktor.server.plugins.di.dependencies
-//import io.ktor.server.plugins.di.getOrNull
-//import io.ktor.util.reflect.TypeInfo
-//import org.koin.core.instance.ResolutionContext
-//import org.koin.core.resolution.ResolutionExtension
-//import org.koin.core.scope.Scope
-//
-///**
-// * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects
-// *
-// * @author Arnaud Giuliani
-// */
-//TODO Ktor 3.2 - @see setupKoinApplication()
-//internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
-//    override val name: String = "ktor-di"
-//    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
-//        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
-//        return application.dependencies.getOrNull(key)
-//    }
-//}
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.DependencyKey
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.di.getBlocking
+import io.ktor.util.reflect.TypeInfo
+import org.koin.core.instance.ResolutionContext
+import org.koin.core.resolution.ResolutionExtension
+import org.koin.core.scope.Scope
+
+/**
+ * Ktor DI Resolver Extension to help Koin resolve Ktor DI objects.
+ * Allows Koin's `inject()` to resolve dependencies declared in Ktor's `dependencies { }` block.
+ *
+ * @author Arnaud Giuliani
+ * @author Lidonis Calhau
+ */
+internal class KtorDIExtension(private val application : Application) : ResolutionExtension {
+
+    override val name: String = "ktor-di"
+
+    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
+        val key = DependencyKey(TypeInfo(instanceContext.clazz), qualifier = instanceContext.qualifier?.value)
+        val logger = scope.logger
+
+        logger.debug("Resolving KtorDI with '$key'")
+        return try {
+            val value = application.dependencies.getBlocking<Any?>(key)
+            logger.debug("Resolving KtorDI value? $value")
+            value
+        } catch (e: Exception) {
+            logger.warn("Error Resolving KtorDI: no definition found for $key - Got error: ${e.message}")
+            null
+        }
+    }
+}

@@ -1,138 +1,233 @@
 ---
-title: Dependency Injection in Ktor
+title: Koin for Ktor
 ---
 
-The `koin-ktor` module is dedicated to bringing dependency injection for Ktor.
+The `koin-ktor` module provides dependency injection integration for Ktor applications, working alongside Ktor's built-in DI system.
 
-## Install Koin Plugin
+## Why Koin for Ktor?
 
-To start a Koin container in Ktor, just install the `Koin` plugin as follows:
+Ktor 3.4+ includes a built-in DI system. Here's how they compare:
+
+| Feature | Ktor DI | Koin |
+|---------|---------|------|
+| Basic injection | Yes | Yes |
+| Qualifiers (`@Named`) | Yes | Yes |
+| Property injection | Yes (`@Property`) | Yes |
+| Nullable/optional dependencies | Yes | Yes |
+| Scopes (request, custom) | No | Yes |
+| Module organization | No | Yes |
+| Lazy modules | No | Yes |
+| Annotation-based components | No | Yes |
+| Compiler plugin verification | No | Yes |
+
+### Ktor DI Limitations
+
+- **No scoping** - No request or custom scopes, only singleton-like behavior with cleanup ordering
+- **No annotation-based components** - No `@Singleton`, `@Factory` component scanning like Koin Annotations
+- **No compile-time verification** - No compiler plugin to verify DI configuration before runtime
+- **Limited parameterized types** - Cannot resolve parameterized types across type argument subtypes
+
+**When to use Koin:**
+- Scoped dependencies (request scope, custom scopes)
+- Module-based organization
+- Annotation-based component scanning
+- Compile-time verification with compiler plugin
+
+**When Ktor DI is sufficient:**
+- Simple applications with few dependencies
+- No scoping requirements
+- Basic qualifier needs
+
+## Setup
+
+Add the Koin Ktor dependency:
+
+```kotlin
+dependencies {
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version") // Optional
+}
+```
+
+## Declaring Dependencies
+
+Koin supports multiple DSL approaches.
+
+### Compiler Plugin DSL
+
+The simplest syntax:
+
+```kotlin
+val appModule = module {
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+}
+```
+
+### Annotations
+
+Spring-like with compile-time verification:
+
+```kotlin
+@Module
+@ComponentScan("com.example")
+class AppModule
+
+@Singleton
+class UserRepositoryImpl : UserRepository
+
+@Singleton
+class UserService(private val repository: UserRepository)
+```
+
+### Classic DSL
+
+Constructor references:
+
+```kotlin
+val appModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserService)
+}
+```
+
+## Installing the Koin Plugin
+
+Install Koin in your `Application` module:
 
 ```kotlin
 fun Application.main() {
-    // Install Koin
     install(Koin) {
         slf4jLogger()
-        modules(helloAppModule)
-    }
-
-}
-```
-
-### Compatible with Ktor's DI (4.1)
-
-Koin 4.1 fully supports new Ktor 3.2!
-
-We extracted CoreResolver to abstract resolution rules for Koin and allow extension with ResolutionExtension. We added new KtorDIExtension as Ktor ResolutionExtension to help Koin resolve Ktor default DI instance.
-
-Koin Ktor plugin is automatically setting up Ktor DI integration. Below, see how you can consume Ktor dependencies from Koin:
-```kotlin
-// let's define a Ktor object
-fun Application.setupDatabase(config: DbConfig) {
-    // ...
-    dependencies {
-        provide<Database> { database }
+        modules(appModule)
     }
 }
 ```
 
-```kotlin
-// let's inject it in a Koin definition
-class CustomerRepositoryImpl(private val database: Database) : CustomerRepository
-
-    fun Application.customerDataModule() {
-        koinModule {
-            singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
-        }
-}
-```
-
-
-## Inject in Ktor
-
-Koin `inject()` and `get()` functions are available from `Application`, `Route`, and `Routing` classes:
+### Complete Configuration
 
 ```kotlin
 fun Application.main() {
+    install(Koin) {
+        slf4jLogger()
+        fileProperties("/application.conf")
+        modules(
+            networkModule,
+            repositoryModule,
+            serviceModule
+        )
+        createEagerInstances()
+    }
+}
+```
 
-    // inject HelloService
-    val service by inject<HelloService>()
+## Dependency Injection
+
+Koin provides extension functions for Ktor's core types.
+
+### Injection Points
+
+`inject()` and `get()` work in:
+- `Application`
+- `Route`
+- `Routing`
+- `ApplicationCall` (within route handlers)
+
+### Application-Level
+
+```kotlin
+fun Application.main() {
+    val helloService by inject<HelloService>()  // Lazy
+    val configService = get<ConfigService>()     // Eager
 
     routing {
         get("/hello") {
-            call.respondText(service.sayHello())
+            call.respondText(helloService.sayHello())
         }
     }
 }
 ```
 
-### Resolve from Ktor Request Scope (since 4.1)
-
-You can declare components to live within the Ktor request scope timeline. For this, you just need to declare your component inside a `requestScope` section. Given a `ScopeComponent` class to instantiate on the Ktor web request scope, let's declare it:
+### Route-Level
 
 ```kotlin
-requestScope {
-    scopedOf(::ScopeComponent)
+fun Route.customerRoutes() {
+    val customerService by inject<CustomerService>()
+
+    get("/customers") {
+        call.respond(customerService.getAllCustomers())
+    }
+
+    get("/customers/{id}") {
+        val id = call.parameters["id"]?.toInt()
+            ?: return@get call.respond(HttpStatusCode.BadRequest)
+        call.respond(customerService.getCustomer(id))
+    }
 }
 ```
 
-And from your HTTP call, simply call `call.scope.get()` to resolve the right dependency:
+### Request Handler
 
 ```kotlin
 routing {
-    get("/hello") {
-        val component = call.scope.get<ScopeComponent>()
-        // ... 
+    get("/users/{id}") {
+        val userService = get<UserService>()
+        val userId = call.parameters["id"]!!
+        call.respond(userService.getUser(userId))
     }
 }
 ```
 
-This allows your scoped dependency to resolve `ApplicationCall` as scope's source of your resolution. You can inject it directly into constructor:
+## Ktor Events
 
-```kotlin
-class ScopeComponent(val call : ApplicationCall) {
-}
-```
+Monitor Koin lifecycle events:
 
-:::note
-For each new request, the scope will be recreated. This creates and drops scope instances for each request
-:::
-
-
-### Declare Koin modules in Ktor module (4.1)
-
-Use `Application.koinModule {}` or `Application.koinModules()` directly within your app setup to declare new modules within your Ktor module:
-
-```kotlin
-fun Application.customerDataModule() {
-    koinModule {
-        singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
-    }
-}
-```
-
-### Ktor Events
-
-You can listen to KTor Koin events:
+| Event | Description |
+|-------|-------------|
+| `KoinApplicationStarted` | Koin container started |
+| `KoinApplicationStopPreparing` | Koin preparing to stop |
+| `KoinApplicationStopped` | Koin container stopped |
 
 ```kotlin
 fun Application.main() {
-    // ...
-
-    // Install Ktor features
-    environment.monitor.subscribe(KoinApplicationStarted) {
-        log.info("Koin started.")
+    install(Koin) {
+        slf4jLogger()
+        modules(appModule)
     }
 
-    environment.monitor.subscribe(KoinApplicationStopPreparing) {
-        log.info("Koin stopping...")
+    environment.monitor.subscribe(KoinApplicationStarted) {
+        log.info("Koin started")
+        get<CacheWarmer>().warmUp()
     }
 
     environment.monitor.subscribe(KoinApplicationStopped) {
-        log.info("Koin stopped.")
+        log.info("Koin stopped")
     }
-
-    //...
 }
 ```
 
+## Quick Reference
+
+| Function | Description |
+|----------|-------------|
+| `install(Koin) { }` | Install Koin plugin |
+| `inject<T>()` | Lazy injection |
+| `get<T>()` | Eager injection |
+| `koinModule { }` | Declare inline module |
+| `koinModules(...)` | Load existing modules |
+
+## Documentation
+
+| Topic | Description |
+|-------|-------------|
+| **[DI Bridge](/docs/reference/koin-ktor/ktor-bridge)** | Koin ↔ Ktor DI integration |
+| **[Request Scopes](/docs/reference/koin-ktor/ktor-scopes)** | Request-scoped dependencies |
+| **[Testing](/docs/reference/koin-ktor/ktor-testing)** | Testing Ktor with Koin |
+| **[Isolated Context](/docs/reference/koin-ktor/ktor-isolated)** | Isolated Koin instances |
+
+## Related
+
+- **[Tutorial: Ktor](/docs/quickstart/ktor)** - Step-by-step tutorial
+- **[Tutorial: Ktor with Annotations](/docs/quickstart/ktor-annotations)** - Annotations tutorial
+- **[Koin Annotations](/docs/reference/koin-annotations/start)** - Annotation reference
+- **[Ktor Documentation](https://ktor.io/)** - Official Ktor docs

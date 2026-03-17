@@ -9,6 +9,8 @@ import org.koin.core.coroutine.KoinCoroutinesEngine
 import org.koin.core.extension.coroutinesEngine
 import org.koin.core.lazyModules
 import org.koin.dsl.koinApplication
+import org.koin.dsl.lazyModule
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 @OptIn(KoinInternalApi::class)
@@ -26,18 +28,18 @@ class ExtensionTest {
     @Test
     fun lazy_load() {
         val koin = koinApplication {
-            lazyModules()
+            lazyModules(lazyModule {  })
         }.koin
 
         val coroutinesEngine =
             koin.extensionManager.getExtension<KoinCoroutinesEngine>(KoinCoroutinesEngine.EXTENSION_NAME)
-        assert(coroutinesEngine.startJobs.size == 1)
+        assertEquals(1,coroutinesEngine.startJobs.size)
     }
 
     @Test
     fun wait_jobs() = runBlocking<Unit> {
         val koin = koinApplication {
-            lazyModules()
+            lazyModules(lazyModule {  })
         }.koin
 
         val coroutinesEngine = koin.extensionManager.getExtension<KoinCoroutinesEngine>(KoinCoroutinesEngine.EXTENSION_NAME)

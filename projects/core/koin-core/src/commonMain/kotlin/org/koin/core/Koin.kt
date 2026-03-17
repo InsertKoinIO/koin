@@ -15,6 +15,7 @@
  */
 package org.koin.core
 
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getScopeId
@@ -33,6 +34,9 @@ import org.koin.core.registry.OptionRegistry
 import org.koin.core.registry.PropertyRegistry
 import org.koin.core.registry.ScopeRegistry
 import org.koin.core.resolution.CoreResolver
+import org.koin.core.resolution.CoreResolverV2
+import org.koin.core.resolution.InstanceResolver
+import org.koin.core.resolution.ResolutionExtension
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
 import org.koin.core.time.inMs
@@ -56,7 +60,18 @@ class Koin {
         private set
 
     @KoinInternalApi
-    val resolver = CoreResolver(this)
+    internal val resolver : InstanceResolver = CoreResolverV2(this)
+
+    /**
+     * Add a resolution extension to extend Koin's dependency resolution capabilities.
+     * Extensions allow Koin to resolve dependencies from external DI systems (e.g., Ktor DI).
+     *
+     * @param extension the resolution extension to add
+     */
+    @KoinExperimentalAPI
+    public fun addResolutionExtension(extension: ResolutionExtension) {
+        resolver.addResolutionExtension(extension)
+    }
 
     @KoinInternalApi
     val scopeRegistry = ScopeRegistry(this)

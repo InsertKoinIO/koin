@@ -16,12 +16,27 @@
 package org.koin.viewmodel.scope
 
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.annotation.KoinViewModelScopeApi
 import org.koin.core.module.Module
 import org.koin.dsl.ScopeDSL
 
 /**
- * Declare a ViewModel scope
+ * Declare a ViewModel scope section.
+ *
+ * ViewModels that need constructor injection from this scope must be declared inside this block.
+ *
+ * ```kotlin
+ * viewModelScope {
+ *     viewModel { MyViewModel(get()) }  // ViewModel with scoped dependency
+ *     scoped { MyScopedDependency() }   // Scoped to ViewModel lifecycle
+ * }
+ * ```
+ *
+ * Requires `viewModelScopeFactory()` option to be enabled.
+ *
+ * @see KoinViewModelScopeApi for more details
  */
+@KoinViewModelScopeApi
 @KoinExperimentalAPI
 fun Module.viewModelScope(scopeSet: ScopeDSL.() -> Unit) {
     val qualifier = ViewModelScopeArchetype

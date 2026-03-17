@@ -1,6 +1,6 @@
 package org.koin.benchmark
 
-import org.koin.core.Koin
+import org.koin.core.lazyModules
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.openjdk.jmh.annotations.Benchmark
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 @State(Scope.Benchmark)
 @Fork(1)
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 // jvmBenchmark can access declarations from jvmMain!
 @Warmup(iterations = WARMUP_ITERATIONS, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -32,16 +32,16 @@ class StartupBenchmark {
     }
 
     @Benchmark
-    fun startupKoinWith400Fun() {
+    fun startup() {
         koinApplication {
             modules(perfModule400())
         }
     }
 
     @Benchmark
-    fun startupKoinWith400() {
+    fun startup_lazy() {
         koinApplication {
-            modules(module!!)
+            lazyModules(perfLazyModule400())
         }
     }
 }

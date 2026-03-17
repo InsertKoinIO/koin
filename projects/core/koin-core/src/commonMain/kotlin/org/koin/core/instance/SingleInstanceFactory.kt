@@ -18,6 +18,7 @@ package org.koin.core.instance
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
+import kotlin.concurrent.Volatile
 
 /**
  * Single instance holder
@@ -26,6 +27,7 @@ import org.koin.mp.KoinPlatformTools
 class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     InstanceFactory<T>(beanDefinition) {
 
+    @Volatile
     private var value: T? = null
 
     private fun getValue(): T = value ?: error("Single instance created couldn't return value")
@@ -50,9 +52,13 @@ class SingleInstanceFactory<T>(beanDefinition: BeanDefinition<T>) :
     }
 
     override fun get(context: ResolutionContext): T {
-        KoinPlatformTools.synchronized(this) {
-            if (!isCreated(context)) {
-                value = create(context)
+        // Fast path: check if already created without locking
+        if (!isCreated(context)) {
+            KoinPlatformTools.synchronized(this) {
+                // Double-check inside lock to avoid race condition
+                if (!isCreated(context)) {
+                    value = create(context)
+                }
             }
         }
         return getValue()

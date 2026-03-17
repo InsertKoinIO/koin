@@ -14,9 +14,9 @@ val androidMinSDK: String by project
 android {
     namespace = "org.koin.androidx.compose"
     compileSdk = androidCompileSDK.toInt()
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
     defaultConfig {
         minSdk = androidMinSDK.toInt()
     }

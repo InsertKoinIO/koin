@@ -34,7 +34,7 @@ import kotlin.time.measureTime
  */
 @OptIn(KoinInternalApi::class)
 @KoinApplicationDslMarker
-class KoinApplication private constructor() {
+open class KoinApplication protected constructor() {
 
     val koin = Koin()
     private var allowOverride = true
@@ -75,6 +75,16 @@ class KoinApplication private constructor() {
      */
     fun createEagerInstances() {
         koin.createEagerInstances()
+    }
+
+    /**
+     * Definition override has to be explicit on teh definition using the "override" DSL
+     * same as allowOverride(false)
+     *
+     * @see allowOverride
+     */
+    public fun strictOverride() {
+        allowOverride = false
     }
 
     /**

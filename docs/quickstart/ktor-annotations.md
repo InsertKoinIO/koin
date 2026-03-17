@@ -44,29 +44,30 @@ The idea of the application is to manage a list of users, and display it in our 
 
 ## The "User" Data
 
-We will manage a collection of Users. Here is the data class: 
+We will manage a collection of Users. Here is the data class:
 
 ```kotlin
-data class User(val name : String)
+data class User(val name: String, val email: String)
 ```
 
 We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
 
 ```kotlin
 interface UserRepository {
-    fun findUser(name : String): User?
-    fun addUsers(users : List<User>)
+    fun findUserOrNull(name: String): User?
+    fun addUsers(users: List<User>)
 }
 
+@Singleton
 class UserRepositoryImpl : UserRepository {
 
     private val _users = arrayListOf<User>()
 
-    override fun findUser(name: String): User? {
+    override fun findUserOrNull(name: String): User? {
         return _users.firstOrNull { it.name == name }
     }
 
-    override fun addUsers(users : List<User>) {
+    override fun addUsers(users: List<User>) {
         _users.addAll(users)
     }
 }
@@ -79,108 +80,119 @@ Use the `@Module` annotation to declare a Koin module, from a given Kotlin class
 ```kotlin
 @Module
 @ComponentScan("org.koin.sample")
+@Configuration
 class AppModule
 ```
 
-The `@ComponentScan("org.koin.sample")` will help scan annotated classes from targeted package.
+* `@Module` - Declares this as a Koin module
+* `@ComponentScan("org.koin.sample")` - Scans and registers annotated classes from the package
+* `@Configuration` - Enables automatic module discovery with `@KoinApplication`
 
-Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`. We tag it `@Single`
+:::note
+This project uses Koin's `@Singleton` annotation (from `org.koin.core.annotation`) to declare singleton components.
+:::
+
+Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`. We tag it `@Singleton`:
 
 ```kotlin
-@Single
+@Singleton
 class UserRepositoryImpl : UserRepository
 ```
 
 ## The UserService Component
 
-Let's write the UserService component to request the default user:
+Let's write the UserService component to manage user operations:
 
 ```kotlin
-class UserService(private val userRepository: UserRepository) {
-
-    fun getDefaultUser() : User = userRepository.findUser(DefaultData.DEFAULT_USER.name) ?: error("Can't find default user")
+interface UserService {
+    fun getUserOrNull(name: String): User?
+    fun loadUsers()
+    fun prepareHelloMessage(user: User?): String
 }
-```
 
-> UserRepository is referenced in UserPresenter`s constructor
+@Singleton
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService {
 
-We declare `UserService` in our Koin module. We tag with `@Single` annotation:
+    override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
 
-```kotlin
-@Single
-class UserService(private val userRepository: UserRepository)
-```
+    override fun loadUsers() {
+        userRepository.addUsers(listOf(
+            User("Alice", "alice@example.com"),
+            User("Bob", "bob@example.com"),
+            User("Charlie", "charlie@example.com")
+        ))
+    }
 
-## HTTP Controller
-
-Finally, we need an HTTP Controller to create the HTTP Route. In Ktor is will be expressed through an Ktor extension function:
-
-```kotlin
-fun Application.main() {
-
-    // Lazy inject HelloService
-    val service by inject<UserService>()
-
-    // Routing section
-    routing {
-        get("/hello") {
-            call.respondText(service.sayHello())
-        }
+    override fun prepareHelloMessage(user: User?): String {
+        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
     }
 }
 ```
 
-Check that your `application.conf` is configured like below, to help start the `Application.main` function:
+> UserRepository is referenced in UserServiceImpl's constructor
+
+We declare `UserService` with the `@Singleton` annotation:
+
+## HTTP Controller and Koin Application
+
+Finally, we need to create a `@KoinApplication` object and configure our HTTP routes:
 
 ```kotlin
-ktor {
-    deployment {
-        port = 8080
-
-        // For dev purpose
-        //autoreload = true
-        //watch = [org.koin.sample]
-    }
-
-    application {
-        modules = [ org.koin.sample.UserApplicationKt.main ]
-    }
-}
+@KoinApplication
+object KoinUserApplication
 ```
+
+The `@KoinApplication` annotation marks this as the entry point for Koin's annotation-based configuration. The KSP processor generates configuration that can be used with `withConfiguration<T>()` to initialize Koin.
 
 ## Start and Inject
 
-Finally, let's start Koin from Ktor:
+Now let's configure the Ktor application with Koin:
 
 ```kotlin
 fun Application.main() {
+    // Install Koin with generated configuration
     install(Koin) {
         slf4jLogger()
-        modules(AppModule().module)
+        withConfiguration<KoinUserApplication>()
     }
 
-    // Lazy inject HelloService
+    // Lazy inject UserService
     val service by inject<UserService>()
-    service.saveDefaultUsers()
+    service.loadUsers()
 
     // Routing section
     routing {
         get("/hello") {
-            call.respondText(service.sayHello())
+            val userName = call.queryParameters["name"] ?: "Alice"
+            val user = service.getUserOrNull(userName)
+            val message = service.prepareHelloMessage(user)
+            call.respondText(message)
         }
     }
 }
 ```
 
-By writing the `AppModule().module` we use a generated extension on `AppModule` class.
+**Key Points:**
+* `withConfiguration<KoinUserApplication>()` - Uses the generated Koin configuration from the annotated application object
+* No need to manually call `modules(AppModule().module)` - it's included automatically!
+* The `/hello` endpoint accepts an optional `name` query parameter
 
 Let's start Ktor:
 
 ```kotlin
 fun main(args: Array<String>) {
-    // Start Ktor
-    embeddedServer(Netty, commandLineEnvironment(args)).start(wait = true)
+    embeddedServer(Netty, port = 8080) {
+        main()
+    }.start(wait = true)
 }
 ```
 
-That's it! You're ready to go. Check the `http://localhost:8080/hello` url!
+That's it! You're ready to go. Check these URLs:
+- `http://localhost:8080/hello` - Greets Alice (default user)
+- `http://localhost:8080/hello?name=Bob` - Greets Bob
+
+:::info
+The `@KoinApplication` annotation with `@Configuration` on the module automatically discovers and loads all annotated dependencies at compile time.
+:::

@@ -24,12 +24,7 @@ class NativeBenchmark {
     }
 
     @Benchmark
-    fun retrieveDependencyA() {
+    fun retrieveDependency() {
         koin!!.get<Perfs.A42>()
-    }
-
-    @Benchmark
-    fun retrieveDependencyB() {
-        koin!!.get<Perfs.B42>()
     }
 }

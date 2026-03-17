@@ -1,3 +1,17 @@
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+        // For Ktor EAP
+        maven {
+            url 'https://maven.pkg.jetbrains.space/public/p/ktor/eap'
+            mavenContent {
+                includeGroupAndSubgroups('io.ktor')
+            }
+        }
+    }
+}
+
 // Samples
 include 'coffee-maker'
 include 'androidx-samples'
@@ -6,6 +20,7 @@ include 'jvm-perfs'
 include 'android-perfs'
 // ktor
 include 'hello-ktor'
+include 'ktor-di-sample'
 
 // Compose
 include 'sample-android-compose'
