@@ -1,0 +1,706 @@
+# Koin — Kotlin Dependency Injection Framework
+
+> Lightweight, production-ready DI framework for Kotlin. No code generation, no reflection at its core — pure Kotlin. Optional Koin Compiler Plugin adds compile-time safety. Runs on all Kotlin Multiplatform targets.
+
+## Key Facts
+
+- **Version**: 4.2
+- **Language**: Kotlin (100%)
+- **Platforms**: Android, iOS, Desktop, Web (JS/Wasm), Backend (Ktor) via Kotlin Multiplatform
+- **License**: Apache 2.0
+- **Repository**: https://github.com/InsertKoinIO/koin
+- **Website**: https://insert-koin.io
+- **Documentation**: https://insert-koin.io/docs/intro/index
+
+## IDE Plugin
+
+Official plugin for Android Studio & IntelliJ IDEA — code navigation between definitions and injection points, live safety checks, dependency graph visualization.
+
+**Download:** https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-
+
+## Gradle Dependencies
+
+```kotlin
+// BOM (recommended)
+implementation(platform("io.insert-koin:koin-bom:4.2.0"))
+implementation("io.insert-koin:koin-core")
+
+// Or explicit versions
+implementation("io.insert-koin:koin-core:4.2.0")              // Core (all platforms)
+implementation("io.insert-koin:koin-android:4.2.0")           // Android (Context, ViewModel, Scope)
+implementation("io.insert-koin:koin-compose:4.2.0")           // Compose integration
+implementation("io.insert-koin:koin-compose-viewmodel:4.2.0") // Compose ViewModel (koinViewModel)
+implementation("io.insert-koin:koin-core-viewmodel:4.2.0")    // ViewModel KMP support
+implementation("io.insert-koin:koin-core-coroutines:4.2.0")   // Coroutines (lazy modules)
+implementation("io.insert-koin:koin-ktor:4.2.0")              // Ktor server
+implementation("io.insert-koin:koin-ktor3:4.2.0")             // Ktor 3 server
+implementation("io.insert-koin:koin-test:4.2.0")              // Testing
+implementation("io.insert-koin:koin-test-junit5:4.2.0")       // JUnit 5 testing
+
+// Compiler Plugin (optional — adds compile-time safety)
+id("io.insert-koin.koin-compiler") version "0.4.1"
+```
+
+---
+
+## Starting Koin
+
+### Android
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.androidx.workmanager.koin.workManagerFactory
+
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger()
+            androidContext(this@MyApplication)
+            workManagerFactory()              // if using WorkManager
+            modules(appModule, featureModule)
+        }
+    }
+}
+```
+
+### Annotations (with compile-time graph validation)
+
+```kotlin
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.context.startKoin
+
+@KoinApplication
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin<MyApplication> {    // triggers A3 full graph validation
+            androidLogger()
+            androidContext(this@MyApplication)
+            workManagerFactory()
+        }
+    }
+}
+```
+
+### Ktor
+
+```kotlin
+import org.koin.ktor.plugin.Koin
+
+fun Application.module() {
+    install(Koin) {
+        modules(appModule)
+    }
+}
+```
+
+### KMP / Non-Android
+
+```kotlin
+import org.koin.core.context.startKoin
+
+startKoin {
+    modules(commonModule, platformModule)
+}
+```
+
+---
+
+## Defining Dependencies
+
+### DSL (with Compiler Plugin — recommended)
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.dsl.bind
+import org.koin.plugin.module.dsl.*
+
+val appModule = module {
+    // Singleton — one instance for app lifetime
+    single<Database>()
+    single<UserRepository>()
+
+    // Factory — new instance each time
+    factory<GetUserUseCase>()
+
+    // ViewModel — Android ViewModel lifecycle
+    viewModel<UserViewModel>()
+
+    // Worker — WorkManager
+    worker<SyncWorker>()
+
+    // Interface binding
+    single<UserRepositoryImpl>() bind UserRepository::class
+
+    // Multiple bindings
+    single<MyServiceImpl>() binds arrayOf(ServiceA::class, ServiceB::class)
+
+    // Module composition
+    includes(networkModule, databaseModule)
+}
+```
+
+### DSL with Function References (create)
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+
+// Builder functions — for wrapping external libraries (Room, Retrofit, etc.)
+fun database(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+
+fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
+
+fun json(): Json = Json { ignoreUnknownKeys = true }
+
+val databaseModule = module {
+    single { create(::database) }    // parameters auto-resolved from DI
+    single { create(::topicDao) }
+    single { create(::json) }
+}
+```
+
+### Classic DSL (without Compiler Plugin)
+
+```kotlin
+import org.koin.dsl.module
+
+val appModule = module {
+    // Constructor reference (autowiring)
+    singleOf(::Database)
+    singleOf(::UserRepository)
+    factoryOf(::GetUserUseCase)
+    viewModelOf(::UserViewModel)
+
+    // Lambda (manual wiring)
+    single { Database() }
+    single { UserRepository(get()) }
+    factory { GetUserUseCase(get()) }
+    viewModel { UserViewModel(get()) }
+}
+```
+
+### Annotations
+
+```kotlin
+import org.koin.core.annotation.*
+
+@Singleton
+class Database
+
+@Singleton
+class UserRepository(private val db: Database)
+
+@Factory
+class GetUserUseCase(private val repo: UserRepository)
+
+@KoinViewModel
+class UserViewModel(private val useCase: GetUserUseCase) : ViewModel()
+
+// Module with component scan
+@Module
+@ComponentScan("com.myapp")
+class AppModule
+
+// Module with provider functions (for external libraries)
+@Module
+internal object DatabaseModule {
+    @Singleton
+    fun providesDatabase(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+}
+```
+
+### Annotated Top-Level Functions
+
+```kotlin
+import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Factory
+
+@Singleton
+fun provideDatabase(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+
+@Factory
+fun provideCache(db: AppDatabase): CacheService = CacheServiceImpl(db)
+```
+
+Discovered by `@ComponentScan` like annotated classes.
+
+---
+
+## Injecting Dependencies
+
+### In Android Activity / Fragment
+
+```kotlin
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class MainActivity : ComponentActivity() {
+    // Lazy injection
+    private val viewModel: UserViewModel by viewModel()
+    private val service: MyService by inject()
+
+    // Eager injection
+    val eagerService: MyService = get()
+}
+```
+
+### In Activity with Scope
+
+```kotlin
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.activityScope
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityScope()
+
+    private val viewModel: MainViewModel by viewModel()
+    private val tracker: ActivityTracker by inject()   // scoped to activity lifecycle
+}
+```
+
+### In Compose
+
+```kotlin
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
+
+@Composable
+fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
+    val analytics: AnalyticsHelper = koinInject()
+    // ...
+}
+```
+
+### In Compose with Parameters (Navigation Arguments)
+
+```kotlin
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun DetailScreen(
+    newsId: String,
+    viewModel: DetailViewModel = koinViewModel(key = newsId) { parametersOf(newsId) }
+) {
+    // Each unique newsId gets its own ViewModel instance
+}
+```
+
+### In Ktor
+
+```kotlin
+import org.koin.ktor.ext.inject
+
+fun Route.userRoutes() {
+    val service: UserService by inject()
+
+    get("/users/{id}") {
+        val user = service.getUser(call.parameters["id"]!!)
+        call.respond(user)
+    }
+}
+```
+
+### Constructor Injection (Recommended for Business Logic)
+
+```kotlin
+// No Koin imports needed — dependencies resolved by the framework
+class UserRepository(
+    private val database: Database,
+    private val networkClient: NetworkClient
+)
+
+class GetUserUseCase(
+    private val repository: UserRepository
+)
+```
+
+---
+
+## Qualifiers
+
+### @Named (String Qualifier)
+
+```kotlin
+import org.koin.core.annotation.Named
+import org.koin.core.qualifier.named
+
+// Definition
+@Singleton @Named("local")
+class LocalDatabase : Database
+
+@Singleton @Named("remote")
+class RemoteDatabase : Database
+
+// Injection
+@Singleton
+class UserRepository(
+    @Named("local") private val localDb: Database,
+    @Named("remote") private val remoteDb: Database
+)
+
+// DSL
+single<LocalDatabase>(named("local"))
+single<RemoteDatabase>(named("remote"))
+```
+
+### Custom @Qualifier (with Parameters)
+
+```kotlin
+import org.koin.core.annotation.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Dispatcher(val type: AppDispatchers)
+
+enum class AppDispatchers { Default, IO }
+
+// Provider
+@Singleton @Dispatcher(AppDispatchers.IO)
+fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+// Consumer
+@Singleton
+class MyRepository(
+    @Dispatcher(AppDispatchers.IO) private val dispatcher: CoroutineDispatcher
+)
+```
+
+---
+
+## Scopes
+
+### DSL Scopes
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.scoped
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.androidx.scope.dsl.fragmentScope
+
+val appModule = module {
+    // Activity-scoped
+    activityScope {
+        scoped<ActivityTracker>()
+    }
+
+    // Fragment-scoped
+    fragmentScope {
+        scoped<FragmentPresenter>()
+    }
+
+    // Custom scope
+    scope<UserSession> {
+        scoped<UserRepository>()
+        scoped<UserPreferences>()
+    }
+}
+```
+
+### Annotation Scopes
+
+```kotlin
+import org.koin.core.annotation.Scoped
+import org.koin.core.annotation.Scope
+import org.koin.android.annotation.ActivityScope
+import org.koin.android.annotation.FragmentScope
+
+@ActivityScope
+class ActivityTracker(val activity: ComponentActivity)
+
+@FragmentScope
+class FragmentPresenter(val fragment: Fragment)
+
+@Scope(UserSession::class)
+@Scoped
+class UserRepository(val db: Database)
+```
+
+---
+
+## ViewModel
+
+### With SavedStateHandle
+
+```kotlin
+// SavedStateHandle is auto-injected (whitelisted type)
+@KoinViewModel
+class HomeViewModel(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: UserRepository,
+) : ViewModel()
+
+// DSL
+viewModel<HomeViewModel>()
+```
+
+### With @InjectedParam (Navigation Arguments)
+
+```kotlin
+import org.koin.core.annotation.InjectedParam
+
+@KoinViewModel
+class DetailViewModel(
+    private val repository: NewsRepository,
+    @InjectedParam val newsId: String,
+) : ViewModel()
+
+// Compose usage:
+koinViewModel(key = newsId) { parametersOf(newsId) }
+```
+
+---
+
+## WorkManager
+
+```kotlin
+import org.koin.android.annotation.KoinWorker
+
+// Annotations
+@KoinWorker
+class SyncWorker(
+    context: Context,
+    params: WorkerParameters,
+    private val repository: NewsRepository,
+    @Dispatcher(AppDispatchers.IO) private val dispatcher: CoroutineDispatcher,
+) : CoroutineWorker(context, params)
+
+// DSL
+val syncModule = module {
+    single<WorkManagerSyncManager>() bind SyncManager::class
+    worker<SyncWorker>()
+}
+
+// Bootstrap — add workManagerFactory()
+startKoin {
+    workManagerFactory()
+    modules(appModule)
+}
+```
+
+---
+
+## Module Organization
+
+### Annotations — Auto-Discovery
+
+```kotlin
+import org.koin.core.annotation.*
+
+// Modules with @Configuration are auto-discovered by startKoin<T>
+@Module @ComponentScan("com.myapp.core") @Configuration
+class CoreModule
+
+@Module @ComponentScan("com.myapp.feature") @Configuration
+class FeatureModule
+
+@Module(includes = [DatabaseModule::class]) @Configuration
+class DataModule
+
+// App entry point — assembles all @Configuration modules
+@KoinApplication
+class MyApplication : Application()
+```
+
+### DSL — Explicit Composition
+
+```kotlin
+val coreModule = module { single<Database>(); single<NetworkClient>() }
+val featureModule = module { includes(coreModule); viewModel<HomeViewModel>() }
+
+val appModule = module {
+    includes(coreModule, featureModule, syncModule)
+}
+
+startKoin { modules(appModule) }
+```
+
+### @Configuration Labels (Environment-Specific)
+
+```kotlin
+@Module @ComponentScan("com.myapp.core") @Configuration("prod")
+class ProdCoreModule
+
+@Module @ComponentScan("com.myapp.core") @Configuration("test")
+class TestCoreModule
+
+// Modules with the same label see each other's definitions
+```
+
+---
+
+## Dynamic Modules
+
+```kotlin
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
+
+// Load at runtime (feature flags, A/B testing)
+loadKoinModules(premiumModule)
+
+// Unload when no longer needed
+unloadKoinModules(premiumModule)
+```
+
+---
+
+## Lazy Modules (Background Loading)
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.core.lazyModules
+
+startKoin {
+    modules(criticalModule)
+    lazyModules(heavyModule, analyticsModule)  // loaded in background
+}
+```
+
+---
+
+## Properties
+
+```kotlin
+import org.koin.core.annotation.Property
+
+@Singleton
+class ApiClient(
+    @Property("api_url") val url: String,
+    @Property("api_key") val key: String
+)
+
+// Provide properties
+startKoin {
+    properties(mapOf("api_url" to "https://api.example.com", "api_key" to "secret"))
+}
+
+// DSL
+single { ApiClient(getProperty("api_url"), getProperty("api_key")) }
+```
+
+---
+
+## Optional / Nullable Dependencies
+
+```kotlin
+// Nullable param → resolved with getOrNull()
+@Singleton
+class MyService(
+    val required: RequiredDep,
+    val optional: OptionalDep?     // null if not in graph
+)
+
+// DSL
+single<MyService>()  // compiler plugin handles getOrNull() automatically
+```
+
+---
+
+## Lazy Injection
+
+```kotlin
+// Lazy<T> → deferred creation
+@Singleton
+class MyService(
+    val heavy: Lazy<HeavyDependency>   // created on first access
+)
+```
+
+---
+
+## List Injection
+
+```kotlin
+// List<T> → collects all definitions of type T
+@Singleton
+class LoggerAggregator(
+    val loggers: List<LoggerDataSource>   // all LoggerDataSource definitions
+)
+```
+
+---
+
+## Testing
+
+```kotlin
+import org.koin.test.KoinTest
+import org.koin.test.inject
+import org.koin.test.check.checkModules
+
+class MyTest : KoinTest {
+    private val service: MyService by inject()
+
+    @Test
+    fun testService() {
+        // service is resolved from Koin
+    }
+}
+
+// Module verification (runtime — replaced by Compiler Plugin compile-time safety)
+@Test
+fun verifyModules() {
+    appModule.verify()
+}
+```
+
+---
+
+## Compile-Time Safety (with Koin Compiler Plugin)
+
+The Koin Compiler Plugin validates your dependency graph at build time:
+
+- **A2 — Per-Module:** validates definitions against visible scope per module
+- **A3 — Full Graph:** validates ALL modules at `startKoin<T>()`
+- **A4 — Call-Site:** validates every `get<T>()`, `inject<T>()`, `koinViewModel<T>()` call
+
+Works with both DSL and Annotations. Replaces `verify()` / `checkModules()`. If it compiles, it works.
+
+```kotlin
+koinCompiler {
+    compileSafety = true       // default
+    skipDefaultValues = true   // default
+    unsafeDslChecks = true     // default
+}
+```
+
+See https://insert-koin.io/docs/reference/koin-compiler/compile-safety
+
+---
+
+## Architecture
+
+- O(1) resolution via `HashMap.get()` — no reflection, no iteration
+- `ConcurrentHashMap` (JVM) / `ConcurrentMutableMap` (Native)
+- Fully compatible with R8/ProGuard
+- Pure common Kotlin runtime — all KMP targets
+
+## Project Structure
+
+```
+koin/projects/
+├── koin-core/              # Core DI engine (all platforms)
+├── koin-core-viewmodel/    # ViewModel support (KMP)
+├── koin-core-coroutines/   # Coroutines support (lazy modules)
+├── koin-android/           # Android integration
+├── koin-androidx-compose/  # Compose integration
+├── koin-compose-viewmodel/ # Compose ViewModel
+├── koin-ktor/              # Ktor server integration
+├── koin-test/              # Testing utilities
+└── koin-bom/               # Bill of Materials
+```
+
+## Related Repositories
+
+- **Compiler Plugin**: https://github.com/InsertKoinIO/koin-compiler-plugin
+- **Playground Apps**: https://github.com/InsertKoinIO/playground-apps
+- **Website**: https://insert-koin.io
