@@ -5,14 +5,15 @@
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
 [![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
 
-[![Free Monitoring](https://img.shields.io/badge/Kotzilla.io-Free%20Monitoring-brightgreen?style=flat&logo=kotlin&logoColor=white)]([https://forms.gle/YOUR-FORM-ID](https://bit.ly/koin_opensource_monitoring))
-
 
 # What is KOIN? ✨
  
 Koin is a pragmatic, lightweight dependency injection framework for Kotlin developers, developed by [Kotzilla](https://kotzilla.io) and open-source [contributors](https://github.com/InsertKoinIO/koin/graphs/contributors).
 
-`Koin is a DSL, a light container and a pragmatic API`
+```
+The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework
+- Simple and Powerful -
+```
 
 
 ## Setup & Current Version 📦
