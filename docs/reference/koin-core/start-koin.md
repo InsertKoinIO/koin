@@ -83,6 +83,12 @@ stopKoin()  // Global instance
 
 // Isolated instance
 koinApp.close()
+
+// Safe cleanup with use { } (KoinApplication and Koin implement AutoCloseable)
+koinApplication { modules(myModule) }.use { app ->
+    val service: MyService = app.koin.get()
+}
+// app.close() called automatically
 ```
 
 ## Logging
