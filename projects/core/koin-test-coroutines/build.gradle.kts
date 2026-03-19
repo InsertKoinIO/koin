@@ -11,13 +11,13 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":core:koin-core"))
-            api(project(":core:koin-test"))
-            api(project(":core:koin-core-coroutines"))
+            api(projects.core.koinCore)
+            api(projects.core.koinTest)
+            api(projects.core.koinCoreCoroutines)
             api(libs.kotlin.test)
         }
         jvmMain.dependencies {
-            api(project(":core:koin-test"))
+            api(projects.core.koinTest)
             api(kotlin("reflect"))
         }
         commonTest.dependencies {

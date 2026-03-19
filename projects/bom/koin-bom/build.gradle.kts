@@ -8,35 +8,35 @@ javaPlatform {
 
 dependencies {
     constraints {
-        api(project(":core:koin-core-annotations"))
-        api(project(":core:koin-annotations"))
-        api(project(":core:koin-core"))
+        api(projects.core.koinCoreAnnotations)
+        api(projects.core.koinAnnotations)
+        api(projects.core.koinCore)
         api("io.insert-koin:koin-core-jvm:$version") //Check later KMP Bom
-        api(project(":core:koin-core-coroutines"))
-        api(project(":core:koin-core-viewmodel"))
-        api(project(":core:koin-test"))
-        api(project(":core:koin-test-coroutines"))
-        api(project(":core:koin-test-junit4"))
-        api(project(":core:koin-test-junit5"))
+        api(projects.core.koinCoreCoroutines)
+        api(projects.core.koinCoreViewmodel)
+        api(projects.core.koinTest)
+        api(projects.core.koinTestCoroutines)
+        api(projects.core.koinTestJunit4)
+        api(projects.core.koinTestJunit5)
 
-        api(project(":ktor:koin-ktor"))
+        api(projects.ktor.koinKtor)
         api("io.insert-koin:koin-ktor-jvm:$version") //Check later KMP Bom
-        api(project(":ktor:koin-logger-slf4j"))
+        api(projects.ktor.koinLoggerSlf4j)
 
-        api(project(":android:koin-android"))
-        api(project(":android:koin-android-compat"))
-        api(project(":android:koin-android-test"))
-        api(project(":android:koin-androidx-navigation"))
-        api(project(":android:koin-androidx-workmanager"))
-        api(project(":android:koin-androidx-startup"))
-        api(project(":android:koin-dagger-bridge"))
+        api(projects.android.koinAndroid)
+        api(projects.android.koinAndroidCompat)
+        api(projects.android.koinAndroidTest)
+        api(projects.android.koinAndroidxNavigation)
+        api(projects.android.koinAndroidxWorkmanager)
+        api(projects.android.koinAndroidxStartup)
+        api(projects.android.koinDaggerBridge)
 
-        api(project(":compose:koin-compose"))
-        api(project(":compose:koin-compose-navigation3"))
-        api(project(":compose:koin-compose-viewmodel"))
-        api(project(":compose:koin-compose-viewmodel-navigation"))
-        api(project(":compose:koin-androidx-compose"))
-        api(project(":compose:koin-androidx-compose-navigation"))
+        api(projects.compose.koinCompose)
+        api(projects.compose.koinComposeNavigation3)
+        api(projects.compose.koinComposeViewmodel)
+        api(projects.compose.koinComposeViewmodelNavigation)
+        api(projects.compose.koinAndroidxCompose)
+        api(projects.compose.koinAndroidxComposeNavigation)
     }
 }
 

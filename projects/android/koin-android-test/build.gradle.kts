@@ -34,9 +34,9 @@ tasks.withType<KotlinCompile>().all {
 }
 
 dependencies {
-    api(project(":android:koin-android"))
-    api(project(":android:koin-androidx-workmanager"))
-    api(project(":core:koin-test"))
+    api(projects.android.koinAndroid)
+    api(projects.android.koinAndroidxWorkmanager)
+    api(projects.core.koinTest)
     // Test
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockito)

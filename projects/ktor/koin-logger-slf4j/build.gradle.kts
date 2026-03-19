@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":core:koin-core"))
+    api(projects.core.koinCore)
     api(libs.ktor.slf4j)
 }
 
