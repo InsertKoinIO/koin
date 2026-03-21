@@ -199,12 +199,12 @@ fun initKoinIos() {
 
 ```swift
 // iosApp/iOSApp.swift
-import shared
+import Shared
 
 @main
 struct iOSApp: App {
     init() {
-        KoinInitIosKt.initKoinIos()
+        KoinInitIosKt.doInitKoinIos()
     }
 
     var body: some Scene {
