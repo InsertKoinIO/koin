@@ -101,4 +101,62 @@ class ConcurrencyTest {
         assertTrue(result.values.all { it == 1 })
     }
 
+
+    @OptIn(KoinInternalApi::class)
+    @Test
+    fun closed_flag_should_be_visible_across_coroutines_after_close() = runTest {
+        // Verify that scope.closed is visible across threads after close() returns.
+        // Without @Volatile on _closed, a write in close() on one thread may not be
+        // visible to a read on another thread due to CPU cache staleness.
+        //
+        // Strategy: many coroutines on Dispatchers.Default (real threads) each create
+        // a scope, close it, and then verify the closed flag is visible.
+
+        startKoin {
+            modules(module {
+                scope<Counter> {
+                    scoped { CounterService() }
+                }
+            })
+        }
+
+        val iterations = 10_000
+        val staleReads = KoinPlatformTools.safeHashMap<String, Boolean>()
+
+        try {
+            coroutineScope {
+                val jobs = List(iterations) { i ->
+                    launch(kotlinx.coroutines.Dispatchers.Default) {
+                        val koin = KoinPlatform.getKoin()
+                        val counter = Counter()
+                        val scope = koin.createScope<Counter>(counter.getScopeId())
+                        scope.get<CounterService>()
+
+                        // Close on this thread
+                        scope.close()
+
+                        // Immediately check visibility - on a different CPU core,
+                        // without @Volatile this read may see stale false
+                        if (!scope.closed) {
+                            // Double-check after yield to give caches time
+                            kotlinx.coroutines.yield()
+                            if (!scope.closed) {
+                                staleReads[scope.id] = true
+                            }
+                        }
+                    }
+                }
+                jobs.joinAll()
+            }
+        } finally {
+            stopKoin()
+        }
+
+        assertTrue(
+            staleReads.isEmpty(),
+            "Detected ${staleReads.size} stale reads of _closed flag out of $iterations iterations. " +
+                "This indicates _closed is not safely published across threads - it should be @Volatile."
+        )
+    }
+
 }
