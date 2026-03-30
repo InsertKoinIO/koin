@@ -160,15 +160,15 @@ public fun KoinApplication.withConfigurationWith(modules : List<Module>, appDecl
  * }
  * // Plugin transforms to:
  * // startKoin {
- * //     modules(MyModule().module)
+ * //     modules(MyModule().module())
  * // }
  * ```
  *
  * @param T Type annotated with @Module
  */
-public fun <T : Any> KoinApplication.modules() {
+public fun <T : Any> KoinApplication.module() {
     // Generate Call: modules(T::class().module)
-    USE_KOIN_COMPILER_PLUGIN("KoinApplication.modules<T>()")
+    USE_KOIN_COMPILER_PLUGIN("KoinApplication.module<T>()")
 }
 
 /**
@@ -184,7 +184,7 @@ public fun <T : Any> KoinApplication.modules() {
  * }
  * // Plugin transforms to:
  * // startKoin {
- * //     modules(ModuleA().module, ModuleB().module)
+ * //     modules(ModuleA().module(), ModuleB().module())
  * // }
  * ```
  *
