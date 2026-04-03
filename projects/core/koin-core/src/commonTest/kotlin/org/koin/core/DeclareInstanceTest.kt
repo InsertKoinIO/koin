@@ -10,6 +10,7 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class DeclareInstanceTest {
@@ -244,6 +245,32 @@ class DeclareInstanceTest {
     }
 
     @Test
+    fun `error message shows scope chain on resolution failure`() {
+        val koin = koinApplication {
+            printLogger()
+            modules(
+                module {
+                    scope(named("MyScope")) {
+                    }
+                },
+            )
+        }.koin
+
+        val scope = koin.createScope("myId", named("MyScope"))
+
+        try {
+            scope.get<Simple.ComponentA>()
+            fail("Should throw NoDefinitionFoundException")
+        } catch (e: NoDefinitionFoundException) {
+            println(e)
+            val msg = e.message!!
+            assertTrue(msg.contains("myId"), "Error should contain scope id, got: $msg")
+            assertTrue(msg.contains("_root_"), "Error should contain linked root scope, got: $msg")
+            assertTrue(msg.contains("Searched scopes"), "Error should contain searched scopes, got: $msg")
+        }
+    }
+
+    @Test
     fun `can declare a other scoped on the fly`() {
         val koin = koinApplication {
             printLogger()
@@ -263,6 +290,31 @@ class DeclareInstanceTest {
         session1.declare(a, allowOverride = false, holdInstance = true)
 
         session2.get<Simple.ComponentA>()
+    }
+
+    @Test
+    fun `can declare and resolve from getOrCreateScope - issue 2379`() {
+        val koin = koinApplication {
+            printLogger(level = Level.DEBUG)
+            modules(
+                module {
+                    scope(named("MyScope")) {
+                        scoped { Simple.ComponentB(get()) }
+                    }
+                },
+            )
+        }.koin
+
+        val scope = koin.getOrCreateScope("someId", named("MyScope"))
+        scope.declare(Simple.ComponentA())
+
+        // should resolve ComponentA from the scope where it was declared
+        val a = scope.getOrNull<Simple.ComponentA>()
+        assertTrue (a != null)
+
+        // should resolve ComponentB which depends on ComponentA via get()
+        val b = scope.get<Simple.ComponentB>()
+        assertEquals(a, b.a)
     }
 
     @Test

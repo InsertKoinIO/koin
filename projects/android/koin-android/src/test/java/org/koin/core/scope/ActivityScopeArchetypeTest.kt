@@ -235,6 +235,29 @@ class ActivityScopeArchetypeTest {
         assertEquals("root-value", rootValue)
     }
 
+    @Test
+    fun `activityRetainedScope with declare - issue 2379`() {
+
+        val controller = Robolectric.buildActivity(FakeRetainedActivity::class.java).setup()
+        val activity = controller.get()
+
+        val koin = KoinPlatform.getKoin()
+        val module = module {
+            activityRetainedScope {
+                scoped { MyFactoryClass(get()) }
+            }
+        }
+        koin.loadModules(listOf(module))
+
+        val scope = activity.activityRetainedScope().value
+        val myScopedClass = MyScopedClass()
+        scope.declare(myScopedClass)
+
+        // should resolve MyFactoryClass which depends on MyScopedClass via get()
+        val mf = scope.get<MyFactoryClass>()
+        assertEquals(myScopedClass, mf.ms)
+    }
+
     private data class Entry(val value : String)
 
     @Test

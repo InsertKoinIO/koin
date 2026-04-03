@@ -40,7 +40,7 @@ class CoreResolverV2(
     }
 
     override fun <T> resolveFromContext(scope : Scope, instanceContext: ResolutionContext): T {
-        return resolveFromContextOrNull(scope,instanceContext) ?: throwNoDefinitionFound(instanceContext)
+        return resolveFromContextOrNull(scope,instanceContext) ?: throwNoDefinitionFound(scope, instanceContext)
     }
 
     private fun <T> resolveFromContextOrNull(scope : Scope, instanceContext: ResolutionContext): T? {
@@ -138,10 +138,19 @@ class CoreResolverV2(
         }
     }
 
-    private inline fun <T> throwNoDefinitionFound(ctx: ResolutionContext): T {
+    private inline fun <T> throwNoDefinitionFound(scope: Scope, ctx: ResolutionContext): T {
         val qualifierString = ctx.qualifier?.let { " and qualifier '$it'" } ?: ""
+        val scopeInfo = if (ctx.scope != scope) {
+            "scope '${scope}' (resolution context scope: '${ctx.scope}')"
+        } else {
+            "scope '${scope}'"
+        }
+        val linkedScopeIds = scope.getLinkedScopeIds()
+        val searchedScopes = if (linkedScopeIds.isNotEmpty()) {
+            " Searched scopes: ['${scope.id}'] -> ${linkedScopeIds.map { "['$it']" }}"
+        } else ""
         throw NoDefinitionFoundException(
-            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString on scope '${ctx.scope}'. Check your Modules configuration and add missing type and/or qualifier!",
+            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString on $scopeInfo.$searchedScopes. Check or add definition for type '${ctx.clazz.getFullName()}'$qualifierString in scope '${scope.scopeQualifier}'.",
         )
     }
 
