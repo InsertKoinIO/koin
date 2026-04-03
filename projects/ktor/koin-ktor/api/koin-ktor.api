@@ -1,3 +1,29 @@
+public final class org/koin/core/KoinKtorApplication : org/koin/core/KoinApplication {
+	public static final field Companion Lorg/koin/core/KoinKtorApplication$Companion;
+	public fun <init> ()V
+	public final fun bridge (Lkotlin/jvm/functions/Function1;)V
+	public final fun getKtorApplication ()Lio/ktor/server/application/Application;
+	public final fun getKtorBridge ()Lorg/koin/core/KtorBridgeDSL;
+	public final fun setKtorApplication (Lio/ktor/server/application/Application;)V
+	public final fun setKtorBridge (Lorg/koin/core/KtorBridgeDSL;)V
+}
+
+public final class org/koin/core/KoinKtorApplication$Companion {
+	public final fun init ()Lorg/koin/core/KoinKtorApplication;
+}
+
+public final class org/koin/core/KtorBridgeDSL {
+	public fun <init> ()V
+	public final fun koinToKtor ()V
+	public final fun ktorToKoin ()V
+}
+
+public final class org/koin/ktor/di/KoinDependencyMap : io/ktor/server/plugins/di/DependencyMap {
+	public fun <init> (Lorg/koin/core/Koin;)V
+	public fun contains (Lio/ktor/server/plugins/di/DependencyKey;)Z
+	public fun getInitializer (Lio/ktor/server/plugins/di/DependencyKey;)Lio/ktor/server/plugins/di/DependencyInitializer;
+}
+
 public final class org/koin/ktor/ext/ApplicationCallExtKt {
 	public static final fun getKoin (Lio/ktor/server/application/ApplicationCall;)Lorg/koin/core/Koin;
 	public static final fun getProperty (Lio/ktor/server/application/ApplicationCall;Ljava/lang/String;)Ljava/lang/Object;

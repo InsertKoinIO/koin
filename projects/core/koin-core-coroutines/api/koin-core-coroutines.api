@@ -12,12 +12,9 @@ public final class org/koin/core/KoinLazyExtKt {
 }
 
 public final class org/koin/core/KoinWaitExtKt {
+	public static final fun runOnKoinStarted (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;)V
 	public static final fun waitAllStartJobs (Lorg/koin/core/Koin;Lkotlinx/coroutines/CoroutineDispatcher;)V
 	public static synthetic fun waitAllStartJobs$default (Lorg/koin/core/Koin;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)V
-}
-
-public final class org/koin/core/KoinWaitExt_jvmKt {
-	public static final fun runOnKoinStarted (Lorg/koin/core/Koin;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class org/koin/core/context/ContextWaitJVMKt {

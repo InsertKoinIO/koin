@@ -4,8 +4,13 @@ public final class org/koin/KoinApplicationExtKt {
 	public static synthetic fun fileProperties$default (Lorg/koin/core/KoinApplication;Ljava/lang/String;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
 }
 
+public abstract interface annotation class org/koin/compiler/hints/KoinConfigurationHint : java/lang/annotation/Annotation {
+	public abstract fun moduleClass ()Ljava/lang/String;
+}
+
 public final class org/koin/core/Koin {
 	public fun <init> ()V
+	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
 	public final fun close ()V
 	public final fun createEagerInstances ()V
 	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;)Lorg/koin/core/scope/Scope;
@@ -36,8 +41,9 @@ public final class org/koin/core/Koin {
 	public final fun unloadModules (Ljava/util/List;)V
 }
 
-public final class org/koin/core/KoinApplication {
+public class org/koin/core/KoinApplication {
 	public static final field Companion Lorg/koin/core/KoinApplication$Companion;
+	protected fun <init> ()V
 	public final fun allowOverride (Z)V
 	public final fun close ()V
 	public final fun createEagerInstances ()V
@@ -64,6 +70,9 @@ public abstract interface annotation class org/koin/core/annotation/KoinExperime
 }
 
 public abstract interface annotation class org/koin/core/annotation/KoinInternalApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/koin/core/annotation/KoinViewModelScopeApi : java/lang/annotation/Annotation {
 }
 
 public abstract interface class org/koin/core/component/KoinComponent {
@@ -711,5 +720,55 @@ public final class org/koin/mp/KoinPlatformToolsKt {
 
 public final class org/koin/mp/KoinPlatformTools_jvmKt {
 	public static final fun generateId (Lorg/koin/mp/KoinPlatformTools;)Ljava/lang/String;
+}
+
+public final class org/koin/plugin/module/dsl/ApplicationDSLExtKt {
+	public static final fun koinApplication (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static synthetic fun koinApplication$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+	public static final fun koinApplicationWith (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static synthetic fun koinApplicationWith$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+	public static final fun koinConfiguration (Lkotlin/jvm/functions/Function1;)Lorg/koin/dsl/KoinConfiguration;
+	public static synthetic fun koinConfiguration$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/dsl/KoinConfiguration;
+	public static final fun koinConfigurationWith (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lorg/koin/dsl/KoinConfiguration;
+	public static synthetic fun koinConfigurationWith$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/dsl/KoinConfiguration;
+	public static final fun module (Lorg/koin/core/KoinApplication;)V
+	public static final fun modules (Lorg/koin/core/KoinApplication;[Lkotlin/reflect/KClass;)V
+	public static final fun startKoin (Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static synthetic fun startKoin$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+	public static final fun startKoinWith (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lorg/koin/core/KoinApplication;
+	public static synthetic fun startKoinWith$default (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/KoinApplication;
+	public static final fun withConfiguration (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun withConfiguration$default (Lorg/koin/core/KoinApplication;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun withConfigurationWith (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun withConfigurationWith$default (Lorg/koin/core/KoinApplication;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class org/koin/plugin/module/dsl/BaseDSLExtKt {
+	public static final fun factory (Lorg/koin/core/module/Module;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun factory (Lorg/koin/dsl/ScopeDSL;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun scoped (Lorg/koin/dsl/ScopeDSL;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun single (Lorg/koin/core/module/Module;)Lorg/koin/core/definition/KoinDefinition;
+}
+
+public final class org/koin/plugin/module/dsl/CreateDSLKt {
+	public static final field USE_KOIN_COMPILER_PLUGIN Ljava/lang/String;
+	public static final fun USE_KOIN_COMPILER_PLUGIN (Ljava/lang/String;)Ljava/lang/Void;
+}
+
+public final class org/koin/plugin/module/dsl/ModuleExtKt {
+	public static final fun bind (Lorg/koin/core/definition/KoinDefinition;Lkotlin/reflect/KClass;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun buildFactory (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun buildFactory (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildFactory$default (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildFactory$default (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun buildScoped (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildScoped$default (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun buildSingle (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;Z)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildSingle$default (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ZILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun createDefinition (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/definition/Kind;Lorg/koin/core/module/Module;Z)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun createDefinition$default (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/qualifier/Qualifier;Lorg/koin/core/definition/Kind;Lorg/koin/core/module/Module;ZILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun includes (Lorg/koin/core/module/Module;Lorg/koin/core/module/Module;)V
+	public static final fun scope (Lorg/koin/core/module/Module;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function1;)V
+	public static final fun typeQualifier (Lkotlin/reflect/KClass;)Lorg/koin/core/qualifier/Qualifier;
 }
 

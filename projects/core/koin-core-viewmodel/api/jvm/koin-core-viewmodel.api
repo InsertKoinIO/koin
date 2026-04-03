@@ -1,3 +1,15 @@
+public final class org/koin/plugin/module/dsl/ViewModelDSLExtKt {
+	public static final fun viewModel (Lorg/koin/core/module/Module;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun viewModel (Lorg/koin/dsl/ScopeDSL;)Lorg/koin/core/definition/KoinDefinition;
+}
+
+public final class org/koin/plugin/module/dsl/ViewModelModuleExtKt {
+	public static final fun buildViewModel (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;)Lorg/koin/core/definition/KoinDefinition;
+	public static final fun buildViewModel (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildViewModel$default (Lorg/koin/core/module/Module;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+	public static synthetic fun buildViewModel$default (Lorg/koin/dsl/ScopeDSL;Lkotlin/reflect/KClass;Lorg/koin/core/qualifier/Qualifier;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lorg/koin/core/definition/KoinDefinition;
+}
+
 public final class org/koin/viewmodel/BundleExtKt {
 	public static final fun emptyState ()Lkotlin/jvm/functions/Function0;
 	public static final fun toExtras (Landroidx/savedstate/SavedState;Landroidx/lifecycle/ViewModelStoreOwner;)Landroidx/lifecycle/viewmodel/CreationExtras;
