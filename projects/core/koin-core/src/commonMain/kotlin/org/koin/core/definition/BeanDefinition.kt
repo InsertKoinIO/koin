@@ -110,21 +110,21 @@ class BeanDefinition<T>(
     }
 }
 
-inline fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
-    return buildString {
-        append(clazz.getFullName())
-        append(':')
-        append(typeQualifier?.value ?: "")
-        append(':')
-        append(scopeQualifier)
-    }
+data class IndexKey(
+    val clazz: KClass<*>,
+    val qualifier: Qualifier?,
+    val scopeQualifier: Qualifier,
+) {
+    override fun toString(): String = "${clazz.getFullName()}:${qualifier?.value ?: ""}:$scopeQualifier"
+}
+
+fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): IndexKey {
+    return IndexKey(clazz, typeQualifier, scopeQualifier)
 }
 
 enum class Kind {
     Singleton, Factory, Scoped
 }
-
-typealias IndexKey = String
 typealias Definition<T> = Scope.(ParametersHolder) -> T
 
 inline fun <reified T> _createDefinition(
