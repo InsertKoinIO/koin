@@ -80,37 +80,45 @@ class CoreResolverV2(
 
     private fun <T> resolveFromLinkedScopes(scope: Scope, ctx: ResolutionContext): T? {
         val scopes = listOf(scope) + flatten(scope.linkedScopes)
-        var resolvedScope: Scope? = null
 
-        val factory = scopes.firstNotNullOfOrNull { linkedScope ->
-            val definition = findDefinitionInScope(linkedScope, ctx)
-            if (definition != null) {
-                resolvedScope = linkedScope
+        for (linkedScope in scopes) {
+            // 1. Registry on this linked scope
+            val factory = findDefinitionInScope(linkedScope, ctx)
+            if (factory != null) {
+                // we will loose parameters from parent context
+                val newCtx = ctx.newContextForScope(linkedScope)
+                if (linkedScope.scopeArchetype != null && !linkedScope.isRoot) {
+                    newCtx.scopeArchetype = linkedScope.scopeArchetype
+                }
+
+                // stack params for call on other Scope
+                val paramStack = if (newCtx.parameters != null) {
+                    newCtx.scope.onParameterOnStack(newCtx.parameters)
+                } else null
+
+                // call with scope
+                val value = factory.get(newCtx) as T?
+
+                // unstack params - reuse stack reference, avoid second ThreadLocal access
+                paramStack?.let { newCtx.scope.clearParameterStack(it) }
+
+                return value
             }
-            definition
+
+            // 2. Stacked params on this linked scope (issue #2387):
+            // restores access to parameters stacked on parent scopes (e.g.
+            // AndroidParametersHolder stacked on root by KoinViewModelFactory,
+            // resolved from a child ViewModel scope's property initializer).
+            // Skip the current scope: resolveFromStackedParameters was already
+            // called for it at the top of resolveFromContextOrNull. Cost is one
+            // ThreadLocal null-check per linked scope, ~free thanks to the
+            // _parameterStack short-circuit.
+            if (linkedScope !== scope) {
+                val fromStack = resolveFromStackedParameters<T>(linkedScope, ctx)
+                if (fromStack != null) return fromStack
+            }
         }
-
-        val foundScope = resolvedScope ?: return null
-        if (factory == null) return null
-
-        // we will loose parameters from parent context
-        val newCtx = ctx.newContextForScope(foundScope)
-        if (foundScope.scopeArchetype != null && !foundScope.isRoot) {
-            newCtx.scopeArchetype = foundScope.scopeArchetype
-        }
-
-        // stack params for call on other Scope
-        val paramStack = if (newCtx.parameters != null) {
-            newCtx.scope.onParameterOnStack(newCtx.parameters)
-        } else null
-
-        // call with scope
-        val value = factory.get(newCtx) as T?
-
-        // unstack params - reuse stack reference, avoid second ThreadLocal access
-        paramStack?.let { newCtx.scope.clearParameterStack(it) }
-
-        return value
+        return null
     }
 
     private fun findDefinitionInScope(scope: Scope, ctx: ResolutionContext): InstanceFactory<*>? {

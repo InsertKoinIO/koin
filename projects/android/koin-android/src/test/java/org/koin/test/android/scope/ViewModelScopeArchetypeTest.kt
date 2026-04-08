@@ -22,6 +22,8 @@ import org.koin.androidx.scope.fragmentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.annotation.KoinViewModelScopeApi
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.component.get
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.component.getScopeId
 import org.koin.core.context.startKoin
@@ -57,6 +59,20 @@ class SavedStateVM : ScopeViewModel() {
 }
 class SavedStateVMActivity : ComponentActivity() {
     val savedStateVM : SavedStateVM by viewModel()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+}
+
+// Reproducer for issue 2387 — works in 4.1.1, regressed in 4.2.0
+@OptIn(KoinExperimentalAPI::class)
+class ManualScopeSavedStateVM : ViewModel(), KoinScopeComponent {
+    override val scope = viewModelScope()
+    val savedStateHandle: SavedStateHandle = get()
+}
+
+class ManualScopeSavedStateVMActivity : ComponentActivity() {
+    val vm: ManualScopeSavedStateVM by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -117,6 +133,33 @@ class ViewModelScopeArchetypeTest {
     }
 
     @Test
+    fun `KoinScopeComponent ViewModel can resolve SavedStateHandle via property get - issue 2387`() {
+        // Reproducer from user's Koin.zip — pattern works in 4.1.1, regressed in 4.2.0.
+        // ViewModel manually implements KoinScopeComponent + viewModelScope(), then calls
+        // get<SavedStateHandle>() in a property initializer. The new VM scope is linked to
+        // root, and AndroidParametersHolder is stacked on root scope by KoinViewModelFactory,
+        // so the lookup should walk linked scopes and find SavedStateHandle via stacked params.
+        stopKoin()
+        startKoin {
+            printLogger(Level.DEBUG)
+        }
+
+        val koin = KoinPlatform.getKoin()
+        val module = module {
+            viewModel { ManualScopeSavedStateVM() }
+        }
+        koin.loadModules(listOf(module))
+
+        val controller: ActivityController<ManualScopeSavedStateVMActivity> =
+            Robolectric.buildActivity(ManualScopeSavedStateVMActivity::class.java)
+        val activity: ManualScopeSavedStateVMActivity? = controller.get()
+        assertNotNull(activity)
+        controller.create().start().resume()
+
+        assertNotNull(activity.vm.savedStateHandle)
+    }
+
+    @Test
     fun `ScopeViewModel scope_get SavedStateHandle is not supported - issue 2387`() {
         // SavedStateHandle is provided via AndroidParametersHolder which is stacked on the factory scope,
         // not on the ScopeViewModel's own scope. Using scope.get<SavedStateHandle>() in a property
@@ -144,9 +187,11 @@ class ViewModelScopeArchetypeTest {
     }
 
     @Test
-    fun `ScopeViewModel scope_get SavedStateHandle is not supported without viewModelScopeFactory - issue 2387`() {
-        // Same test but without viewModelScopeFactory option — params stacked on Activity scope,
-        // still not reachable from ScopeViewModel's own scope.
+    fun `ScopeViewModel scope_get SavedStateHandle works without viewModelScopeFactory - issue 2387`() {
+        // Without viewModelScopeFactory option, KoinViewModelFactory stacks AndroidParametersHolder
+        // on the factory scope (root). The ScopeViewModel's own scope is linked to root via
+        // createScope(), so resolveFromLinkedScopes can reach the stacked params and resolve
+        // SavedStateHandle from the property initializer.
         stopKoin()
         startKoin {
             printLogger(Level.DEBUG)
@@ -162,14 +207,8 @@ class ViewModelScopeArchetypeTest {
         val controller: ActivityController<SavedStateVMActivity> = Robolectric.buildActivity(SavedStateVMActivity::class.java)
         val activity: SavedStateVMActivity? = controller.get()
         assertNotNull(activity)
+        controller.create().start().resume()
 
-        try {
-            controller.create().start().resume()
-            activity.savedStateVM
-            fail("scope.get<SavedStateHandle>() should not work from ScopeViewModel property")
-        } catch (e: Exception) {
-            // Expected: SavedStateHandle can't be resolved from ScopeViewModel's own scope
-            assertTrue(e.cause is NoDefinitionFoundException || e is NoDefinitionFoundException)
-        }
+        assertNotNull(activity.savedStateVM.savedStateHandle)
     }
 }
