@@ -119,3 +119,7 @@ params.get<String>() == "a_string"
 :::note
   You can "cascade" parameter injection with `parametersOf` or `parameterArrayOf`, to consume value based on index. Or use `parametersOf` or `parameterSetOf` to cascading based on type to resolve. 
 :::
+
+:::caution
+If a value passed via `parametersOf` has the same type as the requested definition, Koin returns that value directly and skips the factory block. Use a wrapper type (e.g. a value class) for the parameter when it would otherwise collide with the definition's return type.
+:::
