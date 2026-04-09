@@ -77,6 +77,7 @@ class Scope(
             _parameterStack ?: ThreadLocal<ArrayDeque<ParametersHolder>>().also { _parameterStack = it }
         }
 
+    @Volatile
     private var _closed: Boolean = false
     val logger: Logger get() = _koin.logger
 
