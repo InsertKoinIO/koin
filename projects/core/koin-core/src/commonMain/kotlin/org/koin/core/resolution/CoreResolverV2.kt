@@ -79,9 +79,10 @@ class CoreResolverV2(
     }
 
     private fun <T> resolveFromLinkedScopes(scope: Scope, ctx: ResolutionContext): T? {
-        val scopes = listOf(scope) + flatten(scope.linkedScopes)
+        val linkedScopes = flatten(scope.linkedScopes)
+        if (linkedScopes.isEmpty()) return null
 
-        for (linkedScope in scopes) {
+        for (linkedScope in linkedScopes) {
             // 1. Registry on this linked scope
             val factory = findDefinitionInScope(linkedScope, ctx)
             if (factory != null) {
@@ -109,14 +110,8 @@ class CoreResolverV2(
             // restores access to parameters stacked on parent scopes (e.g.
             // AndroidParametersHolder stacked on root by KoinViewModelFactory,
             // resolved from a child ViewModel scope's property initializer).
-            // Skip the current scope: resolveFromStackedParameters was already
-            // called for it at the top of resolveFromContextOrNull. Cost is one
-            // ThreadLocal null-check per linked scope, ~free thanks to the
-            // _parameterStack short-circuit.
-            if (linkedScope !== scope) {
-                val fromStack = resolveFromStackedParameters<T>(linkedScope, ctx)
-                if (fromStack != null) return fromStack
-            }
+            val fromStack = resolveFromStackedParameters<T>(linkedScope, ctx)
+            if (fromStack != null) return fromStack
         }
         return null
     }
