@@ -34,6 +34,26 @@ Here are the currently available Koin versions:
 - **Latest** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 
 
+## Developer Tools & Observability 🛠️
+
+### Kotzilla Platform — KMP Crash Reporting & Observability
+
+Free signup on [Kotzilla](https://kotzilla.io)
+
+> The full observability platform for Kotlin Multiplatform apps:
+> - **Full KMP Crash Reporting** — complete crash reports across Android, iOS and all KMP targets
+> - **Screen Rendering Impact** — understand how each screen affects rendering and user experience
+> - **Performance Monitoring** — track runtime performance, memory metrics, and Koin module behavior
+>
+> A console-based suite with connected cloud services that visualizes your Koin module structure, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects.
+
+### Koin IDE Plugin — Your Koin Developer Assistant
+
+Freely available on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
+
+> The perfect Koin developer assistant: native support for IntelliJ IDEA and Android Studio, with navigation, inspections, and productivity features dedicated to Koin across Kotlin and Kotlin Multiplatform projects.
+
+
 ## Community & Enterprise Support 💬
 
 Koin is backed by an active open-source community and by Kotzilla for teams that need guaranteed, enterprise-grade support.
@@ -58,26 +78,6 @@ For teams with production and compliance requirements, [**Koin LTS**](https://ko
 - **Priority bug fixes** and advisory support for architecture and migration
 
 👉 Learn more and opt in at [kotzilla.io/koin-lts](https://kotzilla.io/koin-lts).
-
-## Developer Tools & Observability 🛠️
-
-### Kotzilla Platform — KMP Crash Reporting & Observability
-
-Free signup on [Kotzilla](https://kotzilla.io)
-
-> The full observability platform for Kotlin Multiplatform apps:
-> - **Full KMP Crash Reporting** — complete crash reports across Android, iOS and all KMP targets
-> - **Screen Rendering Impact** — understand how each screen affects rendering and user experience
-> - **Performance Monitoring** — track runtime performance, memory metrics, and Koin module behavior
->
-> A console-based suite with connected cloud services that visualizes your Koin module structure, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects.
-
-### Koin IDE Plugin — Your Koin Developer Assistant
-
-Freely available on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
-
-> The perfect Koin developer assistant: native support for IntelliJ IDEA and Android Studio, with navigation, inspections, and productivity features dedicated to Koin across Kotlin and Kotlin Multiplatform projects.
-
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)
