@@ -12,8 +12,18 @@ Koin is a pragmatic, lightweight dependency injection framework for Kotlin devel
 
 ```
 The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework
-- Simple and Powerful -
+- Simple, Powerful and now Compile-Safe -
 ```
+
+## Compile-Safe Dependency Injection 🛡️
+
+Koin is now **compile-safe** thanks to the [Koin Compiler Plugin](https://github.com/InsertKoinIO/koin-compiler-plugin). Your dependency graph is verified at compile time — missing bindings, broken definitions, and misconfigured modules are caught by the compiler instead of crashing at runtime.
+
+- Catch missing or invalid dependencies before you run your app
+- Keep Koin's concise, idiomatic DSL — no extra boilerplate
+- Works across Kotlin & Kotlin Multiplatform targets
+
+Get started with the [Koin Compiler Plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
 
 
 ## Setup & Current Version 📦
@@ -21,36 +31,58 @@ The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework
 Follow the dedicated [setup page](https://insert-koin.io/docs/setup/koin) to setup Koin for your project.
 Here are the currently available Koin versions:
 
-- **Stable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.2.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-core/4.2.0)
-- **Unstable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
+- **Latest** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 
-Take a look at:
-- [Release Upgrade Guide](https://insert-koin.io/docs/support/releases) to anticipate your next version upgrade.
-- [Versioning](https://insert-koin.io/docs/support/)
-- [API Stability](https://insert-koin.io/docs/support/api-stability)
 
 ## Community & Enterprise Support 💬
 
-- Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
-- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
-- Found a bug or a problem? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
-- Opt into [Koin 3.5 LTS](https://kotzilla.io/koin-lts) SLA-backed updates, long-term maintenance, and direct access to Kotzilla experts
+Koin is backed by an active open-source community and by Kotzilla for teams that need guaranteed, enterprise-grade support.
 
-## Mobile Developer Observability Tools 🛠️
+### Community Support 🌱
 
-- **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
-> The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio.
+Free, open-source support from the Koin community:
 
-- **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
-> is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects.
-> 
+- Chat with us on the Kotlin Slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
+- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/koin) with the `koin` tag
+- Found a bug or have a feature request? Open an issue on [GitHub](https://github.com/InsertKoinIO/koin/issues)
+- Follow releases and announcements on the [Koin blog](https://blog.insert-koin.io) and [@insertkoin_io](https://twitter.com/insertkoin_io)
+
+### Enterprise-Grade Support with Koin LTS 🏢
+
+For teams with production and compliance requirements, [**Koin LTS**](https://kotzilla.io/koin-lts) delivers enterprise-grade support backed by Kotzilla:
+
+- **SLA-backed updates** and guaranteed response times
+- **Long-term maintenance** on stabilized Koin versions (e.g. Koin 3.5 LTS)
+- **Security & compliance patches** aligned with enterprise requirements
+- **Direct access to Kotzilla experts** — the team behind Koin
+- **Priority bug fixes** and advisory support for architecture and migration
+
+👉 Learn more and opt in at [kotzilla.io/koin-lts](https://kotzilla.io/koin-lts).
+
+## Developer Tools & Observability 🛠️
+
+### Kotzilla Platform — KMP Crash Reporting & Observability
+
+Free signup on [Kotzilla](https://kotzilla.io)
+
+> The full observability platform for Kotlin Multiplatform apps:
+> - **Full KMP Crash Reporting** — complete crash reports across Android, iOS and all KMP targets
+> - **Screen Rendering Impact** — understand how each screen affects rendering and user experience
+> - **Performance Monitoring** — track runtime performance, memory metrics, and Koin module behavior
+>
+> A console-based suite with connected cloud services that visualizes your Koin module structure, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects.
+
+### Koin IDE Plugin — Your Koin Developer Assistant
+
+Freely available on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
+
+> The perfect Koin developer assistant: native support for IntelliJ IDEA and Android Studio, with navigation, inspections, and productivity features dedicated to Koin across Kotlin and Kotlin Multiplatform projects.
+
 
 ## Latest News & Resources 🌐
 - Official Website: [insert-koin.io](https://insert-koin.io)
 - Twitter: [@insertkoin_io](https://twitter.com/insertkoin_io)
 - Blog: [Koin Developers](https://blog.insert-koin.io)
-- Newsletter: [Koin Newsletter](https://bit.ly/koin_newsletter)
-- Tutorials: [Koin Tutorials](https://insert-koin.io/docs/quickstart/kotlin)
 
 ## Contributing 🛠
 
