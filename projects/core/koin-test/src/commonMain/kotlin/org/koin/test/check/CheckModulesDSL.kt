@@ -26,10 +26,8 @@ import kotlin.reflect.KClass
 
 //TODO TO BE DEPRECATED in 4.0
 
-@Deprecated("Migrate to verify() API")
 data class CheckedComponent(val qualifier: Qualifier? = null, val type: KClass<*>)
 
-@Deprecated("Migrate to verify() API")
 class ParametersBinding(val koin: Koin) {
 
     val parametersCreators = mutableMapOf<CheckedComponent, ParametersCreator>()
