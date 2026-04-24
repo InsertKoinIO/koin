@@ -8,15 +8,18 @@ import org.koin.core.error.NoPropertyFileFoundException
 import java.util.*
 
 /**
- *Save properties values into PropertyRegister
+ * Save [Properties] values into PropertyRegistry
  */
-@Suppress("UNCHECKED_CAST")
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
 
-    val propertiesMapValues = properties.toMap() as Map<String, String>
-    propertiesMapValues.forEach { (k: String, v: String) ->
-        saveProperty(k, v)
+    properties.forEach { (key, value) ->
+        if (key is String) {
+            saveProperty(key, value)
+        }
+        else {
+            _koin.logger.debug("Skipping property $key")
+        }
     }
 }
 
