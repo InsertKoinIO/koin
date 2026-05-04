@@ -11,7 +11,7 @@
             tools:node="merge">
             <!-- This entry makes ExampleLoggerInitializer discoverable. -->
             <meta-data
-                android:name="org.koin.androix.startup.KoinInitializer"
+                android:name="org.koin.androidx.startup.KoinInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
