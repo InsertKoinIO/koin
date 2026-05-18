@@ -144,6 +144,12 @@ class LoginViewModelTest : KoinTest {
 
 ### Verify All Modules
 
+:::tip
+The Koin Compiler Plugin now validates your full dependency graph at compile time, replacing the need for runtime verification. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+:::
+
+If you're not using the compiler plugin, you can verify modules at runtime:
+
 ```kotlin
 class ModuleCheckTest : KoinTest {
 

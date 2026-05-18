@@ -2,6 +2,12 @@
 title: Starting with Koin Annotations
 ---
 
+:::info Koin Annotations status
+**Koin Annotations is now part of the Koin project.** The `koin-annotations` library ships under the main Koin version and is fully supported.
+
+The legacy KSP processor (`koin-ksp-compiler`) is **deprecated** in favor of the **Koin Compiler Plugin** — your annotations stay the same; only the build setup changes. See [Migrating from KSP to Compiler Plugin](/docs/migration/from-ksp-to-compiler-plugin).
+:::
+
 Koin Annotations let you declare definitions using annotations on your classes. The Koin Compiler Plugin processes these annotations and generates all underlying Koin DSL for you at compile time.
 
 ## Getting Started
@@ -109,8 +115,30 @@ The Compiler Plugin provides typed APIs for starting Koin:
 | `startKoin<T> { }` | Start with configuration block |
 | `koinApplication<T>()` | Create isolated KoinApplication |
 | `koinConfiguration<T>()` | Create configuration (for Compose, Ktor) |
+| `module<T>()` | Load a single `@Module` class |
+| `modules(A::class, B::class)` | Load multiple `@Module` classes |
 
-Where `T` is a class annotated with `@KoinApplication`.
+Where `T` is a class annotated with `@KoinApplication` (for startup APIs) or `@Module` (for module loading APIs).
+
+### Loading Individual Modules
+
+You can load `@Module` classes directly without `@KoinApplication`:
+
+```kotlin
+startKoin {
+    module<NetworkModule>()
+    modules(DataModule::class, CacheModule::class)
+}
+```
+
+This is especially useful for **tests**:
+
+```kotlin
+@get:Rule
+val koinTestRule = KoinTestRule.create {
+    module<NetworkModule>()
+}
+```
 
 ## Compile-Time Safety
 

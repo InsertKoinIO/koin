@@ -182,6 +182,19 @@ fun DetailScreen(itemId: String) {
 }
 ```
 
+Use the `key` parameter to create distinct ViewModel instances per identifier (e.g., navigation arguments):
+
+```kotlin
+@Composable
+fun DetailScreen(newsId: String) {
+    val viewModel = koinViewModel<DetailViewModel>(key = newsId) {
+        parametersOf(newsId)
+    }
+}
+```
+
+The `key` ensures each unique `newsId` gets its own ViewModel instance, which is important for screens that can be on the back stack with different arguments.
+
 ### Classic DSL with Parameters
 
 ```kotlin

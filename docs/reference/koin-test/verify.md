@@ -4,10 +4,10 @@ title: Verifying your Koin configuration
 
 Koin allows you to verify your configuration modules, avoiding discovering dependency injection issues at runtime.
 
-:::info Future: Compile-Time Safety
-Both `verify()` and `checkModules()` APIs will be replaced by **native compile-time safety** in the Koin Compiler Plugin. This will validate your entire configuration at build time, catching errors before runtime.
+:::tip Compile-Time Safety Now Available
+The **Koin Compiler Plugin** now provides compile-time dependency validation — catching missing dependencies, qualifier mismatches, and broken call sites at build time. This replaces the need for `verify()` and `checkModules()` in most cases.
 
-See [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin) for more information.
+See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) to migrate.
 :::
 
 ## Verify API - JVM Only [3.3+]
@@ -240,17 +240,17 @@ fun `test DI modules`(){
 
 ---
 
-## Migration Path
+## Migration to Compile-Time Safety
 
-Both verification APIs will be replaced by the Koin Compiler Plugin's compile-time safety feature:
+The Koin Compiler Plugin now provides compile-time dependency validation, replacing the need for runtime verification:
 
-| Current | Future |
-|---------|--------|
-| `module.verify()` | Compiler Plugin (automatic) |
-| `checkModules()` | Compiler Plugin (automatic) |
+| Before | After |
+|--------|-------|
+| `module.verify()` in test | Compiler Plugin (automatic) |
+| `checkModules()` in test | Compiler Plugin (automatic) |
 | Runtime verification | Compile-time verification |
 | Manual test setup | No test code needed |
 
-When the Compiler Plugin compile-time safety is available, you'll get dependency validation at build time without writing any verification tests.
+The compiler validates on every build — no test code required. You can safely remove your `verify()` and `checkModules()` tests after enabling the compiler plugin.
 
-See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for setup instructions.
+See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) for full details and [Compiler Plugin Setup](/docs/setup/compiler-plugin) for setup instructions.

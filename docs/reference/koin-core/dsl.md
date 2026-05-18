@@ -121,6 +121,7 @@ For comprehensive module and definition documentation, see:
 | Factory | `factory { Class(get()) }` | `factoryOf(::Class)` | `factory<Class>()` |
 | Scoped | `scoped { Class(get()) }` | `scopedOf(::Class)` | `scoped<Class>()` |
 | ViewModel | `viewModel { VM(get()) }` | `viewModelOf(::VM)` | `viewModel<VM>()` |
+| Function Builder | `single { fn(get()) }` | — | `single { create(::fn) }` |
 
 ### Basic Module
 

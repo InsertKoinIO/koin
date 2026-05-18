@@ -1,37 +1,37 @@
 ---
-title: KSP Annotations Setup (Deprecated)
+title: KSP Processor Setup (Deprecated)
 ---
 
-# KSP Annotations Setup
+# KSP Processor Setup for Koin Annotations
 
 :::warning
-**Deprecated**: The KSP-based annotation processing approach is deprecated. Please migrate to the [Koin Compiler Plugin](/docs/setup/compiler-plugin) for all new projects.
+**`koin-ksp-compiler` is deprecated.** The KSP-based processor for Koin Annotations is replaced by the [Koin Compiler Plugin](/docs/setup/compiler-plugin). **Koin Annotations itself is not deprecated** — the `koin-annotations` library is now part of the main Koin project and remains fully supported. Only the processor changes.
 :::
 
 :::info
-**Your annotations stay the same** - only the build setup changes. See [Migration Guide](#migration-to-compiler-plugin) below.
+**Your annotations stay the same** — only the build setup changes. See [Migration Guide](#migration-to-koin-compiler-plugin) below.
 :::
 
 ## Why Migrate?
 
-| Aspect | KSP Annotations | Compiler Plugin |
-|--------|-----------------|-----------------|
+| Aspect | KSP Processor (`koin-ksp-compiler`) | Koin Compiler Plugin |
+|--------|-------------------------------------|----------------------|
 | **Generated files** | Visible in build/ | None |
 | **Build speed** | ⚠️ Slower | Faster |
 | **KMP setup** | ⚠️ Complex | Simple |
 | **Future support** | ⚠️ Deprecated | ✅ Active development |
 | **Your code** | ⚠️ Use generated extensions | Use Kotlin Compiler plugin dedicated API |
 
-## When to Use KSP (Temporary)
+## When to Use the KSP Processor (Temporary)
 
-Only use KSP if you're:
+Only use `koin-ksp-compiler` if you're:
 - Stuck on Kotlin 1.x (upgrade recommended)
 - Mid-migration and can't switch yet
 - Have specific KSP requirements
 
-## Current KSP Setup (Reference)
+## Current KSP Processor Setup (Reference)
 
-If you must use KSP, here's the setup:
+If you must use the KSP processor, here's the setup:
 
 ### Gradle Setup
 
@@ -86,8 +86,8 @@ ksp {
 }
 ```
 
-:::note
-This KSP-based compile-time check will be replaced by native compile-time safety in the **Koin Compiler Plugin**. See [Compiler Plugin](/docs/setup/compiler-plugin).
+:::tip
+This KSP-based compile-time check has been replaced by native compile-time safety in the **Koin Compiler Plugin**. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) and [Compiler Plugin Setup](/docs/setup/compiler-plugin).
 :::
 
 ### KMP Setup (Complex)
@@ -231,10 +231,11 @@ Rebuild your project.
 
 ### What Changes
 
-| Aspect | KSP | Compiler Plugin |
-|--------|-----|-----------------|
+| Aspect | KSP Processor | Koin Compiler Plugin |
+|--------|---------------|----------------------|
 | Build plugin | `com.google.devtools.ksp` | `io.insert-koin.compiler.plugin` |
-| Dependencies | `ksp()` configuration | None required |
+| Dependencies | `ksp("io.insert-koin:koin-ksp-compiler")` | None required (plugin only) |
+| `koin-annotations` version | Separate (`koin-ksp` version) | Same as main Koin version |
 | Generated files | Visible in `build/` | None |
 | Koin startup | `modules(AppModule().module)` | `startKoin<MyApp>()` |
 | KMP setup | Per-platform KSP | Just plugin |
@@ -242,7 +243,7 @@ Rebuild your project.
 ## Timeline
 
 :::warning
-KSP annotations will be removed in a future Koin version. We recommend migrating as soon as possible.
+The `koin-ksp-compiler` processor will be removed in a future Koin version. We recommend migrating to the Koin Compiler Plugin as soon as possible. The `koin-annotations` library and your `@Singleton` / `@Factory` / `@Module` annotations are not going away — they're now processed by the Koin Compiler Plugin.
 :::
 
 ## Help

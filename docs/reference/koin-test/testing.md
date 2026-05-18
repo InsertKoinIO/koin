@@ -154,10 +154,8 @@ fun checkKoinModules() {
 }
 ```
 
-:::info
-The `checkModules()` API is deprecated. Use `verify()` instead. See [Module Verification](/docs/reference/koin-test/verify) for details.
-
-Both verification APIs will be replaced by native compile-time safety in the Koin Compiler Plugin.
+:::tip
+The `checkModules()` API is deprecated. The Koin Compiler Plugin now provides compile-time dependency validation, replacing the need for both `verify()` and `checkModules()`. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
 :::
 
 ## Starting & stopping Koin for your tests

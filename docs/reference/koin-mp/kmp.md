@@ -466,6 +466,53 @@ struct ContentView: View {
 }
 ```
 
+### Declaring Dependencies from Swift
+
+In some cases, you may need to declare a dependency directly from Swift — for example, when a Swift-only class needs to be registered into Koin. You can use the `declare` function combined with Kotlin/Native interop to resolve Objective-C types to Kotlin `KClass`.
+
+Add this helper in `iosMain`:
+
+```kotlin
+// shared/src/iosMain/kotlin/KoinSwiftHelper.kt
+@OptIn(BetaInteropApi::class)
+fun Koin.declareFromSwift(
+    instance: Any,
+    bindTo: ObjCObject,
+    qualifier: Qualifier? = null,
+    allowOverride: Boolean = true
+) {
+    val kClass: KClass<*> = when (bindTo) {
+        is ObjCClass -> getOriginalKotlinClass(bindTo)
+        is ObjCProtocol -> getOriginalKotlinClass(bindTo)
+        else -> null
+    } ?: error("Can't resolve Kotlin KClass from $bindTo")
+
+    declare(
+        instance = instance,
+        qualifier = qualifier,
+        secondaryTypes = listOf(kClass),
+        allowOverride = allowOverride
+    )
+}
+```
+
+Then in Swift, call it with a class or protocol reference:
+
+```swift
+koin.declareFromSwift(
+    instance: MyService(),
+    bindTo: MyServiceProtocol.self,
+    qualifier: nil,
+    allowOverride: true
+)
+```
+
+:::note
+This uses `getOriginalKotlinClass()` from `kotlin.native` to map Objective-C types back to their Kotlin `KClass`. The `bindTo` parameter accepts either an `ObjCClass` (`.self` on a class) or an `ObjCProtocol` (`.self` on a protocol).
+
+Original proposal by [@SarahDelCastillo](https://github.com/InsertKoinIO/koin/issues/1108#issuecomment-3645990426).
+:::
+
 ### Threading Considerations
 
 On iOS and other Native targets, Koin instances work seamlessly with the new memory model:

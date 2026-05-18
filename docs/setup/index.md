@@ -46,19 +46,20 @@ Detailed guide for the Koin Compiler Plugin:
 - Kotlin version requirements
 - Troubleshooting
 
-### [KSP Annotations Setup](/docs/setup/annotations-ksp) (Deprecated)
+### [KSP Processor Setup](/docs/setup/annotations-ksp) (Deprecated)
 
-Legacy setup for KSP-based annotations:
-- ⚠️ Deprecated - migrate to Compiler Plugin
+Legacy setup for `koin-ksp-compiler`, the KSP-based processor for Koin Annotations:
+- ⚠️ `koin-ksp-compiler` is deprecated — migrate to the Koin Compiler Plugin
+- Koin Annotations itself is **not** deprecated; `koin-annotations` is now part of the main Koin project
 - Migration guide included
 
 ## Version Compatibility
 
-| Koin Version | Kotlin Version | Compiler Plugin |
-|--------------|----------------|-----------------|
+| Koin Version | Kotlin Version | Koin Compiler Plugin |
+|--------------|----------------|----------------------|
 | 4.2.x | 2.3+ | ✅ Recommended |
-| 4.1.x | 2.1/2.2+ | ⚠️ KSP only |
-| 4.0.x | 1.9/2.0+ | ⚠️ KSP only |
+| 4.1.x | 2.1/2.2+ | ⚠️ KSP Processor only |
+| 4.0.x | 1.9/2.0+ | ⚠️ KSP Processor only |
 | 3.5.x | 1.8+ | ❌ Not available |
 
 ## Current Version

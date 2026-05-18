@@ -32,6 +32,33 @@ fun main() {
 | `startKoin<T> { }` | Start with configuration block |
 | `koinApplication<T>()` | Create isolated KoinApplication |
 | `koinConfiguration<T>()` | Create configuration (for Compose, Ktor) |
+| `module<T>()` | Load a single `@Module` class |
+| `modules(A::class, B::class)` | Load multiple `@Module` classes |
+
+### Loading Individual Modules
+
+Use `module<T>()` or `modules(vararg KClass)` to load `@Module` classes directly, without needing `@KoinApplication`:
+
+```kotlin
+startKoin {
+    module<NetworkModule>()
+    modules(DataModule::class, CacheModule::class)
+}
+```
+
+This is useful for tests or when mixing annotation modules with DSL configuration:
+
+```kotlin
+// In tests — load only the modules you need
+@get:Rule
+val koinTestRule = KoinTestRule.create {
+    module<NetworkModule>()
+}
+```
+
+:::info
+`module<T>()` and `modules(vararg KClass)` are stub functions that the compiler plugin intercepts and transforms at compile time. They require the Koin Compiler Plugin to be applied.
+:::
 
 ### @KoinApplication Parameters
 
@@ -48,6 +75,42 @@ class ProdApp
 
 :::info
 When no configurations are specified, modules marked with `@Configuration` (default label) are loaded automatically.
+:::
+
+### Module Load Order and Overrides
+
+Koin is **last-wins** at runtime: when two modules define the same type, the one loaded last takes precedence. The compiler plugin assembles the module list from `@KoinApplication` in this order:
+
+1. **Auto-discovered `@Configuration` modules** (local + dependency JARs) — load first
+2. **Explicit `@KoinApplication(modules = [A, B, C])`** — load last, **in declaration order**
+
+So app-level overrides always win over dependency defaults:
+
+```kotlin
+// In a dependency library module
+@Module @Configuration
+class CoreModule {
+    @Singleton fun feature(): Feature = DefaultFeature()
+}
+
+// In your app module
+@Module
+class AppModule {
+    @Singleton fun feature(): Feature = AppFeature()  // custom override
+}
+
+@KoinApplication(modules = [AppModule::class])
+class MyApp
+// Load order: CoreModule (DefaultFeature) → AppModule (AppFeature wins)
+// Runtime get<Feature>() returns AppFeature.
+```
+
+Within the explicit list, the declared order is preserved — so `@KoinApplication(modules = [A, B, C])` loads A, then B, then C, and C wins among those three. Each entry's `@Module(includes = [...])` chain stays grouped with that entry.
+
+If a module appears in both the explicit list and is also `@Configuration`-discovered, it loads once — at its **explicit position** — so the declaration order in `modules = [...]` always controls override precedence.
+
+:::tip
+If you need a specific load order between several `@Configuration` modules (instead of the classpath-scan order), list them explicitly in `@KoinApplication(modules = [Core::class, Feature::class, App::class])` — the explicit list honours declaration order.
 :::
 
 ## Configuration Management with @Configuration

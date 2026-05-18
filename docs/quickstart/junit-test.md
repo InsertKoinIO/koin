@@ -41,7 +41,11 @@ val appModule = module {
 
 ## Verifying your Modules
 
-The simplest way to test your Koin configuration is to verify your modules. The `verify()` function performs a dry-run check to ensure all dependencies can be resolved:
+:::tip
+The Koin Compiler Plugin now provides compile-time dependency validation, catching missing dependencies at build time without writing test code. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+:::
+
+If you're not using the compiler plugin, you can verify modules at runtime. The `verify()` function performs a dry-run check to ensure all dependencies can be resolved:
 
 ```kotlin
 class ModuleVerificationTest : AutoCloseKoinTest() {

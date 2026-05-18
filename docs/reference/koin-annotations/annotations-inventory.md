@@ -21,9 +21,12 @@ This document provides a comprehensive inventory of all Koin annotations, their 
 - [Qualifier Annotations](#qualifier-annotations)
   - [@Named](#named)
   - [@Qualifier](#qualifier)
-- [Property Annotations](#property-annotations)
+- [Parameter Annotations](#parameter-annotations)
+  - [@InjectedParam](#injectedparam)
   - [@Property](#property)
   - [@PropertyValue](#propertyvalue)
+- [Safety Annotations](#safety-annotations)
+  - [@Provided](#provided)
 - [Module & Application Annotations](#module--application-annotations)
   - [@Module](#module)
   - [@ComponentScan](#componentscan)
@@ -41,13 +44,13 @@ This document provides a comprehensive inventory of all Koin annotations, their 
 
 ## Definition Annotations
 
-### @Single
+### @Single / @Singleton
 
 **Package:** `org.koin.core.annotation`
 
 **Target:** `CLASS`, `FUNCTION`
 
-**Description:** Declares a type or function as a `single` (singleton) definition in Koin. A single instance is created and shared across the application.
+**Description:** Declares a type or function as a `single` (singleton) definition in Koin. A single instance is created and shared across the application. `@Singleton` is the preferred name (standard naming convention); `@Single` is an alias.
 
 **Parameters:**
 - `binds: Array<KClass<*>> = [Unit::class]` - Explicit types to bind to this definition. Supertypes are automatically detected.
@@ -457,7 +460,38 @@ class MyClass(val d : MyDependency)
 
 ---
 
-## Property Annotations
+## Parameter Annotations
+
+### @InjectedParam
+
+**Package:** `org.koin.core.annotation`
+
+**Target:** `VALUE_PARAMETER`
+
+**Description:** Marks a constructor or function parameter to be resolved from `ParametersHolder` (passed via `parametersOf()` at call site) instead of the DI container.
+
+**Parameters:** None
+
+**Behavior:**
+Resolves the parameter value from `ParametersHolder.get()` at runtime, not from Koin definitions. Compile safety validation skips `@InjectedParam` parameters.
+
+**Example:**
+```kotlin
+@Factory
+class MyClass(@InjectedParam val id: Int, val service: Service)
+```
+
+**Generated Koin DSL:**
+```kotlin
+factory { params -> MyClass(params.get(), get()) }
+```
+
+**Usage:**
+```kotlin
+val instance = koin.get<MyClass> { parametersOf(42) }
+```
+
+---
 
 ### @Property
 
@@ -527,6 +561,46 @@ class MyClass(@Property("name") val name : String)
 ```kotlin
 factory { MyClass(getProperty("name", defaultName)) }
 ```
+
+---
+
+## Safety Annotations
+
+### @Provided
+
+**Package:** `org.koin.core.annotation`
+
+**Target:** `CLASS`, `VALUE_PARAMETER`
+
+**Description:** Marks a type or parameter as externally provided at runtime (e.g., Android framework types, third-party SDKs). Compile-time safety validation skips these types.
+
+**Parameters:** None
+
+**Behavior:**
+- On a **class**: all usages of that type skip compile safety validation
+- On a **parameter**: only that specific parameter skips validation
+- The type is still resolved via `scope.get<T>()` at runtime — `@Provided` only affects compile-time checks
+
+**Example on class:**
+```kotlin
+@Provided
+class FirebaseAnalytics  // all usages skip validation
+
+@Singleton
+class AnalyticsService(val analytics: FirebaseAnalytics)
+// No compile error — FirebaseAnalytics is @Provided
+```
+
+**Example on parameter:**
+```kotlin
+@Factory
+class PaymentProcessor(@Provided val gateway: PaymentGateway)
+// No compile error — only this parameter skips validation
+```
+
+**Note:** Common Android framework types (`Context`, `Application`, `Activity`, `Fragment`, `SavedStateHandle`, `WorkerParameters`) are automatically whitelisted and don't need `@Provided`.
+
+**See Also:** [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety#external-types-provided)
 
 ---
 
@@ -826,25 +900,11 @@ These annotations are for internal use only by the Koin compiler and code genera
 
 ---
 
-## Deprecated Annotations
-
-### @Singleton
-
-**Package:** `org.koin.core.annotation`
-
-**Status:** DEPRECATED - ERROR level
-
-**Replacement:** Use `@Singleton` from `koin-jsr330` package instead
-
-**Description:** Same as `@Single` but deprecated in favor of JSR-330 compliance.
-
----
-
 ## Summary Table
 
 | Annotation | Package | Purpose | Common Use Case |
 |------------|---------|---------|-----------------|
-| `@Single` | `org.koin.core.annotation` | Singleton definition | Shared application services |
+| `@Singleton` / `@Single` | `org.koin.core.annotation` | Singleton definition | Shared application services |
 | `@Factory` | `org.koin.core.annotation` | Factory definition | Per-request instances |
 | `@Scoped` | `org.koin.core.annotation` | Scoped definition | Scope-specific instances |
 | `@Scope` | `org.koin.core.annotation` | Scope declaration | Custom scopes |
@@ -857,8 +917,10 @@ These annotations are for internal use only by the Koin compiler and code genera
 | `@KoinWorker` | `org.koin.android.annotation` | Worker definition | WorkManager workers |
 | `@Named` | `org.koin.core.annotation` | String/type qualifier | Distinguish same-type beans |
 | `@Qualifier` | `org.koin.core.annotation` | Type/string qualifier | Distinguish same-type beans |
+| `@InjectedParam` | `org.koin.core.annotation` | Runtime parameter | `parametersOf()` values |
 | `@Property` | `org.koin.core.annotation` | Property injection | Configuration values |
 | `@PropertyValue` | `org.koin.core.annotation` | Property default | Default config values |
+| `@Provided` | `org.koin.core.annotation` | Skip safety validation | External/framework types |
 | `@Module` | `org.koin.core.annotation` | Module declaration | Group definitions |
 | `@ComponentScan` | `org.koin.core.annotation` | Package scanning | Auto-discover definitions |
 | `@Configuration` | `org.koin.core.annotation` | Module configuration | Build variants/flavors |

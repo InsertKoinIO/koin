@@ -21,6 +21,103 @@ Koin Annotations keep the same semantics as the Koin DSL. You can declare your c
 
 For Scopes, check the [Declaring Scopes](/docs/reference/koin-core/scopes) section.
 
+## Annotated Top-Level Functions
+
+Annotations work on **top-level functions**, not just classes. This is useful for providing instances from external libraries or builder patterns. Top-level functions are discovered by `@ComponentScan` like classes:
+
+```kotlin
+import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Named
+
+// Provide a Room database instance
+@Singleton
+fun provideDatabase(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+
+// Provide a JSON serializer
+@Singleton
+fun provideJson(): Json = Json { ignoreUnknownKeys = true }
+
+// Provide an HTTP client
+@Singleton
+@Named("api")
+fun provideHttpClient(json: Json): HttpClient = HttpClient { install(ContentNegotiation) { json(json) } }
+```
+
+Parameters are auto-resolved from the DI container. Qualifiers (`@Named`, custom `@Qualifier`) work on both the function and its parameters.
+
+## Module Functions (Provider Functions)
+
+Inside a `@Module` class, functions annotated with `@Singleton`, `@Factory`, etc. act as provider functions — similar to `@Provides` in Dagger/Hilt:
+
+```kotlin
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+internal object DatabaseModule {
+
+    @Singleton
+    fun providesDatabase(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+}
+
+@Module(includes = [DatabaseModule::class])
+class DaosModule {
+
+    @Singleton
+    fun providesTopicDao(database: AppDatabase): TopicDao = database.topicDao()
+
+    @Singleton
+    fun providesNewsDao(database: AppDatabase): NewsResourceDao = database.newsResourceDao()
+}
+```
+
+This is the pattern for wrapping external libraries (Room, Retrofit, OkHttp, etc.) that you don't own and can't annotate directly.
+
+## Custom Qualifier Annotations
+
+Beyond `@Named`, you can create custom qualifier annotations with parameters using `@Qualifier`:
+
+```kotlin
+import org.koin.core.annotation.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Dispatcher(val niaDispatcher: NiaDispatchers)
+
+enum class NiaDispatchers { Default, IO }
+```
+
+Use it on provider functions and injection points:
+
+```kotlin
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Singleton
+
+@Module
+@Configuration
+class DispatchersModule {
+
+    @Singleton
+    @Dispatcher(NiaDispatchers.IO)
+    fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Singleton
+    @Dispatcher(NiaDispatchers.Default)
+    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+    @Singleton
+    fun providesApplicationScope(
+        @Dispatcher(NiaDispatchers.Default) dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+}
+```
+
+Custom qualifiers are validated at compile time — a mismatch between the qualifier on the provider and the injection point produces a build error.
+
 ### ViewModel for Kotlin Multiplatform
 
 The `@KoinViewModel` annotation generates ViewModels using the unified `koin-core-viewmodel` API, providing Kotlin Multiplatform compatibility.

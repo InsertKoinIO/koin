@@ -95,8 +95,8 @@ fun `verify all modules`() {
 }
 ```
 
-:::info
-Both `verify()` and `checkModules()` will be replaced by native compile-time safety in the Koin Compiler Plugin. See [Module Verification](/docs/reference/koin-test/verify) for details.
+:::tip
+The Koin Compiler Plugin now provides compile-time dependency validation, replacing the need for `verify()` and `checkModules()`. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
 :::
 
 ## Common Errors
@@ -210,7 +210,7 @@ class UserService(private val api: ApiClient)
 ## Best Practices Summary
 
 1. **Prefer constructor injection** - Avoid `get()` calls inside classes
-2. **Use `verify()` in tests** - Catch missing definitions early
+2. **Use the Koin Compiler Plugin** - Catch missing definitions at compile time (or `verify()` in tests)
 3. **Keep modules focused** - Single responsibility per module
 4. **Avoid circular dependencies** - Refactor or use lazy injection
 5. **Use qualifiers sparingly** - Only when same type has multiple instances

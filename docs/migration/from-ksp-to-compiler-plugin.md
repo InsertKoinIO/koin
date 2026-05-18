@@ -35,7 +35,7 @@ The Compiler Plugin requires Kotlin 2.3+:
 ```kotlin
 // build.gradle.kts
 plugins {
-    kotlin("jvm") version "2.3.20-Beta1" //2.3.20-Beta1 minimum
+    kotlin("jvm") version "2.3.20" // 2.3.20 minimum
 }
 ```
 
@@ -60,8 +60,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 **After (Compiler Plugin):**
 ```toml
 [versions]
-koin = "4.2.0-Beta4" // or later
-koin-plugin = "0.2.9" // or later
+koin = "4.2.0"
+koin-plugin = "0.4.1"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -115,7 +115,7 @@ koinCompiler {
 
 ### Step 4: Update Koin Startup
 
-This is the main code change. The KSP approach uses generated extensions, while the Compiler Plugin uses typed APIs.
+This is the main code change. The KSP approach uses generated `.module` extensions, while the Compiler Plugin uses `@KoinApplication` with typed APIs.
 
 **Before (KSP):**
 ```kotlin
@@ -133,6 +133,7 @@ fun main() {
 ```
 
 **After (Compiler Plugin):**
+
 ```kotlin
 // No generated imports needed
 
@@ -210,6 +211,97 @@ class AppModule
 ```
 
 All annotations work identically. See **[Annotations Reference](/docs/reference/koin-annotations/definitions)** for the complete list.
+
+### Import Change: `@KoinViewModel`
+
+The `@KoinViewModel` annotation package has changed:
+
+```kotlin
+// Before (KSP)
+import org.koin.android.annotation.KoinViewModel
+
+// After (Compiler Plugin)
+import org.koin.core.annotation.KoinViewModel
+```
+
+### Top-Level Function Definitions (New)
+
+The Compiler Plugin supports annotations on top-level functions, discovered by `@ComponentScan`:
+
+```kotlin
+@Singleton
+fun provideDatabase(): DatabaseService = PostgresDatabase()
+
+@Factory
+fun provideCache(db: DatabaseService): CacheService = RedisCache(db)
+
+@Module
+@ComponentScan("com.myapp")
+class AppModule
+```
+
+Function return type determines the binding type. Function parameters are injected as dependencies.
+
+## DSL Syntax Changes
+
+If you use Koin DSL modules alongside annotations, the Compiler Plugin introduces a cleaner syntax:
+
+| KSP / Classic Style | Compiler Plugin Style |
+|---------------------|----------------------|
+| `singleOf(::MyService)` | `single<MyService>()` |
+| `factoryOf(::MyRepo)` | `factory<MyRepo>()` |
+| `viewModelOf(::MyVM)` | `viewModel<MyVM>()` |
+| `scopedOf(::MyScoped)` | `scoped<MyScoped>()` |
+| `workerOf(::MyWorker)` | `worker<MyWorker>()` |
+| `single { fn(get()) }` | `single { create(::fn) }` |
+
+```kotlin
+// Before
+val myModule = module {
+    singleOf(::MyService)
+    factoryOf(::MyRepository)
+    viewModelOf(::MyViewModel)
+}
+
+// After
+import org.koin.plugin.module.dsl.*
+
+val myModule = module {
+    single<MyService>()
+    factory<MyRepository>()
+    viewModel<MyViewModel>()
+}
+
+// Function builders — for external libraries (Room, Retrofit, etc.)
+fun createDatabase(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "db").build()
+
+val dbModule = module {
+    single { create(::createDatabase) }
+}
+```
+
+:::note
+The Compiler Plugin DSL is in package **`org.koin.plugin.module.dsl`**. Classic DSL remains in `org.koin.dsl`.
+:::
+
+## Cross-Module Discovery
+
+Use `@Configuration` for automatic module discovery across Gradle modules:
+
+```kotlin
+// In feature module
+@Module
+@ComponentScan
+@Configuration
+class FeatureModule
+
+// In app module - FeatureModule is auto-discovered
+@KoinApplication
+object MyApp
+
+startKoin<MyApp>()  // FeatureModule automatically included
+```
 
 ## KMP Migration
 
@@ -301,18 +393,21 @@ koinCompiler {
 
 ## Migration Checklist
 
-- [ ] Update Kotlin to 2.3+
+- [ ] Update Kotlin to 2.3.20+
+- [ ] Update Koin to 4.2.0+
 - [ ] Remove KSP plugin
 - [ ] Remove `koin-ksp-compiler` dependency
 - [ ] Update `koin-annotations` to main Koin version (`io.insert-koin:koin-annotations:$koin_version`)
-- [ ] Add Koin Compiler Plugin
-- [ ] Create `@KoinApplication` class
-- [ ] Replace `modules(X().module)` with `startKoin<MyApp>()`
+- [ ] Add Koin Compiler Plugin (`io.insert-koin.compiler.plugin`)
+- [ ] Update `@KoinViewModel` import to `org.koin.core.annotation`
+- [ ] Create `@KoinApplication` class and replace `modules(X().module)` with `startKoin<MyApp>()`
+- [ ] Update DSL imports to `org.koin.plugin.module.dsl.*` if using DSL modules
+- [ ] Update DSL syntax: `singleOf(::X)` → `single<X>()`
 - [ ] Remove `import org.koin.ksp.generated.*`
-- [ ] Clean and rebuild
+- [ ] Clean and rebuild (`rm -rf build/generated/ksp && ./gradlew clean build`)
 
 ## See Also
 
 - **[Compiler Plugin Setup](/docs/setup/compiler-plugin)** - Complete setup guide
 - **[Annotations Reference](/docs/reference/koin-annotations/start)** - All annotations
-- **[KSP Setup (Deprecated)](/docs/setup/annotations-ksp)** - Legacy reference
+- **[KSP Processor Setup (Deprecated)](/docs/setup/annotations-ksp)** — Legacy `koin-ksp-compiler` reference

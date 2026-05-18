@@ -553,8 +553,8 @@ class ModuleVerificationTest {
 }
 ```
 
-:::info
-Both `verify()` and `checkModules()` will be replaced by native compile-time safety in the Koin Compiler Plugin. See [Module Verification](/docs/reference/koin-test/verify) for details.
+:::tip
+The Koin Compiler Plugin now provides compile-time dependency validation, replacing the need for `verify()` and `checkModules()`. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
 :::
 
 ## UI Tests with Espresso
@@ -1029,7 +1029,7 @@ Key points for instrumented testing with Koin:
 - **In-memory databases** for fast, isolated database tests
 - **Compose Testing** works seamlessly with `KoinContext`
 - **Scope testing** validates lifecycle-bound dependencies
-- **Module verification** with `verify()` catches configuration errors early
+- **Module verification** with the Koin Compiler Plugin (compile-time) or `verify()` (runtime) catches configuration errors early
 
 ## Next Steps
 

@@ -91,10 +91,21 @@ The dependencies resolution from `MyScopedComponent` is accessing the Koin root 
 
 You may need to resolve a component from another scope that is not directly accessible to your scope. For this, you need to tag your dependency with `@ScopeId` annotation to tell Koin to find this dependency in the scope of the given scope Id.
 
+With a string name:
+
 ```kotlin
 @Factory
 class MyFactory(
-  @ScopeId("my_scope_id") val myScopedComponent :MyScopedComponent
+  @ScopeId(name = "my_scope_id") val myScopedComponent : MyScopedComponent
+)
+```
+
+Or with a type reference:
+
+```kotlin
+@Factory
+class MyFactory(
+  @ScopeId(MyScope::class) val myScopedComponent : MyScopedComponent
 )
 ```
 

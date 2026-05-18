@@ -112,8 +112,8 @@ class MyApplication : Application() {
             modules(allModules)
         }
 
-        // Use verify() in unit tests instead
-        // appModule.verify()
+        // Use the Koin Compiler Plugin for compile-time validation
+        // or verify() in unit tests: appModule.verify()
     }
 }
 ```

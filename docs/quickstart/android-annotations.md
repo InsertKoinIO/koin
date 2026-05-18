@@ -275,7 +275,7 @@ ksp {
 }
 ```
 
-:::note
-This KSP-based option will be replaced by the **Koin Compiler Plugin** which will provide native compile-time safety. See [Compiler Plugin](/docs/setup/compiler-plugin) for the future approach.
+:::tip
+This KSP-based option has been replaced by the **Koin Compiler Plugin** which provides native compile-time safety. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) and [Compiler Plugin Setup](/docs/setup/compiler-plugin).
 :::
 

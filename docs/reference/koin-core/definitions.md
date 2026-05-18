@@ -449,6 +449,144 @@ startKoin {
 }
 ```
 
+## Safe DSL Patterns
+
+The Koin Compiler Plugin transforms DSL definitions at compile time — auto-wiring constructor parameters and validating them. Here are the key patterns:
+
+### Function Builders with create()
+
+Use `create(::function)` to wrap external libraries you don't own. The function parameters are auto-resolved from the DI container:
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+
+// Builder functions — parameters resolved by Koin
+fun database(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
+
+fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
+fun newsDao(db: AppDatabase): NewsResourceDao = db.newsResourceDao()
+
+val databaseModule = module {
+    single { create(::database) }
+    single { create(::topicDao) }
+    single { create(::newsDao) }
+}
+```
+
+This is the recommended pattern for Room databases, Retrofit services, OkHttp clients, and other external libraries.
+
+### Module Composition with includes()
+
+Organize modules by layer and compose them:
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
+
+val networkModule = module {
+    includes(dispatchersModule)
+
+    single { create(::json) }
+    single<AppHttpClient>()
+    single<DemoNetworkDataSource>() bind NetworkDataSource::class
+}
+
+private fun json(): Json = Json { ignoreUnknownKeys = true }
+```
+
+### App Module — Composing Everything
+
+The app module includes all feature modules and declares ViewModels and use cases:
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
+import org.koin.androidx.scope.dsl.activityScope
+
+val appModule = module {
+    includes(
+        dispatchersModule,
+        databaseModule,
+        dataStoreModule,
+        networkModule,
+        dataModule,
+        syncModule
+    )
+
+    // Domain use cases — factory (new instance each time)
+    factory<GetFollowableTopicsUseCase>()
+    factory<GetSearchContentsUseCase>()
+
+    // ViewModels
+    viewModel<MainActivityViewModel>()
+    viewModel<HomeViewModel>()
+    viewModel<BookmarksViewModel>()
+
+    // Activity-scoped definitions
+    activityScope {
+        scoped<ActivityTracker>()
+    }
+}
+```
+
+### Custom Qualifiers in DSL
+
+Qualifier annotations work with `create(::function)` too:
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+
+val dispatchersModule = module {
+    single { create(::dispatcherIO) }
+    single { create(::dispatcherDefault) }
+    single { create(::coroutineScope) }
+}
+
+@Dispatcher(NiaDispatchers.IO)
+fun dispatcherIO(): CoroutineDispatcher = Dispatchers.IO
+
+@Dispatcher(NiaDispatchers.Default)
+fun dispatcherDefault(): CoroutineDispatcher = Dispatchers.Default
+
+fun coroutineScope(
+    @Dispatcher(NiaDispatchers.Default) default: CoroutineDispatcher
+) = CoroutineScope(SupervisorJob() + default)
+```
+
+### Worker with DSL
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
+import org.koin.dsl.bind
+
+val syncModule = module {
+    single<WorkManagerSyncManager>() bind SyncManager::class
+    worker<SyncWorker>()
+}
+```
+
+### Complete Pattern: Repository with Interface Binding
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.dsl.bind
+import org.koin.plugin.module.dsl.single
+
+val dataModule = module {
+    includes(databaseModule, dataStoreModule, networkModule)
+
+    single<OfflineFirstNewsRepository>() bind NewsRepository::class
+    single<OfflineFirstTopicsRepository>() bind TopicsRepository::class
+    single<OfflineFirstUserDataRepository>() bind UserDataRepository::class
+}
+```
+
+All these definitions are validated at compile time by the Koin Compiler Plugin — missing dependencies, qualifier mismatches, and broken call sites are caught at build time. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+
 ## Best Practices
 
 1. **Prefer Constructor Injection** - Makes code testable without Koin
