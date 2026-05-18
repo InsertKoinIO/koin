@@ -84,15 +84,20 @@ class InstanceRegistry(val _koin: Koin) {
         factory: InstanceFactory<*>,
         logWarning: Boolean = true,
     ) {
-        _instances[mapping]?.let {
+        _instances[mapping]?.let { displaced ->
             if (!allowOverride) {
                 throwOverrideError(factory, mapping)
-            } else if (logWarning) {
-                _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
-                // remove previous eager isntance too
-                val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
-                if (existingFactory != null) {
-                    eagerInstances.remove(factory.beanDefinition.hashCode())
+            } else {
+                if (logWarning) {
+                    _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+                    // remove previous eager isntance too
+                    val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
+                    if (existingFactory != null) {
+                        eagerInstances.remove(factory.beanDefinition.hashCode())
+                    }
+                }
+                if (displaced !== factory) {
+                    displaced.dropAll()
                 }
             }
         }
