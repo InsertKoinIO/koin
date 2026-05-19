@@ -23,14 +23,14 @@ This guide helps you migrate your Koin Annotations project from KSP-based proces
 
 ## Requirements
 
-- **Kotlin 2.3+** (K2 compiler required)
+- **Kotlin 2.3.20+** (K2 compiler required)
 - **Gradle 8.x+**
 
 ## Migration Steps
 
 ### Step 1: Update Kotlin Version
 
-The Compiler Plugin requires Kotlin 2.3+:
+The Compiler Plugin requires Kotlin 2.3.20+:
 
 ```kotlin
 // build.gradle.kts
@@ -61,7 +61,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ```toml
 [versions]
 koin = "4.2.0"
-koin-plugin = "0.4.1"
+koin-plugin = "1.0.0"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

@@ -100,6 +100,7 @@ If `UserViewModel` isn't in the graph → build error with exact file, line, and
 | `@ScopeId(name = "x")` param | OK — resolved from named scope at runtime |
 | `Scope` type param | OK — scope receiver passed directly |
 | Android framework type (e.g. `Context`) | OK — hardcoded whitelist |
+| Circular dependency (A → B → A) | **ERROR** — detected during A2/A3 graph traversal |
 
 ## Safety with Annotations
 
@@ -219,6 +220,24 @@ Call-site errors include exact location:
   No matching definition found in any declared module.
   → file: UserScreen.kt, line: 12, column: 5
 ```
+
+## Forbidden Definitions
+
+Some return types can never be resolved meaningfully through Koin and are rejected at compile time:
+
+### KOIN-D007: `@Factory` returning a suspend `fun interface`
+
+A `@Factory` that returns a type extending a suspend `fun interface` cannot be invoked through Koin's synchronous `get<T>()` API. The plugin blocks this at compile time.
+
+```kotlin
+fun interface AsyncTask { suspend operator fun invoke(): Result }
+
+@Factory
+fun provideTask(): AsyncTask = AsyncTask { ... }
+// KOIN-D007 — ERROR: @Factory return types cannot extend a suspend fun interface
+```
+
+Refactor to a regular interface, or expose the suspend operation through a class with a suspend method.
 
 ## Generic DSL Types
 
@@ -404,10 +423,16 @@ Other related options:
 ```kotlin
 koinCompiler {
     compileSafety = true       // Compile-time dependency validation (default: true)
+    strictSafety = true        // Force aggregator's safety pass to re-run on every build
+                               // (default: auto-detected on modules with startKoin / @KoinApplication)
     skipDefaultValues = true   // Skip injection for params with default values (default: true)
     unsafeDslChecks = true     // Validate create() is only instruction in lambda (default: true)
 }
 ```
+
+:::info Incremental compilation & `strictSafety`
+The full-graph pass (A3) only runs in the aggregator's `compileKotlin`. Kotlin's incremental compilation under K2 doesn't track DSL changes inside `module { }` lambda bodies, nor classes newly added to `@ComponentScan` packages — so the aggregator can be marked UP-TO-DATE even when the graph changed. The plugin auto-enables [`strictSafety`](/docs/reference/koin-annotations/options#strictsafety) on detected aggregator modules to force A3 to re-run; library and feature modules stay fully incremental.
+:::
 
 ## Migrating from verify() / checkModules()
 
@@ -427,4 +452,4 @@ The compiler validates on every build — no test code required.
 - **[Compiler Plugin Options](/docs/reference/koin-annotations/options)** - All configuration options
 - **[Compiler Plugin Setup](/docs/setup/compiler-plugin)** - Installation guide
 - **[Starting with Annotations](/docs/reference/koin-annotations/start)** - Getting started
-- **[Playground Apps](https://github.com/InsertKoinIO/playground-apps)** - Complete reference apps with both annotations (`app-annotations/`) and DSL (`app-dsl/`) approaches
+- **[Playground Apps](https://github.com/InsertKoinIO/koin-compiler-plugin/tree/main/playground-apps)** - Complete reference apps with both annotations (`app-annotations/`) and DSL (`app-dsl/`) approaches

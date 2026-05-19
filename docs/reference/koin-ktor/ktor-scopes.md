@@ -75,22 +75,32 @@ class UserSessionHandler(private val call: ApplicationCall) {
 
 ## Scope Lifecycle Callbacks
 
+Attach an `onClose` callback to a scoped definition to run cleanup when the request scope is closed. `onClose` is an infix function on the definition (not a block inside `requestScope { }`), and the instance parameter is nullable (`T?`):
+
 ```kotlin
 requestScope {
-    scoped { RequestContext(get()) }
-
-    // onCreate callback
-    onCreate { requestContext ->
-        requestContext.startTime = System.currentTimeMillis()
-    }
-
-    // onClose callback
-    onClose { requestContext ->
-        val duration = System.currentTimeMillis() - requestContext.startTime
+    scoped { RequestContext() } onClose { context ->
+        val duration = System.currentTimeMillis() - (context?.startTime ?: 0L)
         println("Request completed in ${duration}ms")
     }
 }
 ```
+
+You can also use `withOptions { onClose { ... } }`:
+
+```kotlin
+requestScope {
+    scoped { RequestContext() } withOptions {
+        onClose { context ->
+            context?.cleanup()
+        }
+    }
+}
+```
+
+:::note
+Koin's scope DSL exposes `onClose` per definition; there is no `onCreate` callback. Initialization should happen in the `scoped { }` constructor block.
+:::
 
 :::note
 Request scopes are **created and destroyed for each HTTP request**. Instances are not shared between requests, ensuring thread safety and preventing state leakage.
@@ -202,14 +212,8 @@ val appModule = module {
 
     requestScope {
         scopedOf(::RequestLogger)
-        scopedOf(::RequestMetrics)
-
-        onCreate { metrics: RequestMetrics ->
-            metrics.start()
-        }
-
-        onClose { metrics: RequestMetrics ->
-            metrics.recordDuration()
+        scopedOf(::RequestMetrics) onClose { metrics ->
+            metrics?.recordDuration()
         }
     }
 }
@@ -240,8 +244,7 @@ fun Application.module() {
 |----------|-------------|
 | `requestScope { }` | Declare request-scoped components |
 | `call.scope.get<T>()` | Get request-scoped instance |
-| `onCreate { }` | Callback when scope is created |
-| `onClose { }` | Callback when scope is closed |
+| `scoped { } onClose { }` | Per-definition cleanup callback (instance is nullable) |
 | `koinModule { }` | Declare inline module |
 | `koinModules(...)` | Load existing modules |
 

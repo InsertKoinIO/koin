@@ -23,7 +23,7 @@ Install the **[Koin IDE Plugin](https://plugins.jetbrains.com/plugin/26131-koin-
 
 ## Requirements
 
-- **Kotlin 2.3+** (K2 compiler)
+- **Kotlin 2.3.20+** (K2 compiler)
 - **Gradle 8.x+**
 
 ## Setup
@@ -247,6 +247,7 @@ koinCompiler {
 | Option | Description | Default |
 |--------|-------------|---------|
 | `compileSafety` | Compile-time dependency validation (A2/A3/A4) | `true` |
+| `strictSafety` | Force aggregator's safety pass to re-run on every build (bypasses Kotlin IC) | auto-detected on aggregator modules |
 | `skipDefaultValues` | Skip injection for parameters with Kotlin default values | `true` |
 | `userLogs` | Enable logs for component detection and DSL/annotation processing | `false` |
 | `debugLogs` | Enable verbose debug logs for internal plugin processing | `false` |
@@ -414,6 +415,8 @@ Or in Android Studio: **Build → Clean Project**, then **Build → Rebuild Proj
 
 :::tip
 If you encounter unexpected compile safety errors after a refactor, try a clean build first. This is a known limitation of incremental compilation with compiler plugins — not specific to Koin.
+
+For graph-level changes (DSL definitions inside `module { }` lambdas, classes added to `@ComponentScan` packages), the plugin's `strictSafety` option auto-enables on aggregator modules to force the full-graph safety pass to re-run each build. See [`strictSafety`](/docs/reference/koin-annotations/options#strictsafety) for details.
 :::
 
 ### Compile Safety False Positives in Multi-Module Projects

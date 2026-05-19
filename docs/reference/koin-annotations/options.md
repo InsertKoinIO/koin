@@ -13,6 +13,7 @@ koinCompiler {
     userLogs = true
     debugLogs = false
     compileSafety = true
+    strictSafety = true       // auto-detected by default
     skipDefaultValues = true
     unsafeDslChecks = true
 }
@@ -61,6 +62,25 @@ koinCompiler {
 
 See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) for full details on what gets validated.
 
+### strictSafety
+
+- **Type**: Boolean
+- **Default**: auto-detected (enabled on aggregator modules — those containing `startKoin`, `koinApplication`, or `@KoinApplication`)
+- **Description**: Forces the full-graph safety pass (A3) to re-run on every build, bypassing Kotlin's incremental compilation cache on the aggregator module. Library and feature modules stay fully incremental.
+- **Usage**: Leave at default. Set explicitly to `true` if auto-detection misses your aggregator, or to `false` to opt out (e.g. when a test fixture only references `startKoin` in a comment and trips the detector).
+
+```kotlin
+koinCompiler {
+    strictSafety = true   // force-enable
+    // or
+    strictSafety = false  // opt out of auto-detection
+}
+```
+
+**Why it exists**: K2's incremental compilation today (via the Build Tools API used by AGP) doesn't track two things the DI graph relies on — DSL definitions inside `module { … }` lambda bodies (not part of any declaration's ABI), and `@ComponentScan` package-scope discovery (no source-level edge from the scanner to newly-added classes). The aggregator's `compileKotlin` task can be marked UP-TO-DATE even when the graph changed. `strictSafety` is the smallest correct workaround on top of what K2 IC currently surfaces; it has bounded cost since only the aggregator re-runs each build.
+
+Has no effect when `compileSafety = false`. See [koin-compiler-plugin issue #32](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/32) for background.
+
 ### skipDefaultValues
 
 - **Type**: Boolean
@@ -99,6 +119,7 @@ koinCompiler {
     userLogs = true           // Log component detection
     debugLogs = false         // Verbose logs (off by default)
     compileSafety = true      // Compile-time dependency validation
+    strictSafety = true       // Force aggregator to re-run safety pass (auto-detected by default)
     skipDefaultValues = true  // Use Kotlin defaults instead of DI resolution
     unsafeDslChecks = true    // Validate DSL usage
 }
@@ -107,6 +128,7 @@ koinCompiler {
 ## Best Practices
 
 - **Keep `compileSafety` enabled** (default) for compile-time dependency validation
+- **Leave `strictSafety` at auto-detect** — only override if the detector misses your aggregator or trips on a non-aggregator file
 - **Keep `skipDefaultValues` enabled** (default) to respect Kotlin default values
 - **Enable `userLogs`** during development to see which components are detected
 - **Keep `unsafeDslChecks` enabled** (default) for safer DSL usage

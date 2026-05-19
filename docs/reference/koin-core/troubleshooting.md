@@ -11,7 +11,7 @@ This guide covers debugging, common errors, and anti-patterns to avoid.
 ### Problem
 
 ```kotlin
-// Circular dependency - will fail at runtime
+// Circular dependency
 class ServiceA(val serviceB: ServiceB)
 class ServiceB(val serviceA: ServiceA)
 
@@ -20,6 +20,10 @@ module {
     single { ServiceB(get()) }  // ERROR: Circular dependency!
 }
 ```
+
+:::tip Caught at compile time with the Compiler Plugin
+The [Koin Compiler Plugin](/docs/reference/koin-compiler/compile-safety) detects circular dependencies during compilation (A2/A3 phases) — no need to wait for runtime. Without the plugin, the cycle fails at startup with a runtime error.
+:::
 
 ### Solution 1: Lazy Injection
 
