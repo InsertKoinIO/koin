@@ -223,4 +223,4 @@ Koin is ideal for:
 - **[What is Dependency Injection?](/docs/intro/what-is-dependency-injection)** - Learn DI fundamentals
 - **[Koin Compiler Plugin](/docs/intro/koin-compiler-plugin)** - The recommended approach
 - **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
-- **[Tutorials](/docs/tutorials/your-first-app)** - Build your first app with Koin
+- **[Tutorials](/docs/quickstart/kotlin)** - Build your first app with Koin

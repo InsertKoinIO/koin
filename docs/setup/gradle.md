@@ -238,7 +238,7 @@ Last version is currently: [![Maven Central](https://img.shields.io/maven-centra
 | `koin-compose` | Compose (Android & Multiplatform) |
 | `koin-compose-viewmodel` | ViewModel for Compose |
 | `koin-compose-viewmodel-navigation` | Navigation + ViewModel for Compose MP |
-| `koin-androidx-compose` | ⚠️ Superseedeed - use `koin-compose` instead |
+| `koin-androidx-compose` | ⚠️ Superseded - use `koin-compose` instead |
 | `koin-androidx-compose-navigation` | Navigation 2 for Android (not KMP compatible) |
 | `koin-compose-navigation3` | Navigation 3 |
 | `koin-ktor` | Ktor server support |
