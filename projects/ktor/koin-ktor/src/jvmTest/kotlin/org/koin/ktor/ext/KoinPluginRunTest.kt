@@ -37,6 +37,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
+import org.koin.ktor.plugin.scope
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -54,6 +55,19 @@ class KoinPluginRunTest {
 
             assertEquals(HttpStatusCode.OK, response.status)
             assertTrue { response.bodyAsText().contains("Test response") }
+        }
+    }
+
+    @Test
+    fun `each request gets a unique scope id`() {
+        testMyApplication { client ->
+            val ids = (1..100).map { client.get("testurl").headers["X-Scope-Id"] }
+
+            assertEquals(ids.size, ids.toSet().size, "all request scope ids should be unique")
+            assertTrue(
+                ids.all { it?.removePrefix("request_")?.toLongOrNull() != null },
+                "scope ids should be 'request_<number>'",
+            )
         }
     }
 
@@ -135,7 +149,10 @@ private fun testMyApplicationNoKoin(test: suspend (jsonClient: HttpClient) -> Un
 class KtorMyModule(application: Application) {
     init {
         application.routing {
-            get("testurl") { call.respond(HttpStatusCode.OK, "Test response") }
+            get("testurl") {
+                call.response.headers.append("X-Scope-Id", call.scope.id)
+                call.respond(HttpStatusCode.OK, "Test response")
+            }
         }
     }
 }
