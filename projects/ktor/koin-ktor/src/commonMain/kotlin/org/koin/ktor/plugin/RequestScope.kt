@@ -19,16 +19,25 @@ import io.ktor.server.application.ApplicationCall
 import org.koin.core.Koin
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
-import org.koin.mp.KoinPlatformTools
-import org.koin.mp.generateId
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
+import kotlin.time.Clock
 
 /**
  * Request Scope Holder
  *
  * @author Arnaud Giuliani
+ * @author Loïc Favreliere
  */
+@OptIn(ExperimentalAtomicApi::class)
 class RequestScope(private val _koin: Koin, call: ApplicationCall) : KoinScopeComponent {
-    private val scopeId = "request_"+KoinPlatformTools.generateId()
+    private val scopeId = "request_" + counter.incrementAndFetch()
     override fun getKoin(): Koin = _koin
     override val scope = createScope(scopeId = scopeId, source = call)
+
+    private companion object {
+        // Monotonic counter seeded with the current time, for process-unique request scope ids
+        private val counter = AtomicLong(Clock.System.now().toEpochMilliseconds())
+    }
 }
