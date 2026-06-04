@@ -34,8 +34,9 @@ import kotlin.reflect.KClass
  */
 @OptionDslMarker
 infix fun <S : Any> KoinDefinition<out S>.bind(clazz: KClass<S>): KoinDefinition<out S> {
-    factory.beanDefinition.secondaryTypes = factory.beanDefinition.secondaryTypes + clazz
-    val mapping = indexKey(clazz, factory.beanDefinition.qualifier, factory.beanDefinition.scopeQualifier)
+    val def = factory.beanDefinition
+    def.addSecondaryType(clazz)
+    val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
     module.saveMapping(mapping, factory)
     return this
 }
@@ -85,9 +86,10 @@ fun <T> KoinDefinition<T>.override(): KoinDefinition<T> {
  */
 @OptionDslMarker
 infix fun KoinDefinition<*>.binds(classes: Array<KClass<*>>): KoinDefinition<*> {
-    factory.beanDefinition.secondaryTypes += classes
+    val def = factory.beanDefinition
     classes.forEach { clazz ->
-        val mapping = indexKey(clazz, factory.beanDefinition.qualifier, factory.beanDefinition.scopeQualifier)
+        def.addSecondaryType(clazz)
+        val mapping = indexKey(clazz, def.qualifier, def.scopeQualifier)
         module.saveMapping(mapping, factory)
     }
     return this

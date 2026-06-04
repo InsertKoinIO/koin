@@ -36,7 +36,7 @@ class BeanDefinition<T>(
     var qualifier: Qualifier? = null,
     val definition: Definition<T>,
     val kind: Kind,
-    var secondaryTypes: List<KClass<*>> = emptyList(),
+    secondaryTypes: List<KClass<*>> = emptyList(),
     var allowOverride : Boolean? = null
 ) {
     /**
@@ -52,6 +52,26 @@ class BeanDefinition<T>(
         kind: Kind,
         secondaryTypes: List<KClass<*>>
     ) : this(scopeQualifier, primaryType, qualifier, definition, kind, secondaryTypes, null)
+
+    // Mutable backing for [secondaryTypes] so DSL functions like `bind()` / `binds()` can
+    // append in O(1) instead of allocating a fresh List per call. Initialized from the
+    // constructor parameter; assignment via the public setter clears + refills in place.
+    private val _secondaryTypes: MutableList<KClass<*>> = secondaryTypes.toMutableList()
+
+    var secondaryTypes: List<KClass<*>>
+        get() = _secondaryTypes
+        set(value) {
+            if (value === _secondaryTypes) return
+            // Snapshot before clear(): value may be a view (e.g. subList) backed by
+            // _secondaryTypes — clearing first would invalidate it mid-copy.
+            val snapshot = value.toList()
+            _secondaryTypes.clear()
+            _secondaryTypes.addAll(snapshot)
+        }
+
+    internal fun addSecondaryType(clazz: KClass<*>) {
+        _secondaryTypes.add(clazz)
+    }
 
     var callbacks: Callbacks<T> = Callbacks()
 
