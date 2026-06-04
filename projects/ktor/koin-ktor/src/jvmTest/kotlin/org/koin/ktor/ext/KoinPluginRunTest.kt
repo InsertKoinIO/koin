@@ -27,6 +27,10 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -59,9 +63,15 @@ class KoinPluginRunTest {
     }
 
     @Test
-    fun `each request gets a unique scope id`() {
+    fun `sequential and concurrent requests get unique scope ids`() {
         testMyApplication { client ->
-            val ids = (1..100).map { client.get("testurl").headers["X-Scope-Id"] }
+            suspend fun scopeId() = client.get("testurl").headers["X-Scope-Id"]
+
+            val sequentialIds = (1..100).map { scopeId() }
+            val concurrentIds = coroutineScope {
+                (1..1_000).map { async(Dispatchers.Default) { scopeId() } }.awaitAll()
+            }
+            val ids = sequentialIds + concurrentIds
 
             assertEquals(ids.size, ids.toSet().size, "all request scope ids should be unique")
             assertTrue(
