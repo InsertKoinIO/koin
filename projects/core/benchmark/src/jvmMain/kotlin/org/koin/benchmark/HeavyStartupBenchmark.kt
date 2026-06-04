@@ -27,6 +27,7 @@ class HeavyStartupBenchmark {
 
     fun modulesList(max : Int) = (1..max).map { perfModule400() }
     fun lazyModulesList(max : Int) = (1..max).map { perfLazyModule400() }
+    fun modulesListWithBinds(max : Int) = (1..max).map { perfModule400WithBinds() }
 
     @Benchmark
     fun start_get_module1() {
@@ -86,5 +87,31 @@ class HeavyStartupBenchmark {
         k.waitAllStartJobs()
 
         k.get<Perfs.C75>()
+    }
+
+    @Benchmark
+    fun start_get_module1_with_binds() {
+        val k = koinApplication {
+            modules(perfModule400WithBinds())
+        }.koin
+
+        k.get<BindPerfs.BA25>()
+    }
+
+    @Benchmark
+    fun start_get_module100_with_binds() {
+        val k = koinApplication {
+            modules(modulesListWithBinds(100))
+        }.koin
+        k.get<BindPerfs.BB50>()
+    }
+
+    @Benchmark
+    fun start_get_module1000_with_binds() {
+        val k = koinApplication {
+            modules(modulesListWithBinds(1000))
+        }.koin
+
+        k.get<BindPerfs.BC75>()
     }
 }

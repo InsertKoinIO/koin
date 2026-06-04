@@ -1,18 +1,1639 @@
+public final class org/koin/benchmark/BindPerfs {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA1 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA10 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA100 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA11 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA12 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA13 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA14 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA15 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA16 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA17 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA18 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA19 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA2 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA20 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA21 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA22 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA23 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA24 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA25 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA26 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA27 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA28 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA29 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA3 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA30 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA31 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA32 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA33 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA34 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA35 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA36 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA37 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA38 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA39 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA4 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA40 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA41 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA42 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA43 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA44 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA45 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA46 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA47 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA48 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA49 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA5 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA50 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA51 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA52 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA53 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA54 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA55 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA56 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA57 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA58 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA59 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA6 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA60 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA61 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA62 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA63 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA64 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA65 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA66 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA67 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA68 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA69 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA7 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA70 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA71 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA72 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA73 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA74 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA75 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA76 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA77 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA78 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA79 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA8 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA80 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA81 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA82 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA83 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA84 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA85 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA86 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA87 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA88 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA89 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA9 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA90 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA91 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA92 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA93 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA94 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA95 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA96 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA97 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA98 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BA99 : org/koin/benchmark/IA {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB1 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB10 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB100 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB11 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB12 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB13 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB14 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB15 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB16 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB17 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB18 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB19 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB2 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB20 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB21 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB22 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB23 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB24 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB25 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB26 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB27 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB28 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB29 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB3 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB30 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB31 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB32 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB33 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB34 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB35 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB36 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB37 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB38 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB39 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB4 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB40 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB41 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB42 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB43 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB44 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB45 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB46 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB47 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB48 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB49 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB5 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB50 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB51 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB52 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB53 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB54 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB55 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB56 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB57 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB58 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB59 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB6 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB60 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB61 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB62 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB63 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB64 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB65 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB66 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB67 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB68 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB69 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB7 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB70 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB71 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB72 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB73 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB74 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB75 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB76 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB77 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB78 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB79 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB8 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB80 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB81 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB82 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB83 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB84 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB85 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB86 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB87 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB88 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB89 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB9 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB90 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB91 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB92 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB93 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB94 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB95 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB96 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB97 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB98 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BB99 : org/koin/benchmark/IB {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC1 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC10 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC100 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC11 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC12 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC13 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC14 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC15 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC16 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC17 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC18 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC19 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC2 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC20 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC21 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC22 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC23 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC24 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC25 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC26 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC27 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC28 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC29 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC3 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC30 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC31 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC32 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC33 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC34 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC35 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC36 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC37 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC38 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC39 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC4 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC40 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC41 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC42 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC43 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC44 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC45 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC46 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC47 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC48 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC49 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC5 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC50 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC51 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC52 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC53 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC54 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC55 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC56 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC57 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC58 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC59 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC6 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC60 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC61 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC62 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC63 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC64 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC65 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC66 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC67 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC68 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC69 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC7 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC70 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC71 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC72 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC73 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC74 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC75 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC76 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC77 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC78 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC79 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC8 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC80 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC81 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC82 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC83 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC84 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC85 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC86 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC87 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC88 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC89 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC9 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC90 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC91 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC92 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC93 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC94 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC95 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC96 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC97 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC98 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BC99 : org/koin/benchmark/IC {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD1 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD10 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD100 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD11 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD12 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD13 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD14 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD15 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD16 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD17 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD18 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD19 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD2 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD20 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD21 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD22 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD23 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD24 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD25 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD26 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD27 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD28 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD29 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD3 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD30 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD31 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD32 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD33 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD34 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD35 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD36 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD37 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD38 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD39 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD4 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD40 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD41 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD42 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD43 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD44 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD45 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD46 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD47 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD48 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD49 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD5 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD50 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD51 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD52 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD53 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD54 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD55 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD56 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD57 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD58 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD59 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD6 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD60 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD61 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD62 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD63 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD64 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD65 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD66 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD67 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD68 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD69 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD7 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD70 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD71 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD72 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD73 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD74 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD75 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD76 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD77 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD78 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD79 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD8 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD80 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD81 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD82 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD83 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD84 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD85 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD86 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD87 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD88 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD89 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD9 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD90 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD91 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD92 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD93 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD94 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD95 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD96 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD97 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD98 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
+public final class org/koin/benchmark/BindPerfs$BD99 : org/koin/benchmark/ID {
+	public fun <init> ()V
+}
+
 public class org/koin/benchmark/HeavyStartupBenchmark {
 	public fun <init> ()V
 	public fun lazyModulesList (I)Ljava/util/List;
 	public fun modulesList (I)Ljava/util/List;
+	public fun modulesListWithBinds (I)Ljava/util/List;
 	public fun start_get_lazy_module1 ()Lorg/koin/benchmark/Perfs$A25;
 	public fun start_get_lazy_module100 ()Lorg/koin/benchmark/Perfs$B50;
 	public fun start_get_lazy_module1000 ()Lorg/koin/benchmark/Perfs$C75;
 	public fun start_get_module1 ()V
 	public fun start_get_module100 ()V
 	public fun start_get_module1000 ()V
+	public fun start_get_module1000_with_binds ()V
+	public fun start_get_module100_with_binds ()V
+	public fun start_get_module1_with_binds ()V
+}
+
+public abstract interface class org/koin/benchmark/IA {
+}
+
+public abstract interface class org/koin/benchmark/IB {
+}
+
+public abstract interface class org/koin/benchmark/IC {
+}
+
+public abstract interface class org/koin/benchmark/ID {
 }
 
 public class org/koin/benchmark/JvmBenchmark {
 	public fun <init> ()V
 	public fun retrieveDependency ()V
+	public fun retrieveDependency_tight ()V
 	public fun setUp ()V
 }
 
@@ -22,6 +1643,10 @@ public final class org/koin/benchmark/Lazy_modules_400Kt {
 
 public final class org/koin/benchmark/Module_400Kt {
 	public static final fun perfModule400 ()Lorg/koin/core/module/Module;
+}
+
+public final class org/koin/benchmark/Module_400_with_bindsKt {
+	public static final fun perfModule400WithBinds ()Lorg/koin/core/module/Module;
 }
 
 public final class org/koin/benchmark/Perfs {
@@ -2278,5 +3903,6 @@ public class org/koin/benchmark/StartupBenchmark {
 	public fun setUp ()V
 	public fun startup ()V
 	public fun startup_lazy ()V
+	public fun startup_with_binds ()V
 }
 

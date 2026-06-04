@@ -34,4 +34,16 @@ class JvmBenchmark {
     fun retrieveDependency() {
         koin!!.get<Perfs.A42>()
     }
+
+    // Tight loop variant: amortizes JMH per-op overhead so the per-resolve cost (and any
+    // allocation churn from indexKey() rebuild) is easier to see at nanosecond resolution.
+    // Use with `-prof gc` to read alloc/op against the unrolled count.
+    @Benchmark
+    @OperationsPerInvocation(1000)
+    fun retrieveDependency_tight() {
+        val k = koin!!
+        repeat(1000) {
+            k.get<Perfs.A42>()
+        }
+    }
 }

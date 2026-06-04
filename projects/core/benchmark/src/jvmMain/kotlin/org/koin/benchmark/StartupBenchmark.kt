@@ -44,4 +44,11 @@ class StartupBenchmark {
             lazyModules(perfLazyModule400())
         }
     }
+
+    @Benchmark
+    fun startup_with_binds() {
+        koinApplication {
+            modules(perfModule400WithBinds())
+        }
+    }
 }
