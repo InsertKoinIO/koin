@@ -60,4 +60,11 @@ tasks.withType<KotlinCompile>().all {
         }
 }
 
+// Align Java compilations with the Kotlin jvmTarget above, else jvmTest fails
+// JVM-target validation when built with a modern JDK (Java tasks default to it).
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
 apply(from = file("../../gradle/publish.gradle.kts"))
