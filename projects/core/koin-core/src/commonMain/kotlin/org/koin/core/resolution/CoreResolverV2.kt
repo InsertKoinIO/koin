@@ -21,6 +21,7 @@ import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ResolutionContext
+import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 
@@ -86,6 +87,17 @@ class CoreResolverV2(
             // 1. Registry on this linked scope
             val factory = findDefinitionInScope(linkedScope, ctx)
             if (factory != null) {
+                // #2379: a root FACTORY requested from a child scope keeps the ORIGINATING
+                // context, so its transitive (possibly scoped/archetype) dependencies
+                // resolve back in the requesting scope instead of falling through to _root_.
+                // The origin ctx already carries the scope + scopeArchetype and its params
+                // are already stacked on it, so no context switch or re-stacking is needed.
+                // Root SINGLES are excluded: a singleton must resolve its dependencies once,
+                // from root, and must never capture a scope-local instance (guard: #2325).
+                if (linkedScope.isRoot && factory !is SingleInstanceFactory<*>) {
+                    return factory.get(ctx) as T?
+                }
+
                 // we will loose parameters from parent context
                 val newCtx = ctx.newContextForScope(linkedScope)
                 if (linkedScope.scopeArchetype != null && !linkedScope.isRoot) {
