@@ -24,6 +24,7 @@ Koin is a pragmatic, lightweight dependency injection framework for Kotlin Multi
 ### Key engine areas (`core/koin-core/src/commonMain/kotlin/org/koin/`)
 
 - `core/resolution/` — instance resolution. `CoreResolverV2.kt` is the 4.2+ engine: injected params → stacked params → registry (scope source → linked scopes → archetype)
+  - **Qualified lookups are registry-only.** A `get(named(...))` skips the stacked-parameter path entirely — parameters carry no qualifier (`ParametersHolder` matches by type only), so a stacked param can never satisfy a qualified request. Removing this guard re-opens #2370/#2408 (a `parametersOf` value shadowing a qualified dependency of the same type). Only unqualified resolution reads the param stack — that's the #2387 ViewModel path; don't break it.
 - `core/registry/` — definition & instance registries (indexing by type + qualifier)
 - `core/scope/` — `Scope`, scope archetypes, linked scopes
 - `core/module/` — module DSL (`single`, `factory`, `scoped`, `bind`, `includes`)
@@ -73,6 +74,13 @@ Before opening (or approving) any PR, both guards must pass:
 - **Never weaken `test.sh` to scoped tasks.** In KMP projects `./gradlew test` resolves only to Android/JVM unit tests and **silently skips** native, JS, and WASM tests. Full verification = `allTests` (or per-target tasks explicitly). Do not add `-x` exclusions to make a run green — fix the failing test at the root cause.
 - **No backtick test names in `commonTest`** — backtick names (`` fun `my test`() ``) break `compileTestKotlinJs`/`compileTestKotlinWasmJs` (invalid JS identifiers). Use snake_case in `commonTest`; backticks are fine in `jvmTest` only.
 - **`runTest {}` in `commonTest` must use block-body syntax** — on wasmJs, expression-body forms (`fun foo() = runTest { }`) fail with return-type mismatch. Use `fun testX() { runTest { ... } }`.
+
+#### Known pre-existing off-JVM failures (not yours — don't chase them)
+
+`allTests` is currently red on two counts unrelated to any recent resolver work (verified by stash-comparison on the `4.2.2` branch, 2026-06-08). If you touch `commonMain` and run `allTests`, expect these and confirm your diff doesn't change them:
+
+- **`createdAtStart` on wasmJs** — `CreateOnStart`, `OverrideAndCreateatStartTest` fail with `AssertionError: Expected value to be true`. Core `single(createdAtStart = true)` eager-init doesn't fire on wasmJs. This is *core*, **not** the compiler-plugin `createdAtStart` drop (#2425/#2415) — same symptom family, different layer.
+- **`DynamicModulesTest` on native** — its backtick names contain `" - "` (e.g. `` `should unload one module definition - factory` ``), crashing the Kotlin/Native test reporter (`ServiceMessagesParser`) and aborting `macosArm64Test`. This is the backtick-name trap above, already shipped. Fix = rename to snake_case.
 
 ## Versioning
 

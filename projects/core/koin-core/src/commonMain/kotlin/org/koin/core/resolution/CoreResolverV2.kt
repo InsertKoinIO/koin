@@ -131,6 +131,10 @@ class CoreResolverV2(
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
+        // A qualified lookup (get(named(...))) is a registry-only question: stacked parameters
+        // carry no qualifier (ParametersHolder matches by type only), so they can never be a
+        // legitimate match and would only shadow the qualified definition (#2370, #2408).
+        if (ctx.qualifier != null) return null
         val stack = scope._parameterStack ?: return null
         val current = stack.get()
         return if (current.isNullOrEmpty()) null
