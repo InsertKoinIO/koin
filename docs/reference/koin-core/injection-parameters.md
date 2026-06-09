@@ -123,3 +123,7 @@ params.get<String>() == "a_string"
 :::caution
 If a value passed via `parametersOf` has the same type as the requested definition, Koin returns that value directly and skips the factory block. Use a wrapper type (e.g. a value class) for the parameter when it would otherwise collide with the definition's return type.
 :::
+
+:::note
+A **qualified** resolution — `get(qualifier)` / `get(named("..."))` — never reads injected or stacked parameters. Parameters carry no qualifier, so a qualified request always resolves from the graph (registry). In other words, a value passed via `parametersOf` can only collide with an *unqualified* `get()` of the same type — adding a qualifier to the dependency is a reliable way to avoid the shadowing described above. _(behavior guaranteed as of `4.2.2`)_
+:::
