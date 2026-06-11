@@ -27,6 +27,9 @@ import org.koin.ext.getFullName
 
 /**
  * Resolver - optimised version
+ *
+ * Resolution order: injected parameters, stacked parameters (unqualified requests only),
+ * registry (direct definition, scope archetype, scope source, linked scopes), extensions.
  */
 @KoinInternalApi
 class CoreResolverV2(
@@ -131,6 +134,9 @@ class CoreResolverV2(
     }
 
     private inline fun <T> resolveFromStackedParameters(scope: Scope, ctx: ResolutionContext): T? {
+        // Params are matched by type only, so a qualified request can never come off the
+        // stack - let it fall through to the registry (#2406, #2435). Same rule as resolveFromScopeSource.
+        if (ctx.qualifier != null) return null
         val stack = scope._parameterStack ?: return null
         val current = stack.get()
         return if (current.isNullOrEmpty()) null

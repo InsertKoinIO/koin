@@ -446,4 +446,81 @@ class ParametersInjectionTest {
         // Verify that our passed instance was used, not the singleton from registry
         assertEquals(passedInstance, b.a)
     }
+
+    // Test classes for #2435 / #2406
+    class NamedStringConsumer(val id: String)
+    class InjectedParamConsumer(val id: String, val nested: NamedStringConsumer)
+    class NamedEnvComponent(val env: String)
+
+    /**
+     * #2435 - InjectedParamConsumer is built with parametersOf("event-id"), and its nested
+     * NamedStringConsumer asks for get(named("customId")). The "event-id" param must not bleed
+     * into that named String - a get(named(...)) always comes from the registry.
+     */
+    @Test
+    fun qualified_dependency_is_resolved_from_registry_not_from_stacked_parameters() {
+        val app = koinApplication {
+            printLogger(Level.DEBUG)
+            modules(
+                module {
+                    single(named("customId")) { "named-id" }
+                    factory { NamedStringConsumer(get(named("customId"))) }
+                    factory { p -> InjectedParamConsumer(p.get(), get()) }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val consumer: InjectedParamConsumer = koin.get { parametersOf("event-id") }
+
+        // param goes where it was asked for
+        assertEquals("event-id", consumer.id)
+        // but not into the named slot
+        assertEquals("named-id", consumer.nested.id)
+    }
+
+    /**
+     * #2406 - get(named("env")) must resolve the named single even while a String param
+     * ("param-value") sits on the scope's parameter stack.
+     */
+    @Test
+    fun qualified_string_dependency_is_not_filled_from_stacked_parameter() {
+        val app = koinApplication {
+            modules(
+                module {
+                    single(named("env")) { "PROD" }
+                    single { NamedEnvComponent(get(named("env"))) }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val component: NamedEnvComponent = koin.get { parametersOf("param-value") }
+
+        assertEquals("PROD", component.env)
+    }
+
+    /**
+     * #2435, scope variant - a param stacked on a child scope must not satisfy a qualified
+     * lookup either; it should fall through to the root definition via linked scopes.
+     */
+    @Test
+    fun qualified_dependency_in_scope_is_resolved_from_linked_registry_not_from_stacked_parameters() {
+        val app = koinApplication {
+            modules(
+                module {
+                    single(named("customId")) { "named-id" }
+                    scope(named("aScope")) {
+                        scoped { NamedStringConsumer(get(named("customId"))) }
+                    }
+                },
+            )
+        }
+
+        val koin = app.koin
+        val scope = koin.createScope("scope-1", named("aScope"))
+        val consumer: NamedStringConsumer = scope.get { parametersOf("event-id") }
+
+        assertEquals("named-id", consumer.id)
+    }
 }
