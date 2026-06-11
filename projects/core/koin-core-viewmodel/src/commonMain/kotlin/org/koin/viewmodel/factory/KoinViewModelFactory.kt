@@ -19,12 +19,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.definition.indexKey
+import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.option.hasViewModelScopeFactory
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.ext.getFullName
 import org.koin.mp.KoinPlatformTools
 import org.koin.mp.generateId
 import org.koin.viewmodel.scope.ViewModelScopeArchetype
@@ -46,7 +49,23 @@ class KoinViewModelFactory(
         val androidParams = AndroidParametersHolder(params, extras)
         val koin = scope.getKoin()
         return if (!koin.optionRegistry.hasViewModelScopeFactory()){
-            scope.getWithParameters(kClass, qualifier, androidParams)
+            try {
+                scope.getWithParameters(kClass, qualifier, androidParams)
+            } catch (e: NoDefinitionFoundException) {
+                // #2417: the ViewModel may be declared inside viewModelScope { } (registered under
+                // the ViewModel scope archetype), which is only resolvable when the
+                // viewModelScopeFactory() option is enabled. Detect that and guide the user.
+                val isDeclaredInViewModelScope =
+                    koin.instanceRegistry.instances.containsKey(indexKey(kClass, qualifier, ViewModelScopeArchetype))
+                if (isDeclaredInViewModelScope) {
+                    throw IllegalStateException(
+                        "ViewModel '${kClass.getFullName()}' is declared inside viewModelScope { } but the viewModelScopeFactory() option is not enabled. " +
+                            "Enable it in your Koin configuration — options(viewModelScopeFactory()) — or move the ViewModel out of viewModelScope { }.",
+                        e,
+                    )
+                }
+                throw e
+            }
         } else {
             val scopeId = getViewModelScopeId(modelClass)
             val vmScope = koin.createScope(scopeId, TypeQualifier(modelClass), null, ViewModelScopeArchetype)
