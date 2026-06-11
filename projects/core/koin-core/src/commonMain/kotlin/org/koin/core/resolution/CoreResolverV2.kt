@@ -168,8 +168,19 @@ class CoreResolverV2(
         val searchedScopes = if (linkedScopeIds.isNotEmpty()) {
             " Searched scopes: ['${scope.id}'] -> ${linkedScopeIds.map { "['$it']" }}"
         } else ""
+        val typeName = ctx.clazz.getFullName()
+        // SavedStateHandle is supplied by the ViewModel's CreationExtras during creation, not by a
+        // module definition — the generic "add a definition" advice is misleading here (#2044).
+        // Match on the final segment: getFullName() is the FQN on JVM/native but the simpleName on
+        // JS/WASM (#2312), so a hardcoded FQN would miss off-JVM.
+        val isSavedStateHandle = typeName.substringAfterLast('.') == "SavedStateHandle"
+        val advice = if (isSavedStateHandle) {
+            " SavedStateHandle is provided by the ViewModel's CreationExtras during creation, not by a module definition — resolve the ViewModel via koinViewModel()/koinNavViewModel() with a proper owner and inject SavedStateHandle in its constructor (do not resolve it lazily or outside construction)."
+        } else {
+            " Check or add definition for type '$typeName'$qualifierString in scope '${scope.scopeQualifier}'."
+        }
         throw NoDefinitionFoundException(
-            "No definition found for type '${ctx.clazz.getFullName()}'$qualifierString on $scopeInfo.$searchedScopes. Check or add definition for type '${ctx.clazz.getFullName()}'$qualifierString in scope '${scope.scopeQualifier}'.",
+            "No definition found for type '$typeName'$qualifierString on $scopeInfo.$searchedScopes.$advice",
         )
     }
 
