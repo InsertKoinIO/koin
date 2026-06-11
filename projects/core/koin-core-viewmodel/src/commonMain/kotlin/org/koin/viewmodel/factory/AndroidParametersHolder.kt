@@ -37,7 +37,19 @@ class AndroidParametersHolder(
 
     private inline fun <T> createSavedStateHandleOrElse(clazz: KClass<*>, block: () -> T): T {
         return if (clazz == SavedStateHandle::class) {
-            extras.createSavedStateHandle() as T
+            try {
+                extras.createSavedStateHandle() as T
+            } catch (e: IllegalArgumentException) {
+                // androidx throws "CreationExtras must have a value by SAVED_STATE_REGISTRY_OWNER_KEY"
+                // when the ViewModel's CreationExtras has no SavedStateRegistryOwner (#2417). Surface
+                // an actionable Koin message instead of the raw androidx error.
+                throw IllegalStateException(
+                    "Koin could not create a SavedStateHandle: the ViewModel's CreationExtras has no SavedStateRegistryOwner. " +
+                        "Resolve the ViewModel via koinViewModel()/koinNavViewModel() with a proper owner (e.g. a NavBackStackEntry), " +
+                        "and inject SavedStateHandle directly in the ViewModel constructor (not lazily/outside construction).",
+                    e,
+                )
+            }
         } else block()
     }
 }
