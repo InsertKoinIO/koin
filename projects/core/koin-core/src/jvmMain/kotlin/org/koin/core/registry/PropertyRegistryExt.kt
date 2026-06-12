@@ -10,13 +10,20 @@ import java.util.*
 /**
  *Save properties values into PropertyRegister
  */
-@Suppress("UNCHECKED_CAST")
 fun PropertyRegistry.saveProperties(properties: Properties) {
     _koin.logger.debug("load ${properties.size} properties")
 
-    val propertiesMapValues = properties.toMap() as Map<String, String>
-    propertiesMapValues.forEach { (k: String, v: String) ->
-        saveProperty(k, v)
+    // java.util.Properties can legally hold non-String keys/values (e.g. after
+    // System.setProperties(...) with arbitrary objects). The registry is keyed by
+    // String but stores Any values, so keep any String-keyed entry (value as-is)
+    // and only drop non-String keys — instead of hard-casting values to String and
+    // crashing (#2348).
+    properties.forEach { (k, v) ->
+        if (k is String && v != null) {
+            saveProperty(k, v)
+        } else {
+            _koin.logger.debug("ignore property with non-string key '$k'")
+        }
     }
 }
 
