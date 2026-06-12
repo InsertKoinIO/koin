@@ -146,6 +146,25 @@ val appModule = module {
 Dependencies inside `viewModelScope` are created when the ViewModel is first accessed and destroyed when the ViewModel is cleared.
 :::
 
+:::caution Requires the `viewModelScopeFactory()` option
+Declaring the **ViewModel itself** inside `viewModelScope { }` (so Koin creates its scope automatically) requires enabling the `viewModelScopeFactory()` option in your Koin configuration:
+
+```kotlin
+startKoin {
+    options(viewModelScopeFactory())
+    modules(appModule)
+}
+```
+
+Without it, resolving the ViewModel fails with:
+
+```
+No definition found for type 'MyViewModel' on scope '['_root_']'
+```
+
+because the ViewModel is registered under the ViewModel scope archetype, and that scope is only created when the option is enabled. (This is separate from the manual `ScopeViewModel` pattern, which creates its own scope and does not need the option.)
+:::
+
 ## Injecting ViewModels
 
 ### In Compose (Multiplatform)
