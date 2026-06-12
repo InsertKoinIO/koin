@@ -6,7 +6,7 @@ title: Kotlin & Annotations
 > You need around __10 min__ to do the tutorial.
 
 :::note
-update - 2024-11-12
+update - 2025-05-24
 :::
 
 ## Get the code
