@@ -27,6 +27,7 @@ import org.koin.core.module._singleInstanceFactory
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.ScopeDSL
+import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * Declares a scoped navigation entry within a Koin scope DSL.
@@ -47,6 +48,7 @@ import org.koin.dsl.ScopeDSL
  *
  * @param T The type representing the navigation route/destination
  * @param metadata Optional metadata map to associate with the navigation entry (default is empty)
+ * @param clazzContentKey A factory of unique, stable ids that uniquely identifies the content (default is [key].toString())
  * @param definition A composable function that receives the [Scope] and route instance [T] to render the destination
  * @return A [KoinDefinition] for the created [EntryProviderInstaller]
  *
@@ -57,12 +59,13 @@ import org.koin.dsl.ScopeDSL
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> ScopeDSL.navigation(
     metadata: Map<String, Any> = emptyMap(),
+    noinline clazzContentKey: (key: @JvmSuppressWildcards T) -> Any = { defaultContentKey(it) },
     noinline definition: @Composable Scope.(T) -> Unit,
 ): KoinDefinition<EntryProviderInstaller> {
     val def = _scopedInstanceFactory<EntryProviderInstaller>(named<T>(), {
         val scope = this
         {
-            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata)
+            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata, clazzContentKey = clazzContentKey)
         }
     }, scopeQualifier)
     module.indexPrimaryType(def)
@@ -88,6 +91,7 @@ inline fun <reified T : Any> ScopeDSL.navigation(
  *
  * @param T The type representing the navigation route/destination
  * @param metadata Optional metadata map to associate with the navigation entry (default is empty)
+ * @param clazzContentKey A factory of unique, stable ids that uniquely identifies the content (default is [key].toString())
  * @param definition A composable function that receives the [Scope] and route instance [T] to render the destination
  * @return A [KoinDefinition] for the created [EntryProviderInstaller]
  *
@@ -98,14 +102,17 @@ inline fun <reified T : Any> ScopeDSL.navigation(
 @OptIn(KoinInternalApi::class)
 inline fun <reified T : Any> Module.navigation(
     metadata: Map<String, Any> = emptyMap(),
+    noinline clazzContentKey: (key: @JvmSuppressWildcards T) -> Any = { defaultContentKey(it) },
     noinline definition: @Composable Scope.(T) -> Unit,
 ): KoinDefinition<EntryProviderInstaller> {
     val def = _singleInstanceFactory<EntryProviderInstaller>(named<T>(), {
         val scope = this
         {
-            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata)
+            entry<T>(content = { t -> definition(scope, t) }, metadata = metadata, clazzContentKey = clazzContentKey)
         }
     })
     indexPrimaryType(def)
     return KoinDefinition(this, def)
 }
+
+@PublishedApi internal fun defaultContentKey(key: Any): Any = key.toString()
