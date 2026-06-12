@@ -278,6 +278,10 @@ val appModule = module {
 }
 ```
 
+:::caution Requires the `viewModelScopeFactory()` option
+Declaring a ViewModel inside `viewModelScope { }` requires enabling `options(viewModelScopeFactory())` in your Koin configuration — otherwise `koinViewModel()` fails with `No definition found … on scope '['_root_']'`. See [ViewModel Scope](/docs/reference/koin-core/viewmodel#viewmodel-scope) for details.
+:::
+
 ## Quick Reference
 
 | API | Use Case | Package |
