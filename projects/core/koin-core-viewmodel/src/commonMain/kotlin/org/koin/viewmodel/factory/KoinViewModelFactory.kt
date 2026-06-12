@@ -50,6 +50,12 @@ class KoinViewModelFactory(
         } else {
             val scopeId = getViewModelScopeId(modelClass)
             val vmScope = koin.createScope(scopeId, TypeQualifier(modelClass), null, ViewModelScopeArchetype)
+            // #2299: link the auto-created VM scope to the requesting (parent) scope, so a ViewModel
+            // declared in a custom scope - and its scoped dependencies - resolve. New scopes already
+            // link to root, so only a non-root parent needs an explicit link.
+            if (!scope.isRoot) {
+                vmScope.linkTo(scope)
+            }
             val vm : T = vmScope.getWithParameters(kClass, qualifier, androidParams)
             vm.addCloseable(ViewModelScopeAutoCloseable(scopeId,koin))
             vm
