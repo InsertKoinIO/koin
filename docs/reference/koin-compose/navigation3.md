@@ -152,6 +152,31 @@ fun App() {
 }
 ```
 
+:::tip Pass your route type when `NavDisplay` is typed
+`koinEntryProvider<T>()` is generic — `T` is the route type. If you leave it as `koinEntryProvider<Any>()` but `NavDisplay` becomes typed (for example via a typed `SceneStrategy` like `rememberSupportingPaneSceneStrategy<Route>()`), the compiler infers `NavDisplay<Route>` and expects `(Route) -> NavEntry<Route>`, so an `Any`-typed provider won't match:
+
+```
+Argument type mismatch: actual type is 'Function1<Any, NavEntry<Any>>',
+but 'Function1<Route, NavEntry<Route>>' was expected.
+```
+
+Pass your route type to match:
+
+```kotlin
+val sceneStrategy = rememberSupportingPaneSceneStrategy<Route>()
+val entryProvider = koinEntryProvider<Route>()   // (Route) -> NavEntry<Route>
+
+NavDisplay(
+    backStack = backStack,
+    onBack = onBack,
+    sceneStrategy = sceneStrategy,
+    entryProvider = entryProvider,               // ✅ matches NavDisplay<Route>
+)
+```
+
+(equivalently, `val entryProvider: EntryProvider<Route> = koinEntryProvider()` — the type argument is inferred from the expected type.)
+:::
+
 ### Complete Example
 
 ```kotlin
