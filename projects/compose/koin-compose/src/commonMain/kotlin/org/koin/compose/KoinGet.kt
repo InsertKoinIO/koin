@@ -16,83 +16,87 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 
-
 /**
  * Resolve Koin dependency for given Type T
  *
- * <u>Note</u> this version unwrap parameters to ParametersHolder in order to let remember all parameters
- * This parameters unwrap will be triggered on recomposition
+ * This function uses [Scope.get] under the hood (eager resolution), consistent with
+ * [org.koin.core.component.KoinComponent.get].
  *
- * For better performances we advise to use koinInject(Qualifier,Scope,ParametersHolder)
+ * <u>Note</u> this version unwraps parameters to ParametersHolder in order to let remember all parameters.
+ * This parameters unwrap will be triggered on recomposition.
+ *
+ * For better performance we advise to use koinGet(Qualifier, Scope, ParametersHolder)
  *
  * @param qualifier - dependency qualifier
  * @param scope - Koin's root by default
  * @param parameters - injected parameters (with lambda & parametersOf())
  * @return instance of type T
  *
- * @author Arnaud Giuliani
+ * @author Saad Khan
  */
-@Deprecated(
-    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
-    replaceWith = ReplaceWith("koinGet(qualifier, scope, parameters)", "org.koin.compose.koinGet")
-)
 @Composable
 @OptIn(KoinInternalApi::class)
-inline fun <reified T> koinInject(
+inline fun <reified T> koinGet(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition,
 ): T {
-    return koinGet(qualifier, scope, parameters)
+    val p = parameters.invoke()
+    return remember(qualifier, scope, p) {
+        scope.getWithParameters(T::class, qualifier, p)
+    }
 }
 
 /**
  * Resolve Koin dependency for given Type T
+ *
+ * This function uses [Scope.get] under the hood (eager resolution), consistent with
+ * [org.koin.core.component.KoinComponent.get].
  *
  * @param qualifier - dependency qualifier
  * @param scope - Koin's root by default
  * @param parametersHolder - parameters (used with parametersOf(), no lambda)
  * @return instance of type T
  *
- * @author Arnaud Giuliani
+ * @author Saad Khan
  */
-@Deprecated(
-    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
-    replaceWith = ReplaceWith("koinGet(qualifier, scope, parametersHolder)", "org.koin.compose.koinGet")
-)
 @Composable
 @OptIn(KoinInternalApi::class)
-inline fun <reified T> koinInject(
+inline fun <reified T> koinGet(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope(),
     parametersHolder: ParametersHolder,
 ): T {
-    return koinGet(qualifier, scope, parametersHolder)
+    return remember(qualifier, scope, parametersHolder) {
+        scope.getWithParameters(T::class, qualifier, parametersHolder)
+    }
 }
 
 /**
  * Resolve Koin dependency for given Type T
  *
+ * This function uses [Scope.get] under the hood (eager resolution), consistent with
+ * [org.koin.core.component.KoinComponent.get].
+ *
  * @param qualifier - dependency qualifier
  * @param scope - Koin's root by default
  * @return instance of type T
  *
- * @author Arnaud Giuliani
+ * @author Saad Khan
  */
-@Deprecated(
-    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
-    replaceWith = ReplaceWith("koinGet(qualifier, scope)", "org.koin.compose.koinGet")
-)
 @Composable
-inline fun <reified T> koinInject(
+inline fun <reified T> koinGet(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope()
 ): T {
-    return koinGet(qualifier, scope)
+    return remember(qualifier, scope) {
+        scope.get(T::class, qualifier)
+    }
 }
