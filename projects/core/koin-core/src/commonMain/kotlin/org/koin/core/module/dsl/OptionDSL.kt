@@ -7,6 +7,7 @@ import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Callbacks
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.definition.OnCloseCallback
+import org.koin.core.definition.indexKey
 import org.koin.core.instance.SingleInstanceFactory
 import org.koin.core.module.OptionDslMarker
 import org.koin.core.qualifier.StringQualifier
@@ -41,13 +42,22 @@ inline infix fun <T> KoinDefinition<T>.withOptions(
     options: DefinitionOptions<T>,
 ): KoinDefinition<T> {
     val def = factory.beanDefinition
-    val primary = def.qualifier
+    val previousQualifier = def.qualifier
+    val previousSecondaryTypes = def.secondaryTypes.toList()
     def.also(options)
-    if (def.qualifier != primary) {
+    // #2386: mutating qualifier/secondaryTypes changes the definition's index coordinates. The
+    // original entries (from single()/factory() or a prior withOptions) must be removed before
+    // re-indexing, otherwise the definition stays reachable under its old qualifier and its
+    // secondary types desync from the primary index.
+    if (def.qualifier != previousQualifier || def.secondaryTypes != previousSecondaryTypes) {
+        module.mappings.remove(indexKey(def.primaryType, previousQualifier, def.scopeQualifier))
+        previousSecondaryTypes.forEach { secondaryType ->
+            module.mappings.remove(indexKey(secondaryType, previousQualifier, def.scopeQualifier))
+        }
         module.indexPrimaryType(factory)
-    }
-    if (def.secondaryTypes.isNotEmpty()) {
-        module.indexSecondaryTypes(factory)
+        if (def.secondaryTypes.isNotEmpty()) {
+            module.indexSecondaryTypes(factory)
+        }
     }
     if (def._createdAtStart && factory is SingleInstanceFactory<*>) {
         module.prepareForCreationAtStart(factory)

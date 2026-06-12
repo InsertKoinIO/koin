@@ -30,7 +30,8 @@ class NewDSLTest : KoinCoreTest() {
                 bind<IClassA>()
             }
         }
-        assertEquals(3, module.mappings.size)
+        // qualified primary + secondary; the original unqualified primary index is dropped (#2386)
+        assertEquals(2, module.mappings.size)
         val factory = module.mappings.values.iterator().next()
         assertTrue {
             factory is SingleInstanceFactory<*> && factory.beanDefinition._createdAtStart
@@ -47,7 +48,8 @@ class NewDSLTest : KoinCoreTest() {
                 bind<IClassA>()
             }
         }
-        assertEquals(3, module.mappings.size)
+        // qualified primary + secondary; the original unqualified primary index is dropped (#2386)
+        assertEquals(2, module.mappings.size)
         val factory = module.mappings.values.iterator().next()
         assertTrue {
             factory is FactoryInstanceFactory<*> && !factory.beanDefinition._createdAtStart
@@ -114,6 +116,7 @@ class NewDSLTest : KoinCoreTest() {
         }
 
         assertEquals(1, module.eagerInstances.size)
-        assertEquals(4, module.mappings.size)
+        // ClassA: qualified primary + secondary (old unqualified primary dropped, #2386) + ClassB
+        assertEquals(3, module.mappings.size)
     }
 }
