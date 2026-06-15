@@ -64,7 +64,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
 
     private fun verifyFactory(
         factory: InstanceFactory<*>,
-        index: Set<String>,
+        index: Set<IndexKey>,
     ): List<KClass<*>> {
         val beanDefinition = factory.beanDefinition
         println("\n|-> definition $beanDefinition")
@@ -131,7 +131,7 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
     private fun verifyConstructor(
         constructorFunction: KFunction<*>,
         functionType: KClass<*>,
-        index: Set<String>,
+        index: Set<IndexKey>,
     ): List<VerifiedParameter> {
         val constructorParameters = constructorFunction.parameters
 
@@ -202,8 +202,8 @@ class Verification(val module: Module? = null, extraTypes: List<KClass<*>> = emp
         return parameterInjectionIndex[classOrigin.getFullName()]?.let { ctorParamFullClassName in it } ?: false
     }
 
-    private fun isClassInDefinitionIndex(index: Set<String>, ctorParamFullClassName: String) =
-        index.any { k -> k.contains(ctorParamFullClassName) }
+    private fun isClassInDefinitionIndex(index: Set<IndexKey>, ctorParamFullClassName: String) =
+        index.any { k -> k.clazz.getFullName() == ctorParamFullClassName }
 
     operator fun plus(v : Verification) : Verification {
         this.allModules = allModules + v.allModules
