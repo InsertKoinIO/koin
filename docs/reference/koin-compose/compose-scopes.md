@@ -29,7 +29,7 @@ fun FeatureScreen() {
 @Composable
 fun FeatureContent() {
     // Resolves from parent KoinScope
-    val cache = koinInject<FeatureCache>()
+    val cache = koinGet<FeatureCache>()
 }
 ```
 
@@ -61,7 +61,7 @@ NavHost(navController, startDestination = "home") {
 @Composable
 fun DetailScreen() {
     // Dependencies scoped to this navigation destination
-    val repository = koinInject<ScreenRepository>()
+    val repository = koinGet<ScreenRepository>()
     val viewModel = koinViewModel<ScreenViewModel>()
 }
 ```
@@ -101,7 +101,7 @@ Provide an externally-managed scope without lifecycle binding:
 fun MyFeature(externalScope: Scope) {
     UnboundKoinScope(scope = externalScope) {
         // Children can access the scope
-        val service = koinInject<MyService>()
+        val service = koinGet<MyService>()
         FeatureContent()
     }
 }
@@ -144,7 +144,7 @@ fun MyScreen() {
 }
 ```
 
-This retrieves the scope from `LocalKoinScopeContext`. It's the default scope used by `koinInject()`.
+This retrieves the scope from `LocalKoinScopeContext`. It's the default scope used by `koinGet()`.
 
 ## rememberKoinScope
 
@@ -186,7 +186,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
 @Composable
 fun MainScreen() {
     // Resolves from Activity's scope
-    val presenter = koinInject<ActivityPresenter>()
+    val presenter = koinGet<ActivityPresenter>()
 }
 ```
 
@@ -291,7 +291,7 @@ fun ShopApp() {
 @Composable
 fun CartScreen() {
     // Same cart instance across all screens in session
-    val cart = koinInject<ShoppingCart>()
+    val cart = koinGet<ShoppingCart>()
 }
 ```
 
