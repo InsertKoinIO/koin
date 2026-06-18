@@ -80,6 +80,9 @@ val myModule = module {
 }
 ```
 
+:::note
+Graph resolution of injected parameters only applies to unqualified requests: a qualified request like `get(named("a_name"))` always resolves from your module definitions, never from injected parameters, because parameters are matched by type and carry no qualifier.
+:::
 
 ## Injected parameters: indexed values or set (`3.4.3`)
 
