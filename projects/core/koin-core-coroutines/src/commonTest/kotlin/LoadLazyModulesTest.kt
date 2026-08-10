@@ -14,8 +14,27 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UnloadTarget
+class UnloadTarget2
 
 class LoadLazyModulesTest {
+
+    @Test
+    fun test_load_list_of_lazy_modules() {
+        val lazyMod1 = lazyModule {
+            singleOf(::UnloadTarget)
+        }
+        val lazyMod2 = lazyModule {
+            singleOf(::UnloadTarget2)
+        }
+        startKoin {
+            loadKoinModules(listOf(lazyMod1, lazyMod2))
+        }
+
+        assertNotNull(KoinPlatformTools.defaultContext().get().get<UnloadTarget>())
+        assertNotNull(KoinPlatformTools.defaultContext().get().get<UnloadTarget2>())
+
+        stopKoin()
+    }
 
     @Test
     fun test_unload_realized_lazy_module() {

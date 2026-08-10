@@ -30,6 +30,13 @@ import org.koin.mp.KoinPlatformTools
 fun loadKoinModules(module: Lazy<Module>) = KoinPlatformTools.defaultContext().loadKoinModules(module.value)
 
 /**
+ * load Koin modules in global Koin context
+ *
+ * @author Chris Paleopanos
+ */
+fun loadKoinModules(modules: List<Lazy<Module>>) = KoinPlatformTools.defaultContext().loadKoinModules(modules.map { it.value })
+
+/**
  * unload Koin module from global Koin context
  *
  * No-op if the lazy module has not been initialized yet, since in that case
