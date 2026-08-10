@@ -28,3 +28,32 @@ import org.koin.mp.KoinPlatformTools
  * load Koin module in global Koin context
  */
 fun loadKoinModules(module: Lazy<Module>) = KoinPlatformTools.defaultContext().loadKoinModules(module.value)
+
+/**
+ * unload Koin module from global Koin context
+ *
+ * No-op if the lazy module has not been initialized yet, since in that case
+ * no definitions were ever registered for it.
+ *
+ * @author Chris Paleopanos
+ */
+fun unloadKoinModules(module: Lazy<Module>) {
+    if (module.isInitialized()) {
+        KoinPlatformTools.defaultContext().unloadKoinModules(module.value)
+    }
+}
+
+/**
+ * unload Koin modules from global Koin context
+ *
+ * Lazy modules that have not been initialized yet are skipped, since in that
+ * case no definitions were ever registered for them.
+ *
+ * @author Chris Paleopanos
+ */
+fun unloadKoinModules(modules: List<Lazy<Module>>) {
+    val realizedModules = modules.filter { it.isInitialized() }.map { it.value }
+    if (realizedModules.isNotEmpty()) {
+        KoinPlatformTools.defaultContext().unloadKoinModules(realizedModules)
+    }
+}
