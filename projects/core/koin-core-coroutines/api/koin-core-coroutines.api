@@ -22,7 +22,10 @@ public final class org/koin/core/context/ContextWaitJVMKt {
 }
 
 public final class org/koin/core/context/LoadLazyModulesKt {
+	public static final fun loadKoinModules (Ljava/util/List;)V
 	public static final fun loadKoinModules (Lkotlin/Lazy;)V
+	public static final fun unloadKoinModules (Ljava/util/List;)V
+	public static final fun unloadKoinModules (Lkotlin/Lazy;)V
 }
 
 public final class org/koin/core/coroutine/KoinCoroutinesEngine : kotlinx/coroutines/CoroutineScope, org/koin/core/extension/KoinExtension {
