@@ -22,6 +22,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.PluginBuilder
 import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.hooks.CallFailed
 import io.ktor.server.application.hooks.CallSetup
 import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
@@ -98,8 +99,20 @@ internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: 
         call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
     }
     on(ResponseSent) { call ->
-        call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY].close()
+        call.closeRequestScope()
     }
+    // ResponseSent never runs for a failed call: an exception thrown by a later
+    // ResponseSent interceptor unwinds past Koin's one, and an unhandled route
+    // exception is answered by the engine fallback without entering the send
+    // pipeline — close the scope on that path too (#2463)
+    on(CallFailed) { call, _ ->
+        call.closeRequestScope()
+    }
+}
+
+private fun ApplicationCall.closeRequestScope() {
+    val scope = attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY) ?: return
+    if (!scope.closed) scope.close()
 }
 
 const val KOIN_KEY = "KOIN"
