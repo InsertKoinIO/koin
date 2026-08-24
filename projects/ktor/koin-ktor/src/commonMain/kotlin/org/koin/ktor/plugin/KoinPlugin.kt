@@ -101,10 +101,7 @@ internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: 
     on(ResponseSent) { call ->
         call.closeRequestScope()
     }
-    // ResponseSent never runs for a failed call: an exception thrown by a later
-    // ResponseSent interceptor unwinds past Koin's one, and an unhandled route
-    // exception is answered by the engine fallback without entering the send
-    // pipeline — close the scope on that path too (#2463)
+    // ResponseSent does not run for a failed call, close the scope here too
     on(CallFailed) { call, _ ->
         call.closeRequestScope()
     }
