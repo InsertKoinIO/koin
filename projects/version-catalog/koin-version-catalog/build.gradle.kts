@@ -1,0 +1,4 @@
+plugins {
+    `version-catalog`
+}
+
