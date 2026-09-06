@@ -50,6 +50,28 @@ dependencies {
 }
 ```
 
+### Using Published Version Catalog
+
+In your `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("koinLibs") {
+            from("io.insert-koin:koin-version-catalog:4.2.0")
+        }
+    }
+}
+```
+
+In your `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation(koinLibs.core)
+}
+```
+
 ### Using BOM Without Version Catalogs
 
 ```kotlin
