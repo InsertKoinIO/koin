@@ -1,4 +1,4 @@
-﻿package org.koin.compose
+package org.koin.compose
 
 import androidx.compose.runtime.AbstractApplier
 import androidx.compose.runtime.Composable
