@@ -47,6 +47,9 @@ kotlin {
             api(libs.jb.composeRuntime)
             api(libs.jb.composeFoundation)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         androidMain.dependencies {
             api(libs.android.activity.compose)
             api(project(":android:koin-android"))
