@@ -15,3 +15,39 @@ ScopeBenchmark.fragmentScope_cascade_activity_root  avgt    3  1803,030 ±  10,7
 ScopeBenchmark.rootScope                            avgt    3   112,174 ±   4,734  ns/op
 StartupBenchmark.startup                            avgt          0,228            ms/op
 StartupBenchmark.startup_lazy                       avgt          0,001            ms/op
+# 4.2.3-perfs (KTZ-4829) - 2026-09-09 - same machine, before = dc86ef8d / after = 4557213b
+
+Benchmark                                              Mode      before      after   Units
+HeavyStartupBenchmark.start_get_lazy_module1           avgt       0,303      0,183   ms/op
+HeavyStartupBenchmark.start_get_lazy_module100         avgt       4,595      2,895   ms/op
+HeavyStartupBenchmark.start_get_lazy_module1000        avgt      51,212     28,737   ms/op
+HeavyStartupBenchmark.start_get_module1                avgt       0,237      0,166   ms/op
+HeavyStartupBenchmark.start_get_module100              avgt      26,203     16,088   ms/op
+HeavyStartupBenchmark.start_get_module1000             avgt     278,545    161,710   ms/op
+HeavyStartupBenchmark.start_get_module1_with_binds     avgt       0,336      0,232   ms/op
+HeavyStartupBenchmark.start_get_module100_with_binds   avgt      44,135     21,772   ms/op
+HeavyStartupBenchmark.start_get_module1000_with_binds  avgt     384,599    220,083   ms/op
+JvmBenchmark.retrieveDependency                        avgt     114,074     57,649   ns/op
+JvmBenchmark.retrieveDependency_tight                  avgt     109,360     57,897   ns/op
+ScopeBenchmark.activityScope                           avgt     436,174    339,431   ns/op
+ScopeBenchmark.activityScope_cascade_root              avgt     991,275    517,276   ns/op
+ScopeBenchmark.fragmentScope_cascade_activity_root     avgt    1510,071    987,911   ns/op
+ScopeBenchmark.rootScope                               avgt     122,957     71,204   ns/op
+StartupBenchmark.startup                               avgt       0,235      0,177   ms/op
+StartupBenchmark.startup_lazy                          avgt       0,038      0,003   ms/op
+StartupBenchmark.startup_with_binds                    avgt       0,331      0,234   ms/op
+
+# GetAllBenchmark (new, jvmPerfsBenchmark, count = 1800 -> 5400 index entries, Metro-scale)
+GetAllBenchmark.t0_module_build_only                   avgt     724,568    633,319   us/op
+GetAllBenchmark.t1_registration_only                   avgt    1651,605    899,923   us/op
+GetAllBenchmark.t2_registration_plus_realize           avgt    2435,115   1324,021   us/op
+GetAllBenchmark.t3_getAll_pure_scan                    avgt     181,833    184,448   us/op
+GetAllBenchmark.t4_get_warm_unqualified                avgt       0,157      0,056   us/op
+GetAllBenchmark.t4b_get_warm_qualified                 avgt       0,116      0,070   us/op
+
+# AllocationProbe (allocProbe task, count = 1800), bytes per op
+t1_registration_only                                            9425608    2235783   B/op
+t2_registration_plus_realize                                   11597202    2529904   B/op
+t3_getAll_pure_scan                                              206956     149304   B/op
+t4_get_warm_unqualified                                             587        202   B/op
+t4b_get_warm_qualified                                              616        235   B/op
