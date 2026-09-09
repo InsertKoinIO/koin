@@ -86,3 +86,41 @@ t4b_get_warm_qualified                                              235         
 # Rejected: eagerly maintained typed mirror (measured, not committed)
 #   t4 warm get 56 -> 33 ns but t1 registration 900 -> 1565 us/op (+74%), t2 1324 -> 1997 us/op.
 #   In a startup run every definition resolves once, so an eager lookup index is pure cost there.
+
+# ===== KTZ-4829 CONSOLIDATED: pre-branch dc86ef8d -> 4.2.3-perfs 0b8e1201 (same machine, JVM, 2026-09-09) =====
+
+Benchmark                                              before      after   delta   Units
+HeavyStartupBenchmark.start_get_module1                 0,237      0,174    -27%   ms/op
+HeavyStartupBenchmark.start_get_module100              26,203     16,414    -37%   ms/op
+HeavyStartupBenchmark.start_get_module1000            278,545    162,046    -42%   ms/op
+HeavyStartupBenchmark.start_get_module1_with_binds      0,336      0,238    -29%   ms/op
+HeavyStartupBenchmark.start_get_module100_with_binds   44,135     22,505    -49%   ms/op
+HeavyStartupBenchmark.start_get_module1000_with_binds 384,599    229,329    -40%   ms/op
+HeavyStartupBenchmark.start_get_lazy_module1            0,303      0,186    -39%   ms/op
+HeavyStartupBenchmark.start_get_lazy_module100          4,595      3,021    -34%   ms/op
+HeavyStartupBenchmark.start_get_lazy_module1000        51,212     28,423    -44%   ms/op
+JvmBenchmark.retrieveDependency                       114,074     20,853    -82%   ns/op
+JvmBenchmark.retrieveDependency_tight                 109,360     21,708    -80%   ns/op
+ScopeBenchmark.rootScope                              122,957     20,637    -83%   ns/op
+ScopeBenchmark.activityScope                          436,174    224,421    -49%   ns/op
+ScopeBenchmark.activityScope_cascade_root             991,275    345,391    -65%   ns/op
+ScopeBenchmark.fragmentScope_cascade_activity_root   1510,071    731,362    -52%   ns/op
+StartupBenchmark.startup                                0,235      0,194    -17%   ms/op
+StartupBenchmark.startup_with_binds                     0,331      0,293    -11%   ms/op
+
+# GetAllBenchmark, Metro-scale (count = 1800 -> 5400 index entries)
+GetAllBenchmark.t0_module_build_only                  724,568    632,658    -13%   us/op
+GetAllBenchmark.t1_registration_only                 1651,605    901,731    -45%   us/op
+  (t1 - t0) registration into registry                 927,037    269,073    -71%   us/op
+GetAllBenchmark.t2_registration_plus_realize         2435,115   1355,867    -44%   us/op
+GetAllBenchmark.t3_getAll_pure_scan                   181,833    181,479      0%   us/op
+GetAllBenchmark.t4_get_warm_unqualified                 0,157      0,026    -83%   us/op
+GetAllBenchmark.t4b_get_warm_qualified                  0,116      0,024    -79%   us/op
+
+# AllocationProbe (count = 1800), bytes per op
+t0_module_build_only                                  2696227    2036833    -24%   B/op
+t1_registration_only                                  9425608    2237040    -76%   B/op
+t2_registration_plus_realize                         11597202    2532152    -78%   B/op
+t3_getAll_pure_scan                                    206956     149299    -28%   B/op
+t4_get_warm_unqualified                                   587         56    -90%   B/op   (one ResolutionContext)
+t4b_get_warm_qualified                                    616         72    -88%   B/op
