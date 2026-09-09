@@ -28,6 +28,7 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.NoClass
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.throwOverrideError
 import org.koin.core.parameter.ParametersHolder
@@ -88,7 +89,7 @@ class InstanceRegistry(val _koin: Koin) {
             if (!allowOverride) {
                 throwOverrideError(factory, mapping)
             } else if (logWarning) {
-                _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+                _koin.logger.log(Level.WARNING) { "(+) override index '$mapping' -> '${factory.beanDefinition}'" }
                 // remove previous eager isntance too
                 val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
                 if (existingFactory != null) {
@@ -96,7 +97,7 @@ class InstanceRegistry(val _koin: Koin) {
                 }
             }
         }
-        _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
+        _koin.logger.log(Level.DEBUG) { "(+) index '$mapping' -> '${factory.beanDefinition}'" }
         _instances[mapping] = factory
     }
 

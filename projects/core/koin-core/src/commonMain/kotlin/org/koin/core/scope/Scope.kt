@@ -193,13 +193,13 @@ class Scope(
         return try {
             get(clazz, qualifier, parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.debug("* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.log(Level.DEBUG) { "* Scope closed - no instance found for ${clazz.getFullName()} on scope ${toString()}" }
             null
         } catch (e: NoDefinitionFoundException) {
-            _koin.logger.debug("* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'")
+            _koin.logger.log(Level.DEBUG) { "* No instance found for type '${clazz.getFullName()}' on scope '${toString()}'" }
             null
         } catch (e: MissingScopeValueException) {
-            _koin.logger.debug("* No Scoped value found for type '${clazz.getFullName()}' on scope '${toString()}'")
+            _koin.logger.log(Level.DEBUG) { "* No Scoped value found for type '${clazz.getFullName()}' on scope '${toString()}'" }
             null
         }
     }
@@ -210,10 +210,10 @@ class Scope(
         return try {
             getWithParameters(ctx.clazz, ctx.qualifier, ctx.parameters)
         } catch (e: ClosedScopeException) {
-            _koin.logger.debug("* Scope closed - no instance found for ${ctx.clazz.getFullName()} on scope ${toString()}")
+            _koin.logger.log(Level.DEBUG) { "* Scope closed - no instance found for ${ctx.clazz.getFullName()} on scope ${toString()}" }
             null
         } catch (e: NoDefinitionFoundException) {
-            _koin.logger.debug("* No instance found for type '${ctx.clazz.getFullName()}' on scope '${toString()}'")
+            _koin.logger.log(Level.DEBUG) { "* No instance found for type '${ctx.clazz.getFullName()}' on scope '${toString()}'" }
             null
         }
     }
@@ -433,7 +433,7 @@ class Scope(
      * Close all instances from this scope
      */
     fun close() = KoinPlatformTools.synchronized(this) {
-        _koin.logger.debug("|- (-) Scope - id:'$id'")
+        _koin.logger.log(Level.DEBUG) { "|- (-) Scope - id:'$id'" }
 
         _callbacks.forEach { it.onScopeClose(this) }
         _callbacks.clear()

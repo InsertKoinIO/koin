@@ -22,6 +22,7 @@ import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.ResolutionContext
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.ext.getFullName
 
@@ -189,7 +190,7 @@ class CoreResolverV2(
         ctx: ResolutionContext
     ) : T?{
         return extendedResolution.firstNotNullOfOrNull {
-            ctx.logger.debug("|- ['${it.name}'] ?")
+            ctx.logger.log(Level.DEBUG) { "|- ['${it.name}'] ?" }
             it.resolve(scope,ctx) as T?
         }
     }

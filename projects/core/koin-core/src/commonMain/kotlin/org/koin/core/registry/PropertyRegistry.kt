@@ -17,6 +17,7 @@ package org.koin.core.registry
 
 import org.koin.core.Koin
 import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.logger.Level
 import org.koin.mp.KoinPlatformTools
 
 /**
@@ -36,7 +37,7 @@ class PropertyRegistry(internal val _koin: Koin) {
      * @param properties
      */
     fun saveProperties(properties: Map<String, Any>) {
-        _koin.logger.debug("load ${properties.size} properties")
+        _koin.logger.log(Level.DEBUG) { "load ${properties.size} properties" }
         _values.putAll(properties)
     }
 
