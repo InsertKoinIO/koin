@@ -51,3 +51,38 @@ t2_registration_plus_realize                                   11597202    25299
 t3_getAll_pure_scan                                              206956     149304   B/op
 t4_get_warm_unqualified                                             587        202   B/op
 t4b_get_warm_qualified                                              616        235   B/op
+
+# 4.2.3-perfs + lazy typed cache (KTZ-4829) - 2026-09-09 - same machine, before = 9fec8d50 / after = 0b8e1201
+
+Benchmark                                              Mode      before      after   Units
+HeavyStartupBenchmark.start_get_lazy_module1           avgt       0,182      0,186   ms/op
+HeavyStartupBenchmark.start_get_lazy_module100         avgt       2,893      3,021   ms/op
+HeavyStartupBenchmark.start_get_lazy_module1000        avgt      27,761     28,423   ms/op
+HeavyStartupBenchmark.start_get_module1                avgt       0,169      0,174   ms/op
+HeavyStartupBenchmark.start_get_module100              avgt      16,254     16,414   ms/op
+HeavyStartupBenchmark.start_get_module1000             avgt     159,673    162,046   ms/op
+HeavyStartupBenchmark.start_get_module1_with_binds     avgt       0,234      0,238   ms/op
+HeavyStartupBenchmark.start_get_module100_with_binds   avgt      22,257     22,505   ms/op
+HeavyStartupBenchmark.start_get_module1000_with_binds  avgt     223,433    229,329   ms/op
+JvmBenchmark.retrieveDependency                        avgt      55,886     20,853   ns/op
+JvmBenchmark.retrieveDependency_tight                  avgt      56,762     21,708   ns/op
+ScopeBenchmark.activityScope                           avgt     311,526    224,421   ns/op
+ScopeBenchmark.activityScope_cascade_root              avgt     502,474    345,391   ns/op
+ScopeBenchmark.fragmentScope_cascade_activity_root     avgt     984,127    731,362   ns/op
+ScopeBenchmark.rootScope                               avgt      70,186     20,637   ns/op
+
+# GetAllBenchmark (jvmPerfsBenchmark, count = 1800)
+GetAllBenchmark.t1_registration_only                   avgt     899,923    901,731   us/op
+GetAllBenchmark.t2_registration_plus_realize           avgt    1324,021   1355,867   us/op
+GetAllBenchmark.t3_getAll_pure_scan                    avgt     184,448    181,479   us/op
+GetAllBenchmark.t4_get_warm_unqualified                avgt       0,056      0,026   us/op
+GetAllBenchmark.t4b_get_warm_qualified                 avgt       0,070      0,024   us/op
+
+# AllocationProbe (count = 1800), bytes per op
+t1_registration_only                                            2235783    2237040   B/op
+t4_get_warm_unqualified                                             202         56   B/op
+t4b_get_warm_qualified                                              235         72   B/op
+
+# Rejected: eagerly maintained typed mirror (measured, not committed)
+#   t4 warm get 56 -> 33 ns but t1 registration 900 -> 1565 us/op (+74%), t2 1324 -> 1997 us/op.
+#   In a startup run every definition resolves once, so an eager lookup index is pure cost there.
