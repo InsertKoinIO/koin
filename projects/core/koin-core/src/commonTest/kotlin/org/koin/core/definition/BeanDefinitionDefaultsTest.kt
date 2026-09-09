@@ -23,8 +23,9 @@ class BeanDefinitionDefaultsTest {
         kind = Kind.Singleton,
     )
 
-    // The default Callbacks instance is shared between definitions. It is immutable, so this is
-    // only safe as long as replacing it on one definition never shows up on another.
+    // The default Callbacks instance is shared between definitions. That is safe only because
+    // Callbacks is immutable (see the note on Callbacks.kt); this pins the observable half —
+    // the default is empty and `callbacks` remains a per-definition property.
     @Test
     fun default_callbacks_are_empty_and_independent_per_definition() {
         val first = definition()

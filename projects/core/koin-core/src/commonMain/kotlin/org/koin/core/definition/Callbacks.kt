@@ -21,6 +21,9 @@ package org.koin.core.definition
  * @author Arnaud Giuliani
  */
 //TODO Look At Closeable
+// Must stay immutable: BeanDefinition shares one empty instance across every definition that
+// declares no onClose (KTZ-4829). Adding a `var` or any in-place mutation here turns that
+// shared default into a cross-definition leak.
 data class Callbacks<T>(val onClose: OnCloseCallback<T>? = null)
 
 typealias OnCloseCallback<T> = (T?) -> Unit
