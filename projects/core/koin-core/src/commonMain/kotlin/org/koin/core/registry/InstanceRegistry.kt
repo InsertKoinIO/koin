@@ -200,16 +200,34 @@ class InstanceRegistry(val _koin: Koin) {
     }
 
     internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
-        val factories = _instances.values
-            .filter { factory ->
-                (factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier ||
-                    factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeArchetype
-                ) &&
-                (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
+        val scopeQualifier = instanceContext.scope.scopeQualifier
+        val scopeArchetype = instanceContext.scope.scopeArchetype
+
+        // Single pass instead of filter + distinct: same predicate, same iteration order over
+        // _instances.values, same identity-based dedup (InstanceFactory does not override
+        // equals, so distinct() was already identity). A factory appears under several index
+        // keys when it declares secondary types, hence the dedup.
+        val matched = ArrayList<InstanceFactory<*>>()
+        val seen = mutableSetOf<InstanceFactory<*>>()
+        for (factory in _instances.values) {
+            val definition = factory.beanDefinition
+            if (definition.scopeQualifier != scopeQualifier && definition.scopeQualifier != scopeArchetype) continue
+            if (definition.primaryType != clazz && !definition.secondaryTypes.contains(clazz)) continue
+            if (seen.add(factory)) matched.add(factory)
+        }
+
+        // Resolution stays a second phase on purpose: a definition can call declare() while it
+        // is being created, and mutating _instances under an in-flight iteration is not safe on
+        // every platform.
+        val instances = ArrayList<T>(matched.size)
+        for (factory in matched) {
+            val instance = factory.get(instanceContext)
+            if (instance != null) {
+                @Suppress("UNCHECKED_CAST")
+                instances.add(instance as T)
             }
-            .distinct()
-//            .sortedWith(compareBy({ it.beanDefinition.toString() }))
-        return factories.mapNotNull { it.get(instanceContext) as? T }
+        }
+        return instances
     }
 
     internal fun unloadModules(modules: Set<Module>) {
