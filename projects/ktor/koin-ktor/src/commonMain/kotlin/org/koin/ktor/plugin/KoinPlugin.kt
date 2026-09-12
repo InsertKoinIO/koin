@@ -84,7 +84,8 @@ fun Application.setKoinApplication(koinApplication: KoinApplication) {
 internal fun PluginBuilder<KoinKtorApplication>.setupMonitoring(koinApplication: KoinKtorApplication) {
     val monitor = application.monitor
     monitor.raise(KoinApplicationStarted, koinApplication)
-    monitor.subscribe(ApplicationStopping) {
+    monitor.subscribe(ApplicationStopping) { stoppingApplication ->
+        if (stoppingApplication !== application) return@subscribe
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
         koinApplication.koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
