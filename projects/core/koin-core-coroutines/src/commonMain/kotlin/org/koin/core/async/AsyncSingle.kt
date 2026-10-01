@@ -17,10 +17,23 @@ private val UNINITIALIZED = Any()
  * Suspend singleton holder: runs its definition in the caller's coroutine, once.
  * Failures and cancellations aren't cached; recursive requests from the same creation chain fail fast.
  */
+/** Holder of a suspend definition, resolved with [await]. */
+interface AsyncInstance<T> {
+    suspend fun await(): T
+}
+
+/** Suspend factory: runs its definition in the caller's coroutine on every request. */
+class AsyncFactory<T>(
+    private val scope: Scope,
+    private val definition: SuspendDefinition<T>,
+) : AsyncInstance<T> {
+    override suspend fun await(): T = definition(scope)
+}
+
 class AsyncSingle<T>(
     private val scope: Scope,
     definition: SuspendDefinition<T>,
-) {
+) : AsyncInstance<T> {
     private var definition: SuspendDefinition<T>? = definition
     private val mutex = Mutex()
 
@@ -29,7 +42,7 @@ class AsyncSingle<T>(
 
     fun isInitialized(): Boolean = value !== UNINITIALIZED
 
-    suspend fun await(): T {
+    override suspend fun await(): T {
         val cached = value
         if (cached !== UNINITIALIZED) {
             @Suppress("UNCHECKED_CAST")

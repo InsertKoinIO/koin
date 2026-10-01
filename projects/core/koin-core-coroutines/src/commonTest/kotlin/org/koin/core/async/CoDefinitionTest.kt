@@ -16,23 +16,24 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class Config(val url: String)
 class Database(val config: Config)
 class Repository(val database: Database)
 
-class AsyncSingleTest {
+class CoDefinitionTest {
 
     @Test
-    fun async_single_is_created_once() {
+    fun co_single_is_created_once() {
         runTest {
             var creations = 0
             val koin = koinApplication {
-                modules(module { singleAsync { creations++; Config("db://local") } })
+                modules(module { coSingle { creations++; Config("db://local") } })
             }.koin
 
-            val first = koin.getAsync<Config>()
-            val second = koin.getAsync<Config>()
+            val first = koin.await<Config>()
+            val second = koin.await<Config>()
 
             assertSame(first, second)
             assertEquals(1, creations)
@@ -45,7 +46,7 @@ class AsyncSingleTest {
             var creations = 0
             val koin = koinApplication {
                 modules(module {
-                    singleAsync {
+                    coSingle {
                         creations++
                         delay(100)
                         Config("db://local")
@@ -53,7 +54,7 @@ class AsyncSingleTest {
                 })
             }.koin
 
-            val results = List(10) { async { koin.getAsync<Config>() } }.awaitAll()
+            val results = List(10) { async { koin.await<Config>() } }.awaitAll()
 
             assertEquals(1, creations)
             assertEquals(1, results.toSet().size)
@@ -67,7 +68,7 @@ class AsyncSingleTest {
             var builderDispatcher: ContinuationInterceptor? = null
             val koin = koinApplication {
                 modules(module {
-                    singleAsync {
+                    coSingle {
                         builderName = currentCoroutineContext()[CoroutineName]
                         builderDispatcher = currentCoroutineContext()[ContinuationInterceptor]
                         Config("db://local")
@@ -75,7 +76,7 @@ class AsyncSingleTest {
                 })
             }.koin
 
-            withContext(CoroutineName("caller")) { koin.getAsync<Config>() }
+            withContext(CoroutineName("caller")) { koin.await<Config>() }
 
             assertEquals(CoroutineName("caller"), builderName)
             assertSame(coroutineContext[ContinuationInterceptor], builderDispatcher)
@@ -88,7 +89,7 @@ class AsyncSingleTest {
             var attempts = 0
             val koin = koinApplication {
                 modules(module {
-                    singleAsync {
+                    coSingle {
                         attempts++
                         if (attempts == 1) error("network down")
                         Config("db://local")
@@ -96,8 +97,8 @@ class AsyncSingleTest {
                 })
             }.koin
 
-            assertFailsWith<IllegalStateException> { koin.getAsync<Config>() }
-            val config = koin.getAsync<Config>()
+            assertFailsWith<IllegalStateException> { koin.await<Config>() }
+            val config = koin.await<Config>()
 
             assertEquals("db://local", config.url)
             assertEquals(2, attempts)
@@ -105,35 +106,35 @@ class AsyncSingleTest {
     }
 
     @Test
-    fun async_single_resolves_async_and_sync_dependencies() {
+    fun co_single_resolves_async_and_sync_dependencies() {
         runTest {
             val koin = koinApplication {
                 modules(module {
                     single { Config("db://local") }
-                    singleAsync { delay(10); Database(get()) }
-                    singleAsync { Repository(getAsync()) }
+                    coSingle { delay(10); Database(get()) }
+                    coSingle { Repository(await()) }
                 })
             }.koin
 
-            val repository = koin.getAsync<Repository>()
+            val repository = koin.await<Repository>()
 
-            assertSame(koin.getAsync<Database>(), repository.database)
+            assertSame(koin.await<Database>(), repository.database)
             assertSame(koin.get<Config>(), repository.database.config)
         }
     }
 
     @Test
-    fun qualified_async_singles_are_distinct() {
+    fun qualified_co_singles_are_distinct() {
         runTest {
             val koin = koinApplication {
                 modules(module {
-                    singleAsync(named("local")) { Config("db://local") }
-                    singleAsync(named("remote")) { Config("db://remote") }
+                    coSingle(named("local")) { Config("db://local") }
+                    coSingle(named("remote")) { Config("db://remote") }
                 })
             }.koin
 
-            val local = koin.getAsync<Config>(named("local"))
-            val remote = koin.getAsync<Config>(named("remote"))
+            val local = koin.await<Config>(named("local"))
+            val remote = koin.await<Config>(named("remote"))
 
             assertNotSame(local, remote)
             assertEquals("db://remote", remote.url)
@@ -145,13 +146,65 @@ class AsyncSingleTest {
         runTest {
             val koin = koinApplication {
                 modules(module {
-                    singleAsync { Database(getAsync<Repository>().database.config) }
-                    singleAsync { Repository(getAsync()) }
+                    coSingle { Database(await<Repository>().database.config) }
+                    coSingle { Repository(await()) }
                 })
             }.koin
 
-            val failure = assertFailsWith<IllegalStateException> { koin.getAsync<Repository>() }
+            val failure = assertFailsWith<IllegalStateException> { koin.await<Repository>() }
             assertEquals(true, failure.message?.startsWith("Circular dependency"))
+        }
+    }
+
+    @Test
+    fun co_factory_creates_a_new_instance_per_request() {
+        runTest {
+            var creations = 0
+            val koin = koinApplication {
+                modules(module { coFactory { creations++; Config("db://local") } })
+            }.koin
+
+            val first = koin.await<Config>()
+            val second = koin.await<Config>()
+
+            assertNotSame(first, second)
+            assertEquals(2, creations)
+        }
+    }
+
+    @Test
+    fun co_single_and_co_factory_coexist_with_qualifiers() {
+        runTest {
+            val koin = koinApplication {
+                modules(module {
+                    coSingle(named("shared")) { Config("db://shared") }
+                    coFactory(named("fresh")) { Config("db://fresh") }
+                })
+            }.koin
+
+            assertSame(koin.await<Config>(named("shared")), koin.await<Config>(named("shared")))
+            assertNotSame(koin.await<Config>(named("fresh")), koin.await<Config>(named("fresh")))
+        }
+    }
+
+    @Test
+    fun get_async_resolves_from_plain_code_in_koin_engine_context() {
+        runTest {
+            var builderName: CoroutineName? = null
+            val koin = koinApplication {
+                modules(module {
+                    coSingle {
+                        builderName = currentCoroutineContext()[CoroutineName]
+                        Config("db://local")
+                    }
+                })
+            }.koin
+
+            val deferred = withContext(CoroutineName("caller")) { koin.getAsync<Config>() }
+            val config = deferred.await()
+
+            assertSame(koin.await<Config>(), config)
+            assertTrue(builderName != CoroutineName("caller"), "getAsync must not run in the caller's context")
         }
     }
 }
