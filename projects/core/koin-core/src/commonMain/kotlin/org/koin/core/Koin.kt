@@ -54,7 +54,7 @@ import kotlin.time.measureTime
  * @author Arnaud Giuliani
  */
 @OptIn(KoinInternalApi::class)
-class Koin {
+class Koin : AutoCloseable {
 
     @KoinInternalApi
     var logger: Logger = EmptyLogger()
@@ -319,7 +319,7 @@ class Koin {
     /**
      * Close all resources from context
      */
-    fun close() {
+    override fun close() {
         scopeRegistry.close()
         instanceRegistry.close()
         propertyRegistry.close()
