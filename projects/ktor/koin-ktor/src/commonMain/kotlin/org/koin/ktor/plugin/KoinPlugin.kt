@@ -27,6 +27,7 @@ import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
 import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
+import kotlinx.coroutines.Job
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinKtorApplication
@@ -95,10 +96,14 @@ internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: 
     // Scope Handling
     on(CallSetup) { call ->
         val scopeComponent = RequestScope(koinApplication.koin, call)
-        call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
+        val scope = scopeComponent.scope
+        call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scope)
+        // A cancelled call (client gone, SSE stream closed) never reaches ResponseSent: close on call job completion
+        call.coroutineContext[Job]?.invokeOnCompletion { if (!scope.closed) scope.close() }
     }
     on(ResponseSent) { call ->
-        call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY].close()
+        val scope = call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY]
+        if (!scope.closed) scope.close()
     }
 }
 
