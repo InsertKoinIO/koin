@@ -246,6 +246,23 @@ class ParametersInjectionTest {
     }
 
     @Test
+    fun `can inject a parameter replaced with null`() {
+        val app = koinApplication {
+            modules(
+                module {
+                    single { (i: Int?) -> Simple.MySingleWithNull(i) }
+                },
+            )
+        }
+        val params = parametersOf(42)
+        params.set<Int?>(0, null)
+
+        val instance = app.koin.get<Simple.MySingleWithNull> { params }
+
+        assertNull(instance.id)
+    }
+
+    @Test
     fun `can get a single created with parameters - no need of give it again`() {
         val app = koinApplication {
             printLogger(Level.DEBUG)

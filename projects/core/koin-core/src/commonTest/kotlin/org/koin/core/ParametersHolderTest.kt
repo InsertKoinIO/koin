@@ -15,6 +15,21 @@ class ParametersHolderTest {
     }
 
     @Test
+    fun `can replace a parameter with null`() {
+        val params = parametersOf(42, "initial")
+
+        params.set<String?>(1, null)
+
+        val (number: Int, text: String?) = params
+        assertEquals(42, number)
+        assertNull(text)
+        assertEquals(listOf(42, null), params.values)
+
+        params.set(1, "replacement")
+        assertEquals("replacement", params.get<String>(1))
+    }
+
+    @Test
     fun `create a parameters holder - nullable resolution`() {
         val p = parametersOf(42)
         assertTrue(p.get<Int>() == 42)
