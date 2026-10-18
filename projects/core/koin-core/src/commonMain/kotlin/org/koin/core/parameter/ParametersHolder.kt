@@ -62,7 +62,7 @@ open class ParametersHolder(
     operator fun <T> get(i: Int) = _values[i] as T
 
     fun <T> set(i: Int, t: T) {
-        _values[i] = t as Any
+        _values[i] = t
     }
 
     /**
