@@ -1,16 +1,20 @@
 # Koin — Kotlin Dependency Injection Framework
 
-> Lightweight, production-ready DI framework for Kotlin. No code generation, no reflection at its core — pure Kotlin. Optional Koin Compiler Plugin adds compile-time safety. Runs on all Kotlin Multiplatform targets.
+> Pragmatic DI framework for Kotlin and Kotlin Multiplatform. Two styles, one container: Koin DSL or Koin Annotations (JSR-330 compatible). Compile safe in both styles with the Koin Compiler Plugin — no KSP, no kapt, no reflection at its core. Runs on all Kotlin Multiplatform targets.
+
+Concise index: [llms.txt](https://github.com/InsertKoinIO/koin/blob/main/llms.txt). This file is the API cheat sheet.
 
 ## Key Facts
 
-- **Version**: 4.2
+- **Version**: Koin 4.2.2, Koin Compiler Plugin 1.2.1, Kotlin 2.3.20 or later
 - **Language**: Kotlin (100%)
 - **Platforms**: Android, iOS, Desktop, Web (JS/Wasm), Backend (Ktor) via Kotlin Multiplatform
 - **License**: Apache 2.0
 - **Repository**: https://github.com/InsertKoinIO/koin
 - **Website**: https://insert-koin.io
-- **Documentation**: https://insert-koin.io/docs/intro/index
+- **Documentation**: https://insert-koin.io/docs/intro/what-is-koin
+- **Koin skills (AI agents)**: https://github.com/InsertKoinIO/koin-skills
+- **Kotzilla MCP (runtime debugging)**: https://mcp.kotzilla.io/mcp
 
 ## IDE Plugin
 
@@ -22,23 +26,22 @@ Official plugin for Android Studio & IntelliJ IDEA — code navigation between d
 
 ```kotlin
 // BOM (recommended)
-implementation(platform("io.insert-koin:koin-bom:4.2.0"))
-implementation("io.insert-koin:koin-core")
+plugins {
+    id("io.insert-koin.compiler.plugin") version "1.2.1"     // Koin Compiler Plugin (recommended — compile-time safety)
+}
 
-// Or explicit versions
-implementation("io.insert-koin:koin-core:4.2.0")              // Core (all platforms)
-implementation("io.insert-koin:koin-android:4.2.0")           // Android (Context, ViewModel, Scope)
-implementation("io.insert-koin:koin-compose:4.2.0")           // Compose integration
-implementation("io.insert-koin:koin-compose-viewmodel:4.2.0") // Compose ViewModel (koinViewModel)
-implementation("io.insert-koin:koin-core-viewmodel:4.2.0")    // ViewModel KMP support
-implementation("io.insert-koin:koin-core-coroutines:4.2.0")   // Coroutines (lazy modules)
-implementation("io.insert-koin:koin-ktor:4.2.0")              // Ktor server
-implementation("io.insert-koin:koin-ktor3:4.2.0")             // Ktor 3 server
-implementation("io.insert-koin:koin-test:4.2.0")              // Testing
-implementation("io.insert-koin:koin-test-junit5:4.2.0")       // JUnit 5 testing
+implementation(platform("io.insert-koin:koin-bom:4.2.2"))   // BOM resolves every Koin artifact version
+implementation("io.insert-koin:koin-core")                   // Core (all platforms)
+implementation("io.insert-koin:koin-annotations")            // Annotations style (with the Compiler Plugin)
+implementation("io.insert-koin:koin-android")                // Android (Context, ViewModel, Scope)
+implementation("io.insert-koin:koin-compose")                // Compose integration
+implementation("io.insert-koin:koin-compose-viewmodel")      // Compose ViewModel (koinViewModel)
+implementation("io.insert-koin:koin-core-coroutines")        // Coroutines (lazy modules)
+implementation("io.insert-koin:koin-ktor")                   // Ktor server
+implementation("io.insert-koin:koin-test")                   // Testing
+implementation("io.insert-koin:koin-test-junit5")            // JUnit 5 testing
 
-// Compiler Plugin (optional — adds compile-time safety)
-id("io.insert-koin.koin-compiler") version "0.4.1"
+// Never Koin KSP: no com.google.devtools.ksp for Koin, no koin-ksp-compiler, no koin-annotations:2.x pin
 ```
 
 ---
@@ -70,7 +73,7 @@ class MyApplication : Application() {
 
 ```kotlin
 import org.koin.core.annotation.KoinApplication
-import org.koin.core.context.startKoin
+import org.koin.plugin.module.dsl.startKoin   // reified startKoin<App> from the Compiler Plugin
 
 @KoinApplication
 class MyApplication : Application() {
@@ -111,7 +114,9 @@ startKoin {
 
 ## Defining Dependencies
 
-### DSL (with Compiler Plugin — recommended)
+### Compiler Plugin DSL (recommended)
+
+Pick one style per project — Koin DSL or Koin Annotations — and don't mix them unless needed (then one style per module).
 
 ```kotlin
 import org.koin.dsl.module
@@ -143,7 +148,7 @@ val appModule = module {
 }
 ```
 
-### DSL with Function References (create)
+### Compiler Plugin DSL with Function Builders (create)
 
 ```kotlin
 import org.koin.dsl.module
@@ -164,19 +169,22 @@ val databaseModule = module {
 }
 ```
 
-### Classic DSL (without Compiler Plugin)
+### Constructor DSL and Classic DSL
+
+Constructor DSL (`singleOf(::T)`) suits projects without the Compiler Plugin. Classic DSL (`single { T(get()) }`) is for custom expressions a constructor or function builder can't express. Both are also checked by the Compiler Plugin when it is applied.
 
 ```kotlin
 import org.koin.dsl.module
+import org.koin.core.module.dsl.*
 
 val appModule = module {
-    // Constructor reference (autowiring)
+    // Constructor DSL — constructor reference
     singleOf(::Database)
     singleOf(::UserRepository)
     factoryOf(::GetUserUseCase)
     viewModelOf(::UserViewModel)
 
-    // Lambda (manual wiring)
+    // Classic DSL — lambda (manual wiring)
     single { Database() }
     single { UserRepository(get()) }
     factory { GetUserUseCase(get()) }
@@ -349,9 +357,12 @@ class UserRepository(
     @Named("remote") private val remoteDb: Database
 )
 
-// DSL
-single<LocalDatabase>(named("local"))
-single<RemoteDatabase>(named("remote"))
+// Compiler Plugin DSL — the qualifier stays on the class (@Named above), the definition stays plain
+single<LocalDatabase>()
+single<RemoteDatabase>()
+
+// Classic DSL only
+single<Database>(named("local")) { LocalDatabase() }
 ```
 
 ### Custom @Qualifier (with Parameters)
@@ -635,7 +646,6 @@ class LoggerAggregator(
 ```kotlin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import org.koin.test.check.checkModules
 
 class MyTest : KoinTest {
     private val service: MyService by inject()
@@ -645,13 +655,9 @@ class MyTest : KoinTest {
         // service is resolved from Koin
     }
 }
-
-// Module verification (runtime — replaced by Compiler Plugin compile-time safety)
-@Test
-fun verifyModules() {
-    appModule.verify()
-}
 ```
+
+Graph verification is done at compile time by the Koin Compiler Plugin — don't write `checkModules()` / `verify()` tests (on their way to deprecation).
 
 ---
 
@@ -688,19 +694,20 @@ See https://insert-koin.io/docs/reference/koin-compiler/compile-safety
 
 ```
 koin/projects/
-├── koin-core/              # Core DI engine (all platforms)
-├── koin-core-viewmodel/    # ViewModel support (KMP)
-├── koin-core-coroutines/   # Coroutines support (lazy modules)
-├── koin-android/           # Android integration
-├── koin-androidx-compose/  # Compose integration
-├── koin-compose-viewmodel/ # Compose ViewModel
-├── koin-ktor/              # Ktor server integration
-├── koin-test/              # Testing utilities
-└── koin-bom/               # Bill of Materials
+├── core/      # koin-core (engine), koin-core-viewmodel, koin-core-coroutines, koin-annotations, koin-test*
+├── android/   # koin-android, koin-androidx-workmanager, koin-androidx-startup, koin-dagger-bridge…
+├── compose/   # koin-compose, koin-compose-viewmodel, koin-compose-navigation3…
+├── ktor/      # koin-ktor, koin-logger-slf4j
+├── plugins/   # koin-gradle-plugin
+└── bom/       # koin-bom
 ```
+
+Building and contributing: https://github.com/InsertKoinIO/koin/blob/main/AGENTS.md
 
 ## Related Repositories
 
 - **Compiler Plugin**: https://github.com/InsertKoinIO/koin-compiler-plugin
+- **Koin skills (AI agents)**: https://github.com/InsertKoinIO/koin-skills — Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`
+- **Kotzilla MCP**: https://mcp.kotzilla.io/mcp — Koin error diagnosis and runtime debugging (graph behavior, scopes, memory, performance)
 - **Playground Apps**: https://github.com/InsertKoinIO/playground-apps
 - **Website**: https://insert-koin.io

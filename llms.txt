@@ -1,0 +1,50 @@
+# Koin
+
+> Koin is the pragmatic dependency injection framework for Kotlin and Kotlin Multiplatform (Android, iOS, desktop, web, Ktor server). Two styles, one container: Koin DSL or Koin Annotations (JSR-330 compatible). Compile safe in both styles with the Koin Compiler Plugin — no KSP, no kapt, no generated files. Current versions: Koin 4.2.2, Koin Compiler Plugin 1.2.1, Kotlin 2.3.20 or later.
+
+Key facts for writing Koin code:
+
+- **Pick one style per project and state it** — don't mix DSL and Annotations unless asked (then one style per module).
+  - **Koin DSL** keeps DI out of the code: classes carry no annotations, wiring lives in `module { }` files. Three forms:
+    - **Compiler Plugin DSL** `single<T>()` / `single { create(::buildT) }` — recommended with the Compiler Plugin.
+    - **Constructor DSL** `singleOf(::T)` — projects without the Compiler Plugin.
+    - **Classic DSL** `single { T(get()) }` — custom expressions only.
+  - **Koin Annotations** `@Singleton`, `@Factory`, `@KoinViewModel`, `@Module` — the Hilt / Dagger model, JSR-330 compatible (`@Inject`, `@Singleton`, `@Named`, `@Qualifier`). Prefer `@Singleton` over `@Single`.
+- **Koin Compiler Plugin** (`id("io.insert-koin.compiler.plugin")`) checks the whole graph at build time, DSL and Annotations alike. It replaces `checkModules()` / `verify()` tests.
+- **Koin KSP is deprecated** — never add `koin-ksp-compiler`, never import `org.koin.ksp.generated.*`, never pin `koin-annotations:2.x`. Let `koin-bom` resolve versions.
+- Compiler Plugin DSL primitives and `startKoin<App>` live in `org.koin.plugin.module.dsl`.
+- Runtime behavior (graph behavior, scopes, memory, performance) is not checked by the compiler: use the Kotzilla MCP.
+
+## Docs
+
+- [What is Koin](https://insert-koin.io/docs/intro/what-is-koin): positioning and core concepts
+- [Koin Compiler Plugin](https://insert-koin.io/docs/intro/koin-compiler-plugin): compile-time safety for DSL and Annotations
+- [Setup](https://insert-koin.io/docs/setup/gradle): Gradle, BOM and artifacts per platform
+- [Compiler Plugin setup](https://insert-koin.io/docs/setup/compiler-plugin): plugin id, version catalog, options
+- [Koin Annotations tutorial](https://insert-koin.io/docs/quickstart/kotlin-annotations): Annotations with the Compiler Plugin
+- [Choosing your style](https://insert-koin.io/docs/intro/choosing-your-style): Compiler Plugin DSL, Constructor DSL, Classic DSL or Annotations
+- [Koin DSL](https://insert-koin.io/docs/reference/koin-core/dsl): modules and definitions
+- [Compile-time safety](https://insert-koin.io/docs/reference/koin-compiler/compile-safety): what the plugin verifies
+- [Modules](https://insert-koin.io/docs/reference/koin-core/modules): `includes()`, `@Configuration`, `@ComponentScan`
+- [Start Koin](https://insert-koin.io/docs/reference/koin-core/starting-koin): `startKoin`, properties, module loading
+- [Scopes](https://insert-koin.io/docs/reference/koin-core/scopes): scoped definitions and lifecycles
+- [KMP shared modules](https://insert-koin.io/docs/reference/koin-core/kmp-shared-modules): common and platform modules
+- [Compose](https://insert-koin.io/docs/reference/koin-compose/compose): `koinViewModel()`, `koinInject()`
+- [Testing](https://insert-koin.io/docs/reference/koin-test/testing): `koin-test`, JUnit 4 / 5
+- [Koin vs Hilt / Dagger](https://insert-koin.io/docs/intro/koin-vs-hilt): comparison and migration
+
+## AI tooling
+
+- [Koin skills](https://github.com/InsertKoinIO/koin-skills): official agent skills to set up Koin, write Koin code, migrate from Hilt / Dagger / Koin KSP / Koin 3.x, and diagnose Koin apps. Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`
+- [Kotzilla MCP](https://mcp.kotzilla.io/mcp): Koin knowledge, Koin error diagnosis, and runtime debugging (graph behavior, scopes, memory, performance). Claude Code: `claude mcp add kotzilla --transport http https://mcp.kotzilla.io/mcp`
+
+## Repository
+
+- [AGENTS.md](https://github.com/InsertKoinIO/koin/blob/main/AGENTS.md): building, testing and contributing to this repository
+- [Koin Compiler Plugin repository](https://github.com/InsertKoinIO/koin-compiler-plugin): compiler plugin sources
+- [Koin IDE plugin](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-): IntelliJ IDEA / Android Studio navigation and inspections
+
+## Optional
+
+- [API cheat sheet](https://github.com/InsertKoinIO/koin/blob/main/projects/llms.txt): code samples for every Koin API (definitions, scopes, ViewModel, WorkManager, qualifiers, Ktor)
+- [Kotzilla](https://kotzilla.io): observability platform for Koin and KMP apps
