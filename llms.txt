@@ -6,26 +6,27 @@ Key facts for writing Koin code:
 
 - **Pick one style per project and state it** — don't mix DSL and Annotations unless asked (then one style per module).
   - **Koin DSL** keeps DI out of the code: classes carry no annotations, wiring lives in `module { }` files. Three forms:
-    - **Safe DSL** `single<T>()` / `single { create(::buildT) }` — recommended with the Compiler Plugin.
-    - **Autowire DSL** `singleOf(::T)` — projects without the Compiler Plugin.
+    - **Compiler Plugin DSL** `single<T>()` / `single { create(::buildT) }` — recommended with the Compiler Plugin.
+    - **Constructor DSL** `singleOf(::T)` — projects without the Compiler Plugin.
     - **Classic DSL** `single { T(get()) }` — custom expressions only.
   - **Koin Annotations** `@Singleton`, `@Factory`, `@KoinViewModel`, `@Module` — the Hilt / Dagger model, JSR-330 compatible (`@Inject`, `@Singleton`, `@Named`, `@Qualifier`). Prefer `@Singleton` over `@Single`.
 - **Koin Compiler Plugin** (`id("io.insert-koin.compiler.plugin")`) checks the whole graph at build time, DSL and Annotations alike. It replaces `checkModules()` / `verify()` tests.
 - **Koin KSP is deprecated** — never add `koin-ksp-compiler`, never import `org.koin.ksp.generated.*`, never pin `koin-annotations:2.x`. Let `koin-bom` resolve versions.
-- Safe DSL primitives and `startKoin<App>` live in `org.koin.plugin.module.dsl`.
+- Compiler Plugin DSL primitives and `startKoin<App>` live in `org.koin.plugin.module.dsl`.
 - Runtime behavior (graph behavior, scopes, memory, performance) is not checked by the compiler: use the Kotzilla MCP.
 
 ## Docs
 
 - [What is Koin](https://insert-koin.io/docs/intro/what-is-koin): positioning and core concepts
 - [Koin Compiler Plugin](https://insert-koin.io/docs/intro/koin-compiler-plugin): compile-time safety for DSL and Annotations
-- [Setup](https://insert-koin.io/docs/setup/koin): Gradle, BOM and artifacts per platform
+- [Setup](https://insert-koin.io/docs/setup/gradle): Gradle, BOM and artifacts per platform
 - [Compiler Plugin setup](https://insert-koin.io/docs/setup/compiler-plugin): plugin id, version catalog, options
-- [Koin Annotations setup](https://insert-koin.io/docs/setup/annotations): Annotations with the Compiler Plugin
+- [Koin Annotations tutorial](https://insert-koin.io/docs/quickstart/kotlin-annotations): Annotations with the Compiler Plugin
+- [Choosing your style](https://insert-koin.io/docs/intro/choosing-your-style): Compiler Plugin DSL, Constructor DSL, Classic DSL or Annotations
 - [Koin DSL](https://insert-koin.io/docs/reference/koin-core/dsl): modules and definitions
 - [Compile-time safety](https://insert-koin.io/docs/reference/koin-compiler/compile-safety): what the plugin verifies
-- [Starting with Koin Annotations](https://insert-koin.io/docs/reference/koin-annotations/start): `@KoinApplication`, `@Configuration`, `@ComponentScan`
-- [Start Koin](https://insert-koin.io/docs/reference/koin-core/start-koin): `startKoin`, properties, module loading
+- [Modules](https://insert-koin.io/docs/reference/koin-core/modules): `includes()`, `@Configuration`, `@ComponentScan`
+- [Start Koin](https://insert-koin.io/docs/reference/koin-core/starting-koin): `startKoin`, properties, module loading
 - [Scopes](https://insert-koin.io/docs/reference/koin-core/scopes): scoped definitions and lifecycles
 - [KMP shared modules](https://insert-koin.io/docs/reference/koin-core/kmp-shared-modules): common and platform modules
 - [Compose](https://insert-koin.io/docs/reference/koin-compose/compose): `koinViewModel()`, `koinInject()`

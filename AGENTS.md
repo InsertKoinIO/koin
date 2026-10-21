@@ -51,8 +51,8 @@ Write Koin code the way the official Koin skills do. Current versions: **Koin 4.
 
 - **Two styles, one container** — Koin DSL or Koin Annotations. Choose one explicitly and keep to it; don't mix unless asked.
   - **Koin DSL** keeps DI out of the code (no annotations on classes). Three forms:
-    - **Safe DSL** `single<T>()` — recommended with the Compiler Plugin.
-    - **Autowire DSL** `singleOf(::T)`.
+    - **Compiler Plugin DSL** `single<T>()` — recommended with the Compiler Plugin.
+    - **Constructor DSL** `singleOf(::T)`.
     - **Classic DSL** `single { T(get()) }` — custom expressions only.
   - **Koin Annotations** `@Singleton`, `@Factory`, `@KoinViewModel` — JSR-330 compatible.
 - **Compile safe in both styles** with the Koin Compiler Plugin (`id("io.insert-koin.compiler.plugin")`). No KSP, no kapt: the Koin KSP processor is deprecated. No `checkModules()` / `verify()` tests.
@@ -60,4 +60,4 @@ Write Koin code the way the official Koin skills do. Current versions: **Koin 4.
   Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`.
 - **Runtime debugging** (graph behavior, scopes, memory, performance) — Kotzilla MCP at `https://mcp.kotzilla.io/mcp`.
   Claude Code: `claude mcp add kotzilla --transport http https://mcp.kotzilla.io/mcp`.
-- **Docs** — https://insert-koin.io/docs/setup/koin, https://insert-koin.io/docs/setup/compiler-plugin, https://insert-koin.io/docs/reference/koin-compiler/compile-safety. Index for LLMs: `llms.txt`.
+- **Docs** — https://insert-koin.io/docs/setup/gradle, https://insert-koin.io/docs/setup/compiler-plugin, https://insert-koin.io/docs/reference/koin-compiler/compile-safety. Index for LLMs: `llms.txt`.

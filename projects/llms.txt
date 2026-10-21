@@ -114,7 +114,7 @@ startKoin {
 
 ## Defining Dependencies
 
-### Safe DSL (with Compiler Plugin — recommended)
+### Compiler Plugin DSL (recommended)
 
 Pick one style per project — Koin DSL or Koin Annotations — and don't mix them unless needed (then one style per module).
 
@@ -148,7 +148,7 @@ val appModule = module {
 }
 ```
 
-### Safe DSL with Function Builders (create)
+### Compiler Plugin DSL with Function Builders (create)
 
 ```kotlin
 import org.koin.dsl.module
@@ -169,16 +169,16 @@ val databaseModule = module {
 }
 ```
 
-### Autowire DSL and Classic DSL
+### Constructor DSL and Classic DSL
 
-Autowire DSL (`singleOf(::T)`) suits projects without the Compiler Plugin. Classic DSL (`single { T(get()) }`) is for custom expressions a constructor or function builder can't express. Both are also checked by the Compiler Plugin when it is applied.
+Constructor DSL (`singleOf(::T)`) suits projects without the Compiler Plugin. Classic DSL (`single { T(get()) }`) is for custom expressions a constructor or function builder can't express. Both are also checked by the Compiler Plugin when it is applied.
 
 ```kotlin
 import org.koin.dsl.module
 import org.koin.core.module.dsl.*
 
 val appModule = module {
-    // Autowire DSL — constructor reference
+    // Constructor DSL — constructor reference
     singleOf(::Database)
     singleOf(::UserRepository)
     factoryOf(::GetUserUseCase)
@@ -357,7 +357,7 @@ class UserRepository(
     @Named("remote") private val remoteDb: Database
 )
 
-// Safe DSL — the qualifier stays on the class (@Named above), the definition stays plain
+// Compiler Plugin DSL — the qualifier stays on the class (@Named above), the definition stays plain
 single<LocalDatabase>()
 single<RemoteDatabase>()
 
