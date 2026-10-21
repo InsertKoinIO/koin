@@ -13,7 +13,7 @@ Building an app **with** Koin rather than changing Koin itself? Read "Using Koin
 | `projects/compose/` | `koin-compose`, `koin-compose-viewmodel`, `koin-compose-navigation3`, `koin-compose-viewmodel-navigation`, `koin-androidx-compose(-navigation)` |
 | `projects/ktor/` | `koin-ktor`, `koin-logger-slf4j` |
 | `projects/plugins/`, `projects/bom/` | `koin-gradle-plugin`, `koin-bom` |
-| `docs/` | Documentation published to https://insert-koin.io/docs |
+| `docs/` | Legacy copy of the docs, not maintained. The documentation is https://insert-koin.io/docs (agent index: https://insert-koin.io/llms.txt) |
 | `examples/` | Sample apps |
 
 The Koin Compiler Plugin lives in its own repository: https://github.com/InsertKoinIO/koin-compiler-plugin
@@ -41,7 +41,7 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - **Every bug fix ships a regression test** that fails before the fix, in `commonTest` when the code is common.
 - **KMP discipline** — a `commonMain` change is verified beyond the JVM (`allTests`, or at least one native target and `wasmJs`). `./gradlew test` silently skips native, JS and Wasm tests.
 - In `commonTest`: no backtick test names (they break JS / Wasm / native), and `runTest { }` in block-body form.
-- Commit style: `Fix #NNNN - description`. User-visible changes update `docs/`.
+- Commit style: `Fix #NNNN - description`. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
 
 Detailed contributor notes (engine internals, known failing off-JVM tests, release notes policy): `projects/CLAUDE.md`.
 
@@ -60,4 +60,4 @@ Write Koin code the way the official Koin skills do. Current versions: **Koin 4.
   Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`.
 - **Runtime debugging** (graph behavior, scopes, memory, performance) — Kotzilla MCP at `https://mcp.kotzilla.io/mcp`.
   Claude Code: `claude mcp add kotzilla --transport http https://mcp.kotzilla.io/mcp`.
-- **Docs** — https://insert-koin.io/docs/setup/gradle, https://insert-koin.io/docs/setup/compiler-plugin, https://insert-koin.io/docs/reference/koin-compiler/compile-safety. Index for LLMs: `llms.txt`.
+- **Docs** — https://insert-koin.io/docs/setup/gradle, https://insert-koin.io/docs/setup/compiler-plugin, https://insert-koin.io/docs/reference/koin-compiler/compile-safety. Index for LLMs: https://insert-koin.io/llms.txt (full text: https://insert-koin.io/llms-full.txt), and this repo's `llms.txt`.
