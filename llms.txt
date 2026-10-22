@@ -35,7 +35,7 @@ Key facts for writing Koin code:
 
 ## AI tooling
 
-- [Koin skills](https://github.com/InsertKoinIO/koin-skills): official agent skills to set up Koin, write Koin code, migrate from Hilt / Dagger / Koin KSP / Koin 3.x, and diagnose Koin apps. Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`
+- [Koin skills](https://github.com/InsertKoinIO/koin-skills): official agent skills to set up Koin, write Koin code, migrate from Hilt / Dagger / Toothpick / Kodein / Metro / Koin KSP / Koin 3.x, and diagnose Koin apps. Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`
 - [Kotzilla MCP](https://mcp.kotzilla.io/mcp): Koin knowledge, Koin error diagnosis, and runtime debugging (graph behavior, scopes, memory, performance). Claude Code: `claude mcp add kotzilla --transport http https://mcp.kotzilla.io/mcp`
 
 ## Repository

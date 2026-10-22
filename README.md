@@ -36,6 +36,21 @@ Here are the currently available Koin versions:
 
 ## Developer Tools & Observability 🛠️
 
+### Koin Skills — for AI Coding Agents
+
+Official [Koin skills](https://github.com/InsertKoinIO/koin-skills) teach your coding agent to set up Koin, write Koin code, migrate from Hilt, Dagger, Toothpick, Kodein, Metro or older Koin, and diagnose Koin apps, following the Koin Compiler Plugin rules.
+
+```
+# Claude Code
+/plugin marketplace add InsertKoinIO/koin-skills
+/plugin install koin@koin-skills
+
+# Cursor, Codex, Copilot and other agents
+npx skills add InsertKoinIO/koin-skills
+```
+
+See [AI Agents and Koin Skills](https://insert-koin.io/docs/tooling/ai-agents).
+
 ### Kotzilla Platform — KMP Crash Reporting & Observability
 
 Free signup on [Kotzilla](https://kotzilla.io)
