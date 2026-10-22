@@ -16,7 +16,6 @@
 package org.koin.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
@@ -39,6 +38,10 @@ import org.koin.core.scope.Scope
  *
  * @author Arnaud Giuliani
  */
+@Deprecated(
+    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
+    replaceWith = ReplaceWith("koinGet(qualifier, scope, parameters)", "org.koin.compose.koinGet")
+)
 @Composable
 @OptIn(KoinInternalApi::class)
 inline fun <reified T> koinInject(
@@ -46,10 +49,7 @@ inline fun <reified T> koinInject(
     scope: Scope = currentKoinScope(),
     noinline parameters: ParametersDefinition,
 ): T {
-    val p = parameters.invoke()
-    return remember(qualifier, scope, p) {
-        scope.getWithParameters(T::class, qualifier, p)
-    }
+    return koinGet(qualifier, scope, parameters)
 }
 
 /**
@@ -62,6 +62,10 @@ inline fun <reified T> koinInject(
  *
  * @author Arnaud Giuliani
  */
+@Deprecated(
+    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
+    replaceWith = ReplaceWith("koinGet(qualifier, scope, parametersHolder)", "org.koin.compose.koinGet")
+)
 @Composable
 @OptIn(KoinInternalApi::class)
 inline fun <reified T> koinInject(
@@ -69,9 +73,7 @@ inline fun <reified T> koinInject(
     scope: Scope = currentKoinScope(),
     parametersHolder: ParametersHolder,
 ): T {
-    return remember(qualifier, scope, parametersHolder) {
-        scope.getWithParameters(T::class, qualifier, parametersHolder)
-    }
+    return koinGet(qualifier, scope, parametersHolder)
 }
 
 /**
@@ -83,12 +85,14 @@ inline fun <reified T> koinInject(
  *
  * @author Arnaud Giuliani
  */
+@Deprecated(
+    message = "Use koinGet() instead. koinInject uses Scope.get() (eager), which is inconsistent with the 'inject' naming that implies lazy resolution.",
+    replaceWith = ReplaceWith("koinGet(qualifier, scope)", "org.koin.compose.koinGet")
+)
 @Composable
 inline fun <reified T> koinInject(
     qualifier: Qualifier? = null,
     scope: Scope = currentKoinScope()
 ): T {
-    return remember(qualifier, scope) {
-        scope.get(T::class, qualifier)
-    }
+    return koinGet(qualifier, scope)
 }
