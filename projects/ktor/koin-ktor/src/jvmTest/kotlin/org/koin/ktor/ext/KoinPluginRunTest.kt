@@ -20,6 +20,9 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.hooks.CallSetup
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -27,9 +30,12 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -43,6 +49,7 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.ktor.plugin.scope
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class KoinPluginRunTest {
@@ -79,6 +86,32 @@ class KoinPluginRunTest {
                 "scope ids should be 'request_<number>'",
             )
         }
+    }
+
+    @Test
+    fun `request scope is closed when the call is cancelled`() = testApplication {
+        val engineCall = CompletableDeferred<ApplicationCall>()
+        application {
+            install(Koin)
+            install(createApplicationPlugin("CaptureCall") {
+                on(CallSetup) { call -> engineCall.complete(call) }
+            })
+            routing {
+                get("cancelled") {
+                    // What the engine does when the client goes away: the call job is cancelled, no response is sent
+                    engineCall.await().coroutineContext[Job]!!.cancel()
+                    awaitCancellation()
+                }
+            }
+        }
+
+        runCatching { client.get("cancelled") }
+
+        val call = engineCall.await()
+        call.coroutineContext[Job]!!.join()
+        val scope = call.scope
+        assertTrue(scope.closed, "request scope should be closed")
+        assertNull(scope.getKoin().getScopeOrNull(scope.id), "request scope should be removed from the registry")
     }
 
     @Test
