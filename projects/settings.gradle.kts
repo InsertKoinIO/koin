@@ -66,4 +66,6 @@ include(
     ":plugins:koin-gradle-plugin",
     // BOM
     ":bom:koin-bom",
+    // Version Catalog
+    ":version-catalog:koin-version-catalog"
 )
