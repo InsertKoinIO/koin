@@ -136,7 +136,7 @@ class MainApplication : Application(), KoinStartup {
 }
 ```
 
-This replaces the `startKoin` function that is usally used in `onCreate`. The `koinConfiguration` function is returning a `KoinConfiguration` instance.
+This replaces the `startKoin` function that is usually used in `onCreate`. The `koinConfiguration` function is returning a `KoinConfiguration` instance.
 
 :::info
 `KoinStartup` integrates with AndroidX App Startup to initialize Koin via ContentProvider before `Application.onCreate()`. This is useful when you need to manage initialization order with other Initializers that depend on Koin being available.

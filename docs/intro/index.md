@@ -47,7 +47,7 @@ See how Koin compares:
 ### Ready to Code?
 
 - **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
-- **[Tutorials](/docs/tutorials/your-first-app)** - Build your first Koin app
+- **[Tutorials](/docs/quickstart/kotlin)** - Build your first Koin app
 - **[Koin IDE Plugin](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-)** - Install the official plugin for Android Studio & IntelliJ IDEA — code navigation, live safety checks, dependency graph visualization
 
 ## Koin's Approaches
