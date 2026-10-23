@@ -7,7 +7,7 @@ title: Ktor & Annotations
 Let's go 🚀
 
 :::note
-update - 2024-10-21
+update - 2025-05-24
 :::
 
 ## Get the code

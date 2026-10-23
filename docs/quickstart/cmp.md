@@ -6,7 +6,7 @@ title: Compose Multiplatform - Shared UI
 > You need around __20 min__ to complete the tutorial.
 
 :::note
-update - 2024-11-12
+update - 2025-05-24
 :::
 
 :::tip
