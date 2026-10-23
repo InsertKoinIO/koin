@@ -22,10 +22,18 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.ParametersHolder
 import kotlin.reflect.KClass
 
-class AndroidParametersHolder(
-    initialValues: ParametersDefinition? = null,
+class AndroidParametersHolder private constructor(
+    initialValues: ParametersHolder?,
     private val extras: CreationExtras,
-) : ParametersHolder(initialValues?.invoke()?.values?.toMutableList() ?: mutableListOf()) {
+) : ParametersHolder(
+    _values = initialValues?.values?.toMutableList() ?: mutableListOf(),
+    useIndexedValues = initialValues?.useIndexedValues,
+) {
+
+    constructor(
+        initialValues: ParametersDefinition? = null,
+        extras: CreationExtras,
+    ) : this(initialValues?.invoke(), extras)
 
     override fun <T> elementAt(i: Int, clazz: KClass<*>): T {
         return createSavedStateHandleOrElse(clazz) { super.elementAt(i, clazz) }
