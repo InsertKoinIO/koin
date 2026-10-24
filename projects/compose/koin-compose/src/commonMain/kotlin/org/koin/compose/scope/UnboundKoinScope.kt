@@ -44,7 +44,7 @@ import org.koin.core.scope.Scope
  * fun MyFeature(externalScope: Scope, onClose: () -> Unit) {
  *     UnboundKoinScope(scope = externalScope) {
  *         // Child composables can access the scope via LocalKoinScopeContext
- *         val myService = koinInject<MyService>()
+ *         val myService = koinGet<MyService>()
  *
  *         // Remember to close the scope externally
  *         DisposableEffect(Unit) {
