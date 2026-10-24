@@ -35,7 +35,7 @@ class ResolutionContext(
     val qualifier: Qualifier? = null,
     val parameters: ParametersHolder? = null,
 ){
-    val debugTag = "t:'${clazz.getFullName()}' - q:'$qualifier'"
+    val debugTag: String get() = "t:'${clazz.getFullName()}' - q:'$qualifier'"
     var scopeArchetype : TypeQualifier? = null
 
     fun newContextForScope(s : Scope) : ResolutionContext{
