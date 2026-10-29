@@ -8,7 +8,7 @@ Koin provides several APIs to manage scopes within Compose applications, from si
 
 ## KoinScope
 
-Create a Koin scope tied to a Composable's lifecycle:
+Create a Koin scope tied to a Composable's lifecycle. Use the reified `KoinScope<T>(scopeID)` overload to create or retrieve a typed scope:
 
 ```kotlin
 val featureModule = module {
@@ -20,7 +20,7 @@ val featureModule = module {
 
 @Composable
 fun FeatureScreen() {
-    KoinScope(scopeOf<FeatureScope>()) {
+    KoinScope<FeatureScope>("feature_scope") {
         // All children can access scoped dependencies
         FeatureContent()
     }
@@ -148,12 +148,18 @@ This retrieves the scope from `LocalKoinScopeContext`. It's the default scope us
 
 ## rememberKoinScope
 
-Remember a Koin scope across recompositions with automatic lifecycle management:
+Remember a Koin scope across recompositions with automatic lifecycle management. Pass an existing [Scope](https://insert-koin.io/docs/reference/koin-core/scopes) instance — typically created with `getKoin().getOrCreateScope()`:
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import org.koin.compose.getKoin
+import org.koin.compose.scope.rememberKoinScope
+
 @Composable
 fun FeatureScreen() {
-    val scope = rememberKoinScope(scopeOf<FeatureScope>())
+    val scope = remember { getKoin().getOrCreateScope<FeatureScope>("feature_scope") }
+    rememberKoinScope(scope)
 
     // Use scope for injection
     val repository = scope.get<FeatureRepository>()
@@ -280,7 +286,7 @@ val sessionModule = module {
 
 @Composable
 fun ShopApp() {
-    KoinScope(scopeOf<UserSession>()) {
+    KoinScope<UserSession>("user_session") {
         NavHost(/*...*/) {
             composable("catalog") { CatalogScreen() }
             composable("cart") { CartScreen() }
@@ -309,7 +315,7 @@ val appModule = module {
 
 @Composable
 fun CheckoutFlow() {
-    KoinScope(scopeOf<CheckoutFlow>()) {
+    KoinScope<CheckoutFlow>("checkout_flow") {
         NavHost(/*...*/) {
             composable("cart") { CartScreen() }
             composable("shipping") { ShippingScreen() }

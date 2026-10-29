@@ -312,8 +312,8 @@ val session: SessionData = myScope.get()
 ```kotlin
 @Composable
 fun MyScreen() {
-    // Create scope tied to Composable lifecycle
-    val scope = rememberKoinScope(named("screen_scope"))
+    val scope = remember { getKoin().getOrCreateScope("screen_scope", named("session")) }
+    rememberKoinScope(scope)
 
     // Get scoped instance
     val presenter: ScreenPresenter = scope.get()
