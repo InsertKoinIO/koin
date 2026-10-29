@@ -707,7 +707,7 @@ Building and contributing: https://github.com/InsertKoinIO/koin/blob/main/AGENTS
 ## Related Repositories
 
 - **Compiler Plugin**: https://github.com/InsertKoinIO/koin-compiler-plugin
-- **Koin skills (AI agents)**: https://github.com/InsertKoinIO/koin-skills — Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`
+- **Koin skills (AI agents)**: https://github.com/InsertKoinIO/koin-skills — Claude Code: `/plugin marketplace add InsertKoinIO/koin-skills` then `/plugin install koin@koin-skills`. Other agents (Cursor, Codex, Copilot, Windsurf, Gemini…): `npx skills add InsertKoinIO/koin-skills` (Node.js 22+)
 - **Kotzilla MCP**: https://mcp.kotzilla.io/mcp — Koin error diagnosis and runtime debugging (graph behavior, scopes, memory, performance)
 - **Playground Apps**: https://github.com/InsertKoinIO/playground-apps
 - **Website**: https://insert-koin.io
