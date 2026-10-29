@@ -1,6 +1,7 @@
 package org.koin.ktor.ext
 
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.install
 import io.ktor.server.testing.TestApplication
 import kotlinx.coroutines.test.runTest
@@ -70,5 +71,33 @@ class KoinFeatureTest {
         val bean2 = runCatching { KoinPlatform.getKoin().getOrNull<Foo>() }.getOrNull()
         assertNull(bean2)
         runCatching { testApplication.stop() }
+    }
+
+    @Test
+    fun `does not close koin when another application stops`() = runTest {
+        val module = module {
+            single { Foo("bar") }
+        }
+        val otherApplication = TestApplication { application { } }
+        otherApplication.start()
+        val testApplication = TestApplication {
+            application {
+                install(Koin) {
+                    modules(module)
+                }
+            }
+        }
+        testApplication.start()
+        assertNotNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
+
+        testApplication.application.monitor.raise(ApplicationStopping, otherApplication.application)
+
+        assertNotNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
+
+        testApplication.application.monitor.raise(ApplicationStopping, testApplication.application)
+
+        assertNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
+        runCatching { testApplication.stop() }
+        runCatching { otherApplication.stop() }
     }
 }
