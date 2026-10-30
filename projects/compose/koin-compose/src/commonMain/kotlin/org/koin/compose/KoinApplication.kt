@@ -88,7 +88,9 @@ private fun getDefaultRootScope() = KoinPlatform.getKoin().scopeRegistry.rootSco
 @Composable
 fun getKoin(): Koin = currentComposer.run {
     try {
-        consume(LocalKoinApplicationContext).getValue()
+        val currentKoin = consume(LocalKoinApplicationContext).getValue()
+        if (currentKoin.scopeRegistry.rootScope.closed) consume(LocalKoinApplicationContext).resetValue() ?: error("Can't get Koin context. Scope '${currentKoin.scopeRegistry.rootScope}' is closed")
+        else currentKoin
     } catch (e: Exception) {
         consume(LocalKoinApplicationContext).resetValue()
             ?: error("Can't get Koin context due to error: $e")
