@@ -455,6 +455,7 @@ public class org/koin/core/parameter/ParametersHolder {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun get (I)Ljava/lang/Object;
 	public final fun getIndex ()I
+	public final fun getNextOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public fun getOrNull (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public final fun getUseIndexedValues ()Ljava/lang/Boolean;
 	public final fun getValues ()Ljava/util/List;

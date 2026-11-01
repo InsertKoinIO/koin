@@ -98,10 +98,28 @@ open class ParametersHolder(
         getOrNull(T::class) ?: throw DefinitionParameterException("No value found for type '${T::class.getFullName()}'")
 
     /**
-     * Get first element of given type T
+     * Get next element of given type T, or null if the next value is an explicit null
      * return T
      */
-    inline fun <reified T : Any> getOrNull(): T? = getOrNull(T::class)
+    inline fun <reified T : Any> getOrNull(): T? = getNextOrNull(T::class)
+
+    /**
+     * Get next element of given type, for a nullable parameter requested in order (like a nullable `@InjectedParam`).
+     *
+     * An explicit null at the current index is consumed and returned, instead of falling back to the first value of
+     * the given type, which is already the one given to a previous parameter of the same type
+     * (e.g. `parametersOf("a", null, null)` for three `String?` parameters).
+     *
+     * [getOrNull] with a class doesn't consume nulls, as it's also used to look for any dependency in the parameters.
+     */
+    @PublishedApi
+    internal fun <T> getNextOrNull(clazz: KClass<*>): T? {
+        if (useIndexedValues != false && index < _values.size && _values[index] == null) {
+            increaseIndex()
+            return null
+        }
+        return getOrNull(clazz)
+    }
 
     /**
      * Get first element of given type T
