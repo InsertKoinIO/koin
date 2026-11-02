@@ -34,14 +34,16 @@ import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.mp.KoinPlatformTools
 import org.koin.mp.KoinPlatformTools.safeHashMap
+import org.koin.mp.Lockable
 import kotlin.collections.set
 import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
-class InstanceRegistry(val _koin: Koin) {
+class InstanceRegistry(val _koin: Koin) : Lockable() {
 
     private val _instances = safeHashMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
@@ -152,21 +154,24 @@ class InstanceRegistry(val _koin: Koin) {
     ) {
         val primaryType = T::class
         val indexKey = indexKey(primaryType, qualifier, scopeQualifier)
-        val existingFactory = instances[indexKey] as? ScopedInstanceFactory<T>
-        if (existingFactory != null) {
-            existingFactory.saveValue(scopeID, instance)
-        } else {
-            val definitionFunction : Scope.(ParametersHolder) -> T = if (!holdInstance) ( { error("Declared definition of type '$primaryType' shouldn't be executed") } ) else ({ instance })
-            val def: BeanDefinition<T> = _createDefinition(Kind.Scoped, qualifier, definitionFunction, secondaryTypes, scopeQualifier)
-            val factory = ScopedInstanceFactory(def, holdInstance = holdInstance)
-            val hasFactoryAllowOverride =  factory.beanDefinition.allowOverride == true
-            saveMapping(allowOverride || hasFactoryAllowOverride, indexKey, factory)
-            def.secondaryTypes.forEach { clazz ->
-                val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
-                saveMapping(allowOverride || hasFactoryAllowOverride, index, factory)
+        val factory = KoinPlatformTools.synchronized(this) {
+            val existingFactory = instances[indexKey] as? ScopedInstanceFactory<T>
+            if (existingFactory != null) {
+                existingFactory
+            } else {
+                val definitionFunction : Scope.(ParametersHolder) -> T = if (!holdInstance) ( { error("Declared definition of type '$primaryType' shouldn't be executed") } ) else ({ instance })
+                val def: BeanDefinition<T> = _createDefinition(Kind.Scoped, qualifier, definitionFunction, secondaryTypes, scopeQualifier)
+                val newFactory = ScopedInstanceFactory(def, holdInstance = holdInstance)
+                val hasFactoryAllowOverride = newFactory.beanDefinition.allowOverride == true
+                saveMapping(allowOverride || hasFactoryAllowOverride, indexKey, newFactory)
+                def.secondaryTypes.forEach { clazz ->
+                    val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
+                    saveMapping(allowOverride || hasFactoryAllowOverride, index, newFactory)
+                }
+                newFactory
             }
-            factory.saveValue(scopeID, instance)
         }
+        factory.saveValue(scopeID, instance)
     }
 
     @PublishedApi
@@ -180,10 +185,12 @@ class InstanceRegistry(val _koin: Koin) {
         val def = _createDefinition(Kind.Scoped, qualifier, { instance }, secondaryTypes, rootQualifier)
         val factory = SingleInstanceFactory(def)
         val indexKey = indexKey(def.primaryType, def.qualifier, def.scopeQualifier)
-        saveMapping(allowOverride, indexKey, factory)
-        def.secondaryTypes.forEach { clazz ->
-            val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
-            saveMapping(allowOverride, index, factory)
+        KoinPlatformTools.synchronized(this) {
+            saveMapping(allowOverride, indexKey, factory)
+            def.secondaryTypes.forEach { clazz ->
+                val index = indexKey(clazz, def.qualifier, def.scopeQualifier)
+                saveMapping(allowOverride, index, factory)
+            }
         }
     }
 
