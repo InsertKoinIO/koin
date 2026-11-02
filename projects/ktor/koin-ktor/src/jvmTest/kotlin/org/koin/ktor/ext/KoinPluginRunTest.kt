@@ -20,6 +20,8 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -39,9 +41,11 @@ import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.ktor.plugin.scope
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -79,6 +83,115 @@ class KoinPluginRunTest {
                 "scope ids should be 'request_<number>'",
             )
         }
+    }
+
+    @Test
+    fun `closes request scope on normal response completion`() = testApplication {
+        lateinit var requestScope: Scope
+
+        application {
+            install(Koin)
+
+            routing {
+                get("/scope") {
+                    requestScope = call.scope
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        client.get("/scope")
+
+        val scopeClosed = requestScope.closed
+        val scopeStillRegistered =
+            requestScope.getKoin().getScopeOrNull(requestScope.id) != null
+
+        assertTrue(
+            scopeClosed && !scopeStillRegistered,
+            "Koin-created request scope should be closed and removed " +
+                "(closed=$scopeClosed, registered=$scopeStillRegistered)",
+        )
+    }
+
+    @Test
+    fun `closes request scope when a later response completion hook fails`() = testApplication {
+        lateinit var requestScope: Scope
+        val responseCompletionHookRan = AtomicBoolean()
+
+        application {
+            install(Koin)
+
+            // A hook installed later runs first after proceed() in the
+            // ResponseSent phase.
+            install(
+                createApplicationPlugin(
+                    name = "FailResponseCompletionBeforeKoinCleanup",
+                ) {
+                    on(ResponseSent) {
+                        responseCompletionHookRan.set(true)
+                        error("response completion failed before Koin cleanup")
+                    }
+                },
+            )
+
+            routing {
+                get("/scope") {
+                    requestScope = call.scope
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        runCatching {
+            client.get("/scope")
+        }
+
+        assertTrue(
+            responseCompletionHookRan.get(),
+            "response completion failure hook should run",
+        )
+
+        val scopeClosed = requestScope.closed
+        val scopeStillRegistered =
+            requestScope.getKoin().getScopeOrNull(requestScope.id) != null
+
+        assertTrue(
+            scopeClosed && !scopeStillRegistered,
+            "Koin-created request scope should be closed and removed " +
+                "(closed=$scopeClosed, registered=$scopeStillRegistered)",
+        )
+    }
+
+    @Test
+    fun `closes request scope when route handler fails before responding`() = testApplication {
+        lateinit var requestScope: Scope
+
+        application {
+            install(Koin)
+
+            routing {
+                get("/fail") {
+                    requestScope = call.scope
+                    error("route handler failed before responding")
+                }
+            }
+        }
+
+        // the engine fallback answers the unhandled exception without entering
+        // the send pipeline, so ResponseSent alone would never fire here
+        runCatching {
+            client.get("/fail")
+        }
+
+        val scopeClosed = requestScope.closed
+        val scopeStillRegistered =
+            requestScope.getKoin().getScopeOrNull(requestScope.id) != null
+
+        assertTrue(
+            scopeClosed && !scopeStillRegistered,
+            "Koin-created request scope should be closed and removed " +
+                "(closed=$scopeClosed, registered=$scopeStillRegistered)",
+        )
     }
 
     @Test
