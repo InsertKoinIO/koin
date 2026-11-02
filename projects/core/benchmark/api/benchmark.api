@@ -1,3 +1,8 @@
+public final class org/koin/benchmark/AllocationProbeKt {
+	public static final fun main ()V
+	public static synthetic fun main ([Ljava/lang/String;)V
+}
+
 public final class org/koin/benchmark/BindPerfs {
 	public fun <init> ()V
 }
@@ -1602,6 +1607,21 @@ public final class org/koin/benchmark/BindPerfs$BD99 : org/koin/benchmark/ID {
 	public fun <init> ()V
 }
 
+public class org/koin/benchmark/GetAllBenchmark {
+	public fun <init> ()V
+	public fun getCount ()I
+	public fun setCount (I)V
+	public fun setUp ()V
+	public fun t0_module_build_only ()Ljava/lang/Object;
+	public fun t1_registration_only ()Lorg/koin/core/Koin;
+	public fun t2_registration_plus_realize ()I
+	public fun t3_getAll_pure_scan ()I
+	public fun t4_get_warm_unqualified ()Ljava/lang/Object;
+	public fun t4b_get_warm_qualified ()Ljava/lang/Object;
+	public fun t4c_get_warm_qualified_overflow_8_threads ()Ljava/lang/Object;
+	public fun tearDown ()V
+}
+
 public class org/koin/benchmark/HeavyStartupBenchmark {
 	public fun <init> ()V
 	public fun lazyModulesList (I)Ljava/util/List;
@@ -1647,6 +1667,10 @@ public final class org/koin/benchmark/Module_400Kt {
 
 public final class org/koin/benchmark/Module_400_with_bindsKt {
 	public static final fun perfModule400WithBinds ()Lorg/koin/core/module/Module;
+}
+
+public final class org/koin/benchmark/Multibinding_moduleKt {
+	public static final fun multibindingModule (I)Lorg/koin/core/module/Module;
 }
 
 public final class org/koin/benchmark/Perfs {
@@ -3851,6 +3875,23 @@ public final class org/koin/benchmark/Perfs$D99 {
 	public final fun getA ()Lorg/koin/benchmark/Perfs$A99;
 	public final fun getB ()Lorg/koin/benchmark/Perfs$B99;
 	public final fun getC ()Lorg/koin/benchmark/Perfs$C99;
+}
+
+public final class org/koin/benchmark/ScaleContributor : org/koin/benchmark/ScaleMarker {
+	public fun <init> (I)V
+	public final fun getIndex ()I
+}
+
+public final class org/koin/benchmark/ScaleFiller {
+	public fun <init> (I)V
+	public final fun getIndex ()I
+}
+
+public abstract interface class org/koin/benchmark/ScaleMarker {
+}
+
+public final class org/koin/benchmark/ScaleRoot {
+	public fun <init> ()V
 }
 
 public class org/koin/benchmark/ScopeBenchmark {

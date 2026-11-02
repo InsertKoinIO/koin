@@ -42,6 +42,7 @@ import kotlin.collections.set
 import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 import org.koin.mp.Lockable
+import kotlin.concurrent.Volatile
 
 // A class with more (scope, qualifier) variants than this stays on the String map (KTZ-4829).
 private const val MAX_TYPED_CHAIN = 8
@@ -67,8 +68,18 @@ class InstanceRegistry(val _koin: Koin) {
     // factory's class names (over-invalidation is safe, it only costs a re-populate), a populate
     // re-checks the String map under the same lock, and a miss always falls through to the
     // String map — so a caller hand-building keys keeps today's behavior to the byte.
+    //
+    // Writes skip the lock until the first populate: typedIndexInUse is set before that populate's
+    // re-check, so a writer that still reads false has its _instances write seen by that re-check.
+    // This relies on _instances ordering its writes and reads with that volatile flag: volatile node
+    // fields on the JVM (a lone-bin removal is release/acquire, ordered by fences on HotSpot, not by
+    // the JMM alone), a locked map on native, a single thread on JS and wasmJs.
+    // (An emptiness check instead of the flag let a populate store a factory just replaced.)
     private val typedIndex = safeHashMap<String, TypedEntry>()
     private val typedIndexLock = Lockable()
+
+    @Volatile
+    private var typedIndexInUse = false
 
     private class TypedEntry(
         val scopeKey: String,
@@ -134,6 +145,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun remember(className: String, scopeKey: String, qualifierKey: String, key: IndexKey, factory: InstanceFactory<*>) {
         KoinPlatformTools.synchronized(typedIndexLock) {
+            typedIndexInUse = true
             // A writer may have replaced the key between our String-path read and this lock.
             if (_instances[key] !== factory) return@synchronized
             val head = typedIndex[className]
@@ -153,7 +165,7 @@ class InstanceRegistry(val _koin: Koin) {
 
     // Called after every write to _instances involving this factory.
     private fun forget(factory: InstanceFactory<*>) {
-        if (typedIndex.isEmpty()) return
+        if (!typedIndexInUse) return
         KoinPlatformTools.synchronized(typedIndexLock) {
             val definition = factory.beanDefinition
             typedIndex.remove(definition.primaryType.getFullName())
@@ -176,14 +188,17 @@ class InstanceRegistry(val _koin: Koin) {
         val qualifierKey = qualifier?.value ?: ""
 
         var entry = typedIndex[className]
+        var chainLength = 0
         while (entry != null) {
             if (entry.scopeKey == scopeKey && entry.qualifierKey == qualifierKey) return entry.factory
+            chainLength++
             entry = entry.next
         }
 
         val key = indexKey(clazz, qualifier, scopeQualifier)
         val factory = _instances[key] ?: return null
-        remember(className, scopeKey, qualifierKey, key, factory)
+        // A full chain would refuse the entry anyway: skip the populate lock.
+        if (chainLength < MAX_TYPED_CHAIN) remember(className, scopeKey, qualifierKey, key, factory)
         return factory
     }
 

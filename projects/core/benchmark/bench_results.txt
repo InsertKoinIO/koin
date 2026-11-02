@@ -124,3 +124,9 @@ t2_registration_plus_realize                         11597202    2532152    -78%
 t3_getAll_pure_scan                                    206956     149299    -28%   B/op
 t4_get_warm_unqualified                                   587         56    -90%   B/op   (one ResolutionContext)
 t4b_get_warm_qualified                                    616         72    -88%   B/op
+
+# ===== 4.3.0 review fix: overflow lookups past MAX_TYPED_CHAIN (2026-11-02, same machine, JVM) =====
+# t4c resolves named("c8") after c0..c7 fill ScaleContributor's typed chain; 8 threads.
+#                                                       before      after
+GetAllBenchmark.t4c_get_warm_qualified_overflow_8_threads   1,369      0,106    -92%   us/op   (count = 1800)
+# Registration is unchanged by the race fix: t1_registration_only 904-908 -> 910 us/op (count = 1800).
