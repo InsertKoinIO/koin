@@ -40,8 +40,28 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - **Resolution behavior is API** — any change in `core/resolution/` states the old vs new resolution order / matching in the PR description.
 - **Every bug fix ships a regression test** that fails before the fix, in `commonTest` when the code is common.
 - **KMP discipline** — a `commonMain` change is verified beyond the JVM (`allTests`, or at least one native target and `wasmJs`). `./gradlew test` silently skips native, JS and Wasm tests.
-- In `commonTest`: no backtick test names (they break JS / Wasm / native), and `runTest { }` in block-body form.
-- Commit style: `Fix #NNNN - description`. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
+- In `commonTest`: snake_case test names, no backticks (the Kotlin/Native test reporter crashes on some), and `runTest { }` in block-body form.
+- Commit style: `Fix #NNNN - description` for a GitHub issue, `KTZ-NNNN - description` for Linear-only work. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
+- Fill the PR template (`.github/pull_request_template.md`): API impact, behavior delta, tests, off-JVM verification.
+
+## Branches
+
+- `main` — stable line (`4.2.x`): bug fixes only, additive API only.
+- `4.3.0` — next minor (`4.3.0-Beta1`): features and 4.3 work.
+- Not sure which one a change targets? Ask the maintainer instead of guessing.
+
+## Never, without an explicit human request
+
+- Run `projects/release.sh` or any Maven Central publishing task — releases go through the `release.yml` workflow.
+- Force-push, or push before tests and `apiCheck` are green.
+- Edit `docs/` (legacy) or the dead root-level `.api` dumps listed in `projects/CLAUDE.md`.
+- Add `-x` exclusions to make a test run green — fix the root cause.
+
+Claude Code enforces these through the committed `.claude/settings.json` files (repo root and `projects/`).
+
+## Examples
+
+`examples/` builds against Maven Local: run `./install.sh` in `projects/` first, then `./test.sh` in `examples/` (what the `test.yml` workflow does).
 
 Detailed contributor notes (engine internals, known failing off-JVM tests, release notes policy): `projects/CLAUDE.md`.
 

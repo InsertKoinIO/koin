@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(*release.sh*)",
+      "Bash(*CentralPortal*)",
+      "Bash(git push *--force*)",
+      "Bash(git push *-f)",
+      "Bash(git push *-f *)",
+      "Edit(/docs/**)",
+      "Edit(/projects/core/koin-core-viewmodel/api/koin-core-viewmodel.api)",
+      "Edit(/projects/compose/koin-compose/api/koin-compose.api)",
+      "Edit(/projects/compose/koin-compose-viewmodel/api/koin-compose-viewmodel.api)",
+      "Edit(/projects/compose/koin-compose-viewmodel-navigation/api/koin-compose-viewmodel-navigation.api)",
+      "Edit(/projects/ktor/koin-ktor/api/koin-ktor3.api)"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(*gradlew* -x *)"
+    ],
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh issue view*)"
+    ]
+  }
+}

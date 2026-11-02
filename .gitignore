@@ -10,7 +10,7 @@ classes/
 /captures
 yarn.lock
 .kotlin/
-**/*/.claude/settings.local.json
+**/.claude/settings.local.json
 
 # Local Claude Code settings (machine-local)
 projects/.claude/settings.local.json

@@ -2,7 +2,7 @@
 
 Koin is a pragmatic, lightweight dependency injection framework for Kotlin Multiplatform (Android, JVM, iOS/native, JS, WasmJS). This directory (`projects/`) is the Gradle build root.
 
-Shared agent notes (layout, build commands, contributing rules, how to write Koin code): [`../AGENTS.md`](../AGENTS.md). This file adds the Claude-specific detail; keep both consistent.
+Shared agent notes (layout, branches, build commands, contributing rules, never-do list, how to write Koin code): [`../AGENTS.md`](../AGENTS.md), loaded automatically through the root `../CLAUDE.md` import. This file adds the engine and contributor detail; keep both consistent.
 
 ## Doctrine
 
@@ -16,7 +16,7 @@ Shared agent notes (layout, build commands, contributing rules, how to write Koi
 
 | Group | Modules | Notes |
 |---|---|---|
-| `core/` | **koin-core** (engine), koin-core-coroutines, koin-core-viewmodel, koin-core-annotations, koin-annotations, koin-test, koin-test-junit4/5, benchmark | KMP |
+| `core/` | **koin-core** (engine), koin-core-coroutines, koin-core-viewmodel, koin-core-annotations, koin-annotations, koin-test, koin-test-coroutines, koin-test-junit4/5, benchmark | KMP |
 | `android/` | koin-android, koin-android-compat, koin-androidx-navigation, koin-androidx-workmanager, koin-androidx-startup, koin-dagger-bridge, koin-android-test | Android |
 | `compose/` | koin-compose, koin-compose-viewmodel, koin-compose-navigation3, koin-compose-viewmodel-navigation, koin-androidx-compose(-navigation) | Compose MP + AndroidX |
 | `ktor/` | koin-ktor, koin-logger-slf4j | JVM server |
@@ -25,7 +25,7 @@ Shared agent notes (layout, build commands, contributing rules, how to write Koi
 
 ### Key engine areas (`core/koin-core/src/commonMain/kotlin/org/koin/`)
 
-- `core/resolution/` — instance resolution. `CoreResolverV2.kt` is the 4.2+ engine: injected params → stacked params → registry (own scopeQualifier defs → own archetype defs → scope source *(unqualified only)* → linked scopes; `CoreResolverV2.kt:56-81`)
+- `core/resolution/` — instance resolution. `CoreResolverV2.kt` is the 4.2+ engine: injected params → stacked params → registry (own scopeQualifier defs → own archetype defs → scope source *(unqualified only)* → linked scopes) → resolution extensions; see `resolveFromContextOrNull` / `resolveFromRegistry`
   - **Qualified lookups are registry-only.** A `get(named(...))` skips the stacked-parameter path entirely — parameters carry no qualifier (`ParametersHolder` matches by type only), so a stacked param can never satisfy a qualified request. Removing this guard re-opens #2370/#2408 (a `parametersOf` value shadowing a qualified dependency of the same type). Only unqualified resolution reads the param stack — that's the #2387 ViewModel path; don't break it.
 - `core/registry/` — definition & instance registries (indexing by type + qualifier)
 - `core/scope/` — `Scope`, scope archetypes, linked scopes
@@ -64,25 +64,31 @@ Before opening (or approving) any PR, both guards must pass:
 - A PR touching `commonMain` without an accompanying test change needs an explicit justification in the description.
 - KMP: tests must run beyond JVM when the code is common (`allTests`, or at minimum compile-check one native target + `wasmJs`).
 
+The PR template (`../.github/pull_request_template.md`) carries both guards as a checklist — fill it, don't delete it.
+
+### Guardrails enforced by `.claude/settings.json` (repo root and `projects/`)
+Claude Code reads shared settings only from the launch directory, so both files carry the same rules — keep them in sync.
+- **Denied:** `release.sh` / Central Portal publishing (releases are cut by the `release.yml` workflow, never by an agent), force-push, edits to the dead root `.api` dumps.
+- **Asks first:** `git push`, `gh pr create|merge`, any Gradle run with `-x` exclusions.
+
 ## Conventions
 
 - **KMP discipline:** `commonMain` changes must be verified beyond JVM — compile at least one native target and `wasmJs` before considering a change done. Several bug classes (qualifiedName, klib, JS) only surface off-JVM.
 - **Every bug fix ships a regression test**, in `commonTest` whenever the code is common.
-- **Commit style:** `Fix #NNNN - description` referencing the GitHub issue (e.g. `Fix #2387 - CoreResolverV2 lost stacked-params lookup on linked scopes`).
+- **Commit style:** `<ticket> - description`. GitHub issue → `Fix #NNNN - …` (e.g. `Fix #2387 - CoreResolverV2 lost stacked-params lookup on linked scopes`); Linear-only work → `KTZ-NNNN - …`. This overrides the older `Fixes gh-XXXX` wording in `CONTRIBUTING.adoc`.
 - **Public API changes:** run `./compare_apis.sh`; avoid breaking binary compatibility in patch releases.
 - **Resolution-semantics changes** (anything in `core/resolution/`): describe the behavioral delta (old vs new resolution order/matching) in the PR description — resolver behavior changes have historically caused regressions.
-- **User-visible changes need a docs touch** — documentation lives in `../docs/` (published to insert-koin.io).
+- **User-visible changes need a docs touch** on https://insert-koin.io/docs — say so in the PR description. `../docs/` is a legacy, unmaintained copy: never edit it.
 
 ### KMP test traps (hard rules)
 
 - **Never weaken `test.sh` to scoped tasks.** In KMP projects `./gradlew test` resolves only to Android/JVM unit tests and **silently skips** native, JS, and WASM tests. Full verification = `allTests` (or per-target tasks explicitly). Do not add `-x` exclusions to make a run green — fix the failing test at the root cause.
-- **No backtick test names in `commonTest`** — backtick names (`` fun `my test`() ``) break `compileTestKotlinJs`/`compileTestKotlinWasmJs` (invalid JS identifiers). Use snake_case in `commonTest`; backticks are fine in `jvmTest` only.
-- **`runTest {}` in `commonTest` must use block-body syntax** — on wasmJs, expression-body forms (`fun foo() = runTest { }`) fail with return-type mismatch. Use `fun testX() { runTest { ... } }`.
-- ⚠️ **Contradicted by the code (2026-11-02, Kotlin 2.3.20, branch `4.3.0`):** 36 `koin-core` `commonTest` files use backtick names and `ConcurrencyTest.kt:39,69,107` uses `= runTest {}`, yet `:core:koin-core:compileTestKotlinJs` + `compileTestKotlinWasmJs` both pass. The two rules above may be outdated for compilation. The confirmed hazard is the Kotlin/Native reporter crash on `" - "` in names (see `DynamicModulesTest` below). Keep snake_case for new tests until the rules are re-validated.
+- **No backtick test names in new `commonTest` code** — use snake_case; backticks are fine in `jvmTest`. The confirmed hazard is the Kotlin/Native test reporter crashing on names containing `" - "` (see `DynamicModulesTest` below). The older claim that backticks break `compileTestKotlinJs`/`compileTestKotlinWasmJs` does not hold on Kotlin 2.3.20: 36 `koin-core` `commonTest` files use them and both tasks pass (2026-11-02). Don't mass-rename existing files.
+- **`runTest {}` in `commonTest`: use block-body syntax** — `fun testX() { runTest { ... } }`. Expression-body (`= runTest { }`) was reported to fail on wasmJs with a return-type mismatch; it compiles today (`ConcurrencyTest.kt:39`) but is unverified at runtime, so don't spread it.
 
 #### Known pre-existing off-JVM failures (not yours — don't chase them)
 
-`allTests` is currently red on two counts unrelated to any recent resolver work (verified by stash-comparison on the `4.2.2` branch, 2026-06-08). If you touch `commonMain` and run `allTests`, expect these and confirm your diff doesn't change them:
+`allTests` is currently red on two counts unrelated to any recent resolver work (verified by stash-comparison on the `4.2.2` branch, 2026-06-08; not re-verified on `4.3.0`). If you touch `commonMain` and run `allTests`, expect these and confirm your diff doesn't change them:
 
 - **`createdAtStart` on wasmJs** — `CreateOnStart`, `OverrideAndCreateatStartTest` fail with `AssertionError: Expected value to be true`. Core `single(createdAtStart = true)` eager-init doesn't fire on wasmJs. This is *core*, **not** the compiler-plugin `createdAtStart` drop (#2425/#2415) — same symptom family, different layer.
 - **`DynamicModulesTest` on native** — its backtick names contain `" - "` (e.g. `` `should unload one module definition - factory` ``), crashing the Kotlin/Native test reporter (`ServiceMessagesParser`) and aborting `macosArm64Test`. This is the backtick-name trap above, already shipped. Fix = rename to snake_case.
@@ -90,7 +96,10 @@ Before opening (or approving) any PR, both guards must pass:
 ## Versioning
 
 - Version is set in `gradle.properties` (`koinVersion`).
-- Branch lines: `4.2.x` = stable maintenance (regressions/bug fixes only), next minor in development on `main`.
+- Branch lines (as of 2026-11-02):
+  - `main` — current stable line (`koinVersion=4.2.2`). Patch fixes target `main`, or the open patch release branch when one exists (4.2.2 fixes #2437–#2448 went to `4.2.2`). Regressions/bug fixes only — no API removals.
+  - `4.3.0` — next minor (`4.3.0-Beta1`). Features and 4.3 work target `4.3.0`; topic branches (e.g. `4.3-perfs`) branch from it. `main` is merged into `4.3.0` to carry fixes forward.
+  - Unsure which line a change belongs to? Ask — don't guess the base branch.
 - `koin-bom` must stay aligned with all published modules.
 
 ### Release notes: Added vs Fixed
