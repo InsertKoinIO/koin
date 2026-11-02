@@ -23,7 +23,7 @@ Koin is a pragmatic, lightweight dependency injection framework for Kotlin Multi
 
 ### Key engine areas (`core/koin-core/src/commonMain/kotlin/org/koin/`)
 
-- `core/resolution/` — instance resolution. `CoreResolverV2.kt` is the 4.2+ engine: injected params → stacked params → registry (scope source → linked scopes → archetype)
+- `core/resolution/` — instance resolution. `CoreResolverV2.kt` is the 4.2+ engine: injected params → stacked params → registry (own scopeQualifier defs → own archetype defs → scope source *(unqualified only)* → linked scopes; `CoreResolverV2.kt:56-81`)
   - **Qualified lookups are registry-only.** A `get(named(...))` skips the stacked-parameter path entirely — parameters carry no qualifier (`ParametersHolder` matches by type only), so a stacked param can never satisfy a qualified request. Removing this guard re-opens #2370/#2408 (a `parametersOf` value shadowing a qualified dependency of the same type). Only unqualified resolution reads the param stack — that's the #2387 ViewModel path; don't break it.
 - `core/registry/` — definition & instance registries (indexing by type + qualifier)
 - `core/scope/` — `Scope`, scope archetypes, linked scopes
@@ -51,6 +51,8 @@ Before opening (or approving) any PR, both guards must pass:
 ### 1. Don't break the current API
 - `./gradlew apiCheck` must pass (kotlinx binary-compatibility-validator, applied at the root — `.api` dumps per module, e.g. `core/koin-core/api/koin-core.api`).
 - If the PR intentionally **adds** public API: regenerate dumps with `./gradlew apiDump`, commit the `.api` diff, and review it with `./compare_apis.sh` (diffs `.api` files vs `main`).
+- **Stale root `.api` dumps** (as of 2026-10-01): `koin-core-viewmodel`, `koin-compose`, `koin-compose-viewmodel`, `koin-compose-viewmodel-navigation` keep an old root-level `api/<module>.api` beside the live `api/jvm` + `api/android` dumps (BCV ignores it with 2 JVM targets); `koin-ktor` has both `koin-ktor.api` and older `koin-ktor3.api`. Don't edit the root ones — they're dead.
+- **AGP 9 silently disables `apiCheck` for Android code** (upstream, not yet hit here — repo is AGP 8.13 / Gradle 8.14.3): BCV 0.18 registers no tasks under AGP built-in Kotlin (BCV #312) and skips the Android target of `com.android.kotlin.multiplatform.library` (BCV #315) while staying green. KGP `abiValidation` covers the KMP Android target only from Kotlin 2.4.20 (KT-85950); Android-only modules have no path yet (KT-83410). Solve API validation before bumping AGP.
 - **Removals or signature changes of public API are not acceptable in patch releases** — additions only. Breaking changes need a minor/major version and an explicit deprecation cycle (`@Deprecated` with `ReplaceWith` first).
 - Behavioral compatibility counts as API: a PR that changes resolution order/matching semantics must state the old vs new behavior in its description, even if no signature changed.
 
@@ -74,6 +76,7 @@ Before opening (or approving) any PR, both guards must pass:
 - **Never weaken `test.sh` to scoped tasks.** In KMP projects `./gradlew test` resolves only to Android/JVM unit tests and **silently skips** native, JS, and WASM tests. Full verification = `allTests` (or per-target tasks explicitly). Do not add `-x` exclusions to make a run green — fix the failing test at the root cause.
 - **No backtick test names in `commonTest`** — backtick names (`` fun `my test`() ``) break `compileTestKotlinJs`/`compileTestKotlinWasmJs` (invalid JS identifiers). Use snake_case in `commonTest`; backticks are fine in `jvmTest` only.
 - **`runTest {}` in `commonTest` must use block-body syntax** — on wasmJs, expression-body forms (`fun foo() = runTest { }`) fail with return-type mismatch. Use `fun testX() { runTest { ... } }`.
+- ⚠️ **Contradicted by the code (2026-11-02, Kotlin 2.3.20, branch `4.3.0`):** 36 `koin-core` `commonTest` files use backtick names and `ConcurrencyTest.kt:39,69,107` uses `= runTest {}`, yet `:core:koin-core:compileTestKotlinJs` + `compileTestKotlinWasmJs` both pass. The two rules above may be outdated for compilation. The confirmed hazard is the Kotlin/Native reporter crash on `" - "` in names (see `DynamicModulesTest` below). Keep snake_case for new tests until the rules are re-validated.
 
 #### Known pre-existing off-JVM failures (not yours — don't chase them)
 
