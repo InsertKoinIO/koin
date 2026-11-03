@@ -19,11 +19,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.hooks.CallFailed
 import io.ktor.server.application.hooks.CallSetup
+import io.ktor.server.application.hooks.ResponseBodyReadyForSend
 import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
 import io.ktor.server.config.MapApplicationConfig
@@ -34,6 +36,9 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import io.ktor.util.AttributeKey
+import io.ktor.util.cio.ChannelReadException
+import io.ktor.util.pipeline.PipelinePhase
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -52,12 +57,16 @@ import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
+import org.koin.dsl.onClose
 import org.koin.ktor.plugin.Koin
+import org.koin.ktor.plugin.KoinIsolated
 import org.koin.ktor.plugin.scope
 import org.koin.module.requestScope
+import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class KoinPluginRunTest {
@@ -401,6 +410,92 @@ class KoinPluginRunTest {
         assertNull(requestScope.getKoin().getScopeOrNull(requestScope.id), "request scope should be removed from the registry")
     }
 
+    // A status page renders inside the engine's error response; its own failed send, recovered by the user,
+    // must not close the scope the recovery still needs.
+    @Test
+    fun `status page recovering from its own failed send resolves the request scope`() = testApplication {
+        lateinit var requestScope: Scope
+        environment { config = MapApplicationConfig("ktor.test.throwOnException" to "false") }
+        application {
+            install(Koin) { modules(module { requestScope { scoped { RequestScopedDependency() } } }) }
+            install(failingRenderer())
+            install(createApplicationPlugin("ServerErrorPage") {
+                on(ResponseBodyReadyForSend) { call, content ->
+                    if (!call.isFirstServerErrorBody(content)) return@on
+                    try {
+                        call.respond(HttpStatusCode.InternalServerError, UnrenderableErrorBody())
+                    } catch (renderFailure: IllegalStateException) {
+                        call.respondText("fallback:" + call.scope.get<RequestScopedDependency>().label, status = HttpStatusCode.InternalServerError)
+                    }
+                }
+            })
+            routing { get("/fail") { requestScope = call.scope; error("route handler failed") } }
+        }
+
+        assertEquals("fallback:request-scoped", client.get("/fail").bodyAsText())
+        assertTrue(requestScope.closed, "request scope should be closed")
+    }
+
+    @Test
+    fun `swallowed status page send failure keeps the request scope open for the error response`() = testApplication {
+        lateinit var requestScope: Scope
+        val resolvedDuringErrorResponse = CompletableDeferred<String>()
+        environment { config = MapApplicationConfig("ktor.test.throwOnException" to "false") }
+        application {
+            install(Koin) { modules(module { requestScope { scoped { RequestScopedDependency() } } }) }
+            install(createApplicationPlugin("ResponseAudit") {
+                on(ResponseSent) { call ->
+                    resolvedDuringErrorResponse.complete(runCatching { call.scope.get<RequestScopedDependency>().label }.getOrElse { it.toString() })
+                }
+            })
+            install(failingRenderer())
+            install(createApplicationPlugin("ServerErrorPage") {
+                on(ResponseBodyReadyForSend) { call, content ->
+                    if (!call.isFirstServerErrorBody(content)) return@on
+                    runCatching { call.respond(HttpStatusCode.InternalServerError, UnrenderableErrorBody()) }
+                }
+            })
+            routing { get("/fail") { requestScope = call.scope; error("route handler failed") } }
+        }
+
+        assertEquals(HttpStatusCode.InternalServerError, client.get("/fail").status)
+        assertEquals("request-scoped", resolvedDuringErrorResponse.await())
+        assertTrue(requestScope.closed, "request scope should be closed")
+    }
+
+    // A failing onClose is attached to the failure unwinding the call; it must not replace it, even when it
+    // rethrows that very failure.
+    @Test
+    fun `onClose rethrowing the in-flight failure keeps that failure`() = testApplication {
+        val failure = ChannelReadException("upstream read failed", IOException("connection reset"))
+        val onCloseThrew = AtomicBoolean(false)
+        val escaped = CompletableDeferred<Throwable>()
+        application {
+            // Isolated context: a throwing onClose must not leak into the global Koin other tests start.
+            install(KoinIsolated) {
+                modules(module {
+                    requestScope { scoped { RequestScopedDependency() } onClose { if (onCloseThrew.compareAndSet(false, true)) throw failure } }
+                })
+            }
+            // Installed after Koin and inserted first, so it wraps Koin's phase and sees what leaves it.
+            val escapedFailureProbe = PipelinePhase("EscapedFailureProbe")
+            insertPhaseBefore(items.first(), escapedFailureProbe)
+            intercept(escapedFailureProbe) {
+                try {
+                    proceed()
+                } catch (leaving: Throwable) {
+                    escaped.complete(leaving)
+                    throw leaving
+                }
+            }
+            routing { get("/fail") { call.scope.get<RequestScopedDependency>(); throw failure } }
+        }
+
+        runCatching { client.get("/fail") }
+
+        assertSame(failure, withTimeout(5_000) { escaped.await() }, "the original failure was replaced")
+    }
+
     @Test
     fun `error page installed after Koin can resolve request-scoped dependencies`() = testApplication {
         application {
@@ -413,6 +508,23 @@ class KoinPluginRunTest {
 
         assertEquals("error:request-scoped", client.get("/fail").bodyAsText())
     }
+}
+
+class UnrenderableErrorBody
+
+// A template engine or serializer failing on a rich error body, before anything is committed.
+private fun failingRenderer() = createApplicationPlugin("FailingRenderer") {
+    onCallRespond { _, body -> if (body is UnrenderableErrorBody) error("template failed") }
+}
+
+private val ServerErrorPageRendered = AttributeKey<Unit>("ServerErrorPageRendered")
+
+// Same guard as StatusPages' status pages: render once, for the first 500 body.
+private fun ApplicationCall.isFirstServerErrorBody(content: OutgoingContent): Boolean {
+    if (attributes.contains(ServerErrorPageRendered)) return false
+    if ((content.status ?: response.status()) != HttpStatusCode.InternalServerError) return false
+    attributes.put(ServerErrorPageRendered, Unit)
+    return true
 }
 
 class RequestScopedDependency {

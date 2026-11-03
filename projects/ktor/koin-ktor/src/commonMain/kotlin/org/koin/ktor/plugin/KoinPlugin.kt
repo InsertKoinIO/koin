@@ -132,17 +132,22 @@ private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeOfUnansweredCall
     }
 }
 
-// Once the application pipeline has exited, a failing send can only be the engine's own error response. Whatever
+// Once the application pipeline has exited, the outermost failing send is the engine's own error response. Whatever
 // the engine does next skips ResponseSent: nothing more after commit, a fallback outside the send pipeline before.
+// Sends nested in it (a StatusPages status page rendering) may fail and be recovered, so only the outermost closes.
 private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeWhenErrorResponseFails() {
     val sendPipeline = application.sendPipeline
     sendPipeline.insertPhaseBefore(sendPipeline.items.first(), RequestScopeSendGuardPhase)
     sendPipeline.intercept(RequestScopeSendGuardPhase) {
+        val enclosingSends = call.attributes.getOrNull(RequestSendDepth) ?: 0
+        call.attributes.put(RequestSendDepth, enclosingSends + 1)
         try {
             proceed()
         } catch (failure: Throwable) {
-            if (call.attributes.contains(RequestPipelineExited)) call.closeRequestScope(failure)
+            if (enclosingSends == 0 && call.attributes.contains(RequestPipelineExited)) call.closeRequestScope(failure)
             throw failure
+        } finally {
+            call.attributes.put(RequestSendDepth, enclosingSends)
         }
     }
 }
@@ -150,6 +155,7 @@ private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeWhenErrorRespons
 private val RequestScopeLifecyclePhase = PipelinePhase("KoinRequestScopeLifecycle")
 private val RequestScopeSendGuardPhase = PipelinePhase("KoinRequestScopeSendGuard")
 private val RequestPipelineExited = AttributeKey<Unit>("KoinRequestPipelineExited")
+private val RequestSendDepth = AttributeKey<Int>("KoinRequestSendDepth")
 
 private fun ApplicationCall.closeRequestScope(inFlight: Throwable? = null) {
     val scope = attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY) ?: return
@@ -159,7 +165,7 @@ private fun ApplicationCall.closeRequestScope(inFlight: Throwable? = null) {
     } catch (closeFailure: Throwable) {
         // Never mask the failure that is already unwinding the call.
         if (inFlight == null) throw closeFailure
-        if (closeFailure !== inFlight) inFlight.addSuppressed(closeFailure)
+        inFlight.addSuppressed(closeFailure)
     }
 }
 
