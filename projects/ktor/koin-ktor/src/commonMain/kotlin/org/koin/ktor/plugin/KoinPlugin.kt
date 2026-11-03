@@ -111,7 +111,8 @@ internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: 
 }
 
 // Calls the engine will not answer never reach ResponseSent: the response is already committed (a stream failing
-// mid-body, a response hook failing after Koin's #2463), the call is cancelled (#2472), or the failure is a channel
+// mid-body, or a response hook installed after Koin failing, since it runs before Koin's #2463), the call is
+// cancelled (#2472), or the failure is a channel
 // I/O error the engine only logs (DefaultEnginePipeline). Closing once the whole application pipeline has unwound
 // keeps the scope open for the handler's own catch blocks and every CallFailed handler, StatusPages included.
 private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeOfUnansweredCalls() {
@@ -131,7 +132,8 @@ private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeOfUnansweredCall
     }
 }
 
-// The engine's own error response, sent after the application pipeline exited, can fail after commit too.
+// Once the application pipeline has exited, a failing send can only be the engine's own error response. Whatever
+// the engine does next skips ResponseSent: nothing more after commit, a fallback outside the send pipeline before.
 private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeWhenErrorResponseFails() {
     val sendPipeline = application.sendPipeline
     sendPipeline.insertPhaseBefore(sendPipeline.items.first(), RequestScopeSendGuardPhase)
@@ -139,7 +141,7 @@ private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeWhenErrorRespons
         try {
             proceed()
         } catch (failure: Throwable) {
-            if (call.response.isCommitted && call.attributes.contains(RequestPipelineExited)) call.closeRequestScope(failure)
+            if (call.attributes.contains(RequestPipelineExited)) call.closeRequestScope(failure)
             throw failure
         }
     }
@@ -157,7 +159,7 @@ private fun ApplicationCall.closeRequestScope(inFlight: Throwable? = null) {
     } catch (closeFailure: Throwable) {
         // Never mask the failure that is already unwinding the call.
         if (inFlight == null) throw closeFailure
-        inFlight.addSuppressed(closeFailure)
+        if (closeFailure !== inFlight) inFlight.addSuppressed(closeFailure)
     }
 }
 

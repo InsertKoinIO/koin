@@ -361,6 +361,46 @@ class KoinPluginRunTest {
         assertTrue(requestScope.closed, "request scope should be closed once the 504 is sent")
     }
 
+    // The engine's own error response is sent after the application pipeline exited; a hook failing there
+    // skips Koin's ResponseSent close.
+    @Test
+    fun `engine error response failing after commit closes the request scope`() = testApplication {
+        lateinit var requestScope: Scope
+        environment { config = MapApplicationConfig("ktor.test.throwOnException" to "false") }
+        application {
+            install(Koin)
+            install(createApplicationPlugin("FailingOnServerError") {
+                on(ResponseSent) { call -> if (call.response.status() == HttpStatusCode.InternalServerError) error("response hook failed") }
+            })
+            routing { get("/fail") { requestScope = call.scope; error("route handler failed") } }
+        }
+
+        runCatching { client.get("/fail") }
+
+        assertTrue(requestScope.closed, "request scope should be closed")
+        assertNull(requestScope.getKoin().getScopeOrNull(requestScope.id), "request scope should be removed from the registry")
+    }
+
+    // A response hook failing before commit fails the engine's error response too, which then answers through a
+    // fallback outside the send pipeline: ResponseSent never fires.
+    @Test
+    fun `response hook failing before commit closes the request scope`() = testApplication {
+        lateinit var requestScope: Scope
+        environment { config = MapApplicationConfig("ktor.test.throwOnException" to "false") }
+        application {
+            install(Koin) { modules(module { requestScope { scoped<RequestScopedDependency> { error("unknown tenant") } } }) }
+            install(createApplicationPlugin("TenantHeader") {
+                onCallRespond { call, _ -> call.response.headers.append("X-Tenant", call.scope.get<RequestScopedDependency>().label) }
+            })
+            routing { get("/ok") { requestScope = call.scope; call.respondText("ok") } }
+        }
+
+        runCatching { client.get("/ok") }
+
+        assertTrue(requestScope.closed, "request scope should be closed")
+        assertNull(requestScope.getKoin().getScopeOrNull(requestScope.id), "request scope should be removed from the registry")
+    }
+
     @Test
     fun `error page installed after Koin can resolve request-scoped dependencies`() = testApplication {
         application {
