@@ -28,5 +28,5 @@ public fun <T : ViewModel> Module.buildViewModel(kclass: KClass<T>, qualifier: Q
  * Used by the compiler plugin for generated scope definitions.
  */
 public fun <T : ViewModel> ScopeDSL.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
-    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module).bind(ViewModel::class::class) as KoinDefinition<T>
+    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module).bind(ViewModel::class) as KoinDefinition<T>
 }
