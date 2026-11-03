@@ -163,10 +163,17 @@ class InstanceRegistry(val _koin: Koin) {
         }
     }
 
-    // Called after every write to _instances.
+    // Called after every write to _instances. A class name can itself hold ':' (Kotlin/JS escaped names,
+    // generated JVM classes), so every prefix ending before a ':' is a candidate chain.
     private fun forget(mapping: IndexKey) {
         if (!typedIndexInUse) return
-        KoinPlatformTools.synchronized(typedIndexLock) { typedIndex.remove(mapping.substringBefore(':')) }
+        KoinPlatformTools.synchronized(typedIndexLock) {
+            var separator = mapping.indexOf(':')
+            while (separator >= 0) {
+                typedIndex.remove(mapping.substring(0, separator))
+                separator = mapping.indexOf(':', separator + 1)
+            }
+        }
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
