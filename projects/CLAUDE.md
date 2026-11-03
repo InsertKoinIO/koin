@@ -83,15 +83,15 @@ Claude Code reads shared settings only from the launch directory, so both files 
 ### KMP test traps (hard rules)
 
 - **Never weaken `test.sh` to scoped tasks.** In KMP projects `./gradlew test` resolves only to Android/JVM unit tests and **silently skips** native, JS, and WASM tests. Full verification = `allTests` (or per-target tasks explicitly). Do not add `-x` exclusions to make a run green — fix the failing test at the root cause.
-- **No backtick test names in new `commonTest` code** — use snake_case; backticks are fine in `jvmTest`. The confirmed hazard is the Kotlin/Native test reporter crashing on names containing `" - "` (see `DynamicModulesTest` below). The older claim that backticks break `compileTestKotlinJs`/`compileTestKotlinWasmJs` does not hold on Kotlin 2.3.20: 36 `koin-core` `commonTest` files use them and both tasks pass (2026-11-02). Don't mass-rename existing files.
+- **Prefer snake_case test names in new `commonTest` code** (style; backticks are fine in `jvmTest`). Backticks are not a proven hazard: they compile for `compileTestKotlinJs`/`compileTestKotlinWasmJs` on Kotlin 2.3.20 (36 `koin-core` `commonTest` files use them), and the native reporter crash below is unrelated to names (verified 2026-11-03). Don't mass-rename existing files.
 - **`runTest {}` in `commonTest`: use block-body syntax** — `fun testX() { runTest { ... } }`. Expression-body (`= runTest { }`) was reported to fail on wasmJs with a return-type mismatch; it compiles today (`ConcurrencyTest.kt:39`) but is unverified at runtime, so don't spread it.
 
 #### Known pre-existing off-JVM failures (not yours — don't chase them)
 
 `allTests` is currently red on two counts unrelated to any recent resolver work (verified by stash-comparison on the `4.2.2` branch, 2026-06-08; not re-verified on `4.3.0`). If you touch `commonMain` and run `allTests`, expect these and confirm your diff doesn't change them:
 
-- **`createdAtStart` on wasmJs** — `CreateOnStart`, `OverrideAndCreateatStartTest` fail with `AssertionError: Expected value to be true`. Core `single(createdAtStart = true)` eager-init doesn't fire on wasmJs. This is *core*, **not** the compiler-plugin `createdAtStart` drop (#2425/#2415) — same symptom family, different layer.
-- **`DynamicModulesTest` on native** — its backtick names contain `" - "` (e.g. `` `should unload one module definition - factory` ``), crashing the Kotlin/Native test reporter (`ServiceMessagesParser`) and aborting `macosArm64Test`. This is the backtick-name trap above, already shipped. Fix = rename to snake_case.
+- **`createdAtStart` on wasmJs and JS** (node and browser, re-verified on `4.3.0` 2026-11-02) — `CreateOnStart`, `OverrideAndCreateatStartTest` fail with `AssertionError: Expected value to be true`. Core `single(createdAtStart = true)` eager-init doesn't fire on JS/wasmJs. This is *core*, **not** the compiler-plugin `createdAtStart` drop (#2425/#2415) — same symptom family, different layer.
+- **`macosArm64Test` reports FAILED although every test passes** — Gradle's result writer throws `IllegalArgumentException: Multiple entries with same key … TestOutputStore$Index` ("Could not write XML test results for <class>"), on a different class each run. It is a Gradle/KGP reporting bug, not test names: renaming `DynamicModulesTest` to snake_case changed nothing (3 runs, 2026-11-03, KTZ-5309). Read the per-class XML under `build/test-results/macosArm64Test/` for the real outcome (303 tests, 0 failures on `4.3.0`).
 
 ## Versioning
 

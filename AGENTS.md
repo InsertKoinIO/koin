@@ -40,7 +40,7 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - **Resolution behavior is API** — any change in `core/resolution/` states the old vs new resolution order / matching in the PR description.
 - **Every bug fix ships a regression test** that fails before the fix, in `commonTest` when the code is common.
 - **KMP discipline** — a `commonMain` change is verified beyond the JVM (`allTests`, or at least one native target and `wasmJs`). `./gradlew test` silently skips native, JS and Wasm tests.
-- In `commonTest`: snake_case test names, no backticks (the Kotlin/Native test reporter crashes on some), and `runTest { }` in block-body form.
+- In `commonTest`: prefer snake_case test names (style), and `runTest { }` in block-body form. `macosArm64Test` can report FAILED from a Gradle reporting bug while every test passes: check the XML results (see `projects/CLAUDE.md`).
 - Commit style: `Fix #NNNN - description` for a GitHub issue, `KTZ-NNNN - description` for Linear-only work. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
 - Fill the PR template (`.github/pull_request_template.md`): API impact, behavior delta, tests, off-JVM verification.
 
