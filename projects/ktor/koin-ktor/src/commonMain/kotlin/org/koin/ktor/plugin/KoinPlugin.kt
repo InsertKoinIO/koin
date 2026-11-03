@@ -20,6 +20,7 @@ package org.koin.ktor.plugin
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationStopping
+import io.ktor.server.application.call
 import io.ktor.server.application.PluginBuilder
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.hooks.CallSetup
@@ -27,6 +28,9 @@ import io.ktor.server.application.hooks.ResponseSent
 import io.ktor.server.application.install
 import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
+import io.ktor.util.cio.ChannelIOException
+import io.ktor.util.pipeline.PipelinePhase
+import kotlinx.coroutines.isActive
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.KoinKtorApplication
@@ -97,8 +101,62 @@ internal fun PluginBuilder<KoinKtorApplication>.setupKoinScope(koinApplication: 
         val scopeComponent = RequestScope(koinApplication.koin, call)
         call.attributes.put(KOIN_SCOPE_ATTRIBUTE_KEY, scopeComponent.scope)
     }
+    // Every answered call closes here, the engine's own error response included.
     on(ResponseSent) { call ->
-        call.attributes[KOIN_SCOPE_ATTRIBUTE_KEY].close()
+        call.closeRequestScope()
+    }
+    closeRequestScopeOfUnansweredCalls()
+    closeRequestScopeWhenErrorResponseFails()
+}
+
+// Calls the engine will not answer never reach ResponseSent: the response is already committed (a stream failing
+// mid-body, a response hook failing after Koin's #2463), the call is cancelled (#2472), or the failure is a channel
+// I/O error the engine only logs (DefaultEnginePipeline). Closing once the whole application pipeline has unwound
+// keeps the scope open for the handler's own catch blocks and every CallFailed handler, StatusPages included.
+private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeOfUnansweredCalls() {
+    application.insertPhaseBefore(application.items.first(), RequestScopeLifecyclePhase)
+    application.intercept(RequestScopeLifecyclePhase) {
+        try {
+            proceed()
+        } catch (failure: Throwable) {
+            call.attributes.put(RequestPipelineExited, Unit)
+            val unanswered = call.response.isCommitted || !coroutineContext.isActive || failure is ChannelIOException
+            if (unanswered) call.closeRequestScope(failure)
+            throw failure
+        }
+        call.attributes.put(RequestPipelineExited, Unit)
+        // A handler that caught its own failed send exits normally with a committed, never-sent response.
+        if (call.response.isCommitted) call.closeRequestScope()
+    }
+}
+
+// The engine's own error response, sent after the application pipeline exited, can fail after commit too.
+private fun PluginBuilder<KoinKtorApplication>.closeRequestScopeWhenErrorResponseFails() {
+    val sendPipeline = application.sendPipeline
+    sendPipeline.insertPhaseBefore(sendPipeline.items.first(), RequestScopeSendGuardPhase)
+    sendPipeline.intercept(RequestScopeSendGuardPhase) {
+        try {
+            proceed()
+        } catch (failure: Throwable) {
+            if (call.response.isCommitted && call.attributes.contains(RequestPipelineExited)) call.closeRequestScope(failure)
+            throw failure
+        }
+    }
+}
+
+private val RequestScopeLifecyclePhase = PipelinePhase("KoinRequestScopeLifecycle")
+private val RequestScopeSendGuardPhase = PipelinePhase("KoinRequestScopeSendGuard")
+private val RequestPipelineExited = AttributeKey<Unit>("KoinRequestPipelineExited")
+
+private fun ApplicationCall.closeRequestScope(inFlight: Throwable? = null) {
+    val scope = attributes.getOrNull(KOIN_SCOPE_ATTRIBUTE_KEY) ?: return
+    if (scope.closed) return
+    try {
+        scope.close()
+    } catch (closeFailure: Throwable) {
+        // Never mask the failure that is already unwinding the call.
+        if (inFlight == null) throw closeFailure
+        inFlight.addSuppressed(closeFailure)
     }
 }
 
