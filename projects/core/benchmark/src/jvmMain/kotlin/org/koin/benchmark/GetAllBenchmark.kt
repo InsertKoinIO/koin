@@ -34,7 +34,8 @@ import java.util.concurrent.TimeUnit
  *  - t4 / t4b              per-resolution overhead, warm
  *  - t4c                   warm qualified lookup past the typed chain capacity, 8 threads (contention)
  *
- * Run with `-prof gc`: allocations per op is the metric being driven down, not just ms.
+ * Allocations per op is the metric being driven down, not just ms: `./gradlew :core:benchmark:allocProbe`, or
+ * JMH's `-prof gc` through `projects/benchmark-gc.sh` (the Gradle plugin cannot pass it).
  * t3 across counts answers whether getAll is O(k) or O(total definitions).
  */
 @State(Scope.Benchmark)

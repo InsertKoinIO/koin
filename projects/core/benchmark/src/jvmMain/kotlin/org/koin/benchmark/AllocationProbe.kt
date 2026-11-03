@@ -11,7 +11,7 @@ import java.lang.management.ManagementFactory
  *
  * kotlinx-benchmark 0.4.16 accepts only nativeFork / nativeGCAfterIteration / jvmForks /
  * jsUseBridge as advanced options, so JMH's `-prof gc` cannot be reached through the Gradle
- * plugin. getThreadAllocatedBytes gives the same number more directly: exact bytes allocated
+ * plugin (`projects/benchmark-gc.sh` runs JMH directly for that). getThreadAllocatedBytes gives the same number more directly: exact bytes allocated
  * by this thread, with no sampling.
  *
  * The exit criterion in the ticket is stated in allocations, not milliseconds — a warm

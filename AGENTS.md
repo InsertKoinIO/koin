@@ -26,9 +26,9 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 ./gradlew :core:koin-core:jvmTest              # one KMP module, JVM only (KMP modules have no plain `test` task)
 ./gradlew :core:koin-core:allTests             # one KMP module, all targets
 ./gradlew :core:koin-core:compileKotlinWasmJs  # quick non-JVM compile check
-./test.sh                                      # what CI runs: clean `test` + `jvmTest` on all modules
-./test-macos.sh                                # Apple / native targets
-./gradlew apiCheck                             # public API compatibility (CI runs it too)
+./test.sh                                      # what CI runs on pull requests: clean `test` + `jvmTest` on all modules
+./test-macos.sh                                # koin-core on macosArm64 only
+./gradlew apiCheck                             # public API compatibility (CI runs it on pull requests)
 ./gradlew apiDump                              # regenerate `.api` dumps after an intended API addition
 ./compare_apis.sh                              # review `.api` changes against main
 ./install.sh                                   # publish everything to Maven Local
@@ -57,11 +57,11 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - Edit `docs/` (legacy) or the dead root-level `.api` dumps listed in `projects/CLAUDE.md`.
 - Add `-x` exclusions to make a test run green — fix the root cause.
 
-Claude Code enforces these through the committed `.claude/settings.json` files (repo root and `projects/`).
+The committed `.claude/settings.json` files (repo root and `projects/`) deny publishing, force-push and edits to the dead `.api` dumps, and ask before `git push` and Gradle `-x` runs. Green-before-push stays your responsibility. CI runs only on pull requests, and the tag workflow runs no tests.
 
 ## Examples
 
-`examples/` builds against Maven Local: run `./install.sh` in `projects/` first, then `./test.sh` in `examples/` (what the `test.yml` workflow does).
+`examples/` pins its own Koin version (`examples/gradle/versions.gradle`, currently a released 4.2.x), so it does not test this branch unless you change that version and run `./install.sh` in `projects/` first; then `./test.sh` in `examples/`.
 
 Detailed contributor notes (engine internals, known failing off-JVM tests, release notes policy): `projects/CLAUDE.md`.
 
