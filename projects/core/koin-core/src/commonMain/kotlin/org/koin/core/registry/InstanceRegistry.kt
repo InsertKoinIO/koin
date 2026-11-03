@@ -44,7 +44,7 @@ import kotlin.reflect.KClass
 import org.koin.mp.Lockable
 import kotlin.concurrent.Volatile
 
-// A class with more (scope, qualifier) variants than this stays on the String map (KTZ-4829).
+// Cached (scope, qualifier) variants per class; further variants stay on the String map (KTZ-4829).
 private const val MAX_TYPED_CHAIN = 8
 
 @Suppress("UNCHECKED_CAST")
@@ -64,16 +64,17 @@ class InstanceRegistry(val _koin: Koin) {
     // in a startup run every definition is resolved once, so an eagerly maintained mirror
     // measured as pure cost there (+74% on registration).
     //
-    // _instances stays the single source of truth. Every write to it drops the chains for the
-    // factory's class names (over-invalidation is safe, it only costs a re-populate), a populate
-    // re-checks the String map under the same lock, and a miss always falls through to the
-    // String map — so a caller hand-building keys keeps today's behavior to the byte.
+    // _instances stays the single source of truth. Chains are keyed by the class name that opens
+    // every IndexKey, so a write or removal drops the chain of its key's own class, whatever the
+    // factory's current types are. A populate re-checks the String map under the same lock, and a
+    // miss always falls through to the String map.
     //
     // Writes skip the lock until the first populate: typedIndexInUse is set before that populate's
     // re-check, so a writer that still reads false has its _instances write seen by that re-check.
     // This relies on _instances ordering its writes and reads with that volatile flag: volatile node
-    // fields on the JVM (a lone-bin removal is release/acquire, ordered by fences on HotSpot, not by
-    // the JMM alone), a locked map on native, a single thread on JS and wasmJs.
+    // fields on the JVM (a lone-bin removal is release/acquire, ordered by hardware fences on HotSpot
+    // and ART, not by the JMM alone; TypedIndexRaceTest exercises HotSpot only), a locked map on
+    // native, a single thread on JS and wasmJs.
     // (An emptiness check instead of the flag let a populate store a factory just replaced.)
     private val typedIndex = safeHashMap<String, TypedEntry>()
     private val typedIndexLock = Lockable()
@@ -138,9 +139,8 @@ class InstanceRegistry(val _koin: Koin) {
             }
         }
         _koin.logger.log(Level.DEBUG) { "(+) index '$mapping' -> '${factory.beanDefinition}'" }
-        val previous = _instances.put(mapping, factory)
-        forget(factory)
-        if (previous != null && previous !== factory) forget(previous)
+        _instances[mapping] = factory
+        forget(mapping)
     }
 
     private fun remember(className: String, scopeKey: String, qualifierKey: String, key: IndexKey, factory: InstanceFactory<*>) {
@@ -156,21 +156,17 @@ class InstanceRegistry(val _koin: Koin) {
                 length++
                 entry = entry.next
             }
-            // A class with many (scope, qualifier) variants stays on the String map rather than
-            // turning every lookup into a long chain walk.
+            // Past MAX_TYPED_CHAIN cached variants, further variants of the class stay on the String
+            // map rather than turning every lookup into a long chain walk.
             if (length >= MAX_TYPED_CHAIN) return@synchronized
             typedIndex[className] = TypedEntry(scopeKey, qualifierKey, factory, head)
         }
     }
 
-    // Called after every write to _instances involving this factory.
-    private fun forget(factory: InstanceFactory<*>) {
+    // Called after every write to _instances.
+    private fun forget(mapping: IndexKey) {
         if (!typedIndexInUse) return
-        KoinPlatformTools.synchronized(typedIndexLock) {
-            val definition = factory.beanDefinition
-            typedIndex.remove(definition.primaryType.getFullName())
-            definition.secondaryTypes.forEach { typedIndex.remove(it.getFullName()) }
-        }
+        KoinPlatformTools.synchronized(typedIndexLock) { typedIndex.remove(mapping.substringBefore(':')) }
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
@@ -327,7 +323,7 @@ class InstanceRegistry(val _koin: Koin) {
             val factory = _instances[mapping]
             factory?.dropAll()
             _instances.remove(mapping)
-            if (factory != null) forget(factory)
+            forget(mapping)
         }
     }
 
