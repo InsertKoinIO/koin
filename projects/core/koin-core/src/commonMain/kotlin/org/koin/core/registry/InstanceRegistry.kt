@@ -65,8 +65,8 @@ class InstanceRegistry(val _koin: Koin) {
     // measured as pure cost there (+74% on registration).
     //
     // _instances stays the single source of truth. Chains are keyed by the class name that opens
-    // every IndexKey, so a write or removal drops the chain of its key's own class, whatever the
-    // factory's current types are. A populate re-checks the String map under the same lock, and a
+    // every IndexKey, so a write or removal drops the chains of its key's candidate class prefixes
+    // (see forget), whatever the factory's current types are. A populate re-checks the String map under the same lock, and a
     // miss always falls through to the String map.
     //
     // Writes skip the lock until the first populate: typedIndexInUse is set before that populate's
