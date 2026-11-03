@@ -28,9 +28,8 @@ class ScopedViewModelBindingTest {
     }
 
     @Test
-    fun two_scoped_view_models_load_under_strict_override() {
+    fun scoped_view_models_are_all_resolved_as_view_model() {
         val koin = koinApplication {
-            strictOverride()
             modules(module {
                 scope<ScopeOwner> {
                     buildViewModel(FirstViewModel::class) { FirstViewModel() }
