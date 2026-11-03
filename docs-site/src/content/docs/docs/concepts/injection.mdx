@@ -1,0 +1,317 @@
+---
+title: "Injection"
+description: "Prefer constructor injection, and use get(), inject(), KoinComponent and getAll() where Koin cannot create the class."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Most of your classes receive their dependencies through their constructor, and Koin fills them (see [Constructor parameters](/docs/concepts/definitions/#constructor-parameters)). Some code can't: an Android `Activity`, a `main()` function, a class created by a framework. This page covers the functions that retrieve instances from Koin in that code: `get()`, `inject()`, their nullable variants, `KoinComponent` and `getAll()`.
+
+## Constructor injection first
+
+Use the functions on this page only where Koin can't create the class:
+
+```kotlin
+// Koin creates this class: dependencies come through the constructor
+class UserService(
+    private val repository: UserRepository,
+    private val validator: UserValidator,
+)
+
+// Android creates this class: retrieve dependencies with inject()
+class UserActivity : AppCompatActivity() {
+    private val userService: UserService by inject()
+}
+```
+
+Constructor injection has four advantages over calling `get()` in a class body:
+
+- **Visible dependencies**: the constructor lists what the class needs. With `get()`, you have to read the body.
+- **Tests without Koin**: you create `UserService(FakeUserRepository())` directly. A class that calls `get()` needs a running container with a fake definition.
+- **Build-time checks**: the Compiler Plugin verifies constructor dependencies of declared classes against the graph.
+- **No framework coupling**: the class compiles and runs without Koin, which matters for shared code and libraries.
+
+For the general case for constructor injection, see [What is dependency injection](/docs/get-started/what-is-di/). Never call `get()` in a default parameter value (`class UserService(val repository: UserRepository = get())`): declare the class in a module instead.
+
+Keep `get()` and `KoinComponent` at the edges. One entry point retrieves the top object, and everything below it uses constructor injection:
+
+```kotlin
+class SyncCommand : KoinComponent {
+    private val syncService: SyncService by inject()
+}
+
+class SyncService(private val repository: UserRepository, private val api: ApiClient)
+class UserRepository(private val database: Database)
+```
+
+## Lazy and eager retrieval
+
+Retrieval code is the same in every style:
+
+```kotlin
+class UserActivity : AppCompatActivity() {
+
+    // lazy: resolved on first access of the property
+    private val userService: UserService by inject()
+
+    // eager: resolved now, when the property is initialized
+    private val analytics: Analytics = get()
+}
+```
+
+| Function | Returns | Resolved |
+|----------|---------|----------|
+| `by inject<T>()` | `Lazy<T>` used as a property delegate | On first access |
+| `get<T>()` | `T` | Immediately |
+
+Use `by inject()` for properties. The class can be created before Koin has everything ready (an `Activity` field is initialized before `onCreate()`), and an instance that is never used is never created. Use `get()` inside a function body, when you need the value now.
+
+`inject()` takes a `mode` parameter, a Kotlin `LazyThreadSafetyMode`. The default is `SYNCHRONIZED` on the JVM.
+
+## Where get() and inject() are available
+
+You can call `get()` and `by inject()` from:
+
+- Android classes: `Activity`, `Fragment`, `Service` and other `ComponentCallbacks`, with no extra interface. See [Android entry points](/docs/platforms/android/components/).
+- Any class that implements [`KoinComponent`](#koincomponent).
+- A `Koin` instance: `KoinPlatform.getKoin().get<UserService>()` uses the global container, `koinApp.koin.get<UserService>()` an isolated one.
+- Inside a definition (Classic DSL): `get()`, `inject()`, `getOrNull()`, `injectOrNull()` and `getAll()` resolve from the current scope.
+
+Platform APIs follow the same rules with their own names:
+
+- Compose: `koinInject()` and `koinViewModel()`. See [Koin for Compose](/docs/platforms/compose/).
+- Android ViewModel: `by viewModel()` and `by activityViewModel()`. See [ViewModel definitions](/docs/concepts/viewmodels/) for the retrieval table.
+- Ktor: `by inject()` in `Application`, `Route` and `ApplicationCall`. See [Koin for Ktor](/docs/platforms/ktor/).
+
+## KoinComponent
+
+`KoinComponent` is an interface that gives a class access to the Koin container, so it can call `get()` and `by inject()`.
+
+Use it for a class that Koin does not create and that has no Koin extension of its own:
+
+- Entry points: a `main()` class, a CLI command, a class created by a framework or by reflection.
+- Android classes without Koin extensions: `BroadcastReceiver`, `ContentProvider`, custom `View`. See [Android entry points](/docs/platforms/android/components/).
+- Callbacks and listeners whose constructor you don't control.
+- Legacy code you can't move to constructor injection yet.
+
+You don't need it for classes declared in a module (Koin passes their dependencies through the constructor), for `Activity`, `Fragment` and `Service` (Koin Android provides `by inject()` on them), or for composables (use `koinInject()`).
+
+Implement the interface, then call `get()` or `by inject()`:
+
+```kotlin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
+
+class SyncCommand : KoinComponent {
+
+    // lazy: resolved on first access
+    private val syncService: SyncService by inject()
+
+    // eager: resolved when SyncCommand is created
+    private val logger: Logger = get()
+
+    fun run() {
+        logger.info("Starting sync")
+        syncService.sync()
+    }
+}
+
+fun main() {
+    startKoin {
+        modules(appModule)
+    }
+    SyncCommand().run()
+}
+```
+
+The code is the same in every style: `KoinComponent` only retrieves instances, and the definitions can be declared with any style. `get()` and `inject()` are extension functions: import them from `org.koin.core.component`.
+
+`KoinComponent` itself has one function, `getKoin()`, which returns the `Koin` instance. Use it for everything else:
+
+```kotlin
+class FeatureLoader : KoinComponent {
+
+    fun optionalTracker(): Tracker? = getKoin().getOrNull()
+
+    fun apiUrl(): String = getKoin().getProperty("server_url", "https://api.example.com")
+
+    fun allPlugins(): List<Plugin> = getKoin().getAll()
+}
+```
+
+### Custom Android View
+
+A custom `View` is created by the layout inflater, so Koin can't pass constructor parameters. `KoinComponent` fits here:
+
+```kotlin
+class ChartView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : View(context, attrs), KoinComponent {
+
+    private val formatter: ChartFormatter by inject()
+
+    fun setData(points: List<DataPoint>) {
+        val formatted = formatter.format(points)
+        // draw
+    }
+}
+```
+
+Use `by inject()` in a `View`: the layout editor creates views without a running Koin container, and an eager `get()` would fail there.
+
+### Which container KoinComponent uses
+
+By default, `getKoin()` returns the global container started with `startKoin`. If `startKoin` has not been called yet, `get()` throws `IllegalStateException` ("KoinApplication has not been started").
+
+A library or SDK that runs its own isolated container overrides `getKoin()` to return it. The full pattern is in [Context isolation](/docs/concepts/context-isolation/).
+
+For a class that owns a scope, implement `KoinScopeComponent` instead: `get()` and `inject()` then resolve from that scope. See [Scopes](/docs/concepts/scopes/).
+
+### Testing a KoinComponent
+
+A class that implements `KoinComponent` reads from the global container, so the test must start Koin with the definitions it needs, and stop it afterward. See [Testing](/docs/testing/) for the rules that do it.
+
+## Optional dependencies
+
+When a definition may be missing, use the nullable variants. They return `null` instead of throwing `NoDefinitionFoundException`:
+
+```kotlin
+val koin = KoinPlatform.getKoin()
+
+val tracker: Tracker? = koin.getOrNull()
+val crashReporter: CrashReporter? by koin.injectOrNull()
+```
+
+`getOrNull()` and `injectOrNull()` exist on `Koin`, on `Scope` and inside definitions. The `KoinComponent` interface provides `get()` and `inject()` only: call `getKoin().getOrNull<T>()` there.
+
+For a constructor parameter, declare it nullable (`tracker: Tracker?`) and Koin passes `null` when no definition exists. See [Constructor parameters](/docs/concepts/definitions/#constructor-parameters).
+
+If Koin itself may not be started, for example in a library, `KoinPlatform.getKoinOrNull()` returns `null` instead of throwing.
+
+## Collections of dependencies
+
+`getAll<T>()` returns every instance bound to the type `T`, across all definitions:
+
+```kotlin
+val koin = KoinPlatform.getKoin()
+
+val interceptors: List<Interceptor> = koin.getAll()
+```
+
+To inject every implementation of an interface into a class, bind each one to the interface and ask for a `List`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+interface PaymentProcessor {
+    fun process(amount: Double): Boolean
+}
+
+class CreditCardProcessor : PaymentProcessor { ... }
+class PayPalProcessor : PaymentProcessor { ... }
+
+class PaymentManager(private val processors: List<PaymentProcessor>)
+
+val paymentModule = module {
+    single<CreditCardProcessor>() bind PaymentProcessor::class
+    single<PayPalProcessor>() bind PaymentProcessor::class
+    single<PaymentManager>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+interface PaymentProcessor {
+    fun process(amount: Double): Boolean
+}
+
+// bound to PaymentProcessor automatically
+@Singleton
+class CreditCardProcessor : PaymentProcessor { ... }
+
+@Singleton
+class PayPalProcessor : PaymentProcessor { ... }
+
+@Singleton
+class PaymentManager(private val processors: List<PaymentProcessor>)
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val paymentModule = module {
+    singleOf(::CreditCardProcessor) bind PaymentProcessor::class
+    singleOf(::PayPalProcessor) bind PaymentProcessor::class
+    single { PaymentManager(getAll()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A `List<T>` parameter resolves with `getAll<T>()`: every definition whose type, or one of its bound types, is `T`, with or without a qualifier. Outside a constructor, call `getAll<PaymentProcessor>()` on a `Scope` or on `getKoin()`.
+
+Behavior to know:
+
+- **Empty list**: if nothing is bound to `T`, the list is empty. No error, and the Compiler Plugin does not report a missing dependency for a `List<T>` parameter.
+- **No order**: do not rely on the order of the list. If order matters, sort it, for example by a `priority` property on the interface.
+- **Current scope only**: from a scope instance, `getAll` returns the definitions of that scope and of its linked scopes, including the root.
+- **Single lookup**: `get<PaymentProcessor>()` still returns only one of the bound definitions (the last one loaded). To pick one, give each a [qualifier](/docs/concepts/qualifiers/).
+- **Strict override**: with `allowOverride(false)`, binding the same interface without a qualifier in two different modules fails at start with `DefinitionOverrideException`. Give each binding a qualifier.
+
+When you need both the list and a specific implementation, combine binding and qualifiers. With the Compiler Plugin DSL and annotations, put `@Named` on the class:
+
+```kotlin
+@Named("creditCard")
+class CreditCardProcessor : PaymentProcessor { ... }
+
+@Named("paypal")
+class PayPalProcessor : PaymentProcessor { ... }
+
+val paymentModule = module {
+    single<CreditCardProcessor>() bind PaymentProcessor::class
+    single<PayPalProcessor>() bind PaymentProcessor::class
+}
+
+class CheckoutService(
+    @Named("creditCard") private val defaultProcessor: PaymentProcessor,
+    private val allProcessors: List<PaymentProcessor>,
+)
+```
+
+## Qualifiers and parameters at the call site
+
+Every retrieval function takes a qualifier and a parameter block:
+
+```kotlin
+val localDb: Database by inject(named("local"))
+
+val presenter: UserPresenter = get { parametersOf(userId) }
+
+val detail: DetailPresenter = get(named("compact")) { parametersOf(itemId) }
+```
+
+- Qualifier: picks one definition among several of the same type. See [Qualifiers](/docs/concepts/qualifiers/).
+- Parameters: values only the caller knows, passed to the definition. See [Injected parameters](/docs/concepts/parameters/).
+
+With `by inject()`, the parameter block runs on first access, so it can read properties that are set after construction.
+
+## When resolution fails
+
+`get()` throws `NoDefinitionFoundException` when no definition matches the type and qualifier. With `by inject()`, the exception comes on first access of the property, not where you declared it. With the Compiler Plugin, `get()` and `inject()` calls are also checked at build time against the graph of your start call.
+
+For common errors and how to read Koin's messages, see [Troubleshooting](/docs/support/troubleshooting/).
+
+## Related
+
+- [Definitions](/docs/concepts/definitions/): constructor injection and how parameters are resolved.
+- [Patterns](/docs/concepts/patterns/): provider and decorator patterns.
+- [Android entry points](/docs/platforms/android/components/): inject in Activity, Fragment, Service, Receiver and View.
+- [Koin for Compose](/docs/platforms/compose/): `koinInject()` and other Compose APIs.
+- [Scopes](/docs/concepts/scopes/): retrieve instances from a scope instead of the root container.

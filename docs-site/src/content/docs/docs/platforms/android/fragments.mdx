@@ -1,0 +1,164 @@
+---
+title: "Fragment factory"
+description: "Create Fragments with constructor injection through the Koin FragmentFactory."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+By default, Android creates Fragments with their empty constructor, so you inject them with `by inject()` (see [Inject into Android components](/docs/platforms/android/components/)). With the AndroidX [FragmentFactory](https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentFactory), Koin creates the Fragment itself and passes dependencies to its constructor. This page covers the setup, the `fragment` definition and Fragments from an Activity scope.
+
+The `fragment` definition is part of `io.insert-koin:koin-android`. No other artifact is needed.
+
+## Setup
+
+Enable the Koin fragment factory in `startKoin`:
+
+```kotlin
+import org.koin.androidx.fragment.koin.fragmentFactory
+
+startKoin {
+    androidContext(this@MainApplication)
+    fragmentFactory()
+    modules(appModule)
+}
+```
+
+Then install it in each Activity that hosts these Fragments, before `super.onCreate()`:
+
+```kotlin
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setupKoinFragmentFactory()
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+}
+```
+
+`super.onCreate()` restores Fragments after a rotation or process death. The factory must be in place before that, or Android uses the default factory and fails on Fragments without an empty constructor.
+
+## Declaring a Fragment
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+The Compiler Plugin DSL has no `fragment<T>()` function. Use the Classic DSL `fragment { }` or the Constructor DSL `fragmentOf()` in the same module:
+
+```kotlin
+import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class UserFragment(private val repository: UserRepository) : Fragment()
+
+val uiModule = module {
+    single<UserRepository>()
+    fragmentOf(::UserFragment)
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+There is no Fragment annotation. Declare the Fragment in a DSL module, next to your annotated classes (see [DSL Reference](/docs/reference/dsl/)):
+
+```kotlin
+import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.dsl.module
+
+val uiModule = module {
+    fragmentOf(::UserFragment)
+}
+```
+
+`@KoinApplication` does not discover a DSL module, so pass it at start: `startKoin<MainApplication> { androidContext(this@MainApplication); fragmentFactory(); modules(uiModule) }`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.androidx.fragment.dsl.fragment
+import org.koin.androidx.fragment.dsl.fragmentOf
+
+class UserFragment(private val repository: UserRepository) : Fragment()
+
+val uiModule = module {
+    singleOf(::UserRepository)
+    fragmentOf(::UserFragment)
+
+    // or write the constructor call
+    fragment { UserFragment(get()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A `fragment` definition is a `factory`: every transaction gets a new Fragment instance. If no definition matches a Fragment class, the Koin factory falls back to the default AndroidX behavior.
+
+## Adding a Fragment
+
+Use the reified `replace` extension on `FragmentTransaction`:
+
+```kotlin
+import org.koin.androidx.fragment.android.replace
+
+supportFragmentManager.beginTransaction()
+    .replace<UserFragment>(R.id.container)
+    .commit()
+```
+
+With arguments and a tag:
+
+```kotlin
+supportFragmentManager.beginTransaction()
+    .replace<UserFragment>(
+        containerViewId = R.id.container,
+        args = bundleOf("USER_ID" to "42"),
+        tag = "user",
+    )
+    .commit()
+```
+
+Pass per-instance values in `args`, not in the constructor: Android recreates the Fragment through the factory, and only the arguments are restored.
+
+## Fragments from an Activity scope
+
+To give a Fragment instances from its Activity scope, declare the Fragment inside the scope and pass the scope to `setupKoinFragmentFactory()`:
+
+```kotlin
+import org.koin.androidx.fragment.dsl.fragmentOf
+import org.koin.core.module.dsl.scopedOf
+
+val checkoutModule = module {
+    scope<CheckoutActivity> {
+        scopedOf(::CheckoutSession)
+        fragmentOf(::PaymentFragment)
+    }
+}
+```
+
+```kotlin
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.ScopeActivity
+
+class CheckoutActivity : ScopeActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setupKoinFragmentFactory(scope)
+        super.onCreate(savedInstanceState)
+    }
+}
+```
+
+With a scope, the factory resolves Fragments from that scope, then from the root scope. In this case it does not need `fragmentFactory()` in `startKoin`: that option only declares the global factory used by `setupKoinFragmentFactory()` without arguments. Activity scopes are covered in [Android scopes](/docs/platforms/android/scopes/).
+
+## Next steps
+
+- [Inject into Android components](/docs/platforms/android/components/): inject in a Fragment with `by inject()`.
+- [Android scopes](/docs/platforms/android/scopes/): Activity and Fragment scopes.
+- [Definitions](/docs/concepts/definitions/): `factory` and the other definition types.
+- [AndroidX Fragments guide](https://developer.android.com/guide/fragments): the Fragment API.

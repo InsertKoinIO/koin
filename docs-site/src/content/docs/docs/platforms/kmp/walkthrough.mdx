@@ -1,0 +1,896 @@
+---
+title: "Walkthrough: Android and iOS app"
+description: "Build a Compose Multiplatform app for Android and iOS with Koin: shared modules, platform definitions, ViewModels and start code."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+You build an app that lists art objects from The Metropolitan Museum of Art, sharing Koin modules in `commonMain`, with platform definitions and injected ViewModels.
+
+## Prerequisites
+
+Android Studio, plus Xcode for iOS. It takes about 20 minutes.
+
+## Get the code
+
+The samples are in the [koin-getting-started](https://github.com/InsertKoinIO/koin-getting-started) repository:
+
+- [`compose`](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose): Compiler Plugin DSL.
+- [`compose-annotations`](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose-annotations): Annotations.
+
+Clone the whole repository, because the samples read a version catalog from its root `gradle/` folder. Then open the folder for your style in Android Studio. The shared code is in the `composeApp` Gradle module, and the iOS app is in `iosApp`. The Annotations sample also has a `data` Gradle module.
+
+:::note[What the samples cover]
+Android and iOS only, using Navigation Compose. They have no tests and no Desktop or Web target. For those, see [Testing in commonTest](/docs/platforms/kmp/testing/) and [Start Koin once](/docs/platforms/kmp/start-koin/). The samples set their dependency versions directly and do not use the BOM.
+:::
+
+## Gradle setup
+
+To write the app yourself instead, create a Compose Multiplatform project for Android and iOS with the [Kotlin Multiplatform wizard](https://kmp.jetbrains.com/). It generates the Compose dependencies, `MainActivity` and the iOS app. Use Kotlin <Version of="kotlinMin" /> or later, apply the Kotlin serialization plugin (`org.jetbrains.kotlin.plugin.serialization`), and add these dependencies to `commonMain`:
+
+<Install
+  artifacts={['koin-core', 'koin-compose-viewmodel-navigation']}
+  plugin
+  bom
+  sourceSet="commonMain"
+  extra={[
+    ['ktor-client-core', 'io.ktor:ktor-client-core', 'ktor'],
+    ['ktor-client-content-negotiation', 'io.ktor:ktor-client-content-negotiation', 'ktor'],
+    ['ktor-serialization-kotlinx-json', 'io.ktor:ktor-serialization-kotlinx-json', 'ktor'],
+    ['navigation-compose', 'org.jetbrains.androidx.navigation:navigation-compose', 'navigationCompose'],
+    ['lifecycle-runtime-compose', 'org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose', 'lifecycleCompose'],
+  ]}
+/>
+
+Each platform needs its own Ktor client engine:
+
+<Install sourceSet="androidMain" extra={[['ktor-client-okhttp', 'io.ktor:ktor-client-okhttp', 'ktor']]} />
+
+<Install sourceSet="iosMain" extra={[['ktor-client-darwin', 'io.ktor:ktor-client-darwin', 'ktor']]} />
+
+For the Annotations style, add `koin-annotations` too, and apply the Compiler Plugin in each Gradle module that declares definitions. In a multi-module project, expose `koin-annotations` with `api` from the `data` module, as the sample does.
+
+The app calls a remote API, so `AndroidManifest.xml` needs `<uses-permission android:name="android.permission.INTERNET"/>`.
+
+## The application
+
+The app fetches art objects from a remote API, caches them in memory, and shows them on a list screen and a detail screen:
+
+```
+MuseumApi -> MuseumStorage -> MuseumRepository -> ListViewModel / DetailViewModel -> Compose UI
+```
+
+It uses Ktor for HTTP, Kotlin Flow for data streams and Navigation Compose for routing. All the code here is in `commonMain` unless a comment says otherwise. Each block starts with its package, because the Annotations style scans by package.
+
+## Write the data layer
+
+The classes are plain Kotlin, with their dependencies in the constructor. `MuseumObject` maps the API response:
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp.data
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class MuseumObject(
+    val objectID: Int,
+    val title: String,
+    val artistDisplayName: String,
+    val medium: String,
+    val dimensions: String,
+    val objectURL: String,
+    val objectDate: String,
+    val primaryImage: String,
+    val primaryImageSmall: String,
+    val repository: String,
+    val department: String,
+    val creditLine: String,
+)
+```
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp.data
+
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+
+interface MuseumApi {
+    suspend fun getData(): List<MuseumObject>
+}
+
+class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
+    override suspend fun getData(): List<MuseumObject> = client.get(API_URL).body()
+
+    private companion object {
+        const val API_URL = "https://raw.githubusercontent.com/Kotlin/KMP-App-Template/main/list.json"
+    }
+}
+
+interface MuseumStorage {
+    suspend fun saveObjects(newObjects: List<MuseumObject>)
+    fun getObjectById(objectId: Int): Flow<MuseumObject?>
+    fun getObjects(): Flow<List<MuseumObject>>
+}
+
+class InMemoryMuseumStorage : MuseumStorage {
+    private val storedObjects = MutableStateFlow(emptyList<MuseumObject>())
+
+    override suspend fun saveObjects(newObjects: List<MuseumObject>) {
+        storedObjects.value = newObjects
+    }
+
+    override fun getObjectById(objectId: Int): Flow<MuseumObject?> =
+        storedObjects.map { objects -> objects.find { it.objectID == objectId } }
+
+    override fun getObjects(): Flow<List<MuseumObject>> = storedObjects
+}
+
+class MuseumRepository(
+    private val museumApi: MuseumApi,
+    private val museumStorage: MuseumStorage,
+) {
+    private val scope = CoroutineScope(SupervisorJob())
+
+    init {
+        scope.launch { runCatching { refresh() } }
+    }
+
+    suspend fun refresh() {
+        museumStorage.saveObjects(museumApi.getData())
+    }
+
+    fun getObjects(): Flow<List<MuseumObject>> = museumStorage.getObjects()
+
+    fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)
+}
+```
+
+This is simplified from the sample. If the request fails, for example without a network, the list stays empty. A real app also shows the error and offers a retry.
+
+## Declare the data module
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-walkthrough-dsl */}
+
+```kotlin
+package com.jetbrains.kmpapp.di
+
+import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
+import com.jetbrains.kmpapp.data.KtorMuseumApi
+import com.jetbrains.kmpapp.data.MuseumApi
+import com.jetbrains.kmpapp.data.MuseumRepository
+import com.jetbrains.kmpapp.data.MuseumStorage
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.createdAtStart
+import org.koin.core.module.dsl.withOptions
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+val dataModule = module {
+    single { create(::buildClient) }
+    single<KtorMuseumApi>() bind MuseumApi::class
+    single<InMemoryMuseumStorage>() bind MuseumStorage::class
+    single<MuseumRepository>() withOptions { createdAtStart() }
+}
+
+private fun buildClient(): HttpClient {
+    val json = Json { ignoreUnknownKeys = true }
+    return HttpClient {
+        install(ContentNegotiation) {
+            json(json, contentType = ContentType.Any)
+        }
+    }
+}
+```
+
+`create(::buildClient)` lets Koin call a builder function for a class you do not own. `createdAtStart()` creates `MuseumRepository` when Koin starts, so the data fetch begins right away.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Annotate each data class, for example `@Singleton class KtorMuseumApi(...) : MuseumApi`. Koin binds each class to its supertypes. `HttpClient` is a class you do not own, so provide it from a function in the module class:
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+package com.jetbrains.kmpapp.di
+
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@Configuration
+@ComponentScan("com.jetbrains.kmpapp.data")
+class DataModule {
+
+    @Singleton
+    fun providesHttpClient(): HttpClient {
+        val json = Json { ignoreUnknownKeys = true }
+        return HttpClient {
+            install(ContentNegotiation) {
+                json(json, contentType = ContentType.Any)
+            }
+        }
+    }
+}
+```
+
+`@ComponentScan` registers the annotated classes of the data package. `@Configuration` makes `DataModule` discoverable by the app entry point, even in another Gradle module.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp.di
+
+import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
+import com.jetbrains.kmpapp.data.KtorMuseumApi
+import com.jetbrains.kmpapp.data.MuseumApi
+import com.jetbrains.kmpapp.data.MuseumRepository
+import com.jetbrains.kmpapp.data.MuseumStorage
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.createdAtStart
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.withOptions
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val dataModule = module {
+    single { buildClient() }
+    singleOf(::KtorMuseumApi) bind MuseumApi::class
+    singleOf(::InMemoryMuseumStorage) bind MuseumStorage::class
+    singleOf(::MuseumRepository) withOptions { createdAtStart() }
+}
+
+private fun buildClient(): HttpClient {
+    val json = Json { ignoreUnknownKeys = true }
+    return HttpClient {
+        install(ContentNegotiation) {
+            json(json, contentType = ContentType.Any)
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Write the ViewModels
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-walkthrough-dsl */}
+
+```kotlin
+package com.jetbrains.kmpapp.screens
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.MuseumRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
+
+class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
+    val objects: StateFlow<List<MuseumObject>> =
+        museumRepository.getObjects()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+}
+
+class DetailViewModel(private val museumRepository: MuseumRepository) : ViewModel() {
+    fun getObject(objectId: Int): Flow<MuseumObject?> =
+        museumRepository.getObjectById(objectId)
+}
+
+val viewModelModule = module {
+    viewModel<ListViewModel>()
+    viewModel<DetailViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+package com.jetbrains.kmpapp.screens
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.MuseumRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
+
+@KoinViewModel
+class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
+    val objects: StateFlow<List<MuseumObject>> =
+        museumRepository.getObjects()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+}
+
+@KoinViewModel
+class DetailViewModel(private val museumRepository: MuseumRepository) : ViewModel() {
+    fun getObject(objectId: Int): Flow<MuseumObject?> =
+        museumRepository.getObjectById(objectId)
+}
+
+@ComponentScan
+@Module
+class ViewModelModule
+```
+
+`@ComponentScan` with no argument scans the package of the module class and its subpackages.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp.screens
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.MuseumRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
+    val objects: StateFlow<List<MuseumObject>> =
+        museumRepository.getObjects()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+}
+
+class DetailViewModel(private val museumRepository: MuseumRepository) : ViewModel() {
+    fun getObject(objectId: Int): Flow<MuseumObject?> =
+        museumRepository.getObjectById(objectId)
+}
+
+val viewModelModule = module {
+    viewModelOf(::ListViewModel)
+    viewModelOf(::DetailViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+The `viewModelScope` here is the AndroidX coroutine scope. The same declaration works on Android and iOS: see [Shared ViewModels](/docs/platforms/kmp/viewmodels/).
+
+## Add platform definitions
+
+Each platform returns its own implementation of a shared interface, and the list screen shows the result. This and the other patterns are on [Platform-specific dependencies](/docs/platforms/kmp/platform-dependencies/).
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-walkthrough-dsl */}
+
+```kotlin
+// commonMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+expect fun platformModule(): Module
+```
+
+{/* check: kmp-walkthrough-dsl */}
+
+```kotlin
+// androidMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class AndroidComponent : PlatformComponent {
+    override fun getInfo(): String = "Android OS"
+}
+
+actual fun platformModule(): Module = module {
+    single<AndroidComponent>() bind PlatformComponent::class
+}
+```
+
+{/* check: kmp-walkthrough-dsl */}
+
+```kotlin
+// iosMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class IOSComponent : PlatformComponent {
+    override fun getInfo(): String = "iOS OS"
+}
+
+actual fun platformModule(): Module = module {
+    single<IOSComponent>() bind PlatformComponent::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+// commonMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.annotation.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+@Module
+expect class PlatformComponentModule
+```
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+// androidMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan
+actual class PlatformComponentModule
+
+@Singleton
+class AndroidComponent : PlatformComponent {
+    override fun getInfo(): String = "Android OS"
+}
+```
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+// iosMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan
+actual class PlatformComponentModule
+
+@Singleton
+class IOSComponent : PlatformComponent {
+    override fun getInfo(): String = "iOS OS"
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-walkthrough-constructor */}
+
+```kotlin
+// commonMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+expect fun platformModule(): Module
+```
+
+{/* check: kmp-walkthrough-constructor */}
+
+```kotlin
+// androidMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+class AndroidComponent : PlatformComponent {
+    override fun getInfo(): String = "Android OS"
+}
+
+actual fun platformModule(): Module = module {
+    singleOf(::AndroidComponent) bind PlatformComponent::class
+}
+```
+
+{/* check: kmp-walkthrough-constructor */}
+
+```kotlin
+// iosMain
+package com.jetbrains.kmpapp.platform
+
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+class IOSComponent : PlatformComponent {
+    override fun getInfo(): String = "iOS OS"
+}
+
+actual fun platformModule(): Module = module {
+    singleOf(::IOSComponent) bind PlatformComponent::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Assemble the modules and start Koin
+
+Every style starts Koin the same way: one shared `initKoin` function, which each platform calls. Only the assembly of the modules changes:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-constructor */}
+
+```kotlin
+// commonMain, di/Koin.kt
+package com.jetbrains.kmpapp.di
+
+import com.jetbrains.kmpapp.platform.platformModule
+import com.jetbrains.kmpapp.screens.viewModelModule
+import org.koin.core.context.startKoin
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.dsl.module
+
+val appModule = module {
+    includes(dataModule, viewModelModule, platformModule())
+}
+
+fun initKoin(configuration: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(configuration)
+        modules(appModule)
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-walkthrough-annotations */}
+
+```kotlin
+// commonMain, di/Koin.kt
+package com.jetbrains.kmpapp.di
+
+import com.jetbrains.kmpapp.platform.PlatformComponentModule
+import com.jetbrains.kmpapp.screens.ViewModelModule
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.Module
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.plugin.module.dsl.startKoin
+
+@Module(includes = [ViewModelModule::class, PlatformComponentModule::class])
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinApp
+
+fun initKoin(configuration: KoinAppDeclaration? = null) {
+    startKoin<KoinApp> {
+        includes(configuration)
+    }
+}
+```
+
+`KoinApp` collects every `@Configuration` module: `AppModule` with its includes, and `DataModule`, even when it is in a `data` Gradle module as in the sample.
+
+</TabItem>
+</Tabs>
+
+The file name matters: Swift reaches `initKoin` through the class Kotlin generates for `Koin.kt`, and sees it as `doInitKoin`.
+
+Call it from your `Application` class, and register that class in `AndroidManifest.xml` with `android:name=".MuseumApp"`:
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+// androidMain, MuseumApp.kt
+package com.jetbrains.kmpapp
+
+import android.app.Application
+import com.jetbrains.kmpapp.di.initKoin
+import org.koin.android.ext.koin.androidContext
+
+class MuseumApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        initKoin {
+            androidContext(this@MuseumApp)
+        }
+    }
+}
+```
+
+Call it from the iOS app too:
+
+```swift
+// iosApp/iosApp/iOSApp.swift
+import SwiftUI
+import ComposeApp
+
+@main
+struct iOSApp: App {
+    init() {
+        KoinKt.doInitKoin()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+```
+
+The root composable only applies the theme and shows the navigation of the next section:
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+// commonMain, App.kt
+package com.jetbrains.kmpapp
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+
+@Composable
+fun App() {
+    MaterialTheme {
+        AppNavigation()
+    }
+}
+```
+
+:::note[Starting from a composable]
+If nothing outside Compose needs Koin, you can start it in the root composable with `KoinApplication` instead, in any style. The `compose-annotations` sample does this, so its start code differs from this page. See [KoinApplication or initKoin?](/docs/platforms/kmp/compose-multiplatform/#koinapplication-or-initkoin)
+:::
+
+The Compiler Plugin, when applied, validates the full graph at build time.
+
+## Inject the ViewModels
+
+Each screen gets its ViewModel with `koinViewModel()`, and the list screen gets `PlatformComponent` with `koinInject()`. The code is the same in every style:
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp.screens
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jetbrains.kmpapp.platform.PlatformComponent
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun ListScreen(
+    viewModel: ListViewModel = koinViewModel(),
+    platform: PlatformComponent = koinInject(),
+    navigateToDetails: (objectId: Int) -> Unit,
+) {
+    val objects by viewModel.objects.collectAsStateWithLifecycle()
+
+    LazyColumn(Modifier.fillMaxSize().safeDrawingPadding()) {
+        item {
+            Text("Running on ${platform.getInfo()}", Modifier.padding(16.dp))
+        }
+        items(objects, key = { it.objectID }) { obj ->
+            Text(
+                text = obj.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navigateToDetails(obj.objectID) }
+                    .padding(16.dp),
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailScreen(
+    objectId: Int,
+    viewModel: DetailViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
+) {
+    val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
+
+    Column(Modifier.fillMaxSize().safeDrawingPadding().padding(16.dp)) {
+        TextButton(onClick = navigateBack) { Text("Back") }
+        obj?.let {
+            Text(it.title, style = MaterialTheme.typography.titleLarge)
+            Text(it.artistDisplayName)
+            Text(it.objectDate)
+        }
+    }
+}
+```
+
+`AppNavigation` sets up navigation. Inside a `NavHost` destination, `koinViewModel()` ties the ViewModel to that navigation entry, so each screen keeps its own instance.
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+package com.jetbrains.kmpapp
+
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.jetbrains.kmpapp.screens.DetailScreen
+import com.jetbrains.kmpapp.screens.ListScreen
+import kotlinx.serialization.Serializable
+
+@Serializable
+object ListDestination
+
+@Serializable
+data class DetailDestination(val objectId: Int)
+
+@Composable
+fun AppNavigation() {
+    Surface {
+        val navController = rememberNavController()
+        NavHost(navController = navController, startDestination = ListDestination) {
+            composable<ListDestination> {
+                ListScreen(navigateToDetails = { objectId ->
+                    navController.navigate(DetailDestination(objectId))
+                })
+            }
+            composable<DetailDestination> { backStackEntry ->
+                DetailScreen(
+                    objectId = backStackEntry.toRoute<DetailDestination>().objectId,
+                    navigateBack = { navController.popBackStack() },
+                )
+            }
+        }
+    }
+}
+```
+
+The iOS view controller hosts the same composable. The wizard project already calls it from `MainActivity` and from the iOS `ContentView`:
+
+{/* check: kmp-walkthrough-dsl, kmp-walkthrough-annotations, kmp-walkthrough-constructor */}
+
+```kotlin
+// iosMain, MainViewController.kt
+package com.jetbrains.kmpapp
+
+import androidx.compose.ui.window.ComposeUIViewController
+
+fun MainViewController() = ComposeUIViewController { App() }
+```
+
+## Run it
+
+Run the Android app from Android Studio, or the iOS app from Xcode. The screen shows the name of the platform, then the list of art objects once the request completes. Tap an object to open its details. The samples have a richer UI.
+
+## See the build catch a mistake
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Remove `single<InMemoryMuseumStorage>() bind MuseumStorage::class` from the module and run `./gradlew build`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the line back.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Remove `@Singleton` from `InMemoryMuseumStorage` and run `./gradlew build`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the annotation back.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Remove `singleOf(::InMemoryMuseumStorage) bind MuseumStorage::class` from the module. The build still passes, because this form has no Compiler Plugin, and the app fails at runtime when it first needs the class. Put the line back.
+
+</TabItem>
+</Tabs>
+
+See [Compile-time safety](/docs/tooling/compile-time-safety/) for what the plugin checks.
+
+## Next steps
+
+- [Testing in commonTest](/docs/platforms/kmp/testing/): add tests, which the sample does not have.
+- [Start Koin once](/docs/platforms/kmp/start-koin/): add Desktop and Web.
+- [Koin from Swift and SwiftUI](/docs/platforms/kmp/swift/): reach Koin from native screens.
+- [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/): choose how to start Koin.

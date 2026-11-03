@@ -1,0 +1,185 @@
+---
+title: "JSR-330 Annotations"
+description: "Keep jakarta.inject and javax.inject annotations on existing classes: what the Koin Compiler Plugin reads, and a caution about koin-jsr330."
+---
+
+The Koin Compiler Plugin reads the standard JSR-330 annotations from `jakarta.inject` and `javax.inject`. A class with `@Singleton` or an `@Inject constructor` becomes a Koin definition, with no Koin annotation on it. This page lists what is supported and how to set it up. It applies to the annotations style: you need the [Compiler Plugin](/docs/tooling/compiler-plugin/) and a module with `@ComponentScan` (see [Modules](/docs/concepts/modules/)).
+
+The main use is code shared with another JSR-330 framework, or a migration from Hilt or Dagger where you keep existing classes unchanged (see [Migrate from Hilt](/docs/migration/from-hilt/)).
+
+## Setup
+
+On the JVM and Android, keep the JSR-330 artifact you already use. Nothing from Koin is needed for the annotations themselves:
+
+```kotlin
+dependencies {
+    implementation("jakarta.inject:jakarta.inject-api:2.0.1")
+    // or the legacy package
+    implementation("javax.inject:javax.inject:1")
+}
+```
+
+Install the Compiler Plugin and `koin-annotations` as for any Annotations project, see [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+### Kotlin Multiplatform: the koin-jsr330 caution
+
+:::caution
+In Kotlin Multiplatform common code the Java artifacts above are not available. A `koin-jsr330` artifact exists to provide the `jakarta.inject` annotations for every Kotlin target, but it belongs to the older, separate Koin Annotations release line:
+
+- On Maven Central it is published only in the 2.x stream (the latest is `2.3.2-Beta1`), not with Koin 4.2.
+- It is not in this repository and not in the Koin BOM, so it has no Koin 4.2 version number. Pick the 2.x version yourself.
+- This documentation has not verified it with the Compiler Plugin on a multiplatform build.
+
+If you need JSR-330 annotations in common code, test it on a small project first, or use the Koin annotations (`@Singleton`, `@Factory`, `@Named`) in shared code instead.
+:::
+
+## Supported annotations
+
+| JSR-330 annotation | Koin equivalent | Applies to |
+|--------------------|-----------------|------------|
+| `@Singleton` | `@Singleton` / `@Single` | Class, function in a `@Module` |
+| `@Inject` on a constructor | `@Factory` | Class |
+| `@Named("x")` | `@Named("x")` | Class, function, parameter |
+| `@Qualifier` | `@Qualifier` | Your own qualifier annotation class |
+
+Both packages work: `jakarta.inject.*` and `javax.inject.*`. Koin annotations on the same class take precedence. For example `@KoinViewModel` on a class with an `@Inject constructor` declares a ViewModel, not a factory.
+
+JSR-330 `@Scope` has no effect on Koin scopes. Use Koin's `@Scope` and `@Scoped`, or a scope archetype such as `@ActivityScope` (see [Scopes](/docs/concepts/scopes/)).
+
+## Definitions
+
+`@Singleton` declares a single. A class with an `@Inject constructor` and no other annotation declares a factory:
+
+```kotlin
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+
+@Singleton
+class UserRepository @Inject constructor(
+    private val api: ApiService,
+    private val database: UserDatabase,
+)
+
+// a new instance for each request
+class GetUserUseCase @Inject constructor(
+    private val repository: UserRepository,
+)
+```
+
+`@Inject` is optional when the class has a `@Singleton` annotation: Koin uses the primary constructor. When a class has several constructors, Koin uses the one annotated with `@Inject`.
+
+These classes must be in a package covered by `@ComponentScan`, like any annotated class:
+
+```kotlin
+@Module
+@ComponentScan("com.example.data")
+class DataModule
+```
+
+`@Singleton` also works on provider functions in a `@Module` class, for objects you build yourself:
+
+```kotlin
+@Module
+class NetworkModule {
+
+    @Singleton
+    fun retrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl("https://api.example.com")
+        .build()
+}
+```
+
+Binding to supertypes works as with Koin annotations: the class is bound to its interfaces (see [Definitions](/docs/concepts/definitions/#interface-binding)).
+
+## Qualifiers
+
+`@Named` works on the declaration and on the injection point:
+
+```kotlin
+import jakarta.inject.Inject
+import jakarta.inject.Named
+import jakarta.inject.Singleton
+
+@Singleton
+@Named("inMemory")
+class InMemoryCache @Inject constructor() : Cache
+
+@Singleton
+@Named("disk")
+class DiskCache @Inject constructor(private val context: Context) : Cache
+
+@Singleton
+class ImageLoader @Inject constructor(
+    @Named("inMemory") private val memoryCache: Cache,
+    @Named("disk") private val diskCache: Cache,
+)
+```
+
+Custom qualifier annotations marked with JSR-330 `@Qualifier` work like Koin's custom qualifiers:
+
+```kotlin
+import jakarta.inject.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IoDispatcher
+
+@Module
+class DispatcherModule {
+
+    @Singleton
+    @IoDispatcher
+    fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
+}
+
+@Singleton
+class SyncManager @Inject constructor(
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+)
+```
+
+See [Qualifiers](/docs/concepts/qualifiers/) for how qualifiers are resolved.
+
+## Mixing with Koin annotations
+
+You can use JSR-330 and Koin annotations in the same project, and on the same class:
+
+```kotlin
+@Singleton // jakarta.inject
+@Named("local")
+class LocalDatabase @Inject constructor() : Database
+
+@Single // Koin
+@Named("remote")
+class RemoteDatabase(private val api: ApiService) : Database
+
+@Factory // Koin, with a JSR-330 constructor
+class DatabaseManager @Inject constructor(
+    @Named("local") private val local: Database,
+    @Named("remote") private val remote: Database,
+)
+```
+
+JSR-330 has no annotation for ViewModels, workers or injected parameters. Use the Koin annotations for them: `@KoinViewModel`, `@KoinWorker`, `@InjectedParam`. A `Context` parameter needs no qualifier: Koin passes the context given to `androidContext()`.
+
+```kotlin
+@KoinViewModel
+class UserViewModel @Inject constructor(
+    private val repository: UserRepository,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel()
+```
+
+## Limits
+
+- Field and method injection: `@Inject lateinit var` fields and `@Inject` methods are not supported. Inject through the constructor, or use `by inject()` in Android components (see [Entry Points](/docs/platforms/android/components/)).
+- `Provider<T>`: a `jakarta.inject.Provider<T>` parameter is not resolved. Use a `Lazy<T>` parameter, or the provider pattern in [Advanced Patterns](/docs/concepts/patterns/).
+- Annotations style only: `@Singleton` and `@Inject` declare definitions only through `@ComponentScan`. In a DSL module you still write `single<T>()`. The Compiler Plugin DSL then reads `@Named` on parameters and uses the `@Inject` constructor.
+- Compile-time safety: JSR-330 definitions are checked by the Compiler Plugin like Koin annotations (see [Compile-time safety](/docs/tooling/compile-time-safety/)).
+
+## Next steps
+
+- [Migrate from Hilt](/docs/migration/from-hilt/): step-by-step migration, where JSR-330 lets you keep existing classes.
+- [Definitions](/docs/concepts/definitions/): definition types and interface binding.
+- [Qualifiers](/docs/concepts/qualifiers/): named, type and custom qualifiers.
+- [Annotations reference](/docs/reference/annotations/): every Koin annotation.

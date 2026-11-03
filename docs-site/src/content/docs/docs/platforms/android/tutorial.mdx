@@ -1,0 +1,443 @@
+---
+title: "Tutorial: your first Android app"
+description: "Build an Android app with a Jetpack Compose UI and a Koin ViewModel, with Koin DSL or Koin Annotations."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+You build an Android app with a Jetpack Compose UI that greets a user picked from a list. You declare a ViewModel in a Koin module, get it in a composable with `koinViewModel()`, and start Koin from your `Application` class. It takes about 10 minutes.
+
+The code of the classes and the composable is the same in every style, and the Annotations style only adds an annotation on each class. The Gradle setup, the module and the startup code change, so pick a style in the tabs. To compare the styles, see [Choose your style](/docs/get-started/choose-your-style/).
+
+## Prerequisites
+
+- Android Studio and an app module created with the **Empty Activity** template, which sets up Jetpack Compose (`minSdk` <Version of="androidMinSdk" /> or later).
+- Kotlin <Version of="kotlinMin" /> or later. If the template generates an older version, update `kotlin` in `gradle/libs.versions.toml`.
+
+The full sample, in the Compiler Plugin DSL, is in [koin-getting-started/android-compose](https://github.com/InsertKoinIO/koin-getting-started/tree/main/android-compose).
+
+## Gradle setup
+
+`koin-compose-viewmodel` provides `koinViewModel()`. On Android, it also brings `koin-android`, which provides `androidContext()`.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+<Install artifacts={['koin-compose-viewmodel']} plugin bom />
+
+</TabItem>
+<TabItem label="Annotations">
+
+<Install artifacts={['koin-compose-viewmodel', 'koin-annotations']} plugin bom />
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+<Install artifacts={['koin-compose-viewmodel']} bom />
+
+This form does not need the Compiler Plugin, and nothing checks the graph at build time.
+
+</TabItem>
+</Tabs>
+
+The template already has the Compose setup, which Koin does not provide: the `kotlin-compose` Gradle plugin, `buildFeatures { compose = true }`, the Compose BOM, Material 3 and `activity-compose`. For plugin options, see [Koin Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## The application
+
+The main screen asks a ViewModel for a greeting. The ViewModel uses `UserService`, which reads from `UserRepository`:
+
+```
+User -> UserRepository -> UserService -> UserViewModel -> MainScreen
+```
+
+## Write the user data
+
+Start with the data class and a default list of users:
+
+{/* check: android-tutorial-dsl, android-tutorial-annotations, android-tutorial-constructor */}
+
+```kotlin
+data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
+```
+
+These users are the data that the repository stores.
+
+## Write the repository
+
+The repository keeps users in memory and finds one by name:
+
+{/* check: android-tutorial-dsl, android-tutorial-constructor */}
+
+```kotlin
+interface UserRepository {
+    fun findUserOrNull(name: String): User?
+    fun addUsers(users: List<User>)
+}
+
+class UserRepositoryImpl : UserRepository {
+
+    private val _users = arrayListOf<User>()
+
+    override fun findUserOrNull(name: String): User? {
+        return _users.firstOrNull { it.name == name }
+    }
+
+    override fun addUsers(users: List<User>) {
+        _users.addAll(users)
+    }
+}
+```
+
+`UserRepositoryImpl` has no dependency, so Koin can create it with no extra information.
+
+## Write the service
+
+`UserService` loads the users when it is created and prepares the greeting:
+
+{/* check: android-tutorial-dsl, android-tutorial-constructor */}
+
+```kotlin
+interface UserService {
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
+    fun loadUsers()
+    fun prepareHelloMessage(user: User?): String
+}
+
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService {
+
+    init {
+        loadUsers()
+    }
+
+    override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
+
+    override fun loadUsers() {
+        userRepository.addUsers(DEFAULT_USERS)
+    }
+
+    override fun prepareHelloMessage(user: User?): String {
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
+    }
+}
+```
+
+`UserServiceImpl` depends on `UserRepository`. Koin passes it through the constructor.
+
+## Write the ViewModel
+
+The ViewModel turns a name into a greeting:
+
+{/* check: android-tutorial-dsl, android-tutorial-constructor */}
+
+```kotlin
+import androidx.lifecycle.ViewModel
+
+class UserViewModel(
+    private val userService: UserService
+) : ViewModel() {
+
+    fun sayHello(name: String): String {
+        val user = userService.getUserOrNull(name)
+        val message = userService.prepareHelloMessage(user)
+        return "[UserViewModel] $message"
+    }
+}
+```
+
+It receives `UserService` through its constructor, like the other components.
+
+## Declare the Koin module
+
+A module is where you declare the components Koin creates (see [Core concepts](/docs/get-started/core-concepts/)). Declare the repository and the service as singletons bound to their interfaces, and the ViewModel as a ViewModel definition.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-tutorial-dsl */}
+
+```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+import org.koin.plugin.module.dsl.viewModel
+
+val appModule = module {
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+    viewModel<UserViewModel>()
+}
+```
+
+The plugin reads each constructor and checks at build time that every dependency is declared.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Annotate the classes, and add a module class that scans the package:
+
+```kotlin
+import androidx.lifecycle.ViewModel
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class UserRepositoryImpl : UserRepository { /* ... */ }
+
+@Singleton
+class UserServiceImpl(private val userRepository: UserRepository) : UserService { /* ... */ }
+
+@KoinViewModel
+class UserViewModel(private val userService: UserService) : ViewModel() { /* ... */ }
+```
+
+{/* check: android-tutorial-annotations */}
+
+```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan
+@Configuration
+class AppModule
+```
+
+`@KoinViewModel` declares a ViewModel definition, the same as `viewModel<UserViewModel>()`. `@ComponentScan` registers every annotated class in the package of the module and its subpackages, so keep `AppModule` at the root of your code. `@Configuration` makes the module discoverable at startup. See [Modules](/docs/concepts/modules/).
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-tutorial-constructor */}
+
+```kotlin
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val appModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserServiceImpl) bind UserService::class
+    viewModelOf(::UserViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+Definition types are described in [Definitions](/docs/concepts/definitions/).
+
+## Inject the ViewModel in a composable
+
+Replace the content of the `MainActivity.kt` file that the template generated. It sets the Compose content in a `ComponentActivity`, and gets the ViewModel with `koinViewModel()` as a default parameter of `MainScreen`. It uses `MaterialTheme` directly, so that the code does not depend on the name of your project:
+
+{/* check: android-tutorial-dsl, android-tutorial-annotations, android-tutorial-constructor */}
+
+```kotlin
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
+
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                MainScreen()
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen(
+    viewModel: UserViewModel = koinViewModel()
+) {
+    var nameInput by remember { mutableStateOf("") }
+    var greetingMessage by remember { mutableStateOf("") }
+
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Koin Sample") }) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedTextField(
+                value = nameInput,
+                onValueChange = { nameInput = it },
+                label = { Text("Enter name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    val userName = nameInput.trim().ifEmpty { "Alice" }
+                    greetingMessage = viewModel.sayHello(userName)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Say Hello")
+            }
+
+            if (greetingMessage.isNotEmpty()) {
+                Text(
+                    text = greetingMessage,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+```
+
+`koinViewModel()` gets the ViewModel from Koin and ties it to the nearest `ViewModelStoreOwner`, here the Activity. As a default parameter, it lets you pass another instance in previews and tests. The other Compose APIs, such as `koinInject()`, are in [ViewModel in Compose](/docs/platforms/compose/viewmodel/) and [Koin in Compose](/docs/platforms/compose/).
+
+:::note
+Import `koinViewModel` from `org.koin.compose.viewmodel`, the multiplatform package. If you later add `koin-androidx-compose`, it brings a second `koinViewModel`, and importing both makes the call ambiguous (see [ViewModel in Compose](/docs/platforms/compose/viewmodel/)).
+:::
+
+## Start Koin
+
+Start Koin in your `Application` class:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-tutorial-dsl, android-tutorial-constructor */}
+
+```kotlin
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-tutorial-annotations */}
+
+```kotlin
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.annotation.KoinApplication
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin<MainApplication> {
+            androidContext(this@MainApplication)
+        }
+    }
+}
+```
+
+`startKoin<MainApplication>` loads every `@Configuration` module, so you do not call `modules()`.
+
+</TabItem>
+</Tabs>
+
+`androidContext()` makes the Android `Context` available to your definitions.
+
+Then register the class in `AndroidManifest.xml`. Without this line, Android never runs it, Koin does not start, and the app fails on the first injection:
+
+```xml
+<application
+    android:name=".MainApplication"
+    ...>
+```
+
+Run the app, type a name and tap the button to see the greeting. Other start options are in [Android: install and start](/docs/platforms/android/). For Koin outside an Activity, see [Koin in Compose](/docs/platforms/compose/).
+
+## See the build catch a mistake
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Remove `single<UserRepositoryImpl>() bind UserRepository::class` from the module and run `./gradlew assembleDebug`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the line back.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Remove `@Singleton` from `UserRepositoryImpl` and run `./gradlew assembleDebug`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the annotation back.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Remove `singleOf(::UserRepositoryImpl) bind UserRepository::class` from the module. The build still passes, because this form has no Compiler Plugin, and the app fails at runtime when it first needs the class. Put the line back.
+
+</TabItem>
+</Tabs>
+
+See [Compile-time safety](/docs/tooling/compile-time-safety/) for what the plugin checks.
+
+## Next steps
+
+- [Koin in Compose](/docs/platforms/compose/): `koinInject()`, `KoinApplication` and Compose setup.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()`, shared ViewModels and navigation.
+- [Compose Multiplatform walkthrough](/docs/platforms/kmp/walkthrough/): share the Compose UI and Koin modules with iOS.
+- [Inject into Android components](/docs/platforms/android/components/): Services, receivers and other classes that Android creates.
+- [Testing composables](/docs/testing/compose/): test composables that use Koin.

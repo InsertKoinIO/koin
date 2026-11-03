@@ -1,0 +1,32 @@
+{
+  "name": "koin-docs-site",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node scripts/generate-redirects.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:redirects": "node scripts/check-redirects.mjs",
+    "check:symbols": "node scripts/check-symbols.mjs",
+    "check:compile-failures": "node scripts/extract-snippets.mjs && node scripts/check-compile-failures.mjs",
+    "check:templates": "node scripts/check-page-templates.mjs",
+    "check:tabs": "node scripts/check-tabs.mjs",
+    "coverage:snippets": "node scripts/extract-snippets.mjs --coverage",
+    "check:snippets": "node scripts/extract-snippets.mjs && ../projects/gradlew -p snippet-tests --console=plain --continue run",
+    "check:snippets:kmp": "node scripts/extract-snippets.mjs && ../projects/gradlew -p snippet-tests/kmp --console=plain --continue checkScenario",
+    "check:snippets:android": "node scripts/extract-snippets.mjs && ../projects/gradlew -p snippet-tests/android --console=plain --continue checkScenario",
+    "check:snippets:multimodule": "node scripts/extract-snippets.mjs && ../projects/gradlew -p snippet-tests/multimodule --console=plain --continue checkScenario"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.42.8",
+    "astro": "7.4.4",
+    "sharp": "0.35.5",
+    "starlight-links-validator": "0.27.0",
+    "starlight-llms-txt": "0.12.0"
+  }
+}

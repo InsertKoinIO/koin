@@ -1,0 +1,43 @@
+---
+// How Koin fits a Kotlin Multiplatform project. Colors follow the site theme.
+---
+<figure class="kmp">
+  <svg viewBox="0 0 720 330" role="img" aria-labelledby="kmp-title kmp-desc">
+    <title id="kmp-title">Koin in a Kotlin Multiplatform project</title>
+    <desc id="kmp-desc">Each platform app calls one shared initKoin function in commonMain. commonMain holds shared modules and an expected platform module. Each platform source set provides the actual platform module.</desc>
+    <g class="box app">
+      <rect x="20" y="16" width="150" height="58" rx="8" /><text x="95" y="40">Android app</text><text x="95" y="60" class="s">Application.onCreate</text>
+      <rect x="195" y="16" width="150" height="58" rx="8" /><text x="270" y="40">iOS app</text><text x="270" y="60" class="s">App.init (Swift)</text>
+      <rect x="370" y="16" width="150" height="58" rx="8" /><text x="445" y="40">Desktop app</text><text x="445" y="60" class="s">main()</text>
+      <rect x="545" y="16" width="150" height="58" rx="8" /><text x="620" y="40">Web app</text><text x="620" y="60" class="s">main()</text>
+    </g>
+    <g class="line">
+      <path d="M95 74 V112" /><path d="M270 74 V112" /><path d="M445 74 V112" /><path d="M620 74 V112" />
+    </g>
+    <g class="box shared">
+      <rect x="20" y="112" width="675" height="92" rx="8" />
+      <text x="357" y="136" class="h">commonMain: initKoin()</text>
+      <text x="357" y="160" class="s">Shared modules: repositories, use cases, ViewModels</text>
+      <text x="357" y="182" class="s">expect platformModule()</text>
+    </g>
+    <g class="line">
+      <path d="M95 204 V242" /><path d="M270 204 V242" /><path d="M445 204 V242" /><path d="M620 204 V242" />
+    </g>
+    <g class="box app">
+      <rect x="20" y="242" width="150" height="70" rx="8" /><text x="95" y="268">androidMain</text><text x="95" y="290" class="s">actual module</text>
+      <rect x="195" y="242" width="150" height="70" rx="8" /><text x="270" y="268">iosMain</text><text x="270" y="290" class="s">actual module</text>
+      <rect x="370" y="242" width="150" height="70" rx="8" /><text x="445" y="268">jvmMain</text><text x="445" y="290" class="s">actual module</text>
+      <rect x="545" y="242" width="150" height="70" rx="8" /><text x="620" y="268">wasmJsMain</text><text x="620" y="290" class="s">actual module</text>
+    </g>
+  </svg>
+</figure>
+<style>
+  .kmp { margin: 1.5rem 0; }
+  svg { width: 100%; height: auto; display: block; }
+  text { fill: var(--sl-color-white); font-size: 15px; text-anchor: middle; font-family: var(--sl-font); }
+  text.s { fill: var(--sl-color-gray-2); font-size: 13px; }
+  text.h { font-weight: 600; }
+  .app rect { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); }
+  .shared rect { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); stroke-width: 1.5; }
+  .line path { stroke: var(--sl-color-gray-3); stroke-width: 1.5; fill: none; }
+</style>

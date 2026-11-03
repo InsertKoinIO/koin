@@ -1,0 +1,327 @@
+---
+// Diagrams for the Get Started section. Colors follow the site theme. The narrow
+// viewBox keeps the text readable at phone width.
+import { versions } from '~/data/versions';
+
+interface Props {
+  name: 'creates' | 'receives' | 'graph' | 'koin' | 'ownership' | 'flow' | 'lifetimes' | 'resolve' | 'styles' | 'landscape';
+}
+const { name } = Astro.props;
+
+const text = {
+  creates: {
+    title: 'Car creates its own engine',
+    desc: 'A GasEngine box sits inside the Car box, because Car creates the engine itself.',
+    caption: 'The engine is built inside Car, so Car is stuck with GasEngine.',
+  },
+  receives: {
+    title: 'Car receives its engine',
+    desc: 'GasEngine, ElectricEngine and FakeEngine sit outside Car, and each has an arrow pointing into Car.',
+    caption: 'The engine comes from outside. Car accepts any Engine, including a fake one in tests.',
+  },
+  graph: {
+    title: 'Classes that depend on other classes',
+    desc: 'UserViewModel needs UserService. UserService needs UserRepository. UserRepository needs Database and ApiClient.',
+    caption: 'Each arrow means "needs". Objects must be created from the bottom up.',
+  },
+  koin: {
+    title: 'Koin builds the objects you ask for',
+    desc: 'Your code asks Koin for a Car. Koin creates GasEngine, then creates Car with that engine, and returns the Car to your code.',
+    caption: 'You ask for the object you want. Koin creates what it needs first.',
+  },
+  ownership: {
+    title: 'Who is in charge of your objects',
+    desc: 'Without a framework, your code creates objects in order, keeps them alive, cleans them up, and repeats this on each platform. With Koin, your code describes the graph once, and Koin creates objects in order, manages their lifetimes and cleans up scopes.',
+    caption: 'Without a framework, your code does all of this. With Koin, it only describes your objects.',
+  },
+  flow: {
+    title: 'How Koin works, from build to run',
+    desc: 'At build time, the Koin Compiler Plugin reads your modules, generates the wiring and checks the graph. When the app runs, startKoin loads the modules into the container, and the container builds each instance on request.',
+    caption: 'Step 1 needs the Compiler Plugin, which is optional for the Constructor and Classic DSL. Step 2 is the same in every style.',
+  },
+  lifetimes: {
+    title: 'How long each definition type keeps its instance',
+    desc: 'A timeline from startKoin to stopKoin. A single lives from its first request until stopKoin. A viewModel lives as long as its screen, including rotations. A scoped instance lives from the opening of its scope until close. A factory creates a new instance on every request and does not keep it.',
+    caption: 'Each bar is one instance. Koin keeps a single or a scoped instance, the ViewModelStore keeps a ViewModel, and nothing keeps a factory instance.',
+  },
+  resolve: {
+    title: 'What Koin creates when UserActivity asks for UserViewModel',
+    desc: 'UserActivity asks for UserViewModel. UserViewModel needs UserRepository, which needs ApiService. Koin creates ApiService first, then UserRepository, then UserViewModel.',
+    caption: 'Each arrow means "needs". The two single definitions are created once, then reused by every later request.',
+  },
+  styles: {
+    title: 'Which style to choose',
+    desc: `First question: can you use Kotlin ${versions.kotlinMin} or later and the Compiler Plugin? If no, use the Constructor or Classic DSL. If yes, second question: do you want to declare definitions on the classes? If yes, use Koin Annotations. If no, use the Compiler Plugin DSL, which is the default. The Compiler Plugin DSL, the Constructor DSL and the Classic DSL are the three forms of the Koin DSL.`,
+    caption: 'Two styles, Koin Annotations and the Koin DSL. The DSL has three forms, and the docs show two of them under one tab.',
+  },
+  landscape: {
+    title: 'When each DI framework does its work',
+    desc: 'At build time only: Metro generates the graph inside the compiler, and Dagger, Hilt and kotlin-inject generate source code. Across both: Koin checks at build time and keeps a container at runtime. At runtime only: Kodein, and Koin with no plugin, use a container built at start, and Guice and Spring read constructors by reflection.',
+    caption: 'Work done at build time finds errors earlier. Work done at runtime allows a graph that changes while the app runs.',
+  },
+}[name];
+
+const marker = `di-arrow-${name}`;
+const arrow = `url(#${marker})`;
+const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership: 312, flow: 222, lifetimes: 262, resolve: 378, styles: 366, landscape: 366 };
+---
+<figure class="di">
+  <svg viewBox={`0 0 480 ${heights[name]}`} role="img" aria-label={`${text.title}. ${text.desc}`}>
+    <defs>
+      <marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" style="fill: var(--sl-color-gray-2)" />
+      </marker>
+    </defs>
+
+    {name === 'creates' && (
+      <>
+        <rect class="box" x="60" y="10" width="360" height="140" rx="10" />
+        <text class="label" x="240" y="42">Car</text>
+        <rect class="accent" x="140" y="62" width="200" height="68" rx="8" />
+        <text class="label" x="240" y="92">GasEngine</text>
+        <text class="small" x="240" y="115">created by Car</text>
+      </>
+    )}
+
+    {name === 'receives' && (
+      <>
+        <rect class="accent" x="10" y="10" width="190" height="54" rx="8" />
+        <text class="label" x="105" y="43">GasEngine</text>
+        <rect class="accent" x="10" y="78" width="190" height="54" rx="8" />
+        <text class="label" x="105" y="111">ElectricEngine</text>
+        <rect class="accent" x="10" y="146" width="190" height="54" rx="8" />
+        <text class="label" x="105" y="179">FakeEngine</text>
+        <rect class="box" x="310" y="60" width="160" height="90" rx="10" />
+        <text class="label" x="390" y="100">Car</text>
+        <text class="small" x="390" y="123">needs an Engine</text>
+        <path class="line" d="M200 37 L308 88" marker-end={arrow} />
+        <path class="line" d="M200 105 L308 105" marker-end={arrow} />
+        <path class="line" d="M200 173 L308 122" marker-end={arrow} />
+      </>
+    )}
+
+    {name === 'graph' && (
+      <>
+        <rect class="box" x="120" y="10" width="240" height="50" rx="8" />
+        <text class="label" x="240" y="41">UserViewModel</text>
+        <path class="line" d="M240 60 L240 92" marker-end={arrow} />
+        <rect class="box" x="120" y="94" width="240" height="50" rx="8" />
+        <text class="label" x="240" y="125">UserService</text>
+        <path class="line" d="M240 144 L240 176" marker-end={arrow} />
+        <rect class="box" x="120" y="178" width="240" height="50" rx="8" />
+        <text class="label" x="240" y="209">UserRepository</text>
+        <path class="line" d="M190 228 L125 260" marker-end={arrow} />
+        <path class="line" d="M290 228 L355 260" marker-end={arrow} />
+        <rect class="accent" x="20" y="262" width="200" height="50" rx="8" />
+        <text class="label" x="120" y="293">Database</text>
+        <rect class="accent" x="260" y="262" width="200" height="50" rx="8" />
+        <text class="label" x="360" y="293">ApiClient</text>
+      </>
+    )}
+
+    {name === 'koin' && (
+      <>
+        <rect class="box" x="140" y="10" width="200" height="50" rx="8" />
+        <text class="label" x="240" y="41">Your code</text>
+        <path class="line" d="M205 60 L205 120" marker-end={arrow} />
+        <text class="small end" x="195" y="95">asks for a Car</text>
+        <path class="line" d="M275 120 L275 62" marker-end={arrow} />
+        <text class="small start" x="285" y="95">returns the Car</text>
+        <rect class="accent" x="10" y="122" width="460" height="130" rx="10" />
+        <text class="label" x="240" y="152">Koin</text>
+        <rect class="box" x="30" y="168" width="180" height="66" rx="8" />
+        <text class="small" x="120" y="194">1. Creates</text>
+        <text class="label" x="120" y="218">GasEngine</text>
+        <path class="line" d="M210 201 L268 201" marker-end={arrow} />
+        <rect class="box" x="270" y="168" width="180" height="66" rx="8" />
+        <text class="small" x="360" y="194">2. Creates</text>
+        <text class="label" x="360" y="218">Car(engine)</text>
+      </>
+    )}
+
+    {name === 'flow' && (
+      <>
+        <text class="heading" x="10" y="24">1. At build time</text>
+        <rect class="box" x="10" y="36" width="170" height="64" rx="8" />
+        <text class="label" x="95" y="64">Your modules</text>
+        <text class="small" x="95" y="87">definitions</text>
+        <path class="line" d="M180 68 L298 68" marker-end={arrow} />
+        <rect class="accent" x="300" y="36" width="170" height="64" rx="8" />
+        <text class="label" x="385" y="64">Compiler Plugin</text>
+        <text class="small" x="385" y="87">wires and checks</text>
+
+        <text class="heading" x="10" y="134">2. When the app runs</text>
+        <rect class="box" x="10" y="146" width="130" height="64" rx="8" />
+        <text class="label" x="75" y="174">startKoin</text>
+        <text class="small" x="75" y="197">loads modules</text>
+        <path class="line" d="M140 178 L173 178" marker-end={arrow} />
+        <rect class="accent" x="175" y="146" width="130" height="64" rx="8" />
+        <text class="label" x="240" y="174">Container</text>
+        <text class="small" x="240" y="197">holds definitions</text>
+        <path class="line" d="M305 178 L338 178" marker-end={arrow} />
+        <rect class="box" x="340" y="146" width="130" height="64" rx="8" />
+        <text class="label" x="405" y="174">Instance</text>
+        <text class="small" x="405" y="197">built on request</text>
+      </>
+    )}
+
+    {name === 'lifetimes' && (
+      <>
+        <text class="label start" x="10" y="39">single</text>
+        <rect class="accent" x="130" y="14" width="340" height="40" rx="6" />
+        <text class="small on-bar" x="300" y="39">first request until stopKoin</text>
+
+        <text class="label start" x="10" y="91">viewModel</text>
+        <rect class="accent" x="170" y="66" width="230" height="40" rx="6" />
+        <text class="small on-bar" x="285" y="91">screen, survives rotation</text>
+
+        <text class="label start" x="10" y="143">scoped</text>
+        <rect class="accent" x="230" y="118" width="150" height="40" rx="6" />
+        <text class="small on-bar" x="305" y="143">open to close()</text>
+
+        <text class="label start" x="10" y="195">factory</text>
+        <rect class="accent" x="120" y="170" width="28" height="40" rx="6" />
+        <rect class="accent" x="160" y="170" width="28" height="40" rx="6" />
+        <rect class="accent" x="200" y="170" width="28" height="40" rx="6" />
+        <text class="small start" x="240" y="195">new instance per request</text>
+        <rect class="accent" x="440" y="170" width="28" height="40" rx="6" />
+
+        <path class="line" d="M110 226 L470 226" marker-end={arrow} />
+        <text class="small start" x="110" y="250">startKoin</text>
+        <text class="small end" x="470" y="250">stopKoin</text>
+      </>
+    )}
+
+    {name === 'resolve' && (
+      <>
+        <rect class="box" x="90" y="10" width="300" height="58" rx="8" />
+        <text class="label" x="240" y="36">UserActivity</text>
+        <text class="small" x="240" y="58">asks with by viewModel()</text>
+        <path class="line" d="M240 68 L240 108" marker-end={arrow} />
+
+        <rect class="accent" x="90" y="110" width="300" height="58" rx="8" />
+        <text class="label" x="240" y="136">UserViewModel</text>
+        <text class="small" x="240" y="158">viewModel, created third</text>
+        <path class="line" d="M240 168 L240 208" marker-end={arrow} />
+
+        <rect class="accent" x="90" y="210" width="300" height="58" rx="8" />
+        <text class="label" x="240" y="236">UserRepository</text>
+        <text class="small" x="240" y="258">single, created second</text>
+        <path class="line" d="M240 268 L240 308" marker-end={arrow} />
+
+        <rect class="accent" x="90" y="310" width="300" height="58" rx="8" />
+        <text class="label" x="240" y="336">ApiService</text>
+        <text class="small" x="240" y="358">single, created first</text>
+      </>
+    )}
+
+    {name === 'styles' && (
+      <>
+        <rect class="box" x="60" y="10" width="360" height="50" rx="8" />
+        <text class="question" x="240" y="41">Kotlin {versions.kotlinMin}+ and the Compiler Plugin?</text>
+        <path class="line" d="M160 60 L160 108" marker-end={arrow} />
+        <text class="small start" x="170" y="90">yes</text>
+        <path class="line" d="M397 60 L397 230" marker-end={arrow} />
+        <text class="small start" x="407" y="90">no</text>
+
+        <rect class="box" x="10" y="110" width="303" height="50" rx="8" />
+        <text class="question" x="161" y="141">Declare definitions on the classes?</text>
+        <path class="line" d="M83 160 L83 230" marker-end={arrow} />
+        <text class="small start" x="93" y="200">yes</text>
+        <path class="line" d="M240 160 L240 230" marker-end={arrow} />
+        <text class="small start" x="250" y="200">no</text>
+
+        <rect class="box" x="10" y="232" width="146" height="88" rx="8" />
+        <text class="label" x="83" y="270">Annotations</text>
+        <text class="small" x="83" y="296">on your classes</text>
+
+        <rect class="accent" x="167" y="232" width="146" height="88" rx="8" />
+        <text class="label" x="240" y="258">Compiler</text>
+        <text class="label" x="240" y="280">Plugin DSL</text>
+        <text class="small" x="240" y="306">the default</text>
+
+        <rect class="box" x="324" y="232" width="146" height="88" rx="8" />
+        <text class="label" x="397" y="258">Constructor /</text>
+        <text class="label" x="397" y="280">Classic DSL</text>
+        <text class="small" x="397" y="306">no plugin needed</text>
+
+        <path class="line" d="M10 332 L156 332" />
+        <text class="small" x="83" y="354">Koin Annotations</text>
+        <path class="line" d="M167 332 L470 332" />
+        <text class="small" x="318" y="354">Koin DSL</text>
+      </>
+    )}
+
+    {name === 'landscape' && (
+      <>
+        <text class="heading middle" x="140" y="24">Build time</text>
+        <text class="heading middle" x="370" y="24">Runtime</text>
+        <path class="divider" d="M270 34 L270 356" />
+
+        <rect class="box" x="10" y="36" width="250" height="56" rx="8" />
+        <text class="question" x="135" y="60">Metro</text>
+        <text class="small" x="135" y="81">generated inside the compiler</text>
+
+        <rect class="box" x="10" y="102" width="250" height="56" rx="8" />
+        <text class="question" x="135" y="126">Dagger, Hilt, kotlin-inject</text>
+        <text class="small" x="135" y="147">generated source code</text>
+
+        <rect class="accent" x="10" y="168" width="460" height="56" rx="8" />
+        <text class="question" x="240" y="192">Koin</text>
+        <text class="small on-bar" x="240" y="213">build-time checks, then a runtime container</text>
+
+        <rect class="box" x="280" y="234" width="190" height="56" rx="8" />
+        <text class="question" x="375" y="258">Kodein</text>
+        <text class="small" x="375" y="279">and Koin with no plugin</text>
+
+        <rect class="box" x="280" y="300" width="190" height="56" rx="8" />
+        <text class="question" x="375" y="324">Guice, Spring</text>
+        <text class="small" x="375" y="345">reflection at runtime</text>
+      </>
+    )}
+
+    {name === 'ownership' && (
+      <>
+        <text class="heading" x="10" y="24">Without a framework</text>
+        <rect class="box" x="10" y="36" width="460" height="104" rx="8" />
+        <text class="label" x="240" y="66">Your code</text>
+        <text class="small" x="240" y="94">creates objects in order, keeps them alive,</text>
+        <text class="small" x="240" y="118">cleans them up, on each platform</text>
+
+        <text class="heading" x="10" y="176">With Koin</text>
+        <rect class="box" x="10" y="188" width="170" height="114" rx="8" />
+        <text class="label" x="95" y="228">Your code</text>
+        <text class="small" x="95" y="254">describes</text>
+        <text class="small" x="95" y="274">your objects</text>
+        <path class="line" d="M180 245 L298 245" marker-end={arrow} />
+        <text class="small" x="239" y="235">one module</text>
+        <rect class="accent" x="300" y="188" width="170" height="114" rx="8" />
+        <text class="label" x="385" y="218">Koin</text>
+        <text class="small" x="385" y="244">creates in order</text>
+        <text class="small" x="385" y="266">manages lifetimes</text>
+        <text class="small" x="385" y="288">cleans up scopes</text>
+      </>
+    )}
+  </svg>
+  <figcaption>{text.caption}</figcaption>
+</figure>
+
+<style>
+  .di { margin-block: 1.5rem; }
+  svg { display: block; width: 100%; max-width: 30rem; height: auto; margin-inline: auto; }
+  text { fill: var(--sl-color-white); font-family: var(--sl-font); text-anchor: middle; }
+  .label { font-size: 18px; font-weight: 600; }
+  .small { font-size: 15px; fill: var(--sl-color-gray-2); }
+  .heading { font-size: 16px; font-weight: 600; text-anchor: start; }
+  .question { font-size: 16px; font-weight: 600; }
+  .end { text-anchor: end; }
+  .start { text-anchor: start; }
+  .middle { text-anchor: middle; }
+  /* Gray-2 is too faint on the accent fill in the light theme. */
+  .on-bar { fill: var(--sl-color-white); }
+  .divider { fill: none; stroke: var(--sl-color-gray-4); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
+  .accent { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); stroke-width: 1.5; }
+  .line { fill: none; stroke: var(--sl-color-gray-2); stroke-width: 2; }
+  figcaption { margin-top: 0.75rem; text-align: center; font-size: var(--sl-text-sm); color: var(--sl-color-gray-2); }
+</style>

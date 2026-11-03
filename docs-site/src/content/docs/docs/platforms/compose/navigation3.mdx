@@ -1,0 +1,298 @@
+---
+title: "Navigation 3"
+description: "Declare Navigation 3 entries with navigation<T> in Koin modules and build the entry provider with koinEntryProvider, on every Compose target."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+This page shows how to declare [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) entries in Koin modules and pass them to `NavDisplay`. Each feature module contributes its own screens, and the app collects them all with one entry provider. It assumes you know the Navigation 3 basics (back stack, `NavDisplay`, `NavEntry`) and [ViewModel in Compose](/docs/platforms/compose/viewmodel/).
+
+All APIs on this page are marked `@KoinExperimentalAPI`.
+
+## Setup
+
+Besides the Koin artifacts, the code on this page needs the Navigation 3 UI, which contains `NavDisplay`, and the ViewModel entry decorator. Koin does not bring either of them.
+
+<Tabs>
+<TabItem label="Android">
+
+<Install
+  artifacts={['koin-compose-navigation3', 'koin-compose-viewmodel', 'koin-annotations']}
+  plugin
+  bom
+  extra={[
+    ['navigation3-ui', 'androidx.navigation3:navigation3-ui', 'navigation3'],
+    ['lifecycle-viewmodel-navigation3', 'androidx.lifecycle:lifecycle-viewmodel-navigation3', 'lifecycleNavigation3'],
+  ]}
+/>
+
+</TabItem>
+<TabItem label="Compose Multiplatform">
+
+<Install artifacts={['koin-compose-navigation3', 'koin-compose-viewmodel', 'koin-annotations']} plugin bom sourceSet="commonMain" />
+
+Also add `org.jetbrains.androidx.navigation3:navigation3-ui` and `org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3`, in the versions that match your Compose Multiplatform version.
+
+</TabItem>
+</Tabs>
+
+Routes are `@Serializable`, so also apply the `kotlin("plugin.serialization")` Gradle plugin. `koin-annotations` provides `@InjectedParam`. With the Constructor or Classic DSL, you can drop it and the Compiler Plugin.
+
+`koin-compose-navigation3` targets Android, JVM desktop, JS, Wasm, iOS (`iosX64`, `iosArm64`, `iosSimulatorArm64`) and macOS (`macosX64`, `macosArm64`). It has no tvOS, watchOS, Linux or Windows target. Only the `entryProvider()` and `getEntryProvider()` extensions on Activities and Fragments are Android only.
+
+## Declaring entries
+
+Routes are `@Serializable` classes that implement `NavKey`, so that the back stack can save them:
+
+{/* check: android-navigation3-dsl */}
+
+```kotlin
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+@Serializable data object HomeRoute : NavKey
+@Serializable data class DetailRoute(val itemId: String) : NavKey
+```
+
+Declare one `navigation<T> { }` per route in your modules. The lambda is a Composable that receives the route:
+
+{/* check: android-navigation3-dsl */}
+
+```kotlin
+import androidx.lifecycle.ViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.parameter.parametersOf
+import org.koin.dsl.module
+import org.koin.dsl.navigation3.navigation
+import org.koin.plugin.module.dsl.viewModel
+
+class DetailViewModel(@InjectedParam val itemId: String) : ViewModel()
+
+val homeModule = module {
+    viewModel<HomeViewModel>()
+
+    navigation<HomeRoute> {
+        HomeScreen(viewModel = koinViewModel())
+    }
+}
+
+val detailModule = module {
+    viewModel<DetailViewModel>()
+
+    navigation<DetailRoute> { route ->
+        DetailScreen(viewModel = koinViewModel { parametersOf(route.itemId) })
+    }
+}
+```
+
+Each `navigation<T>` is stored as a definition qualified by the route type. The lambda runs with the Koin `Scope` as receiver, so you can call `get<T>()` in it, as well as Composable functions such as `koinViewModel()`.
+
+## Building the entry provider
+
+`koinEntryProvider()` collects every `navigation<T>` entry of the current scope into one provider for `NavDisplay`:
+
+{/* check: android-navigation3-dsl */}
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import org.koin.compose.navigation3.koinEntryProvider
+
+@Composable
+fun App() {
+    val backStack = rememberNavBackStack(HomeRoute)
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        entryProvider = koinEntryProvider<NavKey>(),
+    )
+}
+```
+
+`rememberNavBackStack` keeps the back stack across configuration changes and process death. Outside Android, it needs a `SavedStateConfiguration` that registers your routes: see [Navigation 3 in Compose Multiplatform](https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html).
+
+`rememberViewModelStoreNavEntryDecorator()` gives each entry its own ViewModel store. Keep it: see [ViewModels for an entry](#viewmodels-for-an-entry).
+
+### From an Android Activity (Android only)
+
+On Android, two extensions on `ComponentCallbacks` build the provider from the Activity or Fragment scope:
+
+| Function | Behavior |
+|----------|----------|
+| `entryProvider<T>()` | Lazy delegate: `val provider by entryProvider<Any>()` |
+| `getEntryProvider<T>()` | Builds the provider now |
+
+They resolve from the component's Koin scope: the Activity scope if it implements `AndroidScopeComponent`, the root scope otherwise.
+
+## Entries in a scope
+
+Declare entries inside a scope when the screens need objects that live with that scope. With `activityRetainedScope`, they survive configuration changes:
+
+```kotlin
+class Navigator(start: Any) {
+    val backStack = mutableStateListOf(start)
+    fun goTo(route: Any) { backStack.add(route) }
+    fun goBack() { backStack.removeLastOrNull() }
+}
+
+val appModule = module {
+    activityRetainedScope {
+        scoped { Navigator(start = ConversationList) }
+
+        navigation<ConversationList> {
+            val navigator = get<Navigator>()
+            ConversationListScreen(onClick = { navigator.goTo(ConversationDetail(it)) })
+        }
+
+        navigation<ConversationDetail> { route ->
+            ConversationDetailScreen(conversationId = route.id)
+        }
+    }
+}
+
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityRetainedScope()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navigator: Navigator = get()
+            NavDisplay(
+                backStack = navigator.backStack,
+                onBack = { navigator.goBack() },
+                entryProvider = getEntryProvider()
+            )
+        }
+    }
+}
+```
+
+`getEntryProvider()` reads the entries from the Activity scope. Entries declared in a scope are visible only from that scope. `activityRetainedScope` is described in [Android scopes](/docs/platforms/android/scopes/).
+
+## ViewModels for an entry
+
+The ViewModel store decorator of [`NavDisplay`](#building-the-entry-provider) scopes each ViewModel to its entry, and clears it when the entry leaves the back stack. Without it, `koinViewModel()` uses the store of the Activity, and every entry of the same route shares one instance. A second `DetailRoute` would then show the ViewModel of the first one, without any error, because parameters are only used at creation.
+
+Pass the route, or a field of it, as a parameter:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+class DetailViewModel(
+    @InjectedParam val route: DetailRoute,
+    private val repository: ItemRepository
+) : ViewModel()
+
+val detailModule = module {
+    viewModel<DetailViewModel>()
+
+    navigation<DetailRoute> { route ->
+        DetailScreen(viewModel = koinViewModel { parametersOf(route) })
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@KoinViewModel
+class DetailViewModel(
+    @InjectedParam val route: DetailRoute,
+    private val repository: ItemRepository
+) : ViewModel()
+
+// navigation<T> entries are declared in a DSL module
+val detailModule = module {
+    navigation<DetailRoute> { route ->
+        DetailScreen(viewModel = koinViewModel { parametersOf(route) })
+    }
+}
+```
+
+Load this DSL module next to your annotated classes: `startKoin<MyApp> { modules(detailModule) }`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+class DetailViewModel(
+    val route: DetailRoute,
+    private val repository: ItemRepository
+) : ViewModel()
+
+val detailModule = module {
+    viewModelOf(::DetailViewModel) // route comes from parametersOf(route)
+
+    navigation<DetailRoute> { route ->
+        DetailScreen(viewModel = koinViewModel { parametersOf(route) })
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Entry metadata
+
+`navigation<T>` takes a `metadata` map, passed to the `NavEntry`. Use it for per-entry transitions or scene strategies such as list-detail:
+
+```kotlin
+val conversationModule = module {
+    navigation<ConversationList>(metadata = ListDetailSceneStrategy.listPane()) {
+        ConversationListScreen()
+    }
+
+    navigation<ConversationDetail>(metadata = ListDetailSceneStrategy.detailPane()) { route ->
+        ConversationDetailScreen(route.id)
+    }
+
+    navigation<ModalRoute>(
+        metadata = NavDisplay.transitionSpec {
+            slideInVertically(initialOffsetY = { it }) togetherWith ExitTransition.KeepUntilTransitionsFinished
+        }
+    ) {
+        ModalScreen()
+    }
+}
+```
+
+Then pass the scene strategy to `NavDisplay` (`sceneStrategy = rememberListDetailSceneStrategy()`). The metadata keys come from Navigation 3 and the adaptive libraries, not from Koin.
+
+## From Navigation 2
+
+| Navigation 2 | Navigation 3 with Koin |
+|--------------|------------------------|
+| String or typed route in `NavHost { composable(...) }` | `@Serializable` route class |
+| `composable<Route> { ... }` in the `NavHost` | `navigation<Route> { ... }` in a Koin module |
+| `NavHost(navController, startDestination)` | `NavDisplay(backStack, entryProvider = koinEntryProvider())` |
+| Arguments read from `SavedStateHandle` | Route object passed to the lambda |
+
+## API summary
+
+| API | Package | Purpose |
+|-----|---------|---------|
+| `Module.navigation<T>(metadata) { }` | `org.koin.dsl.navigation3` | Declare an entry in a module |
+| `ScopeDSL.navigation<T>(metadata) { }` | `org.koin.dsl.navigation3` | Declare an entry in a scope |
+| `koinEntryProvider<T>(scope)` | `org.koin.compose.navigation3` | Entry provider from the current Compose scope |
+| `entryProvider<T>()`, `getEntryProvider<T>()` | `org.koin.androidx.compose.navigation3` | Entry provider from an Activity or Fragment (Android) |
+
+## Next steps
+
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()` and its owners.
+- [Android scopes](/docs/platforms/android/scopes/): `activityRetainedScope` and Activity scopes.
+- [Injected parameters](/docs/concepts/parameters/): `parametersOf` and `@InjectedParam`.
+- [Koin in Compose](/docs/platforms/compose/): packages and starting Koin.
+- [Navigation 3 recipes](https://github.com/android/nav3-recipes): Google's samples for Navigation 3 itself.

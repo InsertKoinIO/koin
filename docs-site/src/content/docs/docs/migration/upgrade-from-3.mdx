@@ -1,0 +1,148 @@
+---
+title: "Upgrade from Koin 3.x"
+description: "Move a project from Koin 3.x to Koin 4.x: the Kotlin and Ktor baselines, the Gradle changes and the replacement for every API removed since 3.5.6."
+---
+
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+Move a project from Koin 3.x to Koin <Version of="koin" /> in one upgrade: check your toolchain, update Gradle, replace the removed APIs, clear the deprecations, then decide about the Compiler Plugin. Your modules keep working as they are: `single { }`, `factory { }`, `singleOf(::T)` and `get()` did not change.
+
+The API tables come from comparing the public API of Koin 3.5.6 and 4.2.2. If you are on an older 3.x version, also read the [3.5.6 and 3.4.3 release notes](/docs/support/releases/#356).
+
+:::note[Moving is optional on Kotlin 1.x]
+Koin 3.5.6 is an LTS line for projects that can't move to Kotlin 2.x. See [LTS lines](/docs/support/#available-lts-lines). Koin 4.x is the Kotlin 2.x line, so plan the Kotlin upgrade first.
+:::
+
+## Check your toolchain
+
+Each Koin release is built against these versions. They are the versions in the repository, not published minimums.
+
+| Koin | Kotlin | Ktor (`koin-ktor`) | Android `minSdk` |
+|------|--------|--------------------|------------------|
+| 3.5.6 | 1.9.22 | 2.3.9 | 14 |
+| 4.0.4 | 2.0.21 | 2.3.12 | 14 |
+| 4.1.1 | 2.1.21 | 3.2.3 | 21 |
+| <Version of="koin" /> | <Version of="kotlinMin" /> | 3.4.0 | <Version of="androidMinSdk" /> |
+
+- **Kotlin**: the Compiler Plugin requires Kotlin <Version of="kotlinMin" /> or later. Without the plugin, Koin <Version of="koin" /> needs Kotlin <Version of="kotlinRuntimeMin" /> or later (tested with `koin-core` on the JVM): below that, the compiler crashes. If you can't reach that version yet, move to the 4.x release that matches your Kotlin version, then finish later.
+- **Ktor**: `koin-ktor` moves from Ktor 2 to Ktor 3 at Koin 4.1. Follow the [Ktor 3 migration guide](https://ktor.io/docs/migrating-3.html) as part of this upgrade.
+- **Android**: raise `minSdk` to <Version of="androidMinSdk" /> or later.
+
+## Update Gradle
+
+Three things change:
+
+- **One version for everything.** In 3.5.6, `koin-compose` had its own version (`1.1.5`). Every Koin artifact now shares one version, so use the BOM and declare artifacts without versions.
+- **No artifact was removed.** Your existing dependencies still resolve.
+- **New artifacts for shared ViewModels.** `koin-android` brings in `koin-core-viewmodel`. For Compose, add `koin-compose-viewmodel` to use `koinViewModel`. `koin-androidx-compose` includes it.
+
+<Install artifacts={['koin-android']} bom />
+
+Keep your current Koin Annotations and KSP setup for now if you have one: [Move to the Compiler Plugin](#move-to-the-compiler-plugin) covers it.
+
+## Replace the removed APIs
+
+Build the project and use these tables to fix each error.
+
+### Core
+
+| Koin 3.x | Koin 4.x |
+|----------|----------|
+| `NoBeanDefFoundException` | `NoDefinitionFoundException` |
+| `KoinAppAlreadyStartedException` | `KoinApplicationAlreadyStartedException` |
+| `closeScope()` on `KoinScopeComponent`, `ScopeViewModel` or `RequestScope` | `scope.close()` |
+| `Scope.newInstance()` (reflection) | Declare the class in a module and resolve it |
+| `Timer`, `measureDuration`, `measureDurationForResult` (`org.koin.core.time`), `KoinPlatformTimeTools` | The Kotlin [`kotlin.time`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/) API |
+| `InstanceContext`, in a custom `InstanceFactory` | `ResolutionContext`, which is internal API. Avoid custom factories if you can |
+
+### Android
+
+| Koin 3.x | Koin 4.x |
+|----------|----------|
+| `viewModel<T>()`, `fragment<T>()`, `worker<T>()` without a lambda (reflection, `@KoinReflectAPI`) | `viewModelOf(::T)`, `fragmentOf(::T)`, `workerOf(::T)` |
+| `LifecycleOwner.lifecycleScope`, `.scope`, `.currentScope` | `by activityScope()`, `by fragmentScope()`, or extend `ScopeActivity` or `ScopeFragment`. See [Android scopes](/docs/platforms/android/scopes/) |
+| `Fragment.createScope()` | `createFragmentScope()` |
+| `stateViewModel()`, `getStateViewModel()` | `viewModel()` |
+| `sharedStateViewModel()`, `getSharedStateViewModel()` | `activityViewModel()` |
+| `getLazyViewModelForClass()`, `ViewModelOwner`, `ViewModelParameter` | `by viewModel()` and `by activityViewModel()` |
+
+`by inject()`, `get()` and `by viewModel()` in an `Activity` or `Fragment` keep the same imports.
+
+The reflective `viewModel<T>()` shares its name with the Compiler Plugin DSL function, but it comes from a different package and works differently. After this upgrade, `viewModel<T>()` needs the import `org.koin.plugin.module.dsl.*` and the [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+### Compose
+
+| Koin 3.x | Koin 4.x |
+|----------|----------|
+| `get()`, `inject()`, `rememberKoinInject()` | `koinInject()` from `org.koin.compose` |
+| `getViewModel()`, the lazy `viewModel()`, `getStateViewModel()` | `koinViewModel()` |
+| `getKoin()` from `org.koin.androidx.compose` | `getKoin()` from `org.koin.compose` |
+| `rememberCurrentKoinScope()` | `currentKoinScope()` |
+| `StableParametersDefinition`, `rememberStableParametersDefinition()` | Remove them. Pass parameters directly |
+
+`koinViewModel()` has two imports. Use `org.koin.compose.viewmodel.koinViewModel` in shared or new code. `org.koin.androidx.compose.koinViewModel` still works on Android.
+
+```kotlin
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun HomeScreen(
+    viewModel: HomeViewModel = koinViewModel(),
+    analytics: Analytics = koinInject(),
+) {
+    // ...
+}
+```
+
+### Ktor
+
+| Koin 3.x | Koin 4.x |
+|----------|----------|
+| `Application.koin { }` | `koinModules(...)` or `koinModule { }`. The old call no longer compiles |
+
+`install(Koin) { }` and `by inject()` in routes don't change. See [Ktor](/docs/platforms/ktor/).
+
+## Clear the deprecations
+
+These still compile with a warning. Remove them now rather than at the next upgrade.
+
+| Deprecated | Replacement |
+|-----------|-------------|
+| Imports from `org.koin.androidx.viewmodel.dsl` (`viewModel`, `viewModelOf`) | The same functions from `org.koin.core.module.dsl`. Only the import changes |
+| `KoinContext`, `KoinAndroidContext` | Remove them: the context is set up when Koin starts |
+| `KoinApplication(application = { ... })` | `KoinApplication(configuration = koinConfiguration { ... })`. On Android, you can start Koin in your `Application` class instead |
+| `koinNavViewModel()` | `koinViewModel()` |
+| `checkModules()` | The Compiler Plugin, or `verify()` for a project without it. See [Verify your configuration](/docs/testing/verify/) |
+
+`scope(named<MyActivity>()) { }` is not deprecated, so you can leave it. `scope<MyActivity> { }` is shorter, and new code can use the [scope archetypes](/docs/platforms/android/scopes/) `activityScope { }`, `fragmentScope { }` and `viewModelScope { }`.
+
+## Apply the later changes
+
+[Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/) covers what changed after 4.0. Read its breaking changes and deprecations, in particular the unsorted `getAll()` results, which change behavior without a build error, and the `koin-gradle-plugin` section if your build applies `id("koin")`.
+
+## Move to the Compiler Plugin
+
+This step is optional, and your definitions don't have to change. With the plugin applied, Koin checks your graph at build time. It needs Kotlin <Version of="kotlinMin" /> or later.
+
+| Your project | Next step |
+|--------------|-----------|
+| Koin DSL | Add the [Compiler Plugin](/docs/tooling/compiler-plugin/). Converting definitions to `single<T>()` is optional |
+| Koin Annotations with the KSP processor | [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/). `koin-annotations` now follows the Koin version |
+
+## Check the upgrade
+
+1. Build, and fix each error with the tables above.
+2. Search your code for the deprecated names and replace them.
+3. Run your tests, then run the app and open the screens that use scopes and ViewModels.
+4. Read [Troubleshooting](/docs/support/troubleshooting/) if a start or a resolution fails.
+
+## Next steps
+
+- [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/): the changes since 4.0.
+- [Release notes](/docs/support/releases/): the full change list for each version.
+- [Choose your style](/docs/get-started/choose-your-style/): the DSL forms and Koin Annotations.
+- [AI agents and Koin skills](/docs/tooling/ai-agents/): the `di-migration` skill walks an agent through this upgrade.

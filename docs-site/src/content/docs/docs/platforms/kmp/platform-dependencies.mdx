@@ -1,0 +1,530 @@
+---
+title: "Platform-specific dependencies"
+description: "Give each platform its own implementation with expect/actual, a platform module or a wrapper, including the Android Context in shared code."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page shows how to declare definitions that differ per platform, and pick the right pattern for each case.
+
+## Prerequisites
+
+A project set up as in [Install and project structure](/docs/platforms/kmp/install/), and a shared [`initKoin`](/docs/platforms/kmp/start-koin/). For the Kotlin rules themselves, see [expect and actual declarations](https://kotlinlang.org/docs/multiplatform/multiplatform-expect-actual.html).
+
+## Choose a pattern
+
+| Situation | Pattern |
+|---|---|
+| Different constructor parameters per platform (recommended default) | [Platform module](#platform-module) |
+| Same constructor on every platform | [`expect`/`actual` class](#expectactual-class) |
+| Platform library built with a function (driver, engine) | [Lambda in the platform module](#platform-libraries) |
+| Class that exists on one platform only | [Platform module, empty elsewhere](#one-platform-only) |
+| Android `Context` needed by shared code | [Platform wrapper](#android-context-in-shared-code) |
+
+## Organize shared modules
+
+Put everything that does not depend on a platform in `commonMain` modules, split by layer or by feature, and assemble them with `includes()`:
+
+```kotlin
+// commonMain
+val dataModule = module {
+    single<ApiClient>()
+    single<UserRepository>()
+}
+
+val domainModule = module {
+    factory<GetUserUseCase>()
+}
+
+val appModule = module {
+    includes(dataModule, domainModule, platformModule())
+}
+```
+
+See [Modules](/docs/concepts/modules/). The rest of this page is about `platformModule()`.
+
+## Platform module
+
+Declare the module in `commonMain` with `expect`, and write one `actual` per platform. Common code depends only on the interface, and each platform injects what it needs:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-platform-module-dsl */}
+
+```kotlin
+// commonMain
+import org.koin.core.module.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+expect fun platformModule(): Module
+```
+
+{/* check: kmp-platform-module-dsl */}
+
+```kotlin
+// androidMain
+import android.content.Context
+import org.koin.core.module.Module
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class AndroidComponent(private val context: Context) : PlatformComponent {
+    override fun getInfo() = "Android ${context.packageName}"
+}
+
+actual fun platformModule(): Module = module {
+    single<AndroidComponent>() bind PlatformComponent::class
+}
+```
+
+{/* check: kmp-platform-module-dsl */}
+
+```kotlin
+// iosMain
+import org.koin.core.module.Module
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class IOSComponent : PlatformComponent {
+    override fun getInfo() = "iOS"
+}
+
+actual fun platformModule(): Module = module {
+    single<IOSComponent>() bind PlatformComponent::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-platform-module-annotations */}
+
+```kotlin
+// commonMain
+import org.koin.core.annotation.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+@Module
+expect class PlatformModule
+```
+
+{/* check: kmp-platform-module-annotations */}
+
+```kotlin
+// androidMain
+import android.content.Context
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan
+actual class PlatformModule
+
+@Singleton
+class AndroidComponent(private val context: Context) : PlatformComponent {
+    override fun getInfo() = "Android ${context.packageName}"
+}
+```
+
+{/* check: kmp-platform-module-annotations */}
+
+```kotlin
+// iosMain
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan
+actual class PlatformModule
+
+@Singleton
+class IOSComponent : PlatformComponent {
+    override fun getInfo() = "iOS"
+}
+```
+
+Each `actual` module scans its own source set, so it only finds the classes of that platform. `@Singleton` binds the class to its supertypes, so `PlatformComponent` resolves to the platform class. Include `PlatformModule` from a common module with `@Module(includes = [PlatformModule::class])`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-platform-module-constructor */}
+
+```kotlin
+// commonMain
+import org.koin.core.module.Module
+
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+expect fun platformModule(): Module
+```
+
+{/* check: kmp-platform-module-constructor */}
+
+```kotlin
+// androidMain
+import android.content.Context
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+class AndroidComponent(private val context: Context) : PlatformComponent {
+    override fun getInfo() = "Android ${context.packageName}"
+}
+
+actual fun platformModule(): Module = module {
+    singleOf(::AndroidComponent) bind PlatformComponent::class
+}
+```
+
+{/* check: kmp-platform-module-constructor */}
+
+```kotlin
+// iosMain
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+class IOSComponent : PlatformComponent {
+    override fun getInfo() = "iOS"
+}
+
+actual fun platformModule(): Module = module {
+    singleOf(::IOSComponent) bind PlatformComponent::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+On Android, `Context` resolves once `androidContext()` has been called at start.
+
+### Platform libraries
+
+Drivers and engines (SQLDelight, Ktor client engines, settings) are built with a function call. Declare them in the platform module with a lambda:
+
+```kotlin
+// androidMain
+actual fun platformModule(): Module = module {
+    single<SqlDriver> { AndroidSqliteDriver(AppDatabase.Schema, androidContext(), "app.db") }
+    single<HttpClientEngine> { OkHttp.create() }
+}
+
+// iosMain
+actual fun platformModule(): Module = module {
+    single<SqlDriver> { NativeSqliteDriver(AppDatabase.Schema, "app.db") }
+    single<HttpClientEngine> { Darwin.create() }
+}
+```
+
+The common module then builds on them without knowing the platform: `single { AppDatabase(get()) }`, `single { HttpClient(get<HttpClientEngine>()) }`. For other ways to declare classes you do not own, see [Definitions](/docs/concepts/definitions/).
+
+## expect/actual class
+
+When a class has the same constructor on every platform, declare it once and let each platform implement it:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-expect-actual-dsl */}
+
+```kotlin
+// commonMain
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+expect class NativeComponent() {
+    fun getInfo(): String
+}
+
+val nativeComponentModule = module {
+    single<NativeComponent>()
+}
+```
+
+{/* check: kmp-expect-actual-dsl */}
+
+```kotlin
+// androidMain
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "Android NativeComponent"
+}
+```
+
+{/* check: kmp-expect-actual-dsl */}
+
+```kotlin
+// iosMain
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "iOS NativeComponent"
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-expect-actual-annotations */}
+
+```kotlin
+// commonMain
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan
+class NativeComponentModule
+
+@Singleton
+expect class NativeComponent() {
+    fun getInfo(): String
+}
+```
+
+{/* check: kmp-expect-actual-annotations */}
+
+```kotlin
+// androidMain
+import org.koin.core.annotation.Singleton
+
+@Singleton
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "Android NativeComponent"
+}
+```
+
+{/* check: kmp-expect-actual-annotations */}
+
+```kotlin
+// iosMain
+import org.koin.core.annotation.Singleton
+
+@Singleton
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "iOS NativeComponent"
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-expect-actual-constructor */}
+
+```kotlin
+// commonMain
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+
+expect class NativeComponent() {
+    fun getInfo(): String
+}
+
+val nativeComponentModule = module {
+    singleOf(::NativeComponent)
+}
+```
+
+{/* check: kmp-expect-actual-constructor */}
+
+```kotlin
+// androidMain
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "Android NativeComponent"
+}
+```
+
+{/* check: kmp-expect-actual-constructor */}
+
+```kotlin
+// iosMain
+actual class NativeComponent actual constructor() {
+    actual fun getInfo() = "iOS NativeComponent"
+}
+```
+
+</TabItem>
+</Tabs>
+
+An `expect` class has one constructor contract for all platforms. If one platform needs another dependency, such as a `Context`, use a platform module with an interface instead.
+
+You can put iOS `actual` classes in `nativeMain`, which covers every native target, or in `iosMain`, which covers iOS only.
+
+## One platform only
+
+A platform module can declare classes that exist on one platform. The other platforms keep an empty module:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+// androidMain
+actual fun platformModule(): Module = module {
+    single<NotificationHelper>()
+}
+
+// iosMain
+actual fun platformModule(): Module = module { }
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+// androidMain
+@Module
+@ComponentScan("com.example.app.android")
+actual class PlatformModule
+
+// iosMain: nothing to declare
+@Module
+actual class PlatformModule
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+// androidMain
+actual fun platformModule(): Module = module {
+    singleOf(::NotificationHelper)
+}
+
+// iosMain
+actual fun platformModule(): Module = module { }
+```
+
+</TabItem>
+</Tabs>
+
+Only Android code can use `NotificationHelper`, since the class does not exist in `commonMain`.
+
+## Android Context in shared code
+
+Shared code cannot use `android.content.Context`, but some shared classes need it on Android to open files or read preferences. Hide it behind an interface:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+// commonMain
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
+
+class FileStore(private val ctx: ContextWrapper)
+
+val storageModule = module {
+    single<FileStore>()
+}
+```
+
+```kotlin
+// androidMain
+class AndroidContextWrapper(val context: Context) : ContextWrapper {
+    override fun getContextInfo() = "Android: ${context.packageName}"
+}
+
+actual fun platformModule(): Module = module {
+    single<AndroidContextWrapper>() bind ContextWrapper::class
+}
+```
+
+```kotlin
+// iosMain
+class IOSContextWrapper : ContextWrapper {
+    override fun getContextInfo() = "iOS"
+}
+
+actual fun platformModule(): Module = module {
+    single<IOSContextWrapper>() bind ContextWrapper::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+// commonMain
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
+
+@Singleton
+class FileStore(private val ctx: ContextWrapper)
+```
+
+```kotlin
+// androidMain
+@Singleton
+class AndroidContextWrapper(val context: Context) : ContextWrapper {
+    override fun getContextInfo() = "Android: ${context.packageName}"
+}
+```
+
+```kotlin
+// iosMain
+@Singleton
+class IOSContextWrapper : ContextWrapper {
+    override fun getContextInfo() = "iOS"
+}
+```
+
+The `actual` platform module's `@ComponentScan` finds the platform classes.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+// commonMain
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
+
+class FileStore(private val ctx: ContextWrapper)
+
+val storageModule = module {
+    singleOf(::FileStore)
+}
+```
+
+```kotlin
+// androidMain
+actual fun platformModule(): Module = module {
+    singleOf(::AndroidContextWrapper) bind ContextWrapper::class
+}
+
+// iosMain
+actual fun platformModule(): Module = module {
+    singleOf(::IOSContextWrapper) bind ContextWrapper::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+Only one Android definition touches `Context`. Put Android-specific operations behind methods of `ContextWrapper` rather than checking the platform type in common code.
+
+## Limits
+
+If a provider function receives a Koin `Scope` and calls `scope.get()` itself, that call is dynamic and not covered by [compile-time safety](/docs/tooling/compile-time-safety/). Prefer constructor parameters.
+
+## Next steps
+
+- [Koin from Swift and SwiftUI](/docs/platforms/kmp/swift/): the iOS boundary.
+- [Testing in commonTest](/docs/platforms/kmp/testing/): test shared modules.
+- [Definitions](/docs/concepts/definitions/): binding, provider functions, classes you do not own.

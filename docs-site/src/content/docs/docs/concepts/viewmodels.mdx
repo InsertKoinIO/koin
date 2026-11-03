@@ -1,0 +1,262 @@
+---
+title: "ViewModel definitions"
+description: "Declare ViewModels on any platform that supports AndroidX ViewModel, and see how to retrieve them on each platform."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+This page covers how to declare a ViewModel in a Koin module, on every platform that supports AndroidX ViewModel (Android, iOS, desktop, web). It assumes you know [definitions](/docs/concepts/definitions/). Declaring is the same everywhere. Retrieving depends on the platform, see [Retrieve a ViewModel](#retrieve-a-viewmodel).
+
+## Dependencies
+
+The declaration DSL is in `koin-core-viewmodel`, a multiplatform artifact. It targets JVM, Android, JS, wasmJs, iOS, macOS and tvOS, not watchOS, Linux or Windows.
+
+<Install artifacts={['koin-core-viewmodel']} bom />
+
+The retrieval APIs come with the platform artifacts: `koin-android` (it includes `koin-core-viewmodel`) and `koin-compose-viewmodel`. See the [artifacts reference](/docs/reference/artifacts/).
+
+## Retrieve a ViewModel
+
+| Where | Function | Artifact | Details |
+|-------|----------|----------|---------|
+| Android Activity | `by viewModel()` | `koin-android` | [ViewModel on Android](/docs/platforms/android/viewmodel/) |
+| Android Fragment | `by viewModel()`, `by activityViewModel()` | `koin-android` | [ViewModel on Android](/docs/platforms/android/viewmodel/) |
+| Android Fragment, Navigation graph | `koinNavGraphViewModel()` | `koin-androidx-navigation` | [ViewModel on Android](/docs/platforms/android/viewmodel/) |
+| Compose, any target | `koinViewModel()` | `koin-compose-viewmodel` | [ViewModel in Compose](/docs/platforms/compose/viewmodel/) |
+| Compose with Navigation Compose 2 | `koinNavViewModel()`, `sharedKoinViewModel()` | `koin-compose-viewmodel-navigation` | [ViewModel in Compose](/docs/platforms/compose/viewmodel/) |
+| Compose with Navigation 3 | See the page | `koin-compose-navigation3` | [Navigation 3](/docs/platforms/compose/navigation3/) |
+| iOS, desktop or web without Compose | See the page | `koin-core-viewmodel` | [Shared ViewModels](/docs/platforms/kmp/viewmodels/) |
+
+## Declaring a ViewModel
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
+
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+
+val appModule = module {
+    viewModel<UserViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.KoinViewModel
+
+@KoinViewModel
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+```
+
+With the Compiler Plugin, `@KoinViewModel` is in `org.koin.core.annotation` and works in common code. The KSP processor used `org.koin.android.annotation.KoinViewModel`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModel
+
+val appModule = module {
+    viewModelOf(::UserViewModel)
+
+    // or with the constructor call written out
+    viewModel { UserViewModel(get()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A `viewModel` definition creates a new instance on each request, like a `factory`. The platform `ViewModelStore` (Activity, Fragment, navigation entry) keeps the instance, so the same owner gets the same ViewModel back, across configuration changes on Android. Do not declare a ViewModel as `single`: it would be shared by every screen and never cleared.
+
+## Passing parameters
+
+A ViewModel often needs a value known only at runtime, such as an item id. Mark the constructor parameter as an injected parameter. `@InjectedParam` needs `koin-annotations` or the lighter `koin-core-annotations`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+class DetailViewModel(
+    @InjectedParam val itemId: String,
+    private val repository: DetailRepository,
+) : ViewModel()
+
+val appModule = module {
+    viewModel<DetailViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@KoinViewModel
+class DetailViewModel(
+    @InjectedParam val itemId: String,
+    private val repository: DetailRepository,
+) : ViewModel()
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    viewModel { params ->
+        DetailViewModel(itemId = params.get(), repository = get())
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`viewModelOf(::DetailViewModel)` also works: it reads parameters by type from the values passed by the caller.
+
+The caller passes the value with `parametersOf`, whatever the declaration style:
+
+```kotlin
+// Android
+val viewModel: DetailViewModel by viewModel { parametersOf("item_123") }
+
+// Compose
+val viewModel = koinViewModel<DetailViewModel> { parametersOf("item_123") }
+```
+
+Parameters are read once, when the ViewModel is created. If the same owner asks again with another value, it gets the existing instance. More on parameters in [Injected parameters](/docs/concepts/parameters/).
+
+## SavedStateHandle
+
+Add a `SavedStateHandle` parameter to the constructor. Koin creates it from the ViewModel `CreationExtras`, with no declaration:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+class ProfileViewModel(
+    private val handle: SavedStateHandle,
+    private val repository: UserRepository,
+) : ViewModel() {
+    val userId: String? = handle["userId"]
+}
+
+val appModule = module {
+    viewModel<ProfileViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@KoinViewModel
+class ProfileViewModel(
+    private val handle: SavedStateHandle,
+    private val repository: UserRepository,
+) : ViewModel() {
+    val userId: String? = handle["userId"]
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    viewModelOf(::ProfileViewModel)
+
+    // or: get() resolves the SavedStateHandle
+    viewModel { ProfileViewModel(get(), get()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+On Android, navigation arguments and Activity extras are in the `SavedStateHandle`. Inject it in the constructor only. If the ViewModel owner has no `SavedStateRegistryOwner`, Koin fails with "Koin could not create a SavedStateHandle: the ViewModel's CreationExtras has no SavedStateRegistryOwner."
+
+## ViewModel scope
+
+A ViewModel can own a [scope](/docs/concepts/scopes/): dependencies created with it and released when it is cleared. Declare them with the `viewModelScope` archetype:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+val appModule = module {
+    viewModelScope {
+        scoped<UserCache>()
+        viewModel<UserViewModel>()
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@ViewModelScope
+class UserCache
+
+@KoinViewModel
+@ViewModelScope
+class UserViewModel(private val cache: UserCache) : ViewModel()
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    viewModelScope {
+        scopedOf(::UserCache)
+        viewModelOf(::UserViewModel)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Enable the option at start, or the ViewModel gets no scope. `viewModelScopeFactory()` is marked `@KoinViewModelScopeApi`, so opt in where you call it:
+
+```kotlin
+import org.koin.core.annotation.KoinViewModelScopeApi
+import org.koin.core.option.viewModelScopeFactory
+
+@OptIn(KoinViewModelScopeApi::class)
+fun startApp() {
+    startKoin {
+        options(viewModelScopeFactory())
+        modules(appModule)
+    }
+}
+```
+
+The `viewModelScope { }` declaration also needs `@OptIn(KoinViewModelScopeApi::class, KoinExperimentalAPI::class)`. A ViewModel that takes scoped dependencies in its constructor must be declared inside `viewModelScope { }`. Each ViewModel instance gets its own `UserCache`, closed when the ViewModel is cleared.
+
+This Koin `viewModelScope { }` is not the AndroidX `ViewModel.viewModelScope` coroutine scope. See [Scopes](/docs/concepts/scopes/#the-viewmodel-scope) for the difference.
+
+## Limits
+
+- **One instance per owner**: injected parameters are ignored once the ViewModel exists for that owner. Use a different key or owner to get a second instance.
+- **No `single` ViewModel**: a singleton ViewModel is never cleared and leaks its dependencies.
+- **Experimental ViewModel scope**: `viewModelScope` is marked experimental and may change.
+
+## Related
+
+- [ViewModel on Android](/docs/platforms/android/viewmodel/): `by viewModel()`, `activityViewModel()`, navigation graph ViewModels.
+- [Shared ViewModels](/docs/platforms/kmp/viewmodels/): ViewModels in Kotlin Multiplatform.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()` and navigation ViewModels.
+- [Injected parameters](/docs/concepts/parameters/): `parametersOf` and `@InjectedParam`.
+- [Scopes](/docs/concepts/scopes/): scope archetypes and scope lifecycle.
+- [Definitions](/docs/concepts/definitions/): the other definition types.

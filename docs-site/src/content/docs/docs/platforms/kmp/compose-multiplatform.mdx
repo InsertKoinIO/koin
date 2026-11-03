@@ -1,0 +1,131 @@
+---
+title: "Compose Multiplatform"
+description: "Choose between KoinApplication and initKoin, then use koinInject, koinViewModel, navigation and previews in shared screens."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+This page helps you decide how to start Koin in a Compose Multiplatform app, and inject into shared composables.
+
+## Prerequisites
+
+[Koin installed](/docs/platforms/kmp/install/) in a Compose Multiplatform project, on Compose Multiplatform <Version of="composeMultiplatform" /> or later. Koin brings this version at runtime, and an older Gradle plugin mixes versions: Compose UI tests then fail with `NoSuchFieldError`. This page covers the KMP decisions. The full API is in [Koin in Compose](/docs/platforms/compose/).
+
+<Install artifacts={['koin-core', 'koin-compose', 'koin-compose-viewmodel']} plugin bom sourceSet="commonMain" />
+
+## KoinApplication or initKoin?
+
+| Your app | Use | Why |
+|---|---|---|
+| Every Koin use is inside Compose | `KoinApplication` | One start point in shared code, no platform code to write. Android context and logger are set for you |
+| Something outside Compose needs Koin: an Android `Service` or `Worker`, a Swift helper, native SwiftUI screens | [`initKoin`](/docs/platforms/kmp/start-koin/) | Koin must be running before the first composition |
+| You are not sure | `initKoin` | It works in every case |
+
+If Koin is already running, `KoinApplication` attaches to it and ignores its own configuration, so using both does not crash. Pick one anyway: the second configuration silently does nothing.
+
+### Start with KoinApplication
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+// commonMain
+import org.koin.compose.KoinApplication
+import org.koin.dsl.koinConfiguration
+
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration { modules(appModule) }) {
+        MainScreen()
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+// commonMain
+import org.koin.compose.KoinApplication
+import org.koin.plugin.module.dsl.koinConfiguration
+
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration<KoinApp>()) {
+        MainScreen()
+    }
+}
+```
+
+`KoinApp` is your `@KoinApplication` object. The annotation and the composable share a name, and live in different packages.
+
+</TabItem>
+</Tabs>
+
+On Android, `KoinApplication` calls `androidContext()` and `androidLogger()`. On other targets it uses `printLogger()`. Koin is not stopped when `KoinApplication` leaves the composition.
+
+`KoinMultiplatformApplication` and `KoinContext` are deprecated. Replace them with `KoinApplication(configuration = ...)`, or remove `KoinContext`, which is no longer needed.
+
+### Start with initKoin
+
+Write the shared function and call it from each platform as on [Start Koin once](/docs/platforms/kmp/start-koin/). Your composables then use Koin directly, with no wrapper:
+
+```kotlin
+// commonMain
+@Composable
+fun App() {
+    MainScreen()
+}
+```
+
+## Inject into composables
+
+```kotlin
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun UserScreen(
+    viewModel: UserViewModel = koinViewModel(),
+    analytics: Analytics = koinInject(),
+) {
+    // ...
+}
+```
+
+Use these imports in shared code. `koinActivityViewModel()` and `koinActivityInject()` are Android only. See [ViewModel in Compose](/docs/platforms/compose/viewmodel/).
+
+## Navigation
+
+| Library | Add | Koin API |
+|---|---|---|
+| Navigation Compose | `koin-compose-viewmodel-navigation` | `koinViewModel()` in a destination, `sharedKoinViewModel()` for a graph |
+| Navigation 3 | `koin-compose-navigation3` | `navigation<T>`, `koinEntryProvider()` |
+
+Inside a `NavHost` destination, `koinViewModel()` ties the ViewModel to that navigation entry. For Navigation 3, see [Navigation 3](/docs/platforms/compose/navigation3/), which works on every Compose target. Its API is marked experimental.
+
+## Previews
+
+Use `KoinApplicationPreview` to give a preview its own container, without touching a running Koin:
+
+```kotlin
+import org.koin.compose.KoinApplicationPreview
+
+@Preview
+@Composable
+private fun UserScreenPreview() {
+    KoinApplicationPreview(application = { modules(previewModule) }) {
+        UserScreen()
+    }
+}
+```
+
+## Next steps
+
+- [Walkthrough: Android and iOS app](/docs/platforms/kmp/walkthrough/): see this in a complete app.
+- [Koin in Compose](/docs/platforms/compose/): the full Compose API.
+- [Testing in commonTest](/docs/platforms/kmp/testing/): test shared screens.

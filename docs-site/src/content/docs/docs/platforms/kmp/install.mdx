@@ -1,0 +1,87 @@
+---
+title: "Install and project structure"
+description: "Add Koin and the Compiler Plugin to a Kotlin Multiplatform project, and decide which artifact goes in which source set."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+This page shows how to add Koin to the shared module of a KMP project, apply the Compiler Plugin, and configure the iOS framework that Swift imports.
+
+## Prerequisites
+
+A KMP project with a shared Gradle module, and Kotlin <Version of="kotlinMin" /> or later for the Compiler Plugin. To start from a working project, clone the [walkthrough sample](/docs/platforms/kmp/walkthrough/).
+
+## Add Koin
+
+Apply the [Koin Compiler Plugin](/docs/tooling/compiler-plugin/) to each Gradle module that declares definitions, and add Koin to `commonMain`. The plugin needs no per-target configuration.
+
+<Install artifacts={['koin-core']} plugin bom sourceSet="commonMain" />
+
+The BOM works in `commonMain` as shown, on JVM, iOS and wasmJs. A BOM declared in `commonMain` also applies to `commonTest`. The Compiler Plugin is not part of the BOM, so it keeps its own version.
+
+## Which artifact goes where
+
+Most projects only touch `commonMain` and `commonTest`.
+
+| Source set | Add | When |
+|---|---|---|
+| `commonMain` | `koin-core` | Always |
+| `commonMain` | `koin-annotations` | If you use the Annotations style |
+| `commonMain` | `koin-core-viewmodel` | [Shared ViewModels](/docs/platforms/kmp/viewmodels/) without Compose |
+| `commonMain` | `koin-compose`, `koin-compose-viewmodel` | Compose Multiplatform |
+| `commonMain` | `koin-compose-viewmodel-navigation` | Navigation Compose |
+| `commonMain` | `koin-compose-navigation3` | Navigation 3 |
+| `commonTest` | `koin-test` | [Tests in common code](/docs/platforms/kmp/testing/) |
+| `androidMain` | `koin-android` | Android APIs with no Compose: `by inject()`, `by viewModel()` in Activities |
+
+On Android, `koin-compose` already brings `koin-android`, so a Compose project does not need the `androidMain` line. `koin-android` still provides `androidContext()`, which you call from Android code.
+
+:::caution[Annotations on JS and wasmJs need Kotlin 2.4.0]
+With Kotlin 2.3.20, annotation-based modules (`@Module`, `@ComponentScan`) fail on `wasmJs` with a compiler error, `No file found for source null` ([KT-82395](https://youtrack.jetbrains.com/issue/KT-82395)). JVM, Android and iOS work on 2.3.20, and so does the DSL on every target.
+:::
+
+## Configure the iOS framework
+
+Swift imports your shared code as a framework. `baseName` is the name of the Swift module:
+
+```kotlin
+// shared/build.gradle.kts
+kotlin {
+    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { target ->
+        target.binaries.framework {
+            baseName = "Shared"
+            isStatic = true
+        }
+    }
+}
+```
+
+With this configuration, Swift files start with `import Shared`. The rest of this section uses that name. The [walkthrough sample](/docs/platforms/kmp/walkthrough/) uses `ComposeApp`.
+
+## Project structure
+
+```
+shared/
+└── src/
+    ├── commonMain/kotlin/di/
+    │   ├── Koin.kt                  // modules and initKoin()
+    │   └── PlatformModule.kt        // expect declaration
+    ├── androidMain/kotlin/di/
+    │   └── PlatformModule.android.kt
+    ├── iosMain/kotlin/di/
+    │   └── PlatformModule.ios.kt
+    └── commonTest/kotlin/di/
+        └── KoinTest.kt
+androidApp/   // calls initKoin() from Application
+iosApp/       // calls initKoin() from the Swift App
+```
+
+Shared definitions live in `commonMain`. Each platform source set holds only what differs on that platform.
+
+## Next steps
+
+- [Start Koin once](/docs/platforms/kmp/start-koin/): write the shared start function.
+- [Gradle artifacts and BOM](/docs/reference/artifacts/): the full artifact table and version compatibility.
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): requirements, options and troubleshooting.

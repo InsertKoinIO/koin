@@ -1,0 +1,149 @@
+---
+title: "Isolated context in Compose"
+description: "Use KoinIsolatedContext so SDKs and embedded Compose UIs resolve from their own Koin instance."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page shows how to make Compose functions resolve from an isolated Koin instance with `KoinIsolatedContext`. Use it when you build an SDK or a library that ships Composables and must not share the host app's Koin container. What an isolated context is, and how to create one, is explained in [Context isolation](/docs/concepts/context-isolation/).
+
+## KoinIsolatedContext
+
+Keep the isolated `KoinApplication` in a static holder, as described in [Context isolation](/docs/concepts/context-isolation/):
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+object PaymentSdkKoin {
+    val koinApp = koinApplication {
+        modules(paymentModule)
+    }
+}
+
+internal val paymentModule = module {
+    single<PaymentProcessor>()
+    viewModel<PaymentViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.plugin.module.dsl.koinApplication
+
+@Module
+@ComponentScan("com.example.paymentsdk")
+internal class PaymentModule
+
+// The label keeps out @Configuration modules with no label. See Context isolation.
+@KoinApplication(configurations = ["com.example.paymentsdk"], modules = [PaymentModule::class])
+internal object PaymentSdkApp
+
+object PaymentSdkKoin {
+    val koinApp = koinApplication<PaymentSdkApp>()
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+object PaymentSdkKoin {
+    val koinApp = koinApplication {
+        modules(paymentModule)
+    }
+}
+
+internal val paymentModule = module {
+    singleOf(::PaymentProcessor)
+    viewModelOf(::PaymentViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+Wrap the SDK UI with `KoinIsolatedContext`:
+
+```kotlin
+import org.koin.compose.KoinIsolatedContext
+
+@Composable
+fun PaymentScreen(amount: Double, onDone: (PaymentResult) -> Unit) {
+    KoinIsolatedContext(context = PaymentSdkKoin.koinApp) {
+        PaymentFlow(amount, onDone)
+    }
+}
+
+@Composable
+private fun PaymentFlow(amount: Double, onDone: (PaymentResult) -> Unit) {
+    val viewModel = koinViewModel<PaymentViewModel>() // resolved from the SDK's Koin
+    // ...
+}
+```
+
+Inside the block, `koinInject()`, `koinViewModel()`, `getKoin()`, `currentKoinScope()` and `rememberKoinModules()` use the isolated instance. Outside the block, the host app keeps its own Koin.
+
+## Host and SDK in the same screen
+
+Resolve host dependencies outside the block, and SDK dependencies inside:
+
+```kotlin
+@Composable
+fun CheckoutScreen() {
+    val analytics = koinInject<HostAnalytics>() // host app's Koin
+
+    KoinIsolatedContext(context = PaymentSdkKoin.koinApp) {
+        val processor = koinInject<PaymentProcessor>() // SDK's Koin
+        PaymentButton(processor, onEvent = { analytics.track(it) })
+    }
+}
+```
+
+The two containers don't see each other. Pass values across the boundary with parameters and callbacks.
+
+## Initialization and shutdown
+
+When the SDK needs configuration from the host, create the `KoinApplication` in an `initialize` function and close it on shutdown:
+
+```kotlin
+object PaymentSdk {
+    private var koinApp: KoinApplication? = null
+
+    fun initialize(config: PaymentConfig) {
+        koinApp = koinApplication {
+            modules(module { single { config } }, paymentModule)
+        }
+    }
+
+    fun shutdown() {
+        koinApp?.close()
+        koinApp = null
+    }
+
+    @Composable
+    fun PaymentScreen(amount: Double, onDone: (PaymentResult) -> Unit) {
+        val app = koinApp ?: error("PaymentSdk.initialize() was not called")
+        KoinIsolatedContext(context = app) {
+            PaymentFlow(amount, onDone)
+        }
+    }
+}
+```
+
+The host calls `PaymentSdk.initialize(...)` once, for example in `Application.onCreate()`, before any SDK screen is shown.
+
+## Limits
+
+- **KoinNavigationScope**: it creates its scope in the global Koin instance, so it does not follow `KoinIsolatedContext`. Use `KoinScope` inside the isolated block instead (see [Scopes in Compose](/docs/platforms/compose/scopes/)).
+- **Code outside Compose**: SDK classes receive their dependencies through their constructors, from the isolated instance. An SDK entry point outside Compose (a `Service`, a callback called by the host) that must retrieve dependencies itself uses a `KoinComponent` that overrides `getKoin()`. See [Context isolation](/docs/concepts/context-isolation/).
+- **Lifecycle**: `KoinIsolatedContext` does not start or stop the instance. You own its lifetime.
+
+## Next steps
+
+- [Context isolation](/docs/concepts/context-isolation/): create an isolated Koin instance and a custom `KoinComponent`.
+- [Koin in Compose](/docs/platforms/compose/): `KoinApplication` and `koinInject()`.
+- [Scopes in Compose](/docs/platforms/compose/scopes/): scopes inside an isolated block.
+- [Isolated context in Ktor](/docs/platforms/ktor/isolated-context/): the same concept for a Ktor server.

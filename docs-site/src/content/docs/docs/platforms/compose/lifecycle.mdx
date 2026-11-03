@@ -1,0 +1,122 @@
+---
+title: "Lifecycle in Compose"
+description: "How composition lifetime relates to Koin, what each Compose API releases, and where to inject."
+---
+
+This page explains how objects injected with Koin behave in the Compose lifecycle: what happens on recomposition, what each Koin API releases when a Composable leaves the composition, and where to place injection calls. It assumes you know `koinInject()` and `koinViewModel()` (see [Koin in Compose](/docs/platforms/compose/)) and the [Compose lifecycle](https://developer.android.com/develop/ui/compose/lifecycle).
+
+## Recomposition
+
+`koinInject()` resolves the dependency once and keeps it with `remember`, keyed on the qualifier, the scope and the parameters:
+
+```kotlin
+@Composable
+fun UserScreen(userId: String) {
+    val repository = koinInject<UserRepository>() // resolved once
+    val presenter = koinInject<UserPresenter> { parametersOf(userId) } // resolved again when userId changes
+}
+```
+
+On a recomposition with the same keys, you get the same object. When a key changes (a new `userId`), Koin resolves again. For a `single`, that returns the same instance. For a `factory`, that creates a new one.
+
+`koinViewModel()` does not use `remember`: the ViewModel is stored in the `ViewModelStoreOwner` and survives recomposition and Android configuration changes. Its parameters are used only at creation (see [ViewModel in Compose](/docs/platforms/compose/viewmodel/)).
+
+Both are Composable functions, so they can't be called inside `remember { }`, `LaunchedEffect` or an `onClick` lambda. Call them in the Composable body and use the result inside the lambda:
+
+```kotlin
+@Composable
+fun SaveButton() {
+    val repository = koinInject<UserRepository>()
+
+    Button(onClick = { repository.save() }) {
+        Text("Save")
+    }
+}
+```
+
+## What is released, and when
+
+| API | On recomposition | When the Composable leaves the composition |
+|-----|------------------|--------------------------------------------|
+| `koinInject()` | Same object if keys are unchanged | Reference dropped. Koin keeps a `single` or `scoped` instance |
+| `koinViewModel()` | Same ViewModel | Nothing. The ViewModel is cleared with its `ViewModelStoreOwner` |
+| `KoinApplication` | Same Koin instance | Koin keeps running. Stopped only if the composition is abandoned |
+| `KoinScope`, `rememberKoinScope` | Same scope | Scope closed |
+| `KoinNavigationScope` | Same scope | Scope kept, even after the entry is popped. You close it |
+| `UnboundKoinScope` | Same scope | Nothing. You close the scope |
+| `rememberKoinModules` | Modules loaded once | Modules unloaded only if you set `unloadOnForgotten` |
+
+Details: [Scopes in Compose](/docs/platforms/compose/scopes/) and [Load modules with a Composable](/docs/platforms/compose/dynamic-modules/).
+
+## Where to inject
+
+Inject at the screen level and pass plain data and lambdas down. Child Composables then don't depend on Koin, and previews and tests don't need a Koin instance:
+
+```kotlin
+@Composable
+fun UserListScreen(viewModel: UserListViewModel = koinViewModel()) {
+    val users by viewModel.users.collectAsState()
+    UserList(users = users, onDelete = viewModel::delete)
+}
+
+@Composable
+fun UserList(users: List<User>, onDelete: (User) -> Unit) {
+    LazyColumn {
+        items(users) { user -> UserCard(user, onDelete) }
+    }
+}
+```
+
+Avoid `koinInject()` inside `LazyColumn` items: each item runs its own resolution and `remember`. Inject once in the parent and pass the object or a lambda.
+
+### Pass as a parameter or inject?
+
+| Pass as a parameter | Inject with Koin |
+|---------------------|------------------|
+| Values that change: ids, search query, selection | Long-lived services: repositories, use cases |
+| Navigation arguments | Infrastructure: database, HTTP client |
+| Data the parent already has | ViewModels |
+
+```kotlin
+@Composable
+fun UserProfileScreen(
+    userId: String,                                  // changes: pass it
+    viewModel: UserProfileViewModel = koinViewModel() // long-lived: inject it
+) {
+    val user by viewModel.user.collectAsState()
+
+    LaunchedEffect(userId) {
+        viewModel.load(userId)
+    }
+
+    user?.let { ProfileContent(it) }
+}
+```
+
+## Injected objects and stability
+
+Koin does not change how Compose sees a type. A Composable parameter of type `UserRepository` or `UserViewModel` is stable or unstable according to the Compose compiler rules, like any other class. If skipping matters for a Composable, pass it stable values (state, primitives, lambdas) instead of the injected object.
+
+## Side effects
+
+Injected objects are regular Kotlin objects: use them in `LaunchedEffect`, `DisposableEffect` or `SideEffect` like any other value. Resolve them in the Composable body first:
+
+```kotlin
+@Composable
+fun EventScreen() {
+    val eventBus = koinInject<EventBus>()
+
+    DisposableEffect(eventBus) {
+        val listener = eventBus.subscribe { event -> /* ... */ }
+        onDispose { eventBus.unsubscribe(listener) }
+    }
+}
+```
+
+## Next steps
+
+- [Koin in Compose](/docs/platforms/compose/): `koinInject()` and starting Koin.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): ViewModel owners and parameters.
+- [Scopes in Compose](/docs/platforms/compose/scopes/): scopes bound to the UI tree.
+- [Load modules with a Composable](/docs/platforms/compose/dynamic-modules/): `rememberKoinModules`.
+- [Testing composables](/docs/testing/compose/): previews and UI tests.

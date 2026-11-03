@@ -1,0 +1,187 @@
+---
+title: "Koin from Swift and SwiftUI"
+description: "What works when you call Koin from Swift, how Kotlin names reach Swift, and what is not supported yet."
+---
+
+This page shows how to start Koin from Swift, retrieve shared objects through a Kotlin helper, and pick the right approach for ViewModels.
+
+## Prerequisites
+
+A [shared `initKoin`](/docs/platforms/kmp/start-koin/), and the [iOS framework](/docs/platforms/kmp/install/#configure-the-ios-framework) configured. Examples import the framework as `Shared`.
+
+## What is supported
+
+| You want to | Approach |
+|---|---|
+| Start Koin | Call `KoinKt.doInitKoin()` from your `App` [initializer](/docs/platforms/kmp/start-koin/#ios) |
+| Build the UI in Compose | Host it with `ComposeUIViewController`, then use `koinViewModel()` as usual (recommended) |
+| Use a shared class from SwiftUI | A `KoinComponent` helper in `iosMain` |
+| Give Kotlin a class written in Swift | `Koin.declare()` through a helper in `iosMain` |
+
+:::caution[No Swift API for Koin]
+Koin ships no Swift package and no Swift helpers. Native Swift integration is in progress and not available yet. Reified functions such as `get<T>()` cannot be called from Swift, and `KoinPlatform` is not visible in your framework unless you export `koin-core` from it. Everything on this page goes through Kotlin code that you write in `iosMain`.
+:::
+
+## How Kotlin names reach Swift
+
+| Kotlin | Swift |
+|---|---|
+| `fun initKoin()` in `Koin.kt` | `KoinKt.doInitKoin()` |
+| `fun initKoin(config: KoinAppDeclaration? = null)` in `Koin.kt` | `KoinKt.doInitKoin()` or `KoinKt.doInitKoin(config: nil)` |
+| `fun koin()` in `Swift.kt` | `SwiftKt.koin()` |
+| `class GreetingHelper` | `GreetingHelper()` |
+| Extension `fun Koin.foo(a: String)` | Method `koin.foo(a:)` |
+
+Functions whose names start with `init` get a `do` prefix. Top-level functions live in a class named after the file.
+
+## Retrieve shared objects with a helper
+
+Write a small class in `iosMain` that implements `KoinComponent`. It is an interop entry point only: your shared classes keep receiving dependencies through their constructors.
+
+```kotlin
+// iosMain
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+class GreetingHelper : KoinComponent {
+    private val greeting: Greeting by inject()
+    fun greet(): String = greeting.greeting()
+}
+```
+
+```swift
+import SwiftUI
+import Shared
+
+struct ContentView: View {
+    private let message = GreetingHelper().greet()
+
+    var body: some View {
+        Text(message)
+    }
+}
+```
+
+Koin must be started before the helper resolves anything. With the Compiler Plugin, a missing definition behind `get()` or `inject()` in the helper fails the Kotlin build with `KOIN-D002`.
+
+## ViewModels and SwiftUI
+
+**Recommended: host Compose.** With Compose Multiplatform, the screen is Kotlin. `koinViewModel()` manages the ViewModel lifecycle for you, on iOS as on Android.
+
+```kotlin
+// iosMain
+fun MainViewController() = ComposeUIViewController { App() }
+```
+
+**Native SwiftUI screens have no dedicated Koin API.** A `viewModel` definition is a factory, so a plain `get()` creates a new instance on each call, with no `ViewModelStore`: `onCleared()` never runs and `viewModelScope` is never cancelled. Give each screen its own store, with a small holder you write in Kotlin:
+
+{/* check: kmp-swift-viewmodel-dsl */}
+
+```kotlin
+// commonMain
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+
+class ProfileViewModelHolder : KoinComponent {
+    private val store = ViewModelStore()
+
+    val viewModel: ProfileViewModel = ViewModelProvider.create(
+        store,
+        viewModelFactory { initializer { get<ProfileViewModel>() } },
+    )[ProfileViewModel::class]
+
+    fun clear() = store.clear()
+}
+```
+
+The Swift side ties the holder to the life of the screen. `@StateObject` keeps one holder across SwiftUI updates, and `deinit` clears the store when the screen goes away:
+
+```swift
+import SwiftUI
+import Shared
+
+final class ProfileScreenModel: ObservableObject {
+    private let holder = ProfileViewModelHolder()
+    var viewModel: ProfileViewModel { holder.viewModel }
+    deinit { holder.clear() }
+}
+
+struct ProfileScreen: View {
+    @StateObject private var model = ProfileScreenModel()
+
+    var body: some View {
+        Text(model.viewModel.title)
+    }
+}
+```
+
+To observe Kotlin flows from Swift, you need a bridge. Koin does not provide one. [SKIE](https://skie.touchlab.co/) and [KMP-NativeCoroutines](https://github.com/rickclephas/KMP-NativeCoroutines) are the common choices, and neither depends on Koin.
+
+## Declare a Swift class in Koin
+
+A Swift class can implement a Kotlin interface, and Kotlin code can receive it from Koin. Register the instance at runtime with [`Koin.declare()`](https://github.com/InsertKoinIO/koin/blob/main/projects/core/koin-core/src/commonMain/kotlin/org/koin/core/Koin.kt). Swift passes the type as an Objective-C class or protocol, which this helper converts to a `KClass`:
+
+```kotlin
+// iosMain/kotlin/di/Swift.kt
+import kotlin.reflect.KClass
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ObjCClass
+import kotlinx.cinterop.ObjCObject
+import kotlinx.cinterop.ObjCProtocol
+import kotlinx.cinterop.getOriginalKotlinClass
+import org.koin.core.Koin
+import org.koin.core.qualifier.Qualifier
+import org.koin.mp.KoinPlatform
+
+fun koin(): Koin = KoinPlatform.getKoin()
+
+@OptIn(BetaInteropApi::class)
+fun Koin.declareFromSwift(
+    instance: Any,
+    bindTo: ObjCObject,
+    qualifier: Qualifier? = null,
+    allowOverride: Boolean = true,
+) {
+    val kClass: KClass<*> = when (bindTo) {
+        is ObjCClass -> getOriginalKotlinClass(bindTo)
+        is ObjCProtocol -> getOriginalKotlinClass(bindTo)
+        else -> null
+    } ?: error("Can't resolve Kotlin KClass from $bindTo")
+
+    declare(
+        instance = instance,
+        qualifier = qualifier,
+        secondaryTypes = listOf(kClass),
+        allowOverride = allowOverride,
+    )
+}
+```
+
+```swift
+class SwiftAnalytics: NSObject, Analytics {
+    func track(event: String) { /* ... */ }
+}
+
+SwiftKt.koin().declareFromSwift(
+    instance: SwiftAnalytics(),
+    bindTo: Analytics.self,
+    qualifier: nil,
+    allowOverride: true
+)
+```
+
+The Swift class must extend `NSObject`. Declared instances are not checked at compile time: a Kotlin consumer fails at runtime if Swift has not declared the instance yet, so declare it right after starting Koin. The helper is based on a [community proposal](https://github.com/InsertKoinIO/koin/issues/1108#issuecomment-3645990426).
+
+## Threading
+
+You can resolve dependencies and use scopes from any thread. Koin's native context is guarded by a lock, and there is no freezing or `@SharedImmutable` to deal with. Eager definitions are created on the thread that calls `startKoin`.
+
+## Next steps
+
+- [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/): the recommended way to share screens.
+- [Shared ViewModels](/docs/platforms/kmp/viewmodels/): declare ViewModels in common code.
+- [Troubleshooting and recipes](/docs/platforms/kmp/troubleshooting/): iOS start placement and common errors.

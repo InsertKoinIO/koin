@@ -1,0 +1,338 @@
+---
+title: "Tutorial: your first Kotlin app"
+description: "Build a Kotlin console app that loads users and prints a greeting, with Koin DSL or Koin Annotations."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+You build a Kotlin console app that loads a list of users and prints a greeting. You declare a Koin module, bind implementations to interfaces, and start Koin. It takes about 10 minutes.
+
+The code of the classes is the same in every style, and the Annotations style only adds an annotation on each class. The Gradle setup, the module and the startup code change, so pick a style in the tabs and the choice follows you across the docs. To compare the styles, see [Choose your style](/docs/get-started/choose-your-style/).
+
+## Prerequisites
+
+- JDK 17 or later and Gradle, in a new empty project.
+- Kotlin <Version of="kotlinMin" /> or later.
+
+The full samples are in [koin-getting-started/kotlin](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin) and [koin-getting-started/kotlin-annotations](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin-annotations). Run either one with `./gradlew run`.
+
+## Gradle setup
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+<Install artifacts={['koin-core']} plugin bom jvmApp="MainKt" />
+
+</TabItem>
+<TabItem label="Annotations">
+
+<Install artifacts={['koin-core', 'koin-annotations']} plugin bom jvmApp="org.koin.sample.MainKt" />
+
+Put every file of this tutorial in the package `org.koin.sample`, which the module scans below.
+
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+<Install artifacts={['koin-core']} bom jvmApp="MainKt" />
+
+This form does not need the Compiler Plugin, and nothing checks the graph at build time.
+
+</TabItem>
+</Tabs>
+
+This is the whole build file. `MainKt` is the class Kotlin generates for `Main.kt`, the file that holds `main()`. For plugin options, see [Koin Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## The application
+
+The app chains three components. `UserApplication` asks `UserService` for a user, and `UserService` reads from `UserRepository`:
+
+```
+User -> UserRepository -> UserService -> UserApplication
+```
+
+## Write the user data
+
+{/* check: kotlin-tutorial-dsl, kotlin-tutorial-annotations, kotlin-tutorial-constructor */}
+
+```kotlin
+data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
+```
+
+## Write the repository
+
+The repository keeps users in memory and finds one by name:
+
+{/* check: kotlin-tutorial-dsl, kotlin-tutorial-constructor */}
+
+```kotlin
+interface UserRepository {
+    fun findUserOrNull(name: String): User?
+    fun addUsers(users: List<User>)
+}
+
+class UserRepositoryImpl : UserRepository {
+
+    private val _users = arrayListOf<User>()
+
+    override fun findUserOrNull(name: String): User? {
+        return _users.firstOrNull { it.name == name }
+    }
+
+    override fun addUsers(users: List<User>) {
+        _users.addAll(users)
+    }
+}
+```
+
+`UserRepositoryImpl` has no dependency, so Koin can create it with no extra information.
+
+## Write the service
+
+`UserService` loads the users and prepares the greeting:
+
+{/* check: kotlin-tutorial-dsl, kotlin-tutorial-constructor */}
+
+```kotlin
+interface UserService {
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
+    fun loadUsers()
+    fun prepareHelloMessage(user: User?): String
+}
+
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService {
+
+    override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
+
+    override fun loadUsers() {
+        userRepository.addUsers(DEFAULT_USERS)
+    }
+
+    override fun prepareHelloMessage(user: User?): String {
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
+    }
+}
+```
+
+`UserServiceImpl` takes a `UserRepository` in its constructor. Koin passes it for you.
+
+## Write the application class
+
+`UserApplication` receives `UserService`, loads the users and prints the greeting:
+
+{/* check: kotlin-tutorial-dsl, kotlin-tutorial-constructor */}
+
+```kotlin
+class UserApplication(
+    private val userService: UserService
+) {
+
+    init {
+        userService.loadUsers()
+    }
+
+    fun sayHello(name: String) {
+        val user = userService.getUserOrNull(name)
+        val message = userService.prepareHelloMessage(user)
+        println(message)
+    }
+}
+```
+
+## Declare the Koin module
+
+A module is where you declare the components Koin creates (see [Core concepts](/docs/get-started/core-concepts/)). Declare the three classes as singletons, and bind the implementations to their interfaces.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kotlin-tutorial-dsl */}
+
+```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+val appModule = module {
+    single<UserApplication>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+}
+```
+
+The plugin reads each constructor, passes the dependencies, and checks at build time that every parameter has a definition.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Annotate each class with `@Singleton` and add a module class that scans the package:
+
+```kotlin
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class UserRepositoryImpl : UserRepository { /* ... */ }
+
+@Singleton
+class UserServiceImpl(private val userRepository: UserRepository) : UserService { /* ... */ }
+
+@Singleton
+class UserApplication(private val userService: UserService) { /* ... */ }
+```
+
+{/* check: kotlin-tutorial-annotations */}
+
+```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan("org.koin.sample")
+@Configuration
+class AppModule
+```
+
+Koin binds each implementation to its supertypes, so a request for `UserRepository` gets `UserRepositoryImpl`. `@ComponentScan` registers every annotated class in `org.koin.sample` and its subpackages (use your own package). `@Configuration` makes the module discoverable at startup. See [Modules](/docs/concepts/modules/).
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kotlin-tutorial-constructor */}
+
+```kotlin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val appModule = module {
+    singleOf(::UserApplication)
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserServiceImpl) bind UserService::class
+}
+```
+
+The Classic DSL writes the constructor call: `single<UserService> { UserServiceImpl(get()) }`.
+
+</TabItem>
+</Tabs>
+
+Any component that asks for a `UserRepository` now gets the same `UserRepositoryImpl` instance. `single` and `bind` are described in [Definitions](/docs/concepts/definitions/).
+
+## Start Koin
+
+Start Koin in `main()`, then get `UserApplication` from the container:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kotlin-tutorial-dsl, kotlin-tutorial-constructor */}
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.mp.KoinPlatform
+
+fun main() {
+    startKoin {
+        modules(appModule)
+    }
+
+    val userApplication = KoinPlatform.getKoin().get<UserApplication>()
+    userApplication.sayHello("Alice")
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Declare a `@KoinApplication` object and start Koin with the typed `startKoin<T>()`:
+
+{/* check: kotlin-tutorial-annotations */}
+
+```kotlin
+import org.koin.core.annotation.KoinApplication
+import org.koin.mp.KoinPlatform
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication
+object KoinUserApplication
+
+fun main() {
+    startKoin<KoinUserApplication>()
+
+    val userApplication = KoinPlatform.getKoin().get<UserApplication>()
+    userApplication.sayHello("Alice")
+}
+```
+
+`startKoin<KoinUserApplication>()` loads every `@Configuration` module, so you do not call `modules()`.
+
+</TabItem>
+</Tabs>
+
+Run `./gradlew run`. The app prints `Hello 'Alice' (alice@example.com)!`. Start options are covered in [Starting Koin](/docs/concepts/starting-koin/).
+
+## See the build catch a mistake
+
+The reason to use the Compiler Plugin is what happens when a definition is missing. Try it:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Remove `single<UserRepositoryImpl>() bind UserRepository::class` from the module and run `./gradlew build`. The build fails and names the class, the parameter and the module:
+
+```
+[Koin][KOIN-D001] Missing dependency: UserRepository
+  required by: dsl:UserServiceImpl (parameter 'userRepository')
+  in module: appModule
+```
+
+Put the line back.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Remove `@Singleton` from `UserRepositoryImpl` and run `./gradlew build`. The build fails and names the class, the parameter and the module:
+
+```
+[Koin][KOIN-D001] Missing dependency: org.koin.sample.UserRepository
+  required by: org.koin.sample.UserServiceImpl (parameter 'userRepository')
+  in module: org.koin.sample
+```
+
+Put the annotation back.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Remove `singleOf(::UserRepositoryImpl) bind UserRepository::class` from the module. The build still passes, because this form has no Compiler Plugin. The app fails when it runs, with an `InstanceCreationException` caused by `NoDefinitionFoundException`.
+
+To get this error at build time, add the plugin and use the Compiler Plugin DSL tab. Put the line back.
+
+</TabItem>
+</Tabs>
+
+Every code the plugin can report is listed in [Diagnostics](/docs/reference/diagnostics/).
+
+## Next steps
+
+- [Your first test](/docs/testing/first-test/): test this same app with Koin Test.
+- [Definitions](/docs/concepts/definitions/): every definition type and binding option.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the Compiler Plugin checks in your graph.
+- [Annotations reference](/docs/reference/annotations/): every annotation and its parameters.

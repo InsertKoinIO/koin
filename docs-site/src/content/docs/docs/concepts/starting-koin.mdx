@@ -1,0 +1,220 @@
+---
+title: "Starting Koin"
+description: "Start and stop the Koin container, pass start options, use typed startup with @KoinApplication, and why you start only once."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page covers how to start the Koin container, the options you can pass at start, typed startup with `@KoinApplication`, and how to load, unload and stop. It assumes you know what a module is (see [Modules](/docs/concepts/modules/)).
+
+## Start Koin
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.core.context.startKoin
+
+fun main() {
+    startKoin {
+        printLogger()
+        modules(appModule)
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication(modules = [AppModule::class])
+class MyApp
+
+fun main() {
+    startKoin<MyApp> {
+        printLogger()
+    }
+}
+```
+
+The Koin Compiler Plugin replaces `startKoin<MyApp>()` with a `startKoin { }` call that loads the modules listed in `@KoinApplication`, plus the `@Configuration` modules it discovers. See [Typed startup with @KoinApplication](#typed-startup-with-koinapplication).
+
+</TabItem>
+</Tabs>
+
+`startKoin` creates the container and registers it in `GlobalContext`, the default context for your process. Once it returns, every `get()`, `by inject()` or platform API (`by viewModel()`, `koinInject()`) resolves from this container.
+
+## Start Koin only once
+
+Call `startKoin` once per process. A second call throws `KoinApplicationAlreadyStartedException`. This was tested on the JVM, iOS and wasmJs.
+
+This matters wherever your code can run twice: an Android `Application` is created once, but an iOS `initKoin()` called from a SwiftUI view, a test class that starts Koin in each test, or two libraries that both call `startKoin` will hit the exception. Your options:
+
+- To add modules after start, use [`loadKoinModules`](#load-and-unload-modules-at-runtime).
+- To restart (in tests), call [`stopKoin()`](#stop-koin) first. The test rules in [Testing](/docs/testing/) do it for you.
+- To check whether Koin is already running, `KoinPlatform.getKoinOrNull()` returns `null` when it is not started.
+- For a library or SDK, do not call `startKoin`. Use a private container: see [Context isolation](/docs/concepts/context-isolation/).
+
+## Start options
+
+Everything inside the `startKoin { }` block configures the container:
+
+```kotlin
+startKoin {
+    printLogger(Level.DEBUG)
+    properties(mapOf("server_url" to "https://api.example.com"))
+    allowOverride(false)
+    modules(coreModule, networkModule)
+    lazyModules(analyticsModule)
+}
+```
+
+| Option | What it does |
+|--------|--------------|
+| `modules(...)` | Loads modules immediately. Takes one module, several, or a `List<Module>` |
+| `lazyModules(...)` | Loads modules in the background. Needs `koin-core-coroutines`, see [Lazy modules](/docs/concepts/lazy-modules/) |
+| `printLogger(level)`, `logger(logger)` | Sets the logger. See [Logging](/docs/concepts/logging/) |
+| `properties(map)`, `fileProperties(file)`, `environmentProperties()` | Loads properties. See [Properties](/docs/concepts/properties/) |
+| `allowOverride(false)` | Fails when two definitions declare the same type without `.override()`. See [Overriding a definition](/docs/concepts/definitions/#overriding-a-definition) |
+| `strictOverride()` | Same as `allowOverride(false)` |
+| `createEagerInstances()` | Creates the `createdAtStart` definitions now. `startKoin` and `koinApplication` already do it at the end of the block, so you need it only with `koinApplication(createEagerInstances = false)` |
+| `options(...)` | Sets Koin options, such as `viewModelScopeFactory()`. See [Scopes](/docs/concepts/scopes/) |
+
+The `startKoin` block runs on the calling thread. Every module you load there, and every `createdAtStart` definition, adds to startup time.
+
+## Typed startup with @KoinApplication
+
+With the [Koin Compiler Plugin](/docs/tooling/compiler-plugin/), an application class annotated with `@KoinApplication` describes which modules to load. You start Koin from that class with a typed call:
+
+```kotlin
+@Module
+@ComponentScan("com.myapp.data")
+class DataModule
+
+@Module(includes = [DataModule::class])
+class AppModule
+
+@KoinApplication(modules = [AppModule::class])
+class MyApp
+```
+
+| Call | Result |
+|------|--------|
+| `startKoin<MyApp>()` | Starts Koin in `GlobalContext` with the modules of `MyApp` |
+| `startKoin<MyApp> { ... }` | Same, with a configuration block (logger, properties, extra DSL modules) |
+| `koinApplication<MyApp>()` | Creates an isolated `KoinApplication`, not registered globally |
+| `koinConfiguration<MyApp>()` | Creates a `KoinConfiguration`, for APIs that start Koin for you (Compose `KoinApplication`, Ktor) |
+| `withConfiguration<MyApp>()` | Adds the modules of `MyApp` to an existing `KoinApplication`, for example inside Ktor's `install(Koin) { }` |
+
+These functions are imported from `org.koin.plugin.module.dsl`. They are compiler stubs: without the Compiler Plugin applied, they throw at runtime with a message telling you the plugin is missing.
+
+`@KoinApplication` takes two parameters:
+
+- `modules`: the `@Module` classes to load explicitly.
+- `configurations`: the configuration labels to discover. See [Configuration labels](/docs/concepts/modules/#configuration-labels).
+
+Each `@Module` class brings its `includes` and its `@ComponentScan` definitions. The configuration block of `startKoin<MyApp> { }` is a normal `startKoin` block, so you can mix annotated modules with DSL modules:
+
+```kotlin
+startKoin<MyApp> {
+    printLogger()
+    modules(legacyDslModule)
+}
+```
+
+### Loading @Module classes without @KoinApplication
+
+Inside a plain `startKoin { }` or `koinApplication { }` block, you can load `@Module` classes directly:
+
+```kotlin
+import org.koin.plugin.module.dsl.module
+import org.koin.plugin.module.dsl.modules
+
+startKoin {
+    module<NetworkModule>()
+    modules(DataModule::class, CacheModule::class)
+}
+```
+
+This helps in tests, when you want only some modules. `module<T>()` and `modules(vararg KClass)` are compiler stubs too, and they don't work inside `startKoin<T> { }`, which the plugin already rewrites.
+
+:::note
+The Compiler Plugin generates a `module()` function for each `@Module` class, and you don't call it yourself. Load annotated modules with `@KoinApplication` and `startKoin<T>()`, or with `module<T>()` as shown above.
+:::
+
+## Isolated instance with koinApplication
+
+`koinApplication { }` creates a container that is not registered in `GlobalContext`:
+
+```kotlin
+val koinApp = koinApplication {
+    modules(sdkModule)
+}
+
+val service = koinApp.koin.get<SdkService>()
+```
+
+Global APIs (`KoinComponent`, `by inject()` in an Activity) don't see this container. Use it for libraries and SDKs that must not share the host app's container, or for tests that need their own instance. The full pattern is in [Context isolation](/docs/concepts/context-isolation/).
+
+`koinConfiguration { }` builds a configuration without starting anything. You pass it to APIs that start Koin themselves, such as Compose `KoinApplication` and the Ktor plugin.
+
+## Starting on each platform
+
+- Android: start Koin in `Application.onCreate()` with `androidContext()` and `androidLogger()`. See [Koin on Android](/docs/platforms/android/).
+- Compose: start Koin from a composable with `KoinApplication`. See [Koin for Compose](/docs/platforms/compose/).
+- Ktor: install the `Koin` plugin in your `Application` module. See [Koin for Ktor](/docs/platforms/ktor/).
+- Kotlin Multiplatform: share an `initKoin()` function in `commonMain` and call it from each platform. See [Start Koin on each platform](/docs/platforms/kmp/start-koin/).
+
+## Load and unload modules at runtime
+
+After start, you can add and remove modules in the global container:
+
+```kotlin
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
+
+if (premiumEnabled) {
+    loadKoinModules(premiumModule)
+}
+
+// later
+unloadKoinModules(premiumModule)
+```
+
+Both functions take one module or a `List<Module>`. `unloadKoinModules` removes the definitions of the module and drops their instances, so a later `get()` for these types fails.
+
+The Compiler Plugin can't verify a graph assembled at runtime: it can't know when, or if, the module is loaded. Types that other definitions need from a runtime-loaded module must be marked `@Provided`, and the plugin reports the module itself as not loaded at start. See [Compile-time safety](/docs/tooling/compile-time-safety/). If you load modules later only to speed up startup, [Lazy modules](/docs/concepts/lazy-modules/) is usually a better fit.
+
+## Stop Koin
+
+```kotlin
+import org.koin.core.context.stopKoin
+
+stopKoin()
+```
+
+`stopKoin()` closes the global container: it releases every instance, calls the `onClose` callbacks of your definitions, and clears `GlobalContext`. You can then call `startKoin` again. For an isolated container, call `close()` on the `KoinApplication`:
+
+```kotlin
+koinApp.close()
+```
+
+In tests, stop Koin after each test so the next one starts clean. [Testing](/docs/testing/) shows the JUnit rules that do it for you.
+
+## Limits
+
+- Typed startup (`startKoin<T>()`, `module<T>()`) needs the Compiler Plugin. The KSP processor is deprecated, see [Migrate from KSP](/docs/migration/from-ksp/).
+- Modules loaded with `loadKoinModules` after start are not part of the compile-time graph check.
+
+## Related
+
+- [Modules](/docs/concepts/modules/): organize definitions, `includes()`, `@Module`, `@Configuration` and labels.
+- [Definitions](/docs/concepts/definitions/): declare what Koin creates, eager creation and overrides.
+- [Lazy modules](/docs/concepts/lazy-modules/): load modules in the background to shorten startup.
+- [Properties](/docs/concepts/properties/) and [Logging](/docs/concepts/logging/): the other start options.
+- [Context isolation](/docs/concepts/context-isolation/): run Koin in an isolated container for SDKs.
+- [Compiler Plugin](/docs/tooling/compiler-plugin/): install the plugin needed for `startKoin<T>()`.

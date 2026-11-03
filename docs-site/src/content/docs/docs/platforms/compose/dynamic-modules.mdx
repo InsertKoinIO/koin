@@ -1,0 +1,106 @@
+---
+title: "Load modules with a Composable"
+description: "Load Koin modules when a Composable enters the composition with rememberKoinModules, and unload them when it leaves."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page shows how `rememberKoinModules` loads Koin modules when a Composable enters the composition and can unload them when it leaves. Use it to load the definitions of a feature only when its screen is shown. It is in `io.insert-koin:koin-compose` and is marked `@KoinExperimentalAPI`. You should know how to declare [modules](/docs/concepts/modules/).
+
+## Load the modules of a screen
+
+```kotlin
+import org.koin.compose.module.rememberKoinModules
+
+val checkoutModule = module {
+    factory<CheckoutRepository>()
+    viewModel<CheckoutViewModel>()
+}
+
+@OptIn(KoinExperimentalAPI::class)
+@Composable
+fun CheckoutScreen() {
+    rememberKoinModules(unloadOnForgotten = true) { listOf(checkoutModule) }
+
+    val viewModel = koinViewModel<CheckoutViewModel>()
+}
+```
+
+The lambda returns the modules to load. Koin loads them into the Koin instance of the composition the first time `CheckoutScreen` is composed. Recompositions don't load them again.
+
+Call `rememberKoinModules` before the `koinInject()` or `koinViewModel()` calls that need its definitions.
+
+## Unloading
+
+By default, the modules stay loaded after the Composable leaves the composition. Three parameters control unloading:
+
+| Parameter | Default | Effect |
+|-----------|---------|--------|
+| `unloadOnForgotten` | `unloadModules` | Unload when the Composable leaves the composition |
+| `unloadOnAbandoned` | `unloadModules` | Unload if the composition is abandoned |
+| `unloadModules` | `false` | Default value for both parameters above |
+
+```kotlin
+// unload in both cases
+rememberKoinModules(unloadModules = true) { listOf(checkoutModule) }
+```
+
+Unloading removes the definitions and drops their `single` instances. Code that still holds a reference to an instance keeps it, but Koin can no longer resolve that type. Don't unload a module that another screen still uses.
+
+## Loading per destination
+
+Call `rememberKoinModules` in a navigation destination to load a feature when the user navigates to it:
+
+```kotlin
+NavHost(navController, startDestination = HomeRoute) {
+    composable<HomeRoute> {
+        HomeScreen()
+    }
+    composable<CheckoutRoute> {
+        rememberKoinModules(unloadOnForgotten = true) { listOf(checkoutModule) }
+        CheckoutScreen()
+    }
+}
+```
+
+## Module styles
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+val checkoutModule = module {
+    factory<CheckoutRepository>()
+    viewModel<CheckoutViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+`rememberKoinModules` takes `Module` values. Annotated `@Module` classes are loaded at start through `@KoinApplication` (see [Modules](/docs/concepts/modules/)). To load a feature on demand, declare its module with the DSL.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val checkoutModule = module {
+    factoryOf(::CheckoutRepository)
+    viewModelOf(::CheckoutViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Limits
+
+- **Main thread**: modules are loaded synchronously during composition. A large module adds to the time of that frame. To load modules in the background at start, see [Lazy modules](/docs/concepts/lazy-modules/).
+- **Overrides**: a module loaded later wins over an earlier definition of the same type (see [Definitions](/docs/concepts/definitions/)). Unloading it does not restore the earlier definition.
+- **Previews**: `rememberKoinModules` needs a running Koin instance. For previews, use `KoinApplicationPreview` (see [Testing composables](/docs/testing/compose/)).
+
+## Next steps
+
+- [Lifecycle in Compose](/docs/platforms/compose/lifecycle/): what each Compose API releases and when.
+- [Modules](/docs/concepts/modules/) and [Lazy modules](/docs/concepts/lazy-modules/): declare modules and load them in the background.
+- [Testing composables](/docs/testing/compose/): previews and UI tests.

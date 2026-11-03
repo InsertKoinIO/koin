@@ -1,0 +1,78 @@
+---
+title: "R8 and ProGuard"
+description: "What Koin keeps for you under R8 and ProGuard, what you must keep in your own app, and why SavedStateHandle errors are not a shrinking problem."
+---
+
+This page explains how Koin behaves under code shrinking and obfuscation (R8 and ProGuard), what the Koin AARs keep for you, and what you keep in your own app. The shipped consumer rule files link here.
+
+## In short
+
+- Koin's resolution does not use reflection over your constructors. `get<T>()`, `inject<T>()`, `viewModel<T>()` and the `*Of` builders use reified types, and on Android and JVM Koin keys its registry by `Class.getName()`. You do not need to keep your definitions, ViewModels or their constructors on Koin's behalf.
+- Five Koin artifacts ship a `consumer-rules.pro`, so their rules apply automatically. You usually add nothing.
+- You still keep classes that something else loads by name, such as Fragments created by `KoinFragmentFactory`, and your own saved-state classes.
+
+## What Koin ships
+
+These rules come from the `consumer-rules.pro` file of each artifact. No other Koin artifact ships one.
+
+| Artifact | Rules |
+|----------|-------|
+| `koin-android` | `-dontwarn org.koin.**` |
+| `koin-core-viewmodel` | `-dontwarn org.koin.**` |
+| `koin-compose-viewmodel` | `-dontwarn org.koin.**` |
+| `koin-androidx-workmanager` | `-dontwarn org.koin.**` |
+| `koin-androidx-startup` | `-keep class org.koin.androix.startup.KoinInitializer { *; }` and `-keep class * implements org.koin.androix.startup.KoinStartup` |
+
+`-dontwarn org.koin.**` silences warnings about Koin internals, such as Kotlin reflection metadata and optional Java interop. `koin-androidx-startup` has no `-dontwarn`: it only keeps the initializer that its manifest references, and every class that implements `KoinStartup`. That second rule keeps your `Application` class when it implements `KoinStartup` (see [Start with AndroidX App Startup](/docs/platforms/android/startup-options/#start-with-androidx-app-startup)). Without `koin-androidx-startup`, no Koin rule keeps your application classes, and Koin does not need them kept.
+
+## What you keep
+
+These classes are loaded by the platform or by another library, not by Koin's resolution.
+
+- Fragments created by `KoinFragmentFactory`. The factory loads the Fragment with `Class.forName(className)`, so keep your Fragment subclasses. They are often kept already through layout references, `@Keep` or AndroidX rules. See [Fragment factory](/docs/platforms/android/fragments/).
+- WorkManager Workers. `androidx.work` ships its own consumer rules that keep `ListenableWorker` subclasses, so you need no Koin-specific rule. See [WorkManager](/docs/platforms/android/workmanager/).
+- Saved-state classes. The values you put into a `SavedStateHandle` must survive R8 like any other saved state. Keep your own `Parcelable` and `Serializable` state classes:
+
+```txt
+# Example: keep your own saved-state payloads
+-keep class com.example.** implements android.os.Parcelable { *; }
+```
+
+## ViewModels and SavedStateHandle
+
+Intermittent `No definition found for SavedStateHandle` crashes are not caused by R8 stripping a Koin ViewModel reflection. ViewModel resolution does not use reflection, so a `-keep` rule on your ViewModel changes nothing.
+
+Koin builds the `SavedStateHandle` from the `CreationExtras` that the ViewModel factory receives, and only while the ViewModel is being created. Declare it directly in the ViewModel constructor:
+
+```kotlin
+// resolved during creation
+class MyViewModel(val handle: SavedStateHandle) : ViewModel()
+
+// resolved later: the CreationExtras are gone by then
+class MyViewModel(koin: Koin) : ViewModel() {
+    val handle by lazy { koin.get<SavedStateHandle>() } // fails
+}
+```
+
+If you declare ViewModels inside `viewModelScope { }`, enable the matching option so Koin can create the scope:
+
+```kotlin
+import org.koin.core.option.viewModelScopeFactory
+
+startKoin {
+    options(viewModelScopeFactory())
+    modules(appModule)
+}
+```
+
+`viewModelScopeFactory()` is an opt-in API (`@KoinViewModelScopeApi`). See [Android scopes](/docs/platforms/android/scopes/#viewmodel-scope).
+
+## Other targets
+
+On Android and JVM, the registry key is `Class.getName()`, which is the runtime class name, so renaming by R8 does not break it. On the other targets Koin derives the key from Kotlin reflection: `qualifiedName` on Native, `simpleName` on JS and Wasm. If you minify names on those targets, do not rely on class names to tell two definitions apart: use [qualifiers](/docs/concepts/qualifiers/) such as `named("...")`. Check the behavior of your own minified JS or Wasm builds, since this page does not cover them.
+
+## Next steps
+
+- [Android: install and start](/docs/platforms/android/): start Koin and configure logging.
+- [ViewModel on Android](/docs/platforms/android/viewmodel/): `SavedStateHandle` and ViewModel parameters.
+- [Lifecycle and leak pitfalls](/docs/platforms/android/best-practices/): the Android error table.

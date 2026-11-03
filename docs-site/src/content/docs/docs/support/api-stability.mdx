@@ -1,0 +1,74 @@
+---
+title: "API stability"
+description: "The stability contract of the Koin API: version numbers, how new APIs are introduced and removed, and what each release type promises."
+---
+
+This page describes the stability contract of the Koin API: how new APIs are introduced, how old ones are removed, and what each release type promises. For the changes in each version, see [Releases](/docs/support/releases/).
+
+## Version numbers
+
+Koin versions follow `Major.Minor.Patch`:
+
+- **Patch**: fixes only, and minor updates of dependency libraries.
+- **Minor**: new features and deprecations.
+- **Major**: new features with impact, deprecations and breaking changes.
+
+The release cycle and the support given to each version are in [Versions, roadmap and support](/docs/support/).
+
+## Compatibility between versions
+
+Koin aims to keep existing applications working across versions. The Kotzilla team and the maintainers check that changes, improvements and optimizations in a new release don't break existing code. When an API must change, it goes through the experimental and deprecation steps below, so you can plan the upgrade.
+
+## Experimental APIs
+
+New features are first published under the `@KoinExperimentalAPI` annotation. An experimental API is:
+
+- **Under active development**: its design is not final and may change.
+- **Open for feedback**: try it and report what works and what doesn't, this shapes the final design.
+- **Not guaranteed**: it may change or be removed in a later release, based on feedback.
+
+Using an experimental API without an opt-in produces a compiler warning. Opt in with Kotlin's `@OptIn`:
+
+```kotlin
+@OptIn(KoinExperimentalAPI::class)
+fun setupKoin() { ... }
+```
+
+The opt-in makes the dependency on an unstable API explicit in your code.
+
+## Delicate APIs
+
+`@KoinDelicateAPI` marks stable APIs that need care. They target specific, advanced cases, and wrong usage can lead to unexpected behavior at runtime. Like experimental APIs, they produce a compiler warning until you opt in with `@OptIn(KoinDelicateAPI::class)`. Read the API documentation before you opt in.
+
+## Deprecated APIs
+
+An API that is being phased out is marked with Kotlin's `@Deprecated`. The message gives the replacement or the reason. When the update is simple, a `ReplaceWith` lets the IDE apply it for you.
+
+Deprecation goes through two levels:
+
+- **Warning**: the API still works, but you should replace it soon.
+- **Error**: the API no longer compiles. You must replace it before upgrading.
+
+An API deprecated at error level is usually removed in a later release. The [release notes](/docs/support/releases/) list deprecations and removals for each version.
+
+## Internal APIs
+
+`@KoinInternalApi` marks functions and classes that exist for Koin's own mechanisms. They are not part of the public contract:
+
+- **Internal use only**: they serve Koin's implementation, not application code.
+- **Subject to change**: they may change or disappear in any release, without notice.
+
+Using one without an opt-in is a compile error. Don't opt in from your application code.
+
+## Release types
+
+Pre-release versions carry a suffix that says how mature they are:
+
+- **Alpha and beta**: published for testing and feedback. They often contain experimental features and don't fully follow the stable API guarantees. Use them in non-production environments.
+- **Release Candidate (RC)**: feature-complete candidates for a stable version, in final testing. They are expected to be compatible with the final release, but small changes are still possible based on feedback.
+
+## Next steps
+
+- [Releases](/docs/support/releases/): changes, deprecations and removals in each version.
+- [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/): act on deprecations and breaking changes.
+- [Versions, roadmap and support](/docs/support/): release cycle and support options.

@@ -40,7 +40,7 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - **Resolution behavior is API** — any change in `core/resolution/` states the old vs new resolution order / matching in the PR description.
 - **Every bug fix ships a regression test** that fails before the fix, in `commonTest` when the code is common.
 - **KMP discipline** — a `commonMain` change is verified beyond the JVM (`allTests`, or at least one native target and `wasmJs`). `./gradlew test` silently skips native, JS and Wasm tests.
-- In `commonTest`: no backtick test names (they break JS / Wasm / native), and `runTest { }` in block-body form.
+- In `commonTest`: no backtick test names (they break JS / Wasm / native), and `fun test() = runTest { }` in expression-body form: on JS and Wasm, a block body discards the promise, so failing tests pass.
 - Commit style: `Fix #NNNN - description`. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
 
 Detailed contributor notes (engine internals, known failing off-JVM tests, release notes policy): `projects/CLAUDE.md`.

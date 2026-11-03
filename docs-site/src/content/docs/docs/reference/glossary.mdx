@@ -1,0 +1,77 @@
+---
+title: "Glossary"
+description: "The canonical vocabulary of the Koin documentation: styles, DSL forms, Koin concepts and tooling names."
+---
+
+This page defines the words the documentation uses, and the words it avoids. When two pages seem to use a term differently, this page is the reference.
+
+## Declaration styles
+
+Koin has two styles, three DSL forms, and four ways to declare a definition.
+
+| Term | Meaning |
+|------|---------|
+| **Style** | Koin DSL or Koin Annotations. Pick one per project. Two styles |
+| **Koin DSL** | Definitions are written in Kotlin code (`module { }`), not on your classes. It has three DSL forms |
+| **Koin Annotations** | Definitions are declared with annotations on your classes (`@Singleton`, `@Factory`, `@KoinViewModel`), JSR-330 compatible. Needs the Compiler Plugin |
+| **DSL form** | One of the three ways to write the Koin DSL. You can mix them in one module |
+| **Compiler Plugin DSL** | `single<T>()`. The Compiler Plugin reads the constructor. Recommended with the plugin |
+| **Constructor DSL** | `singleOf(::T)`. A constructor reference |
+| **Classic DSL** | `single { T(get()) }`. A lambda where you write the calls. Use it for custom expressions |
+| **Declaration form** | Umbrella term for the four ways above (three DSL forms and annotations) |
+
+The code tabs in this documentation are named "Compiler Plugin DSL", "Annotations" and "Constructor / Classic DSL". The last tab covers two forms that differ in imports: `org.koin.core.module.dsl.*` for the Constructor DSL and `org.koin.dsl.*` for the Classic DSL.
+
+Qualifiers and injected parameters in the Compiler Plugin DSL use annotations on the class (`@Named`, `@InjectedParam`). The DSL keeps your definitions out of your classes, but those two annotations still depend on the annotation artifacts. See [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+## Koin concepts
+
+| Term | Meaning |
+|------|---------|
+| **Container** | The object that holds your definitions and creates and keeps instances (`Koin`, started by `startKoin`). See [Starting Koin](/docs/concepts/starting-koin/) |
+| **Definition** | A rule that tells Koin how to create one type and how long to keep the instance. See [Definitions](/docs/concepts/definitions/) |
+| **Module** | A group of definitions, built with `module { }` or a `@Module` class. See [Modules](/docs/concepts/modules/) |
+| **Scope** | A bounded lifetime for instances: a scope declaration lists `scoped` definitions, and each scope instance holds its own copies until it closes. See [Scopes](/docs/concepts/scopes/) |
+| **Qualifier** | A name or a type that tells apart two definitions of the same type. See [Qualifiers](/docs/concepts/qualifiers/) |
+| **Single** | A definition that creates one instance, kept for the life of the container |
+| **Factory** | A definition that creates a new instance on each request |
+| **Scoped** | A definition that creates one instance per scope instance |
+| **Binding** | Registering a definition under another type, usually an interface (`bind`, `binds`) |
+| **Injected parameter** | A value the caller passes with `parametersOf()` when it asks for an instance. See [Injected parameters](/docs/concepts/parameters/) |
+| **Property** | A key-value pair stored in the container. See [Properties](/docs/concepts/properties/) |
+| **Archetype** | A scope declaration shared by every component of a kind (ViewModel, Activity, Fragment) |
+| **Scope source** | The object that created a scope instance |
+| **Entry point** | Code that starts Koin (`startKoin`, `koinApplication`, `koinConfiguration`, `@KoinApplication`) and where the Compiler Plugin checks the full graph |
+| **Isolated context** | A container that is not registered globally, used by libraries and SDKs. See [Context isolation](/docs/concepts/context-isolation/) |
+| **Constructor injection** | The class receives its dependencies as constructor parameters. Preferred wherever Koin creates the class. See [Injection](/docs/concepts/injection/) |
+| **Service locator** | Calling `get()` or `inject()` from inside a class to fetch what it needs. Reserved for entry points |
+
+## Tooling and packaging
+
+| Term | Meaning |
+|------|---------|
+| **Compiler Plugin** | The Koin Compiler Plugin: a Kotlin compiler plugin that generates the calls for the Compiler Plugin DSL and annotations, and checks your graph. Gradle plugin id `io.insert-koin.compiler.plugin`. On first mention, write "Koin Compiler Plugin" |
+| **Compile-time safety** | The graph checks the Compiler Plugin runs during the build. The Gradle option is `compileSafety`. See [Compile-time safety](/docs/tooling/compile-time-safety/) |
+| **Diagnostic** | A message with a stable code such as `KOIN-D001`. See [Diagnostics](/docs/reference/diagnostics/) |
+| **BOM** | Bill of materials: a Gradle platform that pins every Koin library to one version. See [Gradle artifacts and BOM](/docs/reference/artifacts/#install-with-the-bom) |
+| **KSP processor** | The deprecated annotation processor `koin-ksp-compiler`, replaced by the Compiler Plugin. See [Migrate from KSP](/docs/migration/from-ksp/) |
+| **`koin-annotations`** | The library that holds the annotations (the Koin Annotations style). It follows the Koin version |
+| **`koin-gradle-plugin`** | An old Gradle plugin (id `koin`) for the deprecated `checkModules` tasks. It is not the Compiler Plugin |
+| **`verify()`** | The test API that checks a module's definitions. JVM only. See [Verify your configuration](/docs/testing/verify/) |
+
+## Words to avoid
+
+| Do not write | Write |
+|--------------|-------|
+| "Koin Gradle plugin" for the Compiler Plugin | "Compiler Plugin", or "the Gradle plugin `io.insert-koin.compiler.plugin`" when you mean the install |
+| "plugin DSL", "Koin Plugin DSL" | "Compiler Plugin DSL" |
+| "DSL style" for a single form | "DSL form" |
+| "Koin KSP" | "KSP processor" |
+| "compile safety", "compile-time checks" in prose | "compile-time safety" (use `compileSafety` in code) |
+| "three styles" | "two styles" and "three DSL forms" |
+
+## Related
+
+- [Core concepts](/docs/get-started/core-concepts/): the main concepts on one running example.
+- [Choose your style](/docs/get-started/choose-your-style/): pick between the styles and forms.
+- [DSL reference](/docs/reference/dsl/) and [Annotations reference](/docs/reference/annotations/): every keyword and annotation.

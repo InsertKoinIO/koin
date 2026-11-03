@@ -1,0 +1,236 @@
+---
+title: "Koin in Compose"
+description: "Shared API for Jetpack Compose and Compose Multiplatform: install, start Koin, koinInject, KoinApplication and the deprecated entry points."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+This page covers the Compose packages, the two ways to start Koin in a Compose app, and `koinInject()` to retrieve dependencies in a Composable. It works the same on Jetpack Compose (Android) and Compose Multiplatform. You should know how to declare [definitions](/docs/concepts/definitions/) and [modules](/docs/concepts/modules/).
+
+## Install
+
+<Tabs>
+<TabItem label="Android">
+
+<Install artifacts={['koin-compose-viewmodel']} plugin bom />
+
+On Android, `koin-compose-viewmodel` brings `koin-compose` and `koin-android`. Add `koin-androidx-compose` only if you use `KoinActivityScope` or `KoinFragmentScope`: it also brings a second `koinViewModel` (see [which one to import](/docs/platforms/compose/viewmodel/#which-koinviewmodel-to-import)).
+
+</TabItem>
+<TabItem label="Compose Multiplatform">
+
+<Install artifacts={['koin-compose', 'koin-compose-viewmodel']} plugin sourceSet="commonMain" bom />
+
+</TabItem>
+</Tabs>
+
+Omit the `plugin` line if you use the Classic or Constructor DSL without the Compiler Plugin. With Annotations, also add `koin-annotations`.
+
+All Compose APIs live in the multiplatform artifacts, so the same code runs on Jetpack Compose and Compose Multiplatform. `koin-compose` targets Android, JVM desktop, JS, Wasm, iOS and macOS. Navigation artifacts (`koin-compose-viewmodel-navigation`, `koin-compose-navigation3`) are added only if you use them. The full list of artifacts and their targets is in [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+Compose Multiplatform specifics (shared start code, iOS, previews) are in [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/).
+
+:::note
+Functions that exist only on Android are marked "Android only" in these pages: `koinActivityViewModel()`, `koinActivityInject()`, `KoinActivityScope` and `KoinFragmentScope`.
+:::
+
+## Starting Koin
+
+You have two options. Pick one per app.
+
+### Start outside Compose
+
+Start Koin where your platform starts: the `Application` class on Android, the shared `initKoin()` function in a KMP project (see [Start Koin once](/docs/platforms/kmp/start-koin/)). Compose then uses the running Koin instance with no extra setup:
+
+```kotlin
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+
+@Composable
+fun App() {
+    val repository = koinInject<UserRepository>()
+}
+```
+
+Use this option when code outside Compose (a `Service`, a `WorkManager` worker, iOS Swift code) also needs Koin, because that code runs without any Composable.
+
+### Start from a Composable with KoinApplication
+
+`KoinApplication` starts Koin from the root Composable and provides it to all children:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.compose.KoinApplication
+import org.koin.dsl.koinConfiguration
+
+@Composable
+fun App() {
+    KoinApplication(
+        configuration = koinConfiguration { modules(appModule) }
+    ) {
+        MainScreen()
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+// di/Koin.kt
+import org.koin.core.annotation.KoinApplication
+
+@KoinApplication
+object KoinApp
+```
+
+The annotation and the Composable are both named `KoinApplication`, so keep them in separate files.
+
+```kotlin
+// App.kt
+import org.koin.compose.KoinApplication
+import org.koin.plugin.module.dsl.koinConfiguration
+
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration<KoinApp>()) {
+        MainScreen()
+    }
+}
+```
+
+`koinConfiguration<KoinApp>()` loads the modules of the `@KoinApplication` class. Pass a lambda to add options: `koinConfiguration<KoinApp> { printLogger() }`.
+
+</TabItem>
+</Tabs>
+
+What `KoinApplication` does for you:
+
+- **Platform setup**: on Android it calls `androidContext()` with the application context and sets up `androidLogger()`. On other platforms it sets up `printLogger()`. Change the level with the `logLevel` parameter (default `Level.INFO`).
+- **Existing instance**: if Koin is already started, `KoinApplication` attaches to the running instance and ignores its own configuration.
+- **Lifecycle**: Koin is not stopped when `KoinApplication` leaves the composition, so it survives an Android configuration change or Activity recreation. It is stopped only if the composition is abandoned.
+
+`koinConfiguration { }` builds a reusable [KoinConfiguration](/docs/concepts/starting-koin/), so you can share the same configuration between `KoinApplication`, `startKoin` and tests.
+
+### Deprecated entry points
+
+| API | Status | Use instead |
+|-----|--------|-------------|
+| `KoinApplication(application = { ... })` | Deprecated | `KoinApplication(configuration = koinConfiguration { ... })` |
+| `KoinMultiplatformApplication(config)` | Deprecated | `KoinApplication(configuration)` |
+| `KoinContext { }` | Deprecated, not needed | Nothing. Compose finds the instance started with `startKoin` |
+| `KoinAndroidContext { }` | Deprecated, not needed | Nothing |
+
+## Injecting with koinInject
+
+`koinInject()` resolves a dependency from the current Koin scope (the root scope, unless a [Compose scope](/docs/platforms/compose/scopes/) is active):
+
+```kotlin
+import org.koin.compose.koinInject
+
+@Composable
+fun UserScreen() {
+    val repository = koinInject<UserRepository>()
+}
+```
+
+Declare it as a default parameter. The Composable still works with Koin, and a test or a preview can pass its own instance:
+
+```kotlin
+@Composable
+fun UserScreen(repository: UserRepository = koinInject()) {
+    // ...
+}
+```
+
+`koinInject()` wraps the resolution in `remember`, keyed on the qualifier, the scope and the parameters. A recomposition with the same keys returns the same object without resolving again.
+
+### Qualifier and scope
+
+```kotlin
+@Composable
+fun SyncScreen() {
+    val localDb = koinInject<Database>(qualifier = named("local"))
+    val cache = koinInject<SessionCache>(scope = sessionScope)
+}
+```
+
+See [Qualifiers](/docs/concepts/qualifiers/) for declaring named definitions.
+
+### Parameters
+
+Pass [injected parameters](/docs/concepts/parameters/) with a lambda, or with a `ParametersHolder`:
+
+```kotlin
+@Composable
+fun UserDetail(userId: String) {
+    // lambda form
+    val presenter = koinInject<UserPresenter> { parametersOf(userId) }
+
+    // holder form
+    val presenter2 = koinInject<UserPresenter>(parametersHolder = parametersOf(userId))
+}
+```
+
+With the lambda form, Koin invokes the lambda on every recomposition to compare the values. The holder form skips that step, so prefer it when performance matters. Parameters are compared by value: when `userId` changes, `koinInject()` resolves a new instance.
+
+## Injecting from the Activity scope (Android only)
+
+`koinActivityInject()` resolves from the Activity scope, from any Composable of that Activity. The Activity must implement `AndroidScopeComponent`, otherwise it fails with an error:
+
+```kotlin
+import org.koin.compose.activity.koinActivityInject
+
+@Composable
+fun DeepNestedScreen() {
+    val session: SessionManager = koinActivityInject()
+}
+```
+
+It takes the same `qualifier`, `scope` and `parameters` arguments as `koinInject()`. See [Scopes in Compose](/docs/platforms/compose/scopes/) for the Activity scope setup.
+
+## Accessing Koin directly
+
+| Function | Returns |
+|----------|---------|
+| `getKoin()` | The `Koin` instance of the current composition |
+| `currentKoinScope()` | The scope `koinInject()` uses by default |
+
+Both are Composable functions in `org.koin.compose`. Prefer `koinInject()` in UI code.
+
+## Previews
+
+Compose previews do not run your `Application` class. Use `KoinApplicationPreview` to give a preview its own Koin instance: see [Testing composables](/docs/testing/compose/).
+
+## API summary
+
+| API | Purpose | Page |
+|-----|---------|------|
+| `KoinApplication(configuration) { }` | Start Koin from Compose | This page |
+| `koinInject<T>()` | Resolve any dependency | This page |
+| `koinActivityInject<T>()` | Resolve from the Activity scope (Android only) | This page |
+| `koinViewModel<T>()` | Resolve a ViewModel. Import `org.koin.compose.viewmodel.koinViewModel` | [ViewModel in Compose](/docs/platforms/compose/viewmodel/) |
+| `KoinScope`, `KoinNavigationScope` | Scope bound to a Composable or a destination | [Scopes in Compose](/docs/platforms/compose/scopes/) |
+| `rememberKoinModules { }` | Load modules with a Composable | [Load modules with a Composable](/docs/platforms/compose/dynamic-modules/) |
+| `KoinIsolatedContext` | Use an isolated Koin instance | [Isolated context in Compose](/docs/platforms/compose/isolated-context/) |
+| `navigation<T> { }`, `koinEntryProvider()` | Navigation 3 entries | [Navigation 3](/docs/platforms/compose/navigation3/) |
+
+## Next steps
+
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()`, which import to use, and navigation-scoped ViewModels.
+- [Lifecycle in Compose](/docs/platforms/compose/lifecycle/): how injected objects behave across recomposition.
+- [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/): `KoinApplication` or `initKoin`, previews, iOS.
+- [Android](/docs/platforms/android/): `androidContext()` and the Android `Application` class.
+- [Testing composables](/docs/testing/compose/): previews and UI tests.

@@ -1,0 +1,130 @@
+---
+// The only place Gradle dependency snippets are written. Pages declare which
+// artifacts they need; coordinates and versions come from one file.
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import { versions } from '~/data/versions';
+
+interface Props {
+  /** Koin artifact names, for example ["koin-android"]. */
+  artifacts?: string[];
+  /** Artifacts for the test configuration. */
+  test?: string[];
+  /** Applies the Koin Compiler Plugin. */
+  plugin?: boolean;
+  /** Uses the BOM, which also works in multiplatform source sets (tested on JVM, iOS, wasmJs). */
+  bom?: boolean;
+  /** Multiplatform source set, for example "commonMain". Use artifacts, not test, with it. */
+  sourceSet?: string;
+  /** Shows a complete build file for a JVM application with this main class, for example "MainKt". */
+  jvmApp?: string;
+  /** Adds the Ktor server and Logback dependencies. Use with jvmApp. */
+  ktorServer?: boolean;
+  /** Non-Koin dependencies: [catalog alias, coordinates, key in versions.ts]. */
+  extra?: [string, string, keyof typeof versions][];
+}
+const { artifacts = [], test = [], plugin = false, bom = false, sourceSet, jvmApp, ktorServer = false, extra = [] } = Astro.props;
+const useBom = bom;
+const alias = (a: string) => a.replaceAll('-', '.');
+const pluginId = 'io.insert-koin.compiler.plugin';
+
+// Dependencies that are not Koin artifacts: [catalog alias, coordinates, version key].
+const external: [string, string, keyof typeof versions][] = [
+  ...(ktorServer
+    ? ([
+        ['ktor-server-core', 'io.ktor:ktor-server-core', 'ktor'],
+        ['ktor-server-netty', 'io.ktor:ktor-server-netty', 'ktor'],
+        ['logback-classic', 'ch.qos.logback:logback-classic', 'logback'],
+      ] as [string, string, keyof typeof versions][])
+    : []),
+  ...extra,
+];
+const usesKoin = artifacts.length > 0 || test.length > 0 || bom;
+const appBlocks = (quote: string) =>
+  jvmApp ? `repositories {\n    mavenCentral()\n}\n\napplication {\n    mainClass = ${quote}${jvmApp}${quote}\n}\n\n` : '';
+const pluginsBlock = (lines: string[]) => (lines.length ? `plugins {\n${lines.map((l) => `    ${l}`).join('\n')}\n}\n\n` : '');
+
+const dep = (cfg: string, a: string) =>
+  `${cfg}("io.insert-koin:${a}${useBom ? '' : `:${versions.koin}`}")`;
+const groovyDep = (cfg: string, a: string) =>
+  `${cfg} "io.insert-koin:${a}${useBom ? '' : `:${versions.koin}`}"`;
+
+const body = (fn: (c: string, a: string) => string, testCfg: string) => [
+  ...artifacts.map((a) => fn('implementation', a)),
+  ...test.map((a) => fn(testCfg, a)),
+];
+
+const wrap = (lines: string[]) =>
+  sourceSet
+    ? `kotlin {\n    sourceSets {\n        ${sourceSet}.dependencies {\n${lines.map((l) => `            ${l}`).join('\n')}\n        }\n    }\n}`
+    : `dependencies {\n${lines.map((l) => `    ${l}`).join('\n')}\n}`;
+
+const kts = (
+  pluginsBlock([
+    ...(jvmApp ? [`kotlin("jvm") version "${versions.kotlinMin}"`, 'application'] : []),
+    ...(plugin ? [`id("${pluginId}") version "${versions.compilerPlugin}"`] : []),
+  ]) +
+  appBlocks('"') +
+  wrap([
+    ...(useBom
+      ? [`implementation(${sourceSet ? 'project.dependencies.' : ''}platform("io.insert-koin:koin-bom:${versions.koin}"))`]
+      : []),
+    ...artifacts.map((a) => dep('implementation', a)),
+    ...external.map(([, coords, key]) => `implementation("${coords}:${versions[key]}")`),
+    ...test.map((a) => dep('testImplementation', a)),
+  ])
+).trim();
+
+const toml = [
+  `[versions]\n${[
+    ...(usesKoin ? [`koin = "${versions.koin}"`] : []),
+    ...(plugin ? [`koin-plugin = "${versions.compilerPlugin}"`] : []),
+    ...(jvmApp ? [`kotlin = "${versions.kotlinMin}"`] : []),
+    ...[...new Set(external.map(([, , key]) => key))].map((key) => `${key} = "${versions[key]}"`),
+  ].join('\n')}`,
+  `[libraries]\n${[
+    ...[...artifacts, ...test].map((a) => `${a} = { module = "io.insert-koin:${a}", version.ref = "koin" }`),
+    ...external.map(([name, coords, key]) => `${name} = { module = "${coords}", version.ref = "${key}" }`),
+  ].join('\n')}`,
+  plugin || jvmApp
+    ? `[plugins]\n${[
+        ...(jvmApp ? ['kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }'] : []),
+        ...(plugin ? [`koin-compiler = { id = "${pluginId}", version.ref = "koin-plugin" }`] : []),
+      ].join('\n')}`
+    : '',
+].filter(Boolean).join('\n\n');
+
+const catalogKts = (
+  pluginsBlock([
+    ...(jvmApp ? ['alias(libs.plugins.kotlin.jvm)', 'application'] : []),
+    ...(plugin ? ['alias(libs.plugins.koin.compiler)'] : []),
+  ]) +
+  appBlocks('"') +
+  wrap([
+    ...artifacts.map((a) => `implementation(libs.${alias(a)})`),
+    ...external.map(([name]) => `implementation(libs.${alias(name)})`),
+    ...test.map((a) => `testImplementation(libs.${alias(a)})`),
+  ])
+).trim();
+
+const groovy = (
+  pluginsBlock([
+    ...(jvmApp ? [`id 'org.jetbrains.kotlin.jvm' version '${versions.kotlinMin}'`, "id 'application'"] : []),
+    ...(plugin ? [`id '${pluginId}' version '${versions.compilerPlugin}'`] : []),
+  ]) +
+  appBlocks("'") +
+  `dependencies {\n${[
+    ...(useBom ? [`implementation platform("io.insert-koin:koin-bom:${versions.koin}")`] : []),
+    ...artifacts.map((a) => groovyDep('implementation', a)),
+    ...external.map(([, coords, key]) => `implementation "${coords}:${versions[key]}"`),
+    ...test.map((a) => groovyDep('testImplementation', a)),
+  ].map((l) => `    ${l}`).join('\n')}\n}`
+).trim();
+---
+<Tabs syncKey="gradle">
+  <TabItem label="Kotlin DSL"><Code code={kts} lang="kotlin" title="build.gradle.kts" /></TabItem>
+  <TabItem label="Version catalog">
+    <Code code={toml} lang="toml" title="gradle/libs.versions.toml" />
+    <Code code={catalogKts} lang="kotlin" title="build.gradle.kts" />
+  </TabItem>
+  {!sourceSet && <TabItem label="Groovy DSL"><Code code={groovy} lang="groovy" title="build.gradle" /></TabItem>}
+</Tabs>

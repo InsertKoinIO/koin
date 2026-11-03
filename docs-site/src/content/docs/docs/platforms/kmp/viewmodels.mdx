@@ -1,0 +1,90 @@
+---
+title: "Shared ViewModels"
+description: "Declare a ViewModel once in common code, and see how retrieving it differs per platform."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+This page shows how to declare ViewModels in `commonMain`, and retrieve them from each platform.
+
+## Prerequisites
+
+[Koin installed](/docs/platforms/kmp/install/). This page covers what is specific to KMP. Declaration options, parameters and `SavedStateHandle` are on [ViewModel definitions](/docs/concepts/viewmodels/).
+
+## Declare in common code
+
+`koin-compose-viewmodel` and `koin-android` already bring `koin-core-viewmodel`. Without Compose, add it yourself:
+
+<Install artifacts={['koin-core-viewmodel']} bom sourceSet="commonMain" />
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+// commonMain
+import androidx.lifecycle.ViewModel
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
+
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+
+val viewModelModule = module {
+    viewModel<UserViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+// commonMain
+import androidx.lifecycle.ViewModel
+import org.koin.core.annotation.KoinViewModel
+
+@KoinViewModel
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+// commonMain
+import androidx.lifecycle.ViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+
+val viewModelModule = module {
+    viewModelOf(::UserViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Retrieve per platform
+
+| Where | Function | Available on |
+|---|---|---|
+| A composable | `koinViewModel()` from `org.koin.compose.viewmodel` | Every Compose target |
+| A composable, shared across a navigation graph | `sharedKoinViewModel()` | Every Compose target |
+| A composable, scoped to the `Activity` | `koinActivityViewModel()` | Android only |
+| An Android `Activity` or `Fragment` | `by viewModel()` | Android only |
+| Native SwiftUI | No dedicated API, see [Swift](/docs/platforms/kmp/swift/#viewmodels-and-swiftui) | iOS |
+
+Do not use `koinActivityViewModel()` in `commonMain`. It does not exist there, and the code will not compile for iOS.
+
+## Things to watch
+
+- **`SavedStateHandle`:** Koin creates it from `CreationExtras`. If the extras have no `SavedStateRegistryOwner`, the error starts with `Koin could not create a SavedStateHandle`. It is supplied when you retrieve the ViewModel in a composable with `koinViewModel()`. It is not there when you resolve with `get()`, as a [SwiftUI helper](/docs/platforms/kmp/swift/#viewmodels-and-swiftui) does.
+- **Two things named `viewModelScope`:** AndroidX `ViewModel.viewModelScope` is a `CoroutineScope`, which you use for coroutines. Koin `Module.viewModelScope { }` declares a [Koin scope](/docs/concepts/scopes/) tied to a ViewModel.
+- **`@InjectedParam`:** needs `koin-annotations` or `koin-core-annotations` in `commonMain`, in every DSL form.
+
+## Next steps
+
+- [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/): retrieve ViewModels in shared screens.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()` in detail.
+- [ViewModel definitions](/docs/concepts/viewmodels/): parameters, qualifiers and `SavedStateHandle`.

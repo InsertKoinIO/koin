@@ -1,0 +1,7 @@
+---
+// Prints a version from the single versions file, for use in prose.
+import { versions } from '~/data/versions';
+interface Props { of: keyof typeof versions }
+const { of } = Astro.props;
+---
+<code>{versions[of]}</code>

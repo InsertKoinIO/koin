@@ -1,0 +1,226 @@
+---
+title: "Start Koin once"
+description: "Write one function in shared code that starts Koin, and call it from Android, iOS, Desktop and Web."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page shows how to write a shared `initKoin` function and call it once from each platform.
+
+## Prerequisites
+
+[Koin installed](/docs/platforms/kmp/install/) in your shared module. With Compose Multiplatform, you can skip this and [start from a composable](/docs/platforms/kmp/compose-multiplatform/) instead, if nothing outside Compose needs Koin.
+
+## Write the shared function
+
+Each platform calls this function, and can add its own configuration through `config`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: kmp-start-koin-dsl */}
+
+```kotlin
+// commonMain/kotlin/di/Koin.kt
+import org.koin.core.context.startKoin
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
+
+val dataModule = module {
+    single<UserRepository>()
+    viewModel<UserViewModel>()
+}
+
+val appModule = module {
+    includes(dataModule, platformModule())
+}
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(config)
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: kmp-start-koin-annotations */}
+
+```kotlin
+// commonMain/kotlin/di/Koin.kt
+import org.koin.core.annotation.*
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.plugin.module.dsl.startKoin
+
+@Module(includes = [PlatformModule::class])
+@ComponentScan("com.example.app")
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinApp
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin<KoinApp> {
+        includes(config)
+    }
+}
+```
+
+`@KoinApplication` finds `@Configuration` modules at build time. `startKoin<T>` needs the Compiler Plugin, and comes from `org.koin.plugin.module.dsl`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: kmp-start-koin-constructor */}
+
+```kotlin
+// commonMain/kotlin/di/Koin.kt
+import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.*
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.dsl.module
+
+val dataModule = module {
+    singleOf(::UserRepository)
+    viewModelOf(::UserViewModel)
+}
+
+val appModule = module {
+    includes(dataModule, platformModule())
+}
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(config)
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`includes(config)` applies the platform configuration (Android context, logger, extra modules) to the same start. `platformModule()` is covered in [Platform-specific dependencies](/docs/platforms/kmp/platform-dependencies/).
+
+## Call it from each platform
+
+### Android
+
+Call it from your `Application` class, and pass the Android context:
+
+{/* check: kmp-start-koin-dsl, kmp-start-koin-annotations, kmp-start-koin-constructor */}
+
+```kotlin
+// androidMain
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        initKoin {
+            androidContext(this@MainApplication)
+            androidLogger()
+        }
+    }
+}
+```
+
+Register the class in `AndroidManifest.xml` with `android:name`. Definitions can then take `Context` as a constructor parameter.
+
+### iOS
+
+Call it from the initializer of your SwiftUI `App`:
+
+```swift
+// iosApp/iOSApp.swift
+import SwiftUI
+import Shared
+
+@main
+struct iOSApp: App {
+    init() {
+        KoinKt.doInitKoin()
+    }
+
+    var body: some Scene {
+        WindowGroup { ContentView() }
+    }
+}
+```
+
+Two naming rules explain the Swift call:
+
+- Top-level functions of `Koin.kt` are exported in a class named `KoinKt`. The class name follows your file name.
+- A function whose name starts with `init` gets a `do` prefix, so `initKoin` becomes `doInitKoin`.
+
+`doInitKoin()` works with no argument because Swift treats the nullable `config` lambda as optional. `doInitKoin(config: nil)` is equivalent. To pass configuration, add a small `iosMain` function that calls `initKoin { ... }`, as the logger example below does, and call that one from Swift:
+
+{/* check: kmp-start-koin-dsl, kmp-start-koin-annotations, kmp-start-koin-constructor */}
+
+```kotlin
+// iosMain/kotlin/di/KoinIos.kt
+import org.koin.core.logger.Level
+
+fun initKoinIos() = initKoin {
+    printLogger(Level.DEBUG)
+}
+```
+
+```swift
+KoinIosKt.doInitKoinIos()
+```
+
+### Desktop
+
+Start Koin in `main()`, **before** `application { }`:
+
+```kotlin
+// jvmMain
+fun main() {
+    initKoin {
+        printLogger()
+        modules(desktopModule)
+    }
+
+    application {
+        Window(onCloseRequest = ::exitApplication) {
+            App()
+        }
+    }
+}
+```
+
+:::danger[Do not start Koin inside application]
+The `application { }` block is composable and can run again on recomposition. A second `startKoin` throws `KoinApplicationAlreadyStartedException`.
+:::
+
+Desktop is a JVM target, so JVM-only features such as `fileProperties()` are available. See [Properties](/docs/concepts/properties/).
+
+### Web
+
+Start Koin in the `main()` of your `js` or `wasmJs` source set, before you start the UI:
+
+```kotlin
+// wasmJsMain
+fun main() {
+    initKoin {
+        printLogger()
+    }
+    // start your UI
+}
+```
+
+## Next steps
+
+- [Platform-specific dependencies](/docs/platforms/kmp/platform-dependencies/): write `platformModule()`.
+- [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/): when to use `KoinApplication` instead.
+- [Starting Koin](/docs/concepts/starting-koin/): every start option.

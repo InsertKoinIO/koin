@@ -1,0 +1,90 @@
+name: Docs site
+
+on:
+  pull_request:
+    paths:
+      - 'docs-site/**'
+      - '.github/workflows/docs-site.yml'
+
+concurrency:
+  group: docs-site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: docs-site
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+          cache: npm
+          cache-dependency-path: docs-site/package-lock.json
+
+      - name: Set up JDK and Gradle
+        uses: ./.github/actions/prepare-env
+
+      - name: Install
+        run: npm ci
+
+      - name: Build and validate links
+        run: npm run build
+
+      - name: Old URLs resolve
+        run: npm run check:redirects
+
+      - name: Koin symbols exist
+        run: npm run check:symbols
+
+      - name: Platform pages follow the templates
+        run: npm run check:templates
+
+      - name: Style tabs differ and stay in sync
+        run: npm run check:tabs
+
+      - name: Code blocks compile and run
+        run: npm run check:snippets
+
+      - name: Multiplatform code blocks compile and run
+        run: npm run check:snippets:kmp
+
+      - name: Android tutorial builds and runs on Robolectric
+        run: npm run check:snippets:android
+
+      - name: Real multi-module app builds and runs on Robolectric
+        run: npm run check:snippets:multimodule
+
+      - name: The Compiler Plugin fails the build on a broken graph
+        run: npm run check:compile-failures
+
+  # The iOS target only compiles on macOS.
+  check-ios:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: docs-site
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+
+      - name: Set up JDK and Gradle
+        uses: ./.github/actions/prepare-env
+
+      - name: Multiplatform code blocks compile and run
+        run: npm run check:snippets:kmp

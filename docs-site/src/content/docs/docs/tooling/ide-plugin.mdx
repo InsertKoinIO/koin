@@ -1,0 +1,65 @@
+---
+title: "IDE plugin"
+description: "Navigate Koin definitions and injection points and see configuration issues in Android Studio and IntelliJ IDEA."
+---
+
+The Koin plugin for Android Studio and IntelliJ IDEA shows your Koin configuration inside the IDE: where each definition is declared, where it is used, and what is missing. It is built by Kotzilla and is free on the JetBrains Marketplace. It doesn't need the Kotzilla platform, except for the application issues described below.
+
+## Installation
+
+Install the plugin from the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-), or from the IDE: open Settings, then Plugins, then Marketplace, search for "Koin", then restart the IDE.
+
+The plugin requires an IDE based on IntelliJ Platform 2024.2 or later. It works with Android, JVM and Kotlin Multiplatform projects.
+
+## Configuration tree view
+
+The plugin adds a tree view of your Koin configuration:
+
+- **Modules**: every declared module, including test modules, modules declared inline in `startKoin` or `koinApplication`, and start entries.
+- **Definitions**: each module's singletons, factories, ViewModels, scoped definitions and injected parameters.
+
+You can search the tree by typing, and selecting an entry opens it in the editor.
+
+The tree reads the Constructor and Classic DSL (`singleOf(::T)`, `single { }`), the Ktor DSL, the Compose API and Koin Annotations, including qualifiers and generic types.
+
+## Navigation
+
+Gutter icons mark definitions, injection points and parameters. From them you can:
+
+- jump from an injection point (`get()`, `by inject()`, `koinViewModel()`, a constructor parameter) to the definition that provides it,
+- jump from a definition to the places that use it,
+- open the definition in the configuration tree.
+
+The plugin reads the argument types of a definition to find what it depends on, including injected parameters. You can change which gutter icons are shown in the plugin settings.
+
+## Configuration checks
+
+The plugin checks your configuration while you edit and reports problems in the "Configuration issues" tab of the Koin Insights view: a dependency with no definition, a usage of a type nobody declares, a definition nobody uses, and other misconfigurations.
+
+Each inspection can be turned on or off in the IDE settings.
+
+:::note
+These checks run in the editor. They are a fast feedback loop, not a replacement for build-time validation. With the [Koin Compiler Plugin](/docs/tooling/compiler-plugin/), the same kind of error fails the build: see [Compile-time safety](/docs/tooling/compile-time-safety/).
+:::
+
+## Application issues
+
+If your app sends data to the Kotzilla platform through the Kotzilla SDK, the "Application issues" tab shows the issues detected in real user sessions (slow startup, main thread blocking, background bottlenecks, crashes) next to your code. The "Kotzilla Flight Check" tab shows your Koin version and whether the SDK is configured.
+
+This part needs a Kotzilla account and the SDK. See [Production monitoring](/docs/tooling/production-monitoring/).
+
+For a detected issue, the plugin can generate a prompt with its context (impacted components, dependency chain, performance data) to paste into an AI coding assistant such as GitHub Copilot, Gemini, Claude Code or Junie.
+
+## Limits
+
+- **In active development**: features change from release to release. Check the Marketplace page for the current version and changelog.
+- **Editor only**: the plugin doesn't run in CI. For checks that block a merge, use [Compile-time safety](/docs/tooling/compile-time-safety/) or [Verifying your configuration](/docs/testing/verify/).
+
+The plugin's own documentation is on [doc.kotzilla.io](https://doc.kotzilla.io/docs/discover/idePlugin).
+
+## Next steps
+
+- [Tooling overview](/docs/tooling/): which tool for which need.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): the same errors, caught at build time.
+- [Verifying your configuration](/docs/testing/verify/): check a configuration from a test.
+- [Production monitoring](/docs/tooling/production-monitoring/): the data behind the application issues tab.

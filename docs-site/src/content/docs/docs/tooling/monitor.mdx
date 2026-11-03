@@ -1,0 +1,107 @@
+---
+title: "@Monitor"
+description: "Trace the execution time and errors of chosen classes and functions with @Monitor and the Kotzilla SDK."
+---
+
+`@Monitor` marks a class or a function for tracing. At build time, the Koin Compiler Plugin wraps each monitored function in a Kotzilla SDK trace call, so its execution time and errors show up in the Kotzilla platform. This page covers what the annotation does with and without the Kotzilla SDK. It assumes the [Koin Compiler Plugin](/docs/tooling/compiler-plugin/) is set up.
+
+## Built-in monitoring without Kotzilla
+
+Koin's built-in way to see what happens at runtime is the logger. It prints module loading and instance creation to the console or Logcat. See [Logging](/docs/concepts/logging/).
+
+`@Monitor` adds nothing on its own. Without the Kotzilla SDK on the compile classpath, the Compiler Plugin leaves monitored functions unchanged and reports one warning per compilation:
+
+```
+KOIN-M001: @Monitor: Kotzilla SDK not found on classpath - monitoring disabled
+```
+
+The code compiles and runs as if the annotation were not there. You can keep `@Monitor` in shared code and only add the SDK in the builds you want to trace.
+
+## Annotating a class or a function
+
+`@Monitor` is in `org.koin.core.annotation`, shipped in the `koin-annotations` artifact with the other Koin annotations. Put it on a class to trace all its public functions, or on a single function:
+
+```kotlin
+import org.koin.core.annotation.Monitor
+
+@Monitor
+class UserService(private val userRepository: UserRepository) {
+
+    fun findUser(id: String): User? = userRepository.findById(id)
+
+    suspend fun createUser(userData: UserData): User = userRepository.save(userData)
+
+    private fun audit(user: User) { ... } // private: not traced
+}
+
+class SyncService(private val api: ApiService) {
+
+    @Monitor
+    suspend fun sync() { ... }
+}
+```
+
+The annotation works the same whatever declares the class: annotations or any DSL form (Compiler Plugin, Constructor or Classic DSL). ViewModels can be monitored too:
+
+```kotlin
+@Monitor
+class DetailViewModel(private val repository: Repository) : ViewModel() {
+    fun loadData(id: String): StateFlow<Data> = repository.getData(id)
+}
+```
+
+## What the Compiler Plugin generates
+
+With the Kotzilla SDK on the classpath, the Compiler Plugin rewrites the body of each monitored function. `findUser` from the `UserService` class compiles as if you had written:
+
+```kotlin
+fun findUser(id: String): User? =
+    KotzillaCore.getDefaultInstance().trace("UserService.findUser") {
+        userRepository.findById(id)
+    }
+```
+
+Rules:
+
+- **Label**: `ClassName.functionName`, or the function name for a top-level function.
+- **Suspend functions**: wrapped with `suspendTrace` instead of `trace`.
+- **Class-level `@Monitor`**: only public functions are traced. Private, protected and internal functions, constructors and default property accessors are not.
+- **No proxy, no `allOpen`**: the body is rewritten in place. The class stays final and Koin creates it as usual.
+
+During the build, the plugin reports each monitored class:
+
+```
+@Monitor: UserService - tracing enabled (2 functions)
+```
+
+This message is a warning by default. If your build uses `allWarningsAsErrors`, set `logSeverity = "info"` in the `koinCompiler { }` block: see [Compiler Plugin options](/docs/reference/compiler-options/).
+
+## With the Kotzilla SDK
+
+`@Monitor` needs the Kotzilla SDK twice:
+
+- **At build time**: the class `io.kotzilla.sdk.KotzillaCore` must be on the compile classpath. The `io.kotzilla:kotzilla-sdk` dependency brings it, through `io.kotzilla:kotzilla-core`.
+- **At runtime**: the SDK must be started in your Koin configuration so that traces are recorded and sent.
+
+Both are part of the standard Kotzilla setup described in [Production monitoring](/docs/tooling/production-monitoring/). Once the SDK runs, each call to a monitored function is recorded with its duration and, if it throws, its error. You see them in the Kotzilla console.
+
+:::caution
+The generated code calls `KotzillaCore.getDefaultInstance()`. Start the Kotzilla SDK at app startup, before any monitored function can run.
+:::
+
+## Koin KSP processor
+
+`@Monitor` also works with the deprecated KSP processor (`koin-ksp-compiler`), but through a generated `<ClassName>Proxy` subclass, so the monitored class must be open. The Compiler Plugin replaces this mechanism and needs no `allOpen`: see [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/).
+
+## Limits
+
+- **No transitive tracing**: only the annotated class or function is traced. Dependencies injected into a monitored class are not, unless they carry `@Monitor` too.
+- **No local data**: without the Kotzilla SDK nothing is recorded. For local debugging, use the [Koin logger](/docs/concepts/logging/).
+- **Overhead**: every monitored call goes through a trace call. Annotate the functions you want to measure, not every class.
+
+## Next steps
+
+- [Production monitoring](/docs/tooling/production-monitoring/): set up the Kotzilla SDK that records the traces.
+- [Tooling overview](/docs/tooling/): which tool for which need.
+- [Compiler Plugin options](/docs/reference/compiler-options/): `logSeverity` and other plugin settings.
+- [Annotations reference](/docs/reference/annotations/): every Koin annotation.

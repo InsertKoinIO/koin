@@ -1,0 +1,67 @@
+# Annotations not owned by Koin. Kotlin, AndroidX, Compose, Hilt, Dagger, JSR-330 and sample code.
+Composable
+Preview
+Test
+BeforeTest
+AfterTest
+Before
+After
+BeforeEach
+AfterEach
+Rule
+JvmField
+JvmStatic
+RegisterExtension
+ExtendWith
+RunWith
+OptIn
+Serializable
+Suppress
+Deprecated
+Keep
+HiltAndroidApp
+AndroidEntryPoint
+HiltViewModel
+HiltWorker
+Inject
+InstallIn
+EntryPoint
+Binds
+Provides
+IntoSet
+IntoMap
+StringKey
+ClassKey
+Assisted
+AssistedInject
+AssistedFactory
+BindsInstance
+ApplicationContext
+TestInstallIn
+Component
+Subcomponent
+DefineComponent
+HiltAndroidTest
+UninstallModules
+BindValue
+Retention
+Target
+RequiresOptIn
+KoinInternal
+# Retrofit, Room, AndroidX test, Kotlin
+Database
+GET
+Path
+JvmOverloads
+LargeTest
+# Defined by the sample code on the page
+IoDispatcher
+TestApplication
+AuthUrl
+BaseUrl
+Dispatcher
+# Published from the koin-compiler-plugin repository, not from ../projects
+koin-compiler-plugin
+# Deprecated KSP processor, named only by the migration pages. Not in this repo.
+koin-ksp-compiler
+org.koin.ksp.generated

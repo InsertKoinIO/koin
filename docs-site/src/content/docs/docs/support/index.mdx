@@ -1,0 +1,139 @@
+---
+title: "Versions, roadmap and support"
+description: "Which Koin versions are supported, the release cycle, older documentation, community channels and commercial long-term support."
+---
+
+Koin is open source and community driven. Kotzilla, the company that builds Koin, also offers commercial long-term support for teams that need it.
+
+## The Koin project
+
+- **Koin libraries:** core, Android, Compose, Ktor, test and annotations, all released under one version. Source: [InsertKoinIO/koin](https://github.com/InsertKoinIO/koin).
+- **Koin Compiler Plugin:** the Kotlin compiler plugin and its Gradle plugin, with its own version. Source: [InsertKoinIO/koin-compiler-plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
+- **Koin IDE plugin:** navigation and checks in Android Studio and IntelliJ IDEA. See [IDE plugin](/docs/tooling/ide-plugin/).
+- **Samples:** runnable apps for each tutorial in [InsertKoinIO/koin-getting-started](https://github.com/InsertKoinIO/koin-getting-started).
+
+| Year | Milestone |
+|---|---|
+| 2017 | First public commit |
+| 2018 | Koin 1.0 |
+| 2021 | Koin 3.0: Kotlin Multiplatform support |
+| 2024 | Koin 4.0 |
+| 2026 | Koin 4.2, with build-time checks from the Koin Compiler Plugin |
+
+## Release cycle
+
+Koin follows a release cycle of about 6 months, to stay aligned with Kotlin language and library updates. Each release goes through a beta period of 6 weeks or more to gather feedback.
+
+Once a version is released, its community support phase lasts at least 6 months. During that phase the team collects feedback and follows the updates that affect Koin: Kotlin, Android, Ktor and other libraries.
+
+Version numbers follow `Major.Minor.Patch`. What each part, and each pre-release suffix, promises is in [API stability](/docs/support/api-stability/). For what changed in each version, see [Releases](/docs/support/releases/). To move a project to 4.2, see [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/).
+
+## Older versions
+
+This documentation covers Koin 4.2. Earlier versions keep their own copy of the docs:
+
+- [Koin 4.1 documentation](https://legacy.insert-koin.io/docs/4.1/setup/koin)
+- [Koin 4.0 documentation](https://legacy.insert-koin.io/docs/4.0/setup/koin)
+
+For the changes between versions, see [Releases](/docs/support/releases/).
+
+## Community support
+
+Community support is available to everyone, on the current release line:
+
+- **Kotlin Slack**: chat with the community in [#koin](https://kotlinlang.slack.com/messages/koin/).
+- **Stack Overflow**: ask questions tagged [koin](https://stackoverflow.com/questions/tagged/koin).
+- **GitHub issues**: bug reports and feature requests on [github.com/InsertKoinIO/koin](https://github.com/InsertKoinIO/koin/issues).
+- **Koin blog**: releases and announcements on [blog.insert-koin.io](https://blog.insert-koin.io).
+- **Documentation**: this site. If something fails, start with [Troubleshooting](/docs/support/troubleshooting/) and the [FAQ](/docs/support/faq/).
+
+## Enterprise support by Kotzilla
+
+Some companies can't follow the Koin release cycle, for legal, business or technical reasons. They may also need company-backed support and clear open-source license warranties.
+
+Kotzilla offers two enterprise subscriptions for this. Both work the same way: you get a privately maintained build of Koin, pinned to a version you control, and fixes are delivered onto that build instead of only onto the latest public release.
+
+- **Koin LTS**: a maintained Koin line, published under `org.koin.*`, for applications that must stay on a fixed version.
+- **Koin Embedded LTS**: for SDK and library vendors. Your own version of Koin LTS, relocated into a namespace that is yours alone. See [Koin for SDKs and libraries](/docs/support/embedded/).
+
+Professional Koin support is contracted as an LTS or Embedded LTS subscription. There is no separate tier above it. Commitments such as SLAs, architecture review and training are [add-ons](#add-on-services) to that subscription.
+
+### Long-term support (LTS)
+
+An LTS line is a Koin version that Kotzilla keeps maintaining after its community support phase has ended. Security fixes and customer-reported bug fixes are backported onto it and published to subscribers, so you can stay on a version without staying on a known defect.
+
+The support policy:
+
+- **Minimum duration**: each LTS line is guaranteed for at least 18 months from its designation. This is a floor, not a schedule.
+- **Coverage**: support continues for as long as your subscription is active, beyond that window, on the version you run. The 18 months bound the commitment to designate and maintain a line. Your coverage is bound by your contract, not by a date published here.
+- **New lines**: a new LTS line is designated for each major Kotlin baseline, with a guided upgrade from the previous line and no gap in coverage. You never have to run unsupported during a migration.
+
+This page does not publish end-of-support dates. Coverage follows your subscription and the version you run, and is stated in your agreement.
+
+#### Available LTS lines
+
+The two lines are maintained in parallel, not one after the other. Pick the one that matches the Kotlin baseline of your project. You don't need to move off `3.5.6` to be supported. The same lines are marked in the [Releases](/docs/support/releases/) table.
+
+| LTS line | Kotlin baseline | Intended for |
+|----------|-----------------|--------------|
+| Koin 3.5.6 LTS | Kotlin 1.x | Projects that can't move to Kotlin 2.x: legacy toolchains, long-lived enterprise apps, constrained build environments |
+| Koin 4.2.x LTS | Kotlin 2.x | Projects on the Kotlin 2.x toolchain that want a fixed, maintained Koin version instead of tracking each release |
+
+:::note
+An LTS line is designated at a specific patch level, and that patch level is the minimum: `3.5.6` is the lowest supported version on the Kotlin 1.x line. Versions below it are not covered. If you are on an older patch today, moving up to the LTS patch level is part of onboarding.
+:::
+
+The upgrade from the Kotlin 1.x line to the Kotlin 2.x line is part of the offer. The Koin team guides it, and your current line stays covered during the migration.
+
+#### What's included
+
+- **Maintenance and compatibility**: feature compatibility with the Android and Kotlin ecosystems, maintained on the LTS line you run.
+- **Support**: priority access to the Koin team, through Slack and dedicated e-mail.
+- **Legal compliance**: an audited Apache 2.0 license, with Kotzilla accountable for your compliance.
+- **Transparency**: full access to the codebase, and community-identified fixes integrated into your line.
+
+### Koin Embedded LTS
+
+If you ship an SDK or a library that uses Koin internally, publishing under `org.koin.*` conflicts with the Koin version of the host application. Koin Embedded LTS gives you your own relocated version of a maintained LTS line, in a namespace that is yours alone, built, signed and hosted by Kotzilla for at least 18 months. It covers `koin-core` and `koin-android`. The conflict cases, the free self-service options and the full offer are on [Koin for SDKs and libraries](/docs/support/embedded/).
+
+### Support tiers
+
+| | Community | Koin LTS | Koin Embedded LTS |
+|---|---|---|---|
+| Audience | Everyone: apps, open-source projects, teams on the current release | Companies that must stay on a fixed Koin version | SDK and library vendors shipping Koin inside their artifact |
+| Delivered version | Latest public release | A designated LTS line, privately maintained | A designated LTS line, relocated into your namespace |
+| Namespace | `org.koin.*` | `org.koin.*` | A dedicated namespace, yours alone, for example `acme.koin.*` |
+| Distribution | Maven Central | Kotzilla repository, private access with customer credentials | Kotzilla repository, private repository for your organization |
+| Security patches | Current release line only | Backported onto your LTS line | Backported and relocated again onto your build |
+| Customer issue fixes | Best effort, through public GitHub issues | Fixed and delivered on your LTS build | Fixed and delivered on your build |
+| Direct channel to the Koin team | No, public Slack and GitHub only | Priority access, through Slack and dedicated e-mail | Priority access, through Slack and dedicated e-mail |
+| Upgrade assistance | Public migration guides | Guided upgrade between LTS lines | Guided upgrade, relocation rebuilt for the target version |
+
+### Add-on services
+
+These are contracted on top of a Koin LTS or Koin Embedded LTS subscription. They are not a separate tier:
+
+- **Service Level Agreements**: contractual response time commitments.
+- **Architecture review**: review of your Koin setup and module structure by the Koin team.
+- **Training and workshops**: team training on Koin practices.
+
+Terms are agreed per contract. [Contact the team](#contact) about scope.
+
+### Choosing a tier
+
+- **Community**: you follow the current Koin release and public support is enough.
+- **Koin LTS**: you need to stay on a version, and you need fixes on that version.
+- **Koin Embedded LTS**: you redistribute Koin inside your own artifact and can't risk a namespace collision with your consumers.
+
+## Contact
+
+- **Koin LTS and Koin Embedded LTS**: [Koin Long Term Support](https://kotzilla.io/koin-lts)
+- **Kotzilla platform**: [kotzilla.io](https://kotzilla.io)
+- **General inquiries**: [koin@kotzilla.io](mailto:koin@kotzilla.io)
+
+## Next steps
+
+- [Releases](/docs/support/releases/): what changed in each version.
+- [API stability](/docs/support/api-stability/): experimental, deprecated and internal APIs, release types.
+- [Koin for SDKs and libraries](/docs/support/embedded/): relocate Koin inside an SDK.
+- [Troubleshooting](/docs/support/troubleshooting/): errors, causes and fixes.

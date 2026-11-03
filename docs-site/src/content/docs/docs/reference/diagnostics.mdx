@@ -1,0 +1,114 @@
+---
+title: "Compiler Plugin diagnostics"
+description: "Every KOIN-D, W, A, S, P and M code the Koin Compiler Plugin reports, with its severity, what triggers it and how to fix it."
+---
+
+The Koin Compiler Plugin prints each diagnostic with a stable code, in the form `[Koin][CODE]`. Search this page for the code or for the first line of the message. For how the checks work and what they cover, read [Compile-time safety](/docs/tooling/compile-time-safety/). To turn checks on or off, see [Compiler Plugin options](/docs/reference/compiler-options/).
+
+## All codes
+
+| Code | Severity | Message starts with | Cause and fix |
+|------|----------|---------------------|---------------|
+| `KOIN-D001` | Error | `Missing dependency:` | A definition parameter has no definition in the graph. Declare it, load its module, or fix the qualifier. When the type exists with another qualifier, a hint names it |
+| `KOIN-D002` | Error | `Missing definition:` (call site in this module) | A `get<T>()`, `inject<T>()` or `koinViewModel<T>()` call asks for a type that no loaded module declares |
+| `KOIN-D003` | Error | `Missing definition:` (call site in a dependency module) | Same as `KOIN-D002`, for a call made in a dependency module, reported when the app module compiles |
+| `KOIN-D004` | Error | `Circular dependency detected:` | Two or more definitions need each other. Make one parameter `Lazy<T>` or refactor. A `Lazy<T>`, nullable, `List<T>`, `@InjectedParam`, `@Provided`, `@Property`, `@ScopeId` or default-valued parameter is not an edge in the cycle |
+| `KOIN-D005` | Error | `Mismatched parametersOf(...) for` | A `parametersOf(...)` call passes the wrong number or types of values for the `@InjectedParam` parameters |
+| `KOIN-D006` | Error | `<Type> requires N injected param(s) but` | A call site misses `parametersOf(...)` for a definition with `@InjectedParam` parameters |
+| `KOIN-D007` | Error | `Unsupported binding:` | A definition whose type extends a suspend function type. Koin cannot resolve it at runtime. Use a regular interface with a `suspend` method, or a class |
+| `KOIN-D008` | Error | `Module id collision:` | Two module names encode to the same hint name. Rename one |
+| `KOIN-W001` | Warning | `Module '<name>' is not loaded at startKoin` | A module is declared but no entry point loads it. Expected for a module you load with `loadKoinModules` (see below) |
+| `KOIN-W003` | Warning | `Graph not verifiable at compile time:` | A module list is dynamic (`modules(if (debug) a else b)`, `modules(*list)`), so the plugin skips the full-graph check for that entry point. Pass modules directly to keep the check |
+| `KOIN-W004` | Warning | `Custom @Configuration label '<label>' requested by` | A module with a label other than `"default"` is discovered at most one `implementation` dependency away. Add a direct dependency, or list the module in `@KoinApplication(modules = [...])` |
+| `KOIN-W005` | Warning | `Definition '<name>' in dependency module` | A `@Module` function definition, or a qualified top-level function, two or more `implementation` hops away is not visible to the check. It still works at runtime. Add a direct dependency to check it |
+| `KOIN-W006` | Warning | `<definition>'s bind(...) argument could not be resolved` | A `bind` or `binds` argument is not a literal `X::class` (or a literal array or list of them). Use a literal |
+| `KOIN-A001` | Error | `@KoinViewModel definition '<name>' cannot be generated` | `koin-core-viewmodel` is not on the classpath. Add `io.insert-koin:koin-core-viewmodel` |
+| `KOIN-A002` | Error | `@KoinWorker definition '<name>' cannot be generated` | `koin-androidx-workmanager` is not on the classpath. Add `io.insert-koin:koin-androidx-workmanager` |
+| `KOIN-A003` | Error | `Cannot generate <Module>.module()` | `koin-core` is missing. Add `io.insert-koin:koin-core` |
+| `KOIN-S001` | Error | `create(::<Type>) must be the only instruction in the lambda` | The `create()` call shares its lambda with other statements. See [`unsafeDslChecks`](/docs/reference/compiler-options/#unsafedslchecks) |
+| `KOIN-P001` | Warning | `Missing @PropertyValue default:` | A `@Property("key")` parameter has no `@PropertyValue("key")` default. Set the property at startup. See [Properties](/docs/concepts/properties/) |
+| `KOIN-M001` | Warning | `@Monitor: Kotzilla SDK not found on classpath` | `@Monitor` is used without the Kotzilla SDK, so nothing is traced. See [Monitor](/docs/tooling/monitor/) |
+
+`W002` and `W007` do not exist: the Compiler Plugin removed them.
+
+## Examples
+
+### KOIN-D001
+
+```
+[Koin][KOIN-D001] Missing dependency: com.myapp.Database
+  required by: com.myapp.UserRepository (parameter 'db')
+  in module: com.myapp.AppModule
+```
+
+For a DSL definition, `required by:` starts with `dsl:`. With a similar binding under another qualifier, a hint follows:
+
+```
+[Koin][KOIN-D001] Missing dependency: com.myapp.NetworkClient qualified with @Named("http")
+  required by: com.myapp.ApiService (parameter 'client')
+  in module: com.myapp.AppModule
+  Hint: Found similar binding: com.myapp.NetworkClient (no qualifier)
+```
+
+See [Qualifiers](/docs/concepts/qualifiers/).
+
+### KOIN-D002 and KOIN-D003
+
+```
+[Koin][KOIN-D002] Missing definition: com.myapp.Tracker
+  resolved by: get<Tracker>()
+  No matching definition found in any loaded module.
+  Check your declaration with Annotation or DSL.
+```
+
+`KOIN-D003` has the same shape. Its second line reads `required by a call site in a dependency module`.
+
+### KOIN-D004
+
+```
+[Koin][KOIN-D004] Circular dependency detected:
+  com.myapp.A → com.myapp.B → com.myapp.A
+  Break with Lazy<T> injection or refactor to remove the cycle.
+```
+
+See [Troubleshooting](/docs/support/troubleshooting/) for ways to remove the cycle.
+
+### KOIN-D005 and KOIN-D006
+
+```
+[Koin][KOIN-D006] com.myapp.Greeter requires 1 injected param(s) but get<Greeter>() has no parametersOf(...) at the call site.
+  Expected @InjectedParam slots: name: kotlin.String
+  Pass them via parametersOf(...) inside the trailing lambda.
+```
+
+`KOIN-D005` runs when the call contains a `parametersOf(...)` the plugin can read. `KOIN-D006` runs when the call has no parameters lambda at all. A lambda the plugin cannot read, such as `{ buildParams() }`, skips both checks. See [Injected parameters](/docs/concepts/parameters/).
+
+### KOIN-D007
+
+```
+[Koin][KOIN-D007] Unsupported binding: com.myapp.SetUsernameUseCase extends kotlin.coroutines.SuspendFunction1
+  Suspend function injection is not yet supported by Koin runtime.
+  Remove the @Single / @Factory / @Scoped registration, or refactor the binding type to not extend a suspend function.
+  Tracked at https://github.com/InsertKoinIO/koin-compiler-plugin/issues/16
+```
+
+### KOIN-W001 for runtime-loaded modules
+
+A module you load with `loadKoinModules(...)` after `startKoin` is not part of the graph the plugin assembles, because the plugin cannot know when, or whether, that call runs. The plugin reports it with `KOIN-W001`. Adding it to `modules()` would defeat on-demand loading, so you can ignore the warning: it fails the build only with `allWarningsAsErrors`. Types that other definitions need from such a module must be marked `@Provided`. See [Compile-time safety](/docs/tooling/compile-time-safety/).
+
+### KOIN-W003 and verify()
+
+When `KOIN-W003` says a graph is validated at runtime via `checkModules()`, note that `checkModules()` is deprecated in favor of `verify()`. See [Verify your configuration](/docs/testing/verify/).
+
+### KOIN-S001
+
+```
+[Koin][KOIN-S001] create(::UserRepository) must be the only instruction in the lambda. Other statements are not allowed when using create(). To disable this check, set koinCompiler { unsafeDslChecks = false } in your build.gradle.kts
+```
+
+## Related
+
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the plugin checks and how.
+- [Compiler Plugin options](/docs/reference/compiler-options/): `compileSafety`, `strictSafety` and the others.
+- [Troubleshooting](/docs/support/troubleshooting/): runtime errors.
+- [Artifacts and BOM](/docs/reference/artifacts/): the artifacts named in `KOIN-A001` to `KOIN-A003`.

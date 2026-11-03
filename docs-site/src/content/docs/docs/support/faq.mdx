@@ -1,0 +1,86 @@
+---
+title: "FAQ"
+description: "Short answers to common questions about styles, the Compiler Plugin, KSP, testing, artifacts and upgrades, each with a link to the full page."
+---
+
+import Version from '~/components/Version.astro';
+
+Each answer is short and links to the page that holds the details.
+
+## Choosing and setting up
+
+### Which style should I pick?
+
+There are two styles: Koin DSL and Koin Annotations. The DSL has three forms: Compiler Plugin DSL (`single<T>()`), Constructor DSL (`singleOf(::T)`) and Classic DSL (`single { T(get()) }`). Choose one style and keep to it. The comparison and the tradeoffs are in [Choose your style](/docs/get-started/choose-your-style/).
+
+### Do I need the Compiler Plugin? Which Kotlin version?
+
+The Compiler Plugin DSL and Koin Annotations need it. The Constructor and Classic DSL do not. The plugin requires Koin 4.2.0 or later and Kotlin <Version of="kotlinMin" /> or later (current plugin version: <Version of="compilerPlugin" />). Requirements, install and the supported Kotlin versions are on [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+### Which Kotlin version does the Koin runtime need?
+
+Kotlin <Version of="kotlinRuntimeMin" /> or later. Koin <Version of="koin" /> is built with Kotlin <Version of="kotlinMin" />. Tested with `koin-core` on the JVM: Kotlin 2.2.21 compiles, while 2.1.21 and 2.0.21 crash the compiler with `source must not be null`. Other targets were not tested. Each release lists its build version in [Releases](/docs/support/releases/).
+
+### Which artifact do I need for Android, Compose, KMP or Ktor?
+
+See [Gradle artifacts and BOM](/docs/reference/artifacts/) for the full table, and [Pick your platform](/docs/get-started/pick-your-platform/) to land on the right install page.
+
+### Can I use the BOM in Kotlin Multiplatform?
+
+Yes. It was tested with Koin 4.2.2, Kotlin 2.3.20 and Gradle 8.11.1: in `commonMain`, use `implementation(project.dependencies.platform("io.insert-koin:koin-bom:<version>"))` and declare the Koin artifacts without versions. The Compiler Plugin is not in the BOM and keeps its own version. See [Install and project structure](/docs/platforms/kmp/install/).
+
+### Can I mix styles?
+
+Pick one style per project. The three DSL forms can coexist in one module, and the Compiler Plugin checks all of them. See [Choose your style](/docs/get-started/choose-your-style/).
+
+### What is the minimum Android version?
+
+Android minSdk <Version of="androidMinSdk" /> since Koin 4.2.0. See [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/).
+
+### Does it work with R8 and ProGuard?
+
+Since 4.2.2 the `koin-android` and `koin-core-viewmodel` artifacts ship consumer rules. See [R8 and ProGuard](/docs/platforms/android/r8-proguard/).
+
+## KSP and annotations
+
+### Is koin-annotations deprecated?
+
+No. The KSP processor (`koin-ksp-compiler`) is deprecated, not the annotations. `koin-annotations` is processed by the Compiler Plugin. See [KSP processor setup (deprecated)](/docs/migration/ksp-setup/).
+
+### Can I stay on KSP? Until when?
+
+The KSP processor is deprecated and will be removed in a future Koin version. No date is published. Stay only while your Kotlin version is below the plugin minimum, then follow [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/).
+
+### Should I move from 4.1 to 4.2?
+
+See [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/), which also covers the choice between staying on 4.1 with KSP and moving to 4.2 with the plugin. Documentation for 4.1 and 4.0 is under [Older versions](/docs/support/#older-versions).
+
+## Errors and testing
+
+### Why do I get a NotImplementedError, or "No definition found"?
+
+`NotImplementedError` from `single<T>()` means the Compiler Plugin is not applied to that Gradle module. "No definition found" means no loaded module declares the type. Both are explained, with their fixes, in [Troubleshooting](/docs/support/troubleshooting/).
+
+### Why does a second startKoin throw?
+
+`startKoin` is not idempotent. A second call throws `KoinApplicationAlreadyStartedException` (tested on JVM, iOS and wasmJs). Start Koin once, and call `stopKoin()` between tests. See [Starting Koin](/docs/concepts/starting-koin/) and [Troubleshooting](/docs/support/troubleshooting/).
+
+### Do I still need verify() or checkModules()?
+
+With the Compiler Plugin, not by default: the build checks the graph. `verify()` still helps for the runtime-only cases listed on [Verify your configuration](/docs/testing/verify/). The `checkModules` API is deprecated.
+
+## About Koin
+
+### Is Koin a service locator? Does it use reflection?
+
+`get()` and `by inject()` are service location. Constructor injection is dependency injection, and it is the recommended way. Both are explained in [What is dependency injection?](/docs/get-started/what-is-di/). The reflection-based API (`@KoinReflectAPI`) was removed in Koin 4.0, see [Releases](/docs/support/releases/).
+
+### How does Koin compare with Hilt and Dagger?
+
+See [Koin vs Hilt](/docs/migration/koin-vs-hilt/), then [Migrate from Hilt](/docs/migration/from-hilt/) or [Migrate from Dagger](/docs/migration/from-dagger/). The `koin-android-compat` artifact has Java-friendly helpers for ViewModels and scopes.
+
+## Next steps
+
+- [Troubleshooting](/docs/support/troubleshooting/): the error catalog.
+- [Versions, roadmap and support](/docs/support/): community channels and long-term support.
+- [Which migration guide do I need?](/docs/migration/): all migration and upgrade guides.

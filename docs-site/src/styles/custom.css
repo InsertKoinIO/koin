@@ -1,0 +1,46 @@
+/* Koin brand: primary #f8b133 from the current site. Light theme uses darker
+   shades so links keep readable contrast on white. */
+:root {
+  --sl-color-accent-low: #3d2a06;
+  --sl-color-accent: #f8b133;
+  --sl-color-accent-high: #fcdca3;
+}
+:root[data-theme='light'] {
+  --sl-color-accent-low: #fdecc8;
+  --sl-color-accent: #8f5c00;
+  --sl-color-accent-high: #5f3d00;
+}
+
+/* Homepage hero sizing. */
+[data-has-hero] .hero > img { width: 11rem; }
+@media (min-width: 50rem) {
+  [data-has-hero] .hero { padding-block: 4.5rem 3rem; }
+  [data-has-hero] .hero > img { width: min(100%, 20rem); }
+  [data-has-hero] .hero .copy > * { max-width: none; }
+  [data-has-hero] .hero h1 { font-size: clamp(var(--sl-text-5xl), 5vw, 4.25rem); }
+}
+
+/* The card that holds the decision map section, lifted off the page. */
+.home-surface {
+  --home-control: var(--sl-color-bg);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-hairline-light);
+  border-radius: 0.75rem;
+  box-shadow: var(--sl-shadow-lg);
+}
+.home-surface > :first-child { margin-top: 0; }
+
+/* Sits on white, because the logo artwork is black on a white background. */
+.koin-by-kotzilla { padding: 0.75rem 1rem; background: #fff; border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; }
+
+/* Homepage motion. Opt-in, and limited to opacity and transform so nothing reflows. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-has-hero] { scroll-behavior: smooth; }
+  [data-has-hero] .hero > img { animation: koin-logo-in 500ms ease-out; }
+  [data-has-hero] :is(.sl-link-button svg, .sl-link-card .icon) { transition: transform 150ms ease-out; }
+  [data-has-hero] :is(.sl-link-button:hover svg, .sl-link-card:hover .icon) { transform: translateX(3px); }
+}
+@keyframes koin-logo-in {
+  from { opacity: 0; transform: scale(0.94); }
+}

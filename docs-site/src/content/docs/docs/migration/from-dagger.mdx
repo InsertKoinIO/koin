@@ -1,0 +1,127 @@
+---
+title: "Migrate from Dagger"
+description: "Move from Dagger, with or without Hilt, to Koin, and what koin-dagger-bridge can and cannot do while both run."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+## What you will do
+
+Decide how to run Koin next to Dagger during a migration, then move bindings to Koin one feature at a time.
+
+The direction matters: **Koin reads Dagger**. Koin can pull an instance out of an existing Dagger graph, so new and moved code can live in Koin while the rest stays in Dagger. There is no helper in the other direction.
+
+## Prerequisites
+
+- An Android app that uses Dagger, with or without Hilt.
+- Koin set up in the app. See [Android: install and start](/docs/platforms/android/).
+
+## Pick your case
+
+| Your app | Bridge to use |
+|---|---|
+| Hilt (`@HiltAndroidApp`, `@EntryPoint`) | `koin-dagger-bridge`. Full steps in [Migrate from Hilt](/docs/migration/from-hilt/#run-both-side-by-side) |
+| Dagger without Hilt | No bridge library. Read the Dagger component yourself, see [Dagger without Hilt](#dagger-without-hilt) |
+
+## What koin-dagger-bridge is
+
+`koin-dagger-bridge` is a small Android library with one purpose: `Scope.dagger<T>()` (package `org.koin.android.dagger`) returns a Hilt entry point of type `T`, so that a Koin definition can call it.
+
+```kotlin
+inline fun <reified T> Scope.dagger(): T
+```
+
+Two facts from its source decide where it applies:
+
+- It calls `EntryPoints.get(...)` from `dagger.hilt` on the application context. `T` must be an `@EntryPoint` interface that Hilt installs in a component.
+- The module depends on `hilt-core`, and it reads `androidContext()`, so `startKoin` needs `androidContext(...)`.
+
+So the bridge is a Hilt bridge. It is not documented or tested here for an app that uses Dagger alone. If you use plain Dagger, use the next section.
+
+<Install artifacts={['koin-dagger-bridge']} bom />
+
+Setup, an `@EntryPoint` example and the Koin definition for each style are in [Migrate from Hilt](/docs/migration/from-hilt/#run-both-side-by-side).
+
+## Dagger without Hilt
+
+Dagger has no generic entry point to ask for a binding by type. Expose the binding on your own `@Component`, keep the component reachable from the `Application`, and let a Koin definition call it. This is plain Kotlin and does not use `koin-dagger-bridge`.
+
+```kotlin
+import dagger.Component
+import javax.inject.Singleton
+
+@Singleton
+@Component(modules = [DataModule::class])
+interface AppComponent {
+    fun userDataRepository(): UserDataRepository
+}
+
+class App : Application() {
+    val appComponent: AppComponent by lazy { DaggerAppComponent.create() }
+}
+```
+
+Read it from Koin:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
+
+val bridgeModule = module {
+    single { (androidContext() as App).appComponent.userDataRepository() }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import android.content.Context
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@Configuration
+class BridgeModule {
+
+    @Singleton
+    fun userDataRepository(context: Context): UserDataRepository =
+        (context.applicationContext as App).appComponent.userDataRepository()
+}
+```
+
+</TabItem>
+</Tabs>
+
+This pattern comes from the official [Koin skills](/docs/tooling/ai-agents/) (`di-migration`). When a binding moves to Koin, delete its accessor from `AppComponent` and its bridge definition.
+
+## Concept mapping
+
+| Dagger | Koin |
+|--------|------|
+| `@Component` | `@Module` + `@KoinApplication` + `startKoin<T>()`, or `startKoin { modules(...) }` |
+| `@Subcomponent` | A scope: an archetype such as `@ActivityScope` when it follows that lifecycle, otherwise `@Scope(T::class)` with `@Scoped`. See [Scopes](/docs/concepts/scopes/) |
+| `@Module` + `@Provides` | `@Module` class with `@Singleton` or `@Factory` functions, or `module { }` |
+| `@Binds` | Automatic for annotated classes, `bind` in the DSL |
+| `@Inject constructor` | `@Factory` on the class, `factory<T>()` or `factoryOf(::T)` |
+| `@Singleton` | `@Singleton`, `single` |
+| Custom `@Qualifier`, `@Named` | Reused as is, or `named("x")`. See [Qualifiers](/docs/concepts/qualifiers/) |
+| `@IntoSet`, `@IntoMap` | See [Multibindings](/docs/migration/from-hilt/#multibindings) |
+| `@BindsInstance` | A value known at startup: `androidContext()`, a property, or `@Provided` for a type created outside Koin |
+| `MembersInjector` | `by inject()` in framework classes, constructor parameters elsewhere |
+| `Lazy<T>` | A Kotlin `Lazy<T>` constructor parameter |
+
+Do not rewrite your Dagger components in place. Create an empty Koin module next to the graph, move definitions one feature at a time, and keep both running until the last `@Component` is gone.
+
+## Next steps
+
+- [Migrate from Hilt](/docs/migration/from-hilt/): the full step-by-step guide, including running both side by side.
+- [JSR-330 annotations](/docs/migration/jsr330/): keep `@Inject` and `@Singleton` on existing classes.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the Compiler Plugin checks once the graph is in Koin.

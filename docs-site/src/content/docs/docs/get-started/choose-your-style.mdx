@@ -1,0 +1,131 @@
+---
+title: "Choose your style"
+description: "Decide between the Koin DSL (three forms) and Koin Annotations, with requirements, tradeoffs and a default."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import DiDiagram from '~/components/DiDiagram.astro';
+import Version from '~/components/Version.astro';
+
+The style changes how you write modules, not how Koin works at runtime. For a new project, use the **Compiler Plugin DSL** unless the questions below point elsewhere.
+
+<DiDiagram name="styles" />
+
+- **Compiler Plugin DSL:** the default. It checks the graph at build time, keeps definitions out of your classes and keeps modules as explicit Kotlin code.
+- **Annotations:** if your team prefers to declare definitions on the class, as with Hilt or Dagger. They get the same checks and are JSR-330 compatible (`@Inject`, `@Singleton`, `@Named`).
+- **Constructor or Classic DSL:** if you can't use a recent Kotlin version, if you build a library that must not require a compiler plugin from its users, or if your existing modules work and you don't want to rewrite them. Apply the plugin anyway to get build-time checks on them.
+
+Pick one style per project. Whichever you choose, use a Classic DSL lambda where a definition needs custom logic.
+
+## The same module in each style
+
+Code samples use these three tabs across the docs. Your choice is saved in your browser and applied on every page.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
+
+val appModule = module {
+    single<ApiService>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    viewModel<UserViewModel>()
+}
+```
+
+You name the type. The [Koin Compiler Plugin](/docs/tooling/compiler-plugin/) reads its constructor and generates the wiring.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.*
+
+@Singleton
+class ApiService
+
+@Singleton
+class UserRepositoryImpl(private val api: ApiService) : UserRepository
+
+@KoinViewModel
+class UserViewModel(private val repository: UserRepository) : ViewModel()
+
+@Module
+@ComponentScan("com.example.app")
+class AppModule
+```
+
+You annotate each class. `@ComponentScan` gathers them into a module, and the Compiler Plugin generates the wiring. A class is bound to all its supertypes unless you list `binds`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Constructor DSL, with constructor references:
+
+```kotlin
+import org.koin.core.module.dsl.*
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val appModule = module {
+    singleOf(::ApiService)
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    viewModelOf(::UserViewModel)
+}
+```
+
+Classic DSL, with the constructor call written by hand:
+
+```kotlin
+import org.koin.dsl.module
+
+val appModule = module {
+    single { ApiService() }
+    single<UserRepository> { UserRepositoryImpl(get()) }
+    viewModel { UserViewModel(get()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Compare
+
+| | Compiler Plugin DSL | Annotations | Constructor / Classic DSL |
+|---|---|---|---|
+| **Definitions live** | In `module { }` | On your classes | In `module { }` |
+| **Compiler Plugin** | Required | Required | Optional |
+| **Versions** | Koin 4.2.0+, Kotlin <Version of="kotlinMin" />+ (K2) | Koin 4.2.0+, Kotlin <Version of="kotlinMin" />+ (K2) | Any version your Koin version supports |
+| **Missing definition found** | At build time | At build time | At build time with the plugin, otherwise at runtime or in a [`verify()`](/docs/testing/verify/) test |
+| **New constructor parameter** | No module change | No module change | `singleOf(::T)` follows it, but nullable, lazy or qualified parameters need explicit calls. A lambda changes by hand |
+| **Extra dependency** | `koin-annotations` for `@Named`, `koin-core-annotations` for `@InjectedParam` and `@Provided`, only if you use them | `koin-annotations` | None |
+| **Watch out for** | Qualifiers and injected parameters are annotations on your classes | A class outside the scanned packages is not in the module. Some options exist only in the DSL, such as `onClose` | Wiring to maintain by hand in lambdas |
+
+The plugin depends on compiler internals, so a new Kotlin release may need a new plugin release. See the [versions it supports](/docs/tooling/compiler-plugin/).
+
+:::caution
+The Compiler Plugin DSL functions (`single<T>()`, `factory<T>()`, `create(::T)`) are stubs. Without the Gradle plugin applied, the code compiles but throws `NotImplementedError` at runtime. Apply the plugin in every Gradle module that uses them.
+:::
+
+## Mixing styles
+
+All styles produce the same definitions, so they can coexist, ideally with one style per module:
+
+- **Compiler Plugin DSL and Classic DSL in one module** is normal: both are DSL forms.
+- **`startKoin<MyApp> { modules(legacyModule) }`** adds DSL modules to an annotated application.
+- **`module<NetworkModule>()`** in a regular `startKoin` block loads an annotated module.
+
+`@Module(includes = [...])` and `@KoinApplication(modules = [...])` only accept `@Module` classes. See [Starting Koin](/docs/concepts/starting-koin/) for the full rules.
+
+## The KSP processor is deprecated
+
+`koin-ksp-compiler`, the KSP processor that used to read annotations, is deprecated and will be removed in a future version. The annotations themselves are not deprecated: `koin-annotations` ships with each Koin version, and moving only changes your build setup and start code. See [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/).
+
+## Next steps
+
+- [Pick your platform](/docs/get-started/pick-your-platform/): the guide and artifacts for your target.
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): install the plugin and see what it validates.
+- [DSL reference](/docs/reference/dsl/) and [Annotations reference](/docs/reference/annotations/): every keyword and annotation.

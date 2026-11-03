@@ -1,0 +1,50 @@
+---
+title: "Pick your platform"
+description: "Routes to the guide for each platform, with the artifacts to install and the Kotlin targets each artifact supports."
+---
+
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+Find your platform in the first table, follow the link to its guide, and use the second table to check that an artifact supports your target. If you have not chosen a declaration style yet, read [Choose your style](/docs/get-started/choose-your-style/) first: it decides whether you need the Koin Compiler Plugin.
+
+## Platform guides
+
+| Platform | Main artifacts | Start here |
+|----------|----------------|------------|
+| Kotlin/JVM | `koin-core` | [Kotlin](/docs/platforms/kotlin/), [Kotlin tutorial](/docs/platforms/kotlin/tutorial/) |
+| Android | `koin-android` | [Android](/docs/platforms/android/) |
+| Android with Jetpack Compose | `koin-android`, `koin-compose`, `koin-compose-viewmodel` | [Compose](/docs/platforms/compose/), [Android tutorial](/docs/platforms/android/tutorial/) |
+| Compose Multiplatform | `koin-compose`, `koin-compose-viewmodel` | [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/), [KMP walkthrough](/docs/platforms/kmp/walkthrough/) |
+| Kotlin Multiplatform (iOS, desktop, web, native) | `koin-core` in `commonMain` | [Kotlin Multiplatform](/docs/platforms/kmp/), [KMP install](/docs/platforms/kmp/install/) |
+| Ktor server | `koin-ktor`, `koin-logger-slf4j` | [Ktor](/docs/platforms/ktor/), [Ktor tutorial](/docs/platforms/ktor/tutorial/) |
+| Tests | `koin-test`, `koin-test-junit4` or `koin-test-junit5` | [Testing](/docs/testing/) |
+
+Each guide shows its own Gradle setup. The shape is always the same: import the BOM, declare artifacts without versions, and apply the Compiler Plugin if your style needs it.
+
+<Install artifacts={['koin-core']} plugin bom />
+
+The Compiler Plugin is not part of the BOM and has its own version. It needs Kotlin <Version of="kotlinMin" /> or later. See [Compiler Plugin](/docs/tooling/compiler-plugin/) for the options.
+
+## Target support
+
+Most artifacts are published for every Kotlin target: `koin-core`, `koin-core-annotations`, `koin-annotations`, `koin-ktor` and `koin-test`. The others have gaps. Android uses the JVM variant of each artifact, and this table comes from the `build.gradle.kts` file of each module.
+
+| Artifact | JVM / Android | iOS | macOS | tvOS | watchOS | Linux | Windows (mingw) | JS | wasmJs |
+|----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| `koin-core-coroutines` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No |
+| `koin-core-viewmodel` | Yes | Yes | Yes | Yes | No | No | No | Yes | Yes |
+| `koin-compose`, `koin-compose-viewmodel`, `koin-compose-viewmodel-navigation`, `koin-compose-navigation3` | Yes | Yes | Yes | No | No | No | No | Yes | Yes |
+
+Some artifacts and features are limited to one platform:
+
+- **JVM only:** `koin-test-junit4`, `koin-test-junit5`, `koin-test-coroutines`, and [`verify()`](/docs/testing/verify/) in `koin-test`.
+- **Android only:** `koin-android`, `koin-androidx-compose` and `koin-androidx-compose-navigation`. Use them for Android APIs such as `androidContext()` and the Android scope integrations.
+- **Annotations on JS or wasmJs** require Kotlin 2.4.0 or later (Compiler Plugin README, KT-82395). The Compiler Plugin DSL works across the supported Kotlin range.
+
+For every artifact, the BOM, and the current versions, see [Gradle artifacts](/docs/reference/artifacts/). [Kotlin Multiplatform install](/docs/platforms/kmp/install/) shows which source set each artifact goes in.
+
+## Next steps
+
+- [Core concepts](/docs/get-started/core-concepts/): the model behind every guide.
+- [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/): if you are on 4.0 or 4.1.

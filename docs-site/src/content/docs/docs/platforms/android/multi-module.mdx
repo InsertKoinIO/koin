@@ -1,0 +1,342 @@
+---
+title: "Multi-module apps"
+description: "Organize Koin modules across the Gradle modules of an Android app."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+This page shows how to organize Koin in an Android app split into Gradle modules (`:app`, `:feature:*`, `:core:*`). It covers the Gradle setup, where each Koin module lives, how the app loads them, how features share types, and dynamic feature modules. Module composition (`includes()`, public and private modules, `@Configuration`) is explained in [Modules](/docs/concepts/modules/).
+
+## Project layout
+
+```
+:app                  Application class, startKoin, appModule
+:feature:login        LoginViewModel, LoginUseCase, loginModule
+:feature:profile      ProfileViewModel, profileModule
+:core:data            repositories, Retrofit, Room, dataModule
+:core:domain          interfaces shared by features (UserRepository)
+```
+
+Each Gradle module declares the Koin module for its own classes. Classes can then stay `internal` to their Gradle module: only the Koin module is public. The `:app` module is the only one that knows every feature, so it is where Koin starts.
+
+## Gradle setup
+
+| Gradle module | Compiler Plugin | Koin artifacts | Depends on |
+|---|---|---|---|
+| `:core:domain` | No | None | Nothing |
+| `:core:data` | Yes | `koin-android` | `:core:domain` |
+| `:feature:*` | Yes | `koin-android` | `:core:domain` |
+| `:app` | Yes | `koin-android` | `:core:data`, every `:feature:*` |
+
+A module with definitions applies the plugin, even if it has no `startKoin`: the plugin writes metadata into the compiled module, and `:app` reads it to check the full graph. `:core:domain` holds interfaces and data types, so it needs nothing from Koin. Features do not depend on each other, and `:app` does not need `:core:domain` unless its own code uses those types.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Each module with definitions has these lines, and its project dependencies from the table:
+
+<Install artifacts={['koin-android']} plugin bom />
+
+</TabItem>
+<TabItem label="Annotations">
+
+Each module with definitions has these lines, and its project dependencies from the table:
+
+<Install artifacts={['koin-android', 'koin-annotations']} plugin bom />
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Each module with definitions has these lines, and its project dependencies from the table. Nothing checks the graph at build time:
+
+<Install artifacts={['koin-android']} bom />
+
+</TabItem>
+</Tabs>
+
+To keep one plugin version, declare the plugin in the root build file with `apply false`, then apply it by id in each module, without a version. A [convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html) can hold these lines.
+
+## Declaring and loading feature modules
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-multimodule-dsl, multimodule-dsl */}
+
+```kotlin
+// Gradle module ":feature:login"
+import androidx.lifecycle.ViewModel
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.factory
+import org.koin.plugin.module.dsl.viewModel
+
+internal class LoginUseCase(private val auth: AuthService)
+internal class LoginViewModel(private val login: LoginUseCase) : ViewModel()
+
+val loginModule = module {
+    factory<LoginUseCase>()
+    viewModel<LoginViewModel>()
+}
+```
+
+{/* check: android-multimodule-dsl, multimodule-dsl */}
+
+```kotlin
+// Gradle module ":app"
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class AppInfo
+
+val appModule = module {
+    single<AppInfo>()
+    includes(dataModule, loginModule, profileModule)
+}
+
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+```
+
+:::caution[Keep one definition in `:app`]
+With Compiler Plugin 1.2.1, if the modules loaded by `startKoin` declare no definition in `:app` itself, for example an `appModule` that only contains `includes(...)`, the plugin skips the full-graph check and prints no warning ([issue #142](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/142)). The build passes, and a missing definition fails at runtime. One definition of your own in `:app`, like `AppInfo` here, turns the check on. To confirm that the check runs, remove a module from `includes` and build: you should get `KOIN-D001`.
+:::
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-multimodule-annotations, multimodule-annotations */}
+
+```kotlin
+// Gradle module ":feature:login"
+package com.app.feature.login
+
+import androidx.lifecycle.ViewModel
+import com.app.core.domain.AuthService
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan("com.app.feature.login")
+@Configuration
+class LoginModule
+
+@Factory
+internal class LoginUseCase(private val auth: AuthService)
+
+@KoinViewModel
+internal class LoginViewModel(private val login: LoginUseCase) : ViewModel()
+```
+
+{/* check: android-multimodule-annotations, multimodule-annotations */}
+
+```kotlin
+// Gradle module ":app"
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.annotation.KoinApplication
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin<MainApplication> {
+            androidLogger()
+            androidContext(this@MainApplication)
+        }
+    }
+}
+```
+
+`startKoin<MainApplication>()` finds every `@Configuration` module on the app classpath, including those from feature Gradle modules. Adding a feature means adding the Gradle dependency, nothing else. To list modules explicitly instead, use `@KoinApplication(modules = [LoginModule::class, ProfileModule::class])`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-multimodule-constructor */}
+
+```kotlin
+// Gradle module ":feature:login"
+import androidx.lifecycle.ViewModel
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+internal class LoginUseCase(private val auth: AuthService)
+internal class LoginViewModel(private val login: LoginUseCase) : ViewModel()
+
+val loginModule = module {
+    factoryOf(::LoginUseCase)
+    viewModelOf(::LoginViewModel)
+}
+```
+
+{/* check: android-multimodule-constructor */}
+
+```kotlin
+// Gradle module ":app"
+import android.app.Application
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+
+val appModule = module {
+    includes(dataModule, loginModule, profileModule)
+}
+
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Sharing types between features
+
+A feature should not depend on another feature. When `:feature:profile` needs the current user, it depends on an interface in a core module, and the implementation is bound where it lives:
+
+{/* check: android-multimodule-dsl, android-multimodule-constructor, multimodule-dsl */}
+
+```kotlin
+// Gradle module ":core:domain"
+interface UserRepository {
+    suspend fun currentUser(): User
+}
+```
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-multimodule-dsl, multimodule-dsl */}
+
+```kotlin
+// Gradle module ":core:data"
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+internal class UserRepositoryImpl(private val api: ApiService) : UserRepository {
+    override suspend fun currentUser(): User = api.currentUser()
+}
+
+val dataModule = module {
+    single<UserRepositoryImpl>() bind UserRepository::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-multimodule-annotations, multimodule-annotations */}
+
+```kotlin
+// Gradle module ":core:data"
+package com.app.core.data
+
+import com.app.core.domain.ApiService
+import com.app.core.domain.User
+import com.app.core.domain.UserRepository
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@ComponentScan("com.app.core.data")
+@Configuration
+class DataModule
+
+@Singleton
+internal class UserRepositoryImpl(private val api: ApiService) : UserRepository {
+    override suspend fun currentUser(): User = api.currentUser()
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-multimodule-constructor */}
+
+```kotlin
+// Gradle module ":core:data"
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+internal class UserRepositoryImpl(private val api: ApiService) : UserRepository {
+    override suspend fun currentUser(): User = api.currentUser()
+}
+
+val dataModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+`ProfileViewModel(private val users: UserRepository)` in `:feature:profile` then resolves `UserRepositoryImpl` at runtime. Koin resolves across Gradle modules as long as every Koin module is loaded: the feature only needs to see the interface type. You don't need an extra entry point interface or component per feature.
+
+With the Compiler Plugin, a feature module has no `startKoin` of its own, so its dependencies are checked when `:app` compiles and assembles the full graph. Keep each module with definitions as a direct dependency of `:app`: the plugin can't read the constructors of a module that is not on the compile classpath of `:app`, so it does not check their parameters ([issue #132](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/132)). See [Compile-time safety](/docs/tooling/compile-time-safety/).
+
+## Dynamic feature modules
+
+With Play Feature Delivery, the base app can't reference code from a dynamic feature module: the dependency goes from the feature to the app. Load the feature Koin module from the feature itself, in its entry Activity, with `loadKoinModules()`:
+
+```kotlin
+// Dynamic feature module ":feature:premium"
+internal object PremiumKoin {
+    private val modules = lazy { loadKoinModules(premiumModule) }
+    fun load() = modules.value
+}
+
+class PremiumActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        PremiumKoin.load()
+        super.onCreate(savedInstanceState)
+    }
+}
+```
+
+The `lazy` makes sure the module loads once per process, before `super.onCreate()`. Why both matter, and how to unload, is covered in [Startup options](/docs/platforms/android/startup-options/#loading-modules-after-start).
+
+The Compiler Plugin can't see a module loaded this way. Types used by the base app that only come from such a module must be marked `@Provided` (see [Compile-time safety](/docs/tooling/compile-time-safety/)).
+
+## Testing feature modules
+
+Test each feature module on its own, with fakes for what other modules provide. With the Compiler Plugin, the full graph is checked at build time (see [Verifying your configuration](/docs/testing/verify/) for the few cases that still need `verify()`). Unit tests with Koin are covered in [Unit tests](/docs/testing/), and on-device tests in [Android instrumented tests](/docs/testing/android-instrumented/).
+
+## Next steps
+
+- [Modules](/docs/concepts/modules/): `includes()`, module visibility and `@Configuration` discovery.
+- [Android: install and start](/docs/platforms/android/): `startKoin` and loading modules at runtime.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): how the graph is checked across Gradle modules.
+- [Lazy modules](/docs/concepts/lazy-modules/): load feature modules in the background at startup.
+- [Library integration and recipes](/docs/platforms/android/libraries/): data, domain and UI layers.

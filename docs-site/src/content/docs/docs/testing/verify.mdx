@@ -1,0 +1,183 @@
+---
+title: "Verifying your configuration"
+description: "Decide whether you need a verify() test next to the Compiler Plugin, and use verify() where you do."
+---
+
+This page covers `verify()`, the test API that checks your Koin configuration without running it. With the Koin Compiler Plugin you do not need it by default, because the build already checks the graph. This page lists the cases where `verify()` still helps and shows how to use it. You should know how to write a [unit test with Koin](/docs/testing/).
+
+## Do you need verify()?
+
+The [Koin Compiler Plugin](/docs/tooling/compile-time-safety/) checks the dependency graph on every build. Use this table to decide:
+
+| Your situation | Add a verify() test? | Why |
+|----------------|----------------------|-----|
+| Compiler Plugin applied, and the build reports no `KOIN-W003` | No | The build already checks the full graph. Delete existing `verify()` tests. |
+| No Compiler Plugin (Constructor or Classic DSL only) | Yes, or adopt the plugin | Nothing else checks the graph before runtime. |
+| The plugin reports `KOIN-W003` for an entry point | Yes, for that entry point | The plugin could not follow a module list built with `if`, `when` or varargs, and skipped the check. `verify()` is the runtime fallback. |
+| A library or feature module with no `startKoin` or `@KoinApplication` | Yes, if you want it checked alone | Such a module gets no missing-dependency check until an app assembles it. |
+| Part of the graph is loaded with [lazy modules](/docs/concepts/lazy-modules/) | Yes, with `ModuleConfiguration.verify()` | You get one test over the full configuration. See [Modules and lazy modules together](#modules-and-lazy-modules-together). |
+| You already run `verify()` and a definition has a nullable parameter (`T?`) with no default value | Expect a failure | See [What verify() accepts](#what-verify-accepts). |
+
+:::note
+`verify()` is JVM only: it lives in `jvmMain` of `koin-test` and reads constructors with Kotlin reflection. It does not run in `commonTest` on iOS, JS or Wasm. See [Testing in commonTest](/docs/platforms/kmp/testing/).
+:::
+
+## verify()
+
+`verify()` is an extension on `Module`, from `koin-test`. It reads the constructor of each definition's declared type and checks that every parameter type has a definition in the module or in the modules it includes. It runs no definition and needs no mock.
+
+```kotlin
+val appModule = module {
+    includes(dataModule, networkModule)
+    viewModel<UserViewModel>()
+}
+```
+
+```kotlin
+import org.koin.test.verify.verify
+
+class AppModuleCheck {
+
+    @Test
+    fun checkKoinModule() {
+        appModule.verify()
+    }
+}
+```
+
+On a missing dependency, `verify()` throws `MissingKoinDefinitionException` and prints a suggested fix. On a dependency cycle between two constructors, it throws `CircularInjectionException`.
+
+To check several modules that are not linked with `includes()`, use `listOf(dataModule, uiModule).verifyAll()`.
+
+### What verify() accepts
+
+A constructor parameter passes the check when it is:
+
+- Declared: a definition for its type exists in the module tree.
+- Optional: the parameter has a default value. `verify()` prints a warning if no definition exists.
+- Wrapped: a `Lazy<T>` or `List<T>` whose `T` is declared.
+- Whitelisted: its type is in `extraTypes`, or is a basic type (`String`, `Int`, `Long`, `Double`).
+- Injected or provided: the parameter is annotated with `@InjectedParam` or `@Provided`, or declared with `injections`.
+
+A nullable parameter (`T?`) with no default value and no definition does not pass. `verify()` only tolerates a default value, so it throws `MissingKoinDefinitionException`. The Compiler Plugin accepts the same parameter and resolves it with `getOrNull()`, so the two checks disagree. To make `verify()` pass, give the parameter a default value, add its type to `extraTypes`, or mark it `@Provided`.
+
+`verify()` reads constructors only. It does not check qualifiers, properties or `get()` calls written inside a definition lambda.
+
+:::caution
+A definition declared with an interface as its type is not checked at all. An interface has no constructor to read, so `single<Repository> { RepositoryImpl(get()) }` passes even if `RepositoryImpl` has a missing dependency. Declare the implementation and bind the interface, and `verify()` reads the right constructor: `single { RepositoryImpl(get()) } bind Repository::class`.
+:::
+
+### Types provided at runtime
+
+Some types are never declared in a module: framework objects, or values created by the platform. Add them to `extraTypes`:
+
+```kotlin
+appModule.verify(
+    extraTypes = listOf(HttpClientEngine::class, Clock::class)
+)
+```
+
+On Android, add `koin-android-test` and use `androidVerify()` instead. It adds `Context`, `Activity`, `Fragment`, `Application`, `SavedStateHandle` and `WorkerParameters` for you:
+
+```kotlin
+import org.koin.android.test.verify.androidVerify
+
+@Test
+fun checkKoinModule() {
+    appModule.androidVerify()
+}
+```
+
+### Injected parameters
+
+A parameter passed with `parametersOf()` usually has no definition, so `verify()` reports it as missing. Declare it with `injections`. Basic types (`String`, `Int`, `Long`, `Double`) are already whitelisted and do not need it.
+
+{/* check: verify-injected */}
+
+```kotlin
+import kotlin.test.Test
+import org.koin.dsl.module
+import org.koin.test.verify.definition
+import org.koin.test.verify.injectedParameters
+import org.koin.test.verify.verify
+
+class UserPresenter(val userId: UserId, val repository: UserRepository)
+
+val presenterModule = module {
+    single { UserRepository() }
+    factory { (userId: UserId) -> UserPresenter(userId, get()) }
+}
+
+@Test
+fun checkKoinModule() {
+    presenterModule.verify(
+        injections = injectedParameters(
+            definition<UserPresenter>(UserId::class)
+        )
+    )
+}
+```
+
+Or annotate the constructor parameter. `@InjectedParam` marks a value passed with `parametersOf()`, `@Provided` marks a type supplied outside Koin's modules:
+
+```kotlin
+class UserPresenter(@InjectedParam val userId: String, val repository: UserRepository)
+
+class SyncWorker(@Provided val params: WorkerParameters, val repository: UserRepository)
+```
+
+Both annotations come from `koin-core-annotations` and are the same ones the Compiler Plugin reads (see [Injected parameters](/docs/concepts/parameters/)).
+
+### Modules and lazy modules together
+
+`koin-test-coroutines` adds `verify()` on a `ModuleConfiguration`, which checks regular and [lazy modules](/docs/concepts/lazy-modules/) as one graph:
+
+```kotlin
+val configuration = moduleConfiguration {
+    modules(coreModule)
+    lazyModules(featureModule)
+}
+
+@Test
+fun checkConfiguration() {
+    configuration.verify()
+}
+```
+
+`moduleConfiguration` and this `verify()` are experimental (`@KoinExperimentalAPI`). Like the module version, this `verify()` is JVM only.
+
+## checkModules() is deprecated
+
+`checkModules()` and `checkKoinModules()` are deprecated: migrate to `verify()`, or to the Compiler Plugin. You may still meet them in older projects. Unlike `verify()`, they start the modules and create every definition, so they need values for everything resolved at runtime:
+
+```kotlin
+@Test
+fun checkAllModules() {
+    koinApplication {
+        modules(appModule)
+        checkModules {
+            withInstance<Context>()
+            withParameter<UserPresenter> { "user-1" }
+            withProperty("api_url", "http://localhost")
+        }
+    }
+}
+```
+
+To migrate to `verify()`, replace each part of the check DSL:
+
+| Old check DSL | Replacement |
+|---------------|-------------|
+| `withInstance<T>()` for a framework type | `extraTypes`, or `androidVerify()` on Android |
+| `withParameter<T> { value }` | `injections`, or `@InjectedParam` |
+| `withProperty(key, value)` | Not needed: `verify()` does not read properties |
+| `withScopeLink(scope, targetScope)` | Not needed: `verify()` does not link scopes |
+
+The plugin's `KOIN-W003` message still mentions `checkModules()` as the runtime fallback. Use `verify()` instead.
+
+## Next steps
+
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the Compiler Plugin checks at build time.
+- [Unit tests](/docs/testing/): start Koin in tests, override and mock definitions.
+- [Injected parameters](/docs/concepts/parameters/): `parametersOf` and `@InjectedParam`.
+- [Troubleshooting](/docs/support/troubleshooting/): runtime errors such as `NoDefinitionFoundException`.

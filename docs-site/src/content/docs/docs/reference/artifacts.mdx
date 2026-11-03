@@ -1,0 +1,146 @@
+---
+title: "Gradle artifacts and BOM"
+description: "Every published Koin artifact with its targets, how to use the BOM including in commonMain, and the version and compatibility tables."
+---
+
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+This page is the single reference for what you can install: every artifact with the targets it supports, the BOM, the Compiler Plugin, and the versions and requirements. To pick the artifacts for your platform, start from [Pick your platform](/docs/get-started/pick-your-platform/).
+
+All artifacts are on [Maven Central](https://central.sonatype.com/search?q=io.insert-koin) under the group `io.insert-koin`. The current Koin version is <Version of="koin" />. All Koin libraries, including `koin-annotations`, share this one version. Version history and upgrade notes are in [Releases](/docs/support/releases/).
+
+## Install with the BOM
+
+The Koin BOM (bill of materials) pins every Koin library to the same version. You declare the BOM once and add Koin libraries without a version. When you update the BOM, all Koin libraries move together. This is the recommended setup on every platform.
+
+<Install artifacts={['koin-android']} test={['koin-test-junit4']} bom />
+
+A version written on one dependency overrides the BOM for that dependency only. Avoid it unless you need a fix from a newer release of one library. Mixing Koin versions is not supported.
+
+The Compiler Plugin is not in the BOM. It is a Gradle plugin with its own version: see [The Compiler Plugin](#the-compiler-plugin).
+
+### BOM in Kotlin Multiplatform
+
+The BOM works in a `commonMain` source set. It was tested with Koin 4.2.2, Kotlin 2.3.20 and Gradle 8.11.1. In a source set, import it with `project.dependencies.platform(...)` and add the artifacts without versions:
+
+<Install artifacts={['koin-core']} bom sourceSet="commonMain" />
+
+For project structure and platform source sets, see [Kotlin Multiplatform install](/docs/platforms/kmp/install/).
+
+### What the BOM contains
+
+The BOM constrains every library below, except `koin-gradle-plugin`. It also constrains the JVM variants `koin-core-jvm` and `koin-ktor-jvm`, which Gradle resolves from the multiplatform artifacts. It never contains the Compiler Plugin, the KSP processor (`koin-ksp-compiler`) or `koin-jsr330`.
+
+## All artifacts
+
+"All targets" means: JVM and Android, JS, wasmJs, iOS, macOS, tvOS, watchOS, Linux and Windows (mingwX64). The targets come from the `build.gradle.kts` file of each module.
+
+### Core
+
+| Artifact | Targets | Contains |
+|----------|---------|----------|
+| `koin-bom` | n/a | The bill of materials |
+| `koin-core` | All targets | Container, DSL, scopes, the Compiler Plugin DSL functions |
+| `koin-core-annotations` | All targets | `@InjectedParam` and `@Provided` only. Comes with `koin-annotations` and `koin-test`. Use it alone when a module needs these two annotations and no other |
+| `koin-annotations` | All targets | The annotations the Compiler Plugin reads: `@Singleton`, `@Module`, `@Named`, `@KoinApplication` and the rest. Includes `koin-core-annotations`. See the [annotations reference](/docs/reference/annotations/) |
+| `koin-core-coroutines` | All targets except wasmJs | Lazy modules and background loading |
+| `koin-core-viewmodel` | JVM, Android, JS, wasmJs, iOS, macOS, tvOS. Not watchOS, Linux or Windows | ViewModel definitions (`viewModel`, `viewModelOf`, `viewModelScope`) |
+
+### Android
+
+All Android artifacts are Android libraries (AAR) with minSdk <Version of="androidMinSdk" />.
+
+| Artifact | Contains |
+|----------|----------|
+| `koin-android` | `androidContext()`, Activity, Fragment and Service APIs, `by viewModel()`. Brings `koin-core` and `koin-core-viewmodel` |
+| `koin-android-compat` | Java helpers to inject from Java classes |
+| `koin-androidx-navigation` | ViewModels scoped to a Navigation graph (Fragments) |
+| `koin-androidx-workmanager` | WorkManager workers. Spelled `koin-androidx-workmanager`, with `androidx` |
+| `koin-androidx-startup` | Start Koin with AndroidX App Startup. Brings `koin-android` |
+| `koin-dagger-bridge` | Use Dagger components from Koin during a migration |
+
+### Compose
+
+The multiplatform Compose artifacts target Android, JVM, JS, wasmJs, iOS and macOS. They do not target tvOS, watchOS, Linux or Windows.
+
+| Artifact | Targets | Contains |
+|----------|---------|----------|
+| `koin-compose` | Compose targets | `koinInject()`, `KoinApplication`, the Compose context. On Android, brings `koin-android` |
+| `koin-compose-viewmodel` | Compose targets | `koinViewModel()`. Brings `koin-compose` and `koin-core-viewmodel` |
+| `koin-compose-viewmodel-navigation` | Compose targets | ViewModels scoped to a Navigation Compose back stack entry |
+| `koin-compose-navigation3` | Compose targets | Navigation 3 integration |
+| `koin-androidx-compose` | Android | `KoinActivityScope` and `KoinFragmentScope`. Brings `koin-compose`, `koin-compose-viewmodel` and a second `koinViewModel`, so add it only for those two functions |
+| `koin-androidx-compose-navigation` | Android | Navigation Compose 2 for Android. Brings `koin-androidx-compose` |
+
+### Ktor
+
+| Artifact | Targets | Contains |
+|----------|---------|----------|
+| `koin-ktor` | All targets | The Ktor server plugin |
+| `koin-logger-slf4j` | JVM | The SLF4J logger |
+
+### Test
+
+| Artifact | Targets | Contains |
+|----------|---------|----------|
+| `koin-test` | All targets | `KoinTest` and the test API. `verify()` is JVM only |
+| `koin-test-coroutines` | JVM | Test support for lazy modules |
+| `koin-test-junit4` | JVM | JUnit 4 rules |
+| `koin-test-junit5` | JVM | JUnit 5 extensions |
+| `koin-android-test` | Android | Instrumented test helpers |
+
+### The legacy `koin-gradle-plugin`
+
+`koin-gradle-plugin` (plugin id `koin`) is an old Gradle plugin that registers the `checkModules` and `checkAndroidModules` tasks. They run the deprecated `checkModules` API. It is not the Koin Compiler Plugin, and you do not need it for new projects. To check your graph, use the Compiler Plugin, or `verify()` as described in [Verify your configuration](/docs/testing/verify/).
+
+## The Compiler Plugin
+
+The Koin Compiler Plugin is a Kotlin compiler plugin applied through a Gradle plugin. It is not a library, and it is not in the BOM.
+
+- Gradle plugin id: `io.insert-koin.compiler.plugin`
+- Current version: <Version of="compilerPlugin" />. It has its own version, separate from Koin.
+- Requires Koin 4.2.0 or later and the Kotlin K2 compiler, version <Version of="kotlinMin" /> or later.
+- Setup and options are on [Compiler Plugin](/docs/tooling/compiler-plugin/) and [Compiler Plugin options](/docs/reference/compiler-options/).
+
+<Install artifacts={['koin-core']} plugin bom />
+
+## Versions and compatibility
+
+### Current release
+
+| Component | Version | Kotlin |
+|-----------|---------|--------|
+| Koin libraries | <Version of="koin" /> | Built with <Version of="kotlinMin" /> |
+| Koin Compiler Plugin | <Version of="compilerPlugin" /> | Requires <Version of="kotlinMin" /> or later. Verified on 2.3.20, 2.4.0, 2.4.10 and 2.4.20 |
+
+"Built with" is the Kotlin version used to compile the Koin libraries. It is not a minimum: the minimum Kotlin version for an app that uses the Koin runtime libraries is not published, so this page does not state one. The Compiler Plugin is different: it requires Kotlin <Version of="kotlinMin" /> or later. A Kotlin version that is not on its verified list compiles with a warning. The list is maintained in the [Compiler Plugin repository](https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/supported-kotlin-versions.txt) and summarized on [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+:::caution
+Annotation-based definitions (`@Module`, `@ComponentScan`) on JS and wasmJs require Kotlin 2.4.0 or later ([KT-82395](https://youtrack.jetbrains.com/issue/KT-82395)). The Compiler Plugin DSL works on these targets across the whole supported range, and so do JVM, Android and Kotlin/Native for both styles.
+:::
+
+### Platform requirements
+
+| Requirement | Value |
+|-------------|-------|
+| Android minSdk | <Version of="androidMinSdk" /> (Koin 4.2.0 raised it from 21) |
+| JVM bytecode target | Java 8 for most libraries. The `jvm` target of `koin-core-viewmodel`, `koin-compose`, `koin-compose-viewmodel`, `koin-compose-viewmodel-navigation` and `koin-compose-navigation3` is Java 11. The Android targets of these libraries stay on Java 8 |
+
+### Older lines
+
+Koin 4.2 is the version documented on this site. For earlier versions, see [Releases](/docs/support/releases/) for the notes of each version, and the archived docs for [Koin 4.1](https://legacy.insert-koin.io/docs/4.1/) and [Koin 4.0](https://legacy.insert-koin.io/docs/4.0/).
+
+| Koin | Built with Kotlin | Compiler Plugin |
+|------|-------------------|-----------------|
+| 4.1.1 | 2.1.21 | No, KSP processor only |
+| 4.1.0 | 2.1.20 | No, KSP processor only |
+| 4.0.4 | 2.0.21 | No, KSP processor only |
+| 3.5.6 | 1.9.22 | No |
+
+## Related
+
+- [Pick your platform](/docs/get-started/pick-your-platform/): which artifacts to install for your platform.
+- [Compiler Plugin](/docs/tooling/compiler-plugin/): install and configure the plugin.
+- [Annotations reference](/docs/reference/annotations/): what `koin-annotations` contains.
+- [Releases](/docs/support/releases/): versions and upgrade notes.
