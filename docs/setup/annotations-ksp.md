@@ -56,7 +56,7 @@ dependencies {
 | 1.4 | 1.9 | 1.9 |
 | 2.0 | 2.0 | 2.0 |
 | 2.1/2.2 | 2.1/2.2 | 2.1/2.2 |
-| 2.3 | 2.3 | Independant |
+| 2.3 | 2.3 | Independent |
 
 ### Basic Usage
 
@@ -249,7 +249,7 @@ The `koin-ksp-compiler` processor will be removed in a future Koin version. We r
 ## Help
 
 If you encounter issues during migration:
-- Check [Troubleshooting](/docs/reference/troubleshooting)
+- Check [Troubleshooting](/docs/reference/koin-core/troubleshooting)
 - Ask on [Slack](https://kotlinlang.slack.com/messages/koin/)
 - Open an issue on [GitHub](https://github.com/InsertKoinIO/koin)
 
