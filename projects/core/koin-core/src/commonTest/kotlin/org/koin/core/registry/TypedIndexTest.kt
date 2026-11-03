@@ -20,7 +20,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 /**
- * KTZ-4829: resolveDefinition keeps a lazily populated, allocation-free cache in front of the
+ * resolveDefinition keeps a lazily populated, allocation-free cache in front of the
  * String-keyed map. Every write to the registry must drop the affected entries, a repeat lookup
  * must agree with the String map, and a caller that writes a hand-built String key must see
  * exactly the behavior it had before.

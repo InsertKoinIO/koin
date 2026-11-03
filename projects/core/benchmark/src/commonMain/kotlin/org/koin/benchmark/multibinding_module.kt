@@ -4,7 +4,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-// Metro-shaped multibinding workload (KTZ-4829).
+// Metro-shaped multibinding workload.
 //
 // The Metro benchmark maps every contribution to `@Singleton(binds = [Iface::class])` and
 // consumes them with `koin.getAll<Plugin>()`. That is the shape reproduced here: a concrete

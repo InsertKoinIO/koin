@@ -75,7 +75,7 @@ Claude Code reads shared settings only from the launch directory, so both files 
 
 - **KMP discipline:** `commonMain` changes must be verified beyond JVM — compile at least one native target and `wasmJs` before considering a change done. Several bug classes (qualifiedName, klib, JS) only surface off-JVM.
 - **Every bug fix ships a regression test**, in `commonTest` whenever the code is common.
-- **Commit style:** `<ticket> - description`. GitHub issue → `Fix #NNNN - …` (e.g. `Fix #2387 - CoreResolverV2 lost stacked-params lookup on linked scopes`); Linear-only work → `KTZ-NNNN - …`.
+- **Commit style:** GitHub issue → `Fix #NNNN - description` (e.g. `Fix #2387 - CoreResolverV2 lost stacked-params lookup on linked scopes`); otherwise a plain description. No internal tracker IDs in commits, code or docs.
 - **Public API changes:** run `./compare_apis.sh`; avoid breaking binary compatibility in patch releases.
 - **Resolution-semantics changes** (anything in `core/resolution/`): describe the behavioral delta (old vs new resolution order/matching) in the PR description — resolver behavior changes have historically caused regressions.
 - **User-visible changes need a docs touch** on https://insert-koin.io/docs — say so in the PR description. `../docs/` is a legacy, unmaintained copy: never edit it.
@@ -91,7 +91,7 @@ Claude Code reads shared settings only from the launch directory, so both files 
 `allTests` is currently red on two counts unrelated to any recent resolver work (first verified by stash-comparison on the `4.2.2` branch, 2026-06-08; both re-checked on `4.3.0`, see dates below). If you touch `commonMain` and run `allTests`, expect these and confirm your diff doesn't change them:
 
 - **`createdAtStart` on wasmJs and JS** (node and browser, re-verified on `4.3.0` 2026-11-02) — `CreateOnStart`, `OverrideAndCreateatStartTest` fail with `AssertionError: Expected value to be true`. Core `single(createdAtStart = true)` eager-init doesn't fire on JS/wasmJs. This is *core*, **not** the compiler-plugin `createdAtStart` drop (#2425/#2415) — same symptom family, different layer.
-- **`macosArm64Test` reports FAILED although every test passes** — Gradle's result writer throws `IllegalArgumentException: Multiple entries with same key … TestOutputStore$Index` ("Could not write XML test results for <class>"), on a different class each run. It is a Gradle/KGP reporting bug, not test names: renaming `DynamicModulesTest` to snake_case changed nothing (3 runs, 2026-11-03, KTZ-5309). Read the per-class XML under `build/test-results/macosArm64Test/` for the real outcome (303 tests, 0 failures on `4.3.0`).
+- **`macosArm64Test` reports FAILED although every test passes** — Gradle's result writer throws `IllegalArgumentException: Multiple entries with same key … TestOutputStore$Index` ("Could not write XML test results for <class>"), on a different class each run. It is a Gradle/KGP reporting bug, not test names: renaming `DynamicModulesTest` to snake_case changed nothing (3 runs, 2026-11-03). Read the per-class XML under `build/test-results/macosArm64Test/` for the real outcome (303 tests, 0 failures on `4.3.0`).
 
 ## Versioning
 

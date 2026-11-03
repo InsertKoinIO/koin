@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 /**
- * KTZ-4829: pins two registration-path details that were changed for allocation, so that the
+ * Pins two registration-path details that were changed for allocation, so that the
  * observable behavior stays exactly what it was.
  */
 class BeanDefinitionDefaultsTest {

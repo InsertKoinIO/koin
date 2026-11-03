@@ -15,7 +15,7 @@ ScopeBenchmark.fragmentScope_cascade_activity_root  avgt    3  1803,030 ±  10,7
 ScopeBenchmark.rootScope                            avgt    3   112,174 ±   4,734  ns/op
 StartupBenchmark.startup                            avgt          0,228            ms/op
 StartupBenchmark.startup_lazy                       avgt          0,001            ms/op
-# 4.2.3-perfs (KTZ-4829) - 2026-09-09 - same machine, before = dc86ef8d / after = 4557213b
+# 4.2.3-perfs - 2026-09-09 - same machine, before = dc86ef8d / after = 4557213b
 
 Benchmark                                              Mode      before      after   Units
 HeavyStartupBenchmark.start_get_lazy_module1           avgt       0,303      0,183   ms/op
@@ -52,7 +52,7 @@ t3_getAll_pure_scan                                              206956     1493
 t4_get_warm_unqualified                                             587        202   B/op
 t4b_get_warm_qualified                                              616        235   B/op
 
-# 4.2.3-perfs + lazy typed cache (KTZ-4829) - 2026-09-09 - same machine, before = 9fec8d50 / after = 0b8e1201
+# 4.2.3-perfs + lazy typed cache - 2026-09-09 - same machine, before = 9fec8d50 / after = 0b8e1201
 
 Benchmark                                              Mode      before      after   Units
 HeavyStartupBenchmark.start_get_lazy_module1           avgt       0,182      0,186   ms/op
@@ -87,7 +87,7 @@ t4b_get_warm_qualified                                              235         
 #   t4 warm get 56 -> 33 ns but t1 registration 900 -> 1565 us/op (+74%), t2 1324 -> 1997 us/op.
 #   In a startup run every definition resolves once, so an eager lookup index is pure cost there.
 
-# ===== KTZ-4829 CONSOLIDATED: pre-branch dc86ef8d -> 4.2.3-perfs 0b8e1201 (same machine, JVM, 2026-09-09) =====
+# ===== CONSOLIDATED: pre-branch dc86ef8d -> 4.2.3-perfs 0b8e1201 (same machine, JVM, 2026-09-09) =====
 
 Benchmark                                              before      after   delta   Units
 HeavyStartupBenchmark.start_get_module1                 0,237      0,174    -27%   ms/op

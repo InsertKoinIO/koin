@@ -7,14 +7,14 @@ import org.koin.dsl.koinApplication
 import java.lang.management.ManagementFactory
 
 /**
- * Bytes-per-op probe for KTZ-4829.
+ * Bytes-per-op probe for the GetAllBenchmark three-timer split.
  *
  * kotlinx-benchmark 0.4.16 accepts only nativeFork / nativeGCAfterIteration / jvmForks /
  * jsUseBridge as advanced options, so JMH's `-prof gc` cannot be reached through the Gradle
- * plugin (`projects/benchmark-gc.sh` runs JMH directly for that). getThreadAllocatedBytes gives the same number more directly: exact bytes allocated
- * by this thread, with no sampling.
+ * plugin (`projects/benchmark-gc.sh` runs JMH directly for that). getThreadAllocatedBytes gives
+ * the same number more directly: exact bytes allocated by this thread, with no sampling.
  *
- * The exit criterion in the ticket is stated in allocations, not milliseconds — a warm
+ * The goal is stated in allocations, not milliseconds — a warm
  * resolution should approach 0 B/op once the eager debug strings are gone.
  *
  * Run with: ./gradlew :core:benchmark:allocProbe

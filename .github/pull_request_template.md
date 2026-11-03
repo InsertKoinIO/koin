@@ -1,6 +1,6 @@
 ## What & why
 
-<!-- Issue: Fix #NNNN (GitHub) or KTZ-NNNN (Linear). Target `main` for stable-line fixes, `4.3.0` for next-minor work. -->
+<!-- Issue: Fix #NNNN (GitHub issue), if any. Target `main` for stable-line fixes, `4.3.0` for next-minor work. -->
 
 ## Public API
 

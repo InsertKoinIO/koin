@@ -21,7 +21,7 @@ import org.openjdk.jmh.runner.Defaults.WARMUP_ITERATIONS
 import java.util.concurrent.TimeUnit
 
 /**
- * Three-timer split for KTZ-4829 (Koin vs Metro startup gap).
+ * Three-timer split (Koin vs Metro startup gap).
  *
  * Reproduces the shape the Metro harness measures — register modules, then force realization of
  * every multibinding contributor through getAll — so the cost can be attributed instead of read

@@ -44,7 +44,7 @@ import kotlin.reflect.KClass
 import org.koin.mp.Lockable
 import kotlin.concurrent.Volatile
 
-// Cached (scope, qualifier) variants per class; further variants stay on the String map (KTZ-4829).
+// Cached (scope, qualifier) variants per class; further variants stay on the String map.
 private const val MAX_TYPED_CHAIN = 8
 
 @Suppress("UNCHECKED_CAST")
@@ -55,7 +55,7 @@ class InstanceRegistry(val _koin: Koin) {
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
 
-    // Lazily populated, allocation-free lookup cache in front of _instances (KTZ-4829).
+    // Lazily populated, allocation-free lookup cache in front of _instances.
     //
     // The String IndexKey is "<class full name>:<type qualifier value>:<scope qualifier>", and
     // building it was ~160 of the ~200 bytes a warm get() still allocated. Entries here hold the
