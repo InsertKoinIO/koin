@@ -75,6 +75,7 @@ class InstanceRegistry(val _koin: Koin) {
             saveMapping(override, mapping, factory)
 
         }
+        module.isLoadedFlag = true
     }
 
     @KoinInternalApi
