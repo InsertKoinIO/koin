@@ -50,8 +50,11 @@ class Module(
     @KoinInternalApi
     val mappings = LinkedHashMap<IndexKey, InstanceFactory<*>>()
 
+    @KoinInternalApi
+    internal var isLoadedFlag: Boolean = false
+
     val isLoaded: Boolean
-        get() = mappings.isNotEmpty()
+        get() = isLoadedFlag
 
 
     @KoinInternalApi
