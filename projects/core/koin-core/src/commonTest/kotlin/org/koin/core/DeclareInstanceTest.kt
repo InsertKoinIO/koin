@@ -1,19 +1,27 @@
 package org.koin.core
 
 import org.koin.Simple
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.error.DefinitionOverrideException
 import org.koin.core.error.NoDefinitionFoundException
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatform
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class DeclareInstanceTest {
+
+    private class StatefulComponent {
+        var state: Int = 0
+    }
 
     @Test
     fun `can declare a single on the fly`() {
@@ -315,6 +323,27 @@ class DeclareInstanceTest {
         // should resolve ComponentB which depends on ComponentA via get()
         val b = scope.get<Simple.ComponentB>()
         assertEquals(a, b.a)
+    }
+
+    @Test
+    fun `declare override does not leak displaced factory state across koin restarts - issue 2412`() {
+        val sharedModule = module {
+            single { StatefulComponent() }
+        }
+
+        startKoin { printLogger(); modules(sharedModule) }
+        val first = KoinPlatform.getKoin().get<StatefulComponent>()
+        first.state = 999
+
+        KoinPlatform.getKoin().declare(StatefulComponent())
+        stopKoin()
+
+        startKoin { printLogger(); modules(sharedModule) }
+        val second = KoinPlatform.getKoin().get<StatefulComponent>()
+        stopKoin()
+
+        assertNotSame(first, second)
+        assertEquals(0, second.state)
     }
 
     @Test
