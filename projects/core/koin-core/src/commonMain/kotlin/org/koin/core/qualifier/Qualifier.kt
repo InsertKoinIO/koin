@@ -53,5 +53,8 @@ inline fun <reified T> _q() = TypeQualifier(T::class)
 
 val <E : Enum<E>> Enum<E>.qualifier
     get() : Qualifier {
-        return StringQualifier(toString().lowercase())
+        // Constant name alone collides across enums (and after R8). simpleName, not
+        // qualifiedName: qualifiedName does not compile on Kotlin/JS.
+        val typeName = this::class.simpleName
+        return StringQualifier("$typeName.$name".lowercase())
     }

@@ -32,7 +32,7 @@ class NamingTest : KoinCoreTest(){
 
     @Test
     fun `enum naming`() {
-        assertEquals("my_string", named(MyNames.MY_STRING).value)
+        assertEquals("mynames.my_string", named(MyNames.MY_STRING).value)
     }
 
     @Test
