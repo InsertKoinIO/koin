@@ -81,10 +81,11 @@ public fun <T : Any> typeQualifier(kclass: KClass<T>): Qualifier = TypeQualifier
 
 /**
  * Bind additional type to definition.
- * Non-infix version for compiler plugin use.
+ * Non-reified version for compiler plugin use, also usable in infix form:
+ * `single<ImplClass>() bind InterfaceClass::class`
  */
 @OptIn(KoinInternalApi::class)
-public fun <S : Any> KoinDefinition<*>.bind(clazz: KClass<S>): KoinDefinition<*> {
+public infix fun <S : Any> KoinDefinition<*>.bind(clazz: KClass<S>): KoinDefinition<*> {
     factory.beanDefinition.addSecondaryType(clazz)
     module.indexSecondaryTypes(factory)
     return this
