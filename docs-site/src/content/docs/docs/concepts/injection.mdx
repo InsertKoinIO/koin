@@ -31,7 +31,7 @@ Constructor injection has four advantages over calling `get()` in a class body:
 - **Build-time checks**: the Compiler Plugin verifies constructor dependencies of declared classes against the graph.
 - **No framework coupling**: the class compiles and runs without Koin, which matters for shared code and libraries.
 
-For the general case for constructor injection, see [What is dependency injection](/docs/get-started/what-is-di/). Never call `get()` in a default parameter value (`class UserService(val repository: UserRepository = get())`): declare the class in a module instead.
+For the general case for constructor injection, see [What is dependency injection](/docs/concepts/what-is-di/). Never call `get()` in a default parameter value (`class UserService(val repository: UserRepository = get())`): declare the class in a module instead.
 
 Keep `get()` and `KoinComponent` at the edges. One entry point retrieves the top object, and everything below it uses constructor injection:
 

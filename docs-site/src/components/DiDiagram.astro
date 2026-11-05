@@ -1,32 +1,30 @@
 ---
-// Diagrams for the Get Started section. Colors follow the site theme. The narrow
+// Diagrams for the introductory pages. Colors follow the site theme. The narrow
 // viewBox keeps the text readable at phone width.
-import { versions } from '~/data/versions';
-
 interface Props {
-  name: 'creates' | 'receives' | 'graph' | 'koin' | 'ownership' | 'flow' | 'lifetimes' | 'resolve' | 'styles' | 'landscape';
+  name: 'creates' | 'receives' | 'graph' | 'koin' | 'ownership' | 'flow' | 'lifetimes' | 'resolve' | 'landscape';
 }
 const { name } = Astro.props;
 
 const text = {
   creates: {
-    title: 'Car creates its own engine',
-    desc: 'A GasEngine box sits inside the Car box, because Car creates the engine itself.',
-    caption: 'The engine is built inside Car, so Car is stuck with GasEngine.',
+    title: 'UserService creates its own repository',
+    desc: 'A DatabaseRepository box sits inside the UserService box, because UserService creates the repository itself.',
+    caption: 'The repository is built inside UserService, so UserService is stuck with DatabaseRepository.',
   },
   receives: {
-    title: 'Car receives its engine',
-    desc: 'GasEngine, ElectricEngine and FakeEngine sit outside Car, and each has an arrow pointing into Car.',
-    caption: 'The engine comes from outside. Car accepts any Engine, including a fake one in tests.',
+    title: 'UserService receives its repository',
+    desc: 'DatabaseRepository, InMemoryRepository and FakeRepository sit outside UserService, and each has an arrow pointing into UserService.',
+    caption: 'The repository comes from outside. UserService accepts any UserRepository, including a fake one in tests.',
   },
   graph: {
     title: 'Classes that depend on other classes',
-    desc: 'UserViewModel needs UserService. UserService needs UserRepository. UserRepository needs Database and ApiClient.',
+    desc: 'UserApplication needs UserService. UserService needs DatabaseRepository. DatabaseRepository needs Database and Logger.',
     caption: 'Each arrow means "needs". Objects must be created from the bottom up.',
   },
   koin: {
     title: 'Koin builds the objects you ask for',
-    desc: 'Your code asks Koin for a Car. Koin creates GasEngine, then creates Car with that engine, and returns the Car to your code.',
+    desc: 'Your code asks Koin for a UserService. Koin creates DatabaseRepository, then creates UserService with that repository, and returns the UserService to your code.',
     caption: 'You ask for the object you want. Koin creates what it needs first.',
   },
   ownership: {
@@ -46,13 +44,8 @@ const text = {
   },
   resolve: {
     title: 'What Koin creates when UserActivity asks for UserViewModel',
-    desc: 'UserActivity asks for UserViewModel. UserViewModel needs UserRepository, which needs ApiService. Koin creates ApiService first, then UserRepository, then UserViewModel.',
+    desc: 'UserActivity asks for UserViewModel. UserViewModel needs UserService, which needs UserRepository. Koin creates UserRepository first, then UserService, then UserViewModel.',
     caption: 'Each arrow means "needs". The two single definitions are created once, then reused by every later request.',
-  },
-  styles: {
-    title: 'Which style to choose',
-    desc: `First question: can you use Kotlin ${versions.kotlinMin} or later and the Compiler Plugin? If no, use the Constructor or Classic DSL. If yes, second question: do you want to declare definitions on the classes? If yes, use Koin Annotations. If no, use the Compiler Plugin DSL, which is the default. The Compiler Plugin DSL, the Constructor DSL and the Classic DSL are the three forms of the Koin DSL.`,
-    caption: 'Two styles, Koin Annotations and the Koin DSL. The DSL has three forms, and the docs show two of them under one tab.',
   },
   landscape: {
     title: 'When each DI framework does its work',
@@ -63,7 +56,7 @@ const text = {
 
 const marker = `di-arrow-${name}`;
 const arrow = `url(#${marker})`;
-const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership: 312, flow: 222, lifetimes: 262, resolve: 378, styles: 366, landscape: 366 };
+const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership: 312, flow: 222, lifetimes: 262, resolve: 378, landscape: 366 };
 ---
 <figure class="di">
   <svg viewBox={`0 0 480 ${heights[name]}`} role="img" aria-label={`${text.title}. ${text.desc}`}>
@@ -76,46 +69,46 @@ const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership:
     {name === 'creates' && (
       <>
         <rect class="box" x="60" y="10" width="360" height="140" rx="10" />
-        <text class="label" x="240" y="42">Car</text>
-        <rect class="accent" x="140" y="62" width="200" height="68" rx="8" />
-        <text class="label" x="240" y="92">GasEngine</text>
-        <text class="small" x="240" y="115">created by Car</text>
+        <text class="label" x="240" y="42">UserService</text>
+        <rect class="accent" x="120" y="62" width="240" height="68" rx="8" />
+        <text class="label" x="240" y="92">DatabaseRepository</text>
+        <text class="small" x="240" y="115">created by UserService</text>
       </>
     )}
 
     {name === 'receives' && (
       <>
-        <rect class="accent" x="10" y="10" width="190" height="54" rx="8" />
-        <text class="label" x="105" y="43">GasEngine</text>
-        <rect class="accent" x="10" y="78" width="190" height="54" rx="8" />
-        <text class="label" x="105" y="111">ElectricEngine</text>
-        <rect class="accent" x="10" y="146" width="190" height="54" rx="8" />
-        <text class="label" x="105" y="179">FakeEngine</text>
-        <rect class="box" x="310" y="60" width="160" height="90" rx="10" />
-        <text class="label" x="390" y="100">Car</text>
-        <text class="small" x="390" y="123">needs an Engine</text>
-        <path class="line" d="M200 37 L308 88" marker-end={arrow} />
-        <path class="line" d="M200 105 L308 105" marker-end={arrow} />
-        <path class="line" d="M200 173 L308 122" marker-end={arrow} />
+        <rect class="accent" x="10" y="10" width="210" height="54" rx="8" />
+        <text class="label" x="115" y="43">DatabaseRepository</text>
+        <rect class="accent" x="10" y="78" width="210" height="54" rx="8" />
+        <text class="label" x="115" y="111">InMemoryRepository</text>
+        <rect class="accent" x="10" y="146" width="210" height="54" rx="8" />
+        <text class="label" x="115" y="179">FakeRepository</text>
+        <rect class="box" x="300" y="60" width="170" height="90" rx="10" />
+        <text class="label" x="385" y="100">UserService</text>
+        <text class="small" x="385" y="123">needs a repository</text>
+        <path class="line" d="M220 37 L298 88" marker-end={arrow} />
+        <path class="line" d="M220 105 L298 105" marker-end={arrow} />
+        <path class="line" d="M220 173 L298 122" marker-end={arrow} />
       </>
     )}
 
     {name === 'graph' && (
       <>
         <rect class="box" x="120" y="10" width="240" height="50" rx="8" />
-        <text class="label" x="240" y="41">UserViewModel</text>
+        <text class="label" x="240" y="41">UserApplication</text>
         <path class="line" d="M240 60 L240 92" marker-end={arrow} />
         <rect class="box" x="120" y="94" width="240" height="50" rx="8" />
         <text class="label" x="240" y="125">UserService</text>
         <path class="line" d="M240 144 L240 176" marker-end={arrow} />
         <rect class="box" x="120" y="178" width="240" height="50" rx="8" />
-        <text class="label" x="240" y="209">UserRepository</text>
+        <text class="label" x="240" y="209">DatabaseRepository</text>
         <path class="line" d="M190 228 L125 260" marker-end={arrow} />
         <path class="line" d="M290 228 L355 260" marker-end={arrow} />
         <rect class="accent" x="20" y="262" width="200" height="50" rx="8" />
         <text class="label" x="120" y="293">Database</text>
         <rect class="accent" x="260" y="262" width="200" height="50" rx="8" />
-        <text class="label" x="360" y="293">ApiClient</text>
+        <text class="label" x="360" y="293">Logger</text>
       </>
     )}
 
@@ -124,18 +117,18 @@ const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership:
         <rect class="box" x="140" y="10" width="200" height="50" rx="8" />
         <text class="label" x="240" y="41">Your code</text>
         <path class="line" d="M205 60 L205 120" marker-end={arrow} />
-        <text class="small end" x="195" y="95">asks for a Car</text>
+        <text class="small end" x="195" y="95">asks for a UserService</text>
         <path class="line" d="M275 120 L275 62" marker-end={arrow} />
-        <text class="small start" x="285" y="95">returns the Car</text>
+        <text class="small start" x="285" y="95">returns the UserService</text>
         <rect class="accent" x="10" y="122" width="460" height="130" rx="10" />
         <text class="label" x="240" y="152">Koin</text>
-        <rect class="box" x="30" y="168" width="180" height="66" rx="8" />
-        <text class="small" x="120" y="194">1. Creates</text>
-        <text class="label" x="120" y="218">GasEngine</text>
-        <path class="line" d="M210 201 L268 201" marker-end={arrow} />
-        <rect class="box" x="270" y="168" width="180" height="66" rx="8" />
-        <text class="small" x="360" y="194">2. Creates</text>
-        <text class="label" x="360" y="218">Car(engine)</text>
+        <rect class="box" x="20" y="168" width="210" height="66" rx="8" />
+        <text class="small" x="125" y="194">1. Creates</text>
+        <text class="label" x="125" y="218">DatabaseRepository</text>
+        <path class="line" d="M230 201 L278 201" marker-end={arrow} />
+        <rect class="box" x="280" y="168" width="180" height="66" rx="8" />
+        <text class="small" x="370" y="194">2. Creates</text>
+        <text class="label" x="370" y="218">UserService</text>
       </>
     )}
 
@@ -205,50 +198,13 @@ const heights = { creates: 160, receives: 210, graph: 322, koin: 262, ownership:
         <path class="line" d="M240 168 L240 208" marker-end={arrow} />
 
         <rect class="accent" x="90" y="210" width="300" height="58" rx="8" />
-        <text class="label" x="240" y="236">UserRepository</text>
+        <text class="label" x="240" y="236">UserService</text>
         <text class="small" x="240" y="258">single, created second</text>
         <path class="line" d="M240 268 L240 308" marker-end={arrow} />
 
         <rect class="accent" x="90" y="310" width="300" height="58" rx="8" />
-        <text class="label" x="240" y="336">ApiService</text>
+        <text class="label" x="240" y="336">UserRepository</text>
         <text class="small" x="240" y="358">single, created first</text>
-      </>
-    )}
-
-    {name === 'styles' && (
-      <>
-        <rect class="box" x="60" y="10" width="360" height="50" rx="8" />
-        <text class="question" x="240" y="41">Kotlin {versions.kotlinMin}+ and the Compiler Plugin?</text>
-        <path class="line" d="M160 60 L160 108" marker-end={arrow} />
-        <text class="small start" x="170" y="90">yes</text>
-        <path class="line" d="M397 60 L397 230" marker-end={arrow} />
-        <text class="small start" x="407" y="90">no</text>
-
-        <rect class="box" x="10" y="110" width="303" height="50" rx="8" />
-        <text class="question" x="161" y="141">Declare definitions on the classes?</text>
-        <path class="line" d="M83 160 L83 230" marker-end={arrow} />
-        <text class="small start" x="93" y="200">yes</text>
-        <path class="line" d="M240 160 L240 230" marker-end={arrow} />
-        <text class="small start" x="250" y="200">no</text>
-
-        <rect class="box" x="10" y="232" width="146" height="88" rx="8" />
-        <text class="label" x="83" y="270">Annotations</text>
-        <text class="small" x="83" y="296">on your classes</text>
-
-        <rect class="accent" x="167" y="232" width="146" height="88" rx="8" />
-        <text class="label" x="240" y="258">Compiler</text>
-        <text class="label" x="240" y="280">Plugin DSL</text>
-        <text class="small" x="240" y="306">the default</text>
-
-        <rect class="box" x="324" y="232" width="146" height="88" rx="8" />
-        <text class="label" x="397" y="258">Constructor /</text>
-        <text class="label" x="397" y="280">Classic DSL</text>
-        <text class="small" x="397" y="306">no plugin needed</text>
-
-        <path class="line" d="M10 332 L156 332" />
-        <text class="small" x="83" y="354">Koin Annotations</text>
-        <path class="line" d="M167 332 L470 332" />
-        <text class="small" x="318" y="354">Koin DSL</text>
       </>
     )}
 

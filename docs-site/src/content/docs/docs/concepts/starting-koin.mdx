@@ -146,6 +146,16 @@ This helps in tests, when you want only some modules. `module<T>()` and `modules
 The Compiler Plugin generates a `module()` function for each `@Module` class, and you don't call it yourself. Load annotated modules with `@KoinApplication` and `startKoin<T>()`, or with `module<T>()` as shown above.
 :::
 
+### Mixing styles
+
+All styles produce the same definitions, so they can coexist, ideally with one style per module:
+
+- **Compiler Plugin DSL and Classic DSL in one module** is normal: both are forms of the Koin DSL.
+- **`startKoin<MyApp> { modules(legacyModule) }`** adds DSL modules to an annotated application.
+- **`module<NetworkModule>()`** in a regular `startKoin` block loads an annotated module.
+
+`@Module(includes = [...])` and `@KoinApplication(modules = [...])` only accept `@Module` classes.
+
 ## Isolated instance with koinApplication
 
 `koinApplication { }` creates a container that is not registered in `GlobalContext`:

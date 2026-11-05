@@ -5,7 +5,7 @@ description: "How Koin and Hilt differ in graph construction, tooling, platforms
 
 This page compares Koin with Hilt (and Dagger, which Hilt is built on) for Android developers who know one and want to understand the other. It covers how each framework builds the dependency graph, what the code looks like, and where each one has the advantage. To move a project from Hilt to Koin, see [Migrate from Hilt](/docs/migration/from-hilt/). To keep both for a while, see its [side by side section](/docs/migration/from-hilt/#run-both-side-by-side).
 
-Koin samples below use annotations, because they are closest to Hilt. The same definitions can be written with the Koin DSL (see [Choose your style](/docs/get-started/choose-your-style/)).
+Koin samples below use annotations, because they are closest to Hilt. The same definitions can be written with the Koin DSL (see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/)).
 
 ## How each one builds the graph
 
@@ -43,7 +43,7 @@ This difference explains most of the tradeoffs below.
 - **Runtime flexibility**: modules can be loaded, unloaded or loaded in the background after start, which fits feature flags, dynamic features and plugin architectures.
 - **Less setup**: no annotation processor, no generated sources, no `@AndroidEntryPoint`. With the Constructor or Classic DSL, the build plugin is optional.
 - **Less declaration code**: constructors need no `@Inject`, and interfaces are bound to their implementation without a separate `@Binds` module.
-- **Your choice of style**: Koin DSL or Koin Annotations, see [Choose your style](/docs/get-started/choose-your-style/).
+- **Your choice of style**: Koin DSL or Koin Annotations, see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
 
 ## Code side by side
 
@@ -197,6 +197,6 @@ The full Hilt to Koin mapping, with Koin code for each style, is in [Migrate fro
 - [Migrate from Hilt](/docs/migration/from-hilt/): move a project step by step, or run both frameworks side by side.
 - [Migrate from Dagger](/docs/migration/from-dagger/): Dagger with or without Hilt.
 - [JSR-330 Compatibility](/docs/migration/jsr330/): keep `javax.inject` annotations.
-- [What is Koin?](/docs/get-started/why-koin/): Koin's runtime and compile-time model.
+- [Why Koin?](/docs/why-koin/): Koin's runtime and compile-time model.
 - [Compile-time safety](/docs/tooling/compile-time-safety/): what Koin checks at build time.
-- [Choose your style](/docs/get-started/choose-your-style/): DSL or annotations.
+- [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/): which style to use.

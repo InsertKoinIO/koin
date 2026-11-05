@@ -11,7 +11,7 @@ Each answer is short and links to the page that holds the details.
 
 ### Which style should I pick?
 
-There are two styles: Koin DSL and Koin Annotations. The DSL has three forms: Compiler Plugin DSL (`single<T>()`), Constructor DSL (`singleOf(::T)`) and Classic DSL (`single { T(get()) }`). Choose one style and keep to it. The comparison and the tradeoffs are in [Choose your style](/docs/get-started/choose-your-style/).
+There are two styles: Koin DSL and Koin Annotations. The DSL has three forms: Compiler Plugin DSL (`single<T>()`), Constructor DSL (`singleOf(::T)`) and Classic DSL (`single { T(get()) }`). Choose one style and keep to it. The comparison and the tradeoffs are in [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
 
 ### Do I need the Compiler Plugin? Which Kotlin version?
 
@@ -23,7 +23,7 @@ Kotlin <Version of="kotlinRuntimeMin" /> or later. Koin <Version of="koin" /> is
 
 ### Which artifact do I need for Android, Compose, KMP or Ktor?
 
-See [Gradle artifacts and BOM](/docs/reference/artifacts/) for the full table, and [Pick your platform](/docs/get-started/pick-your-platform/) to land on the right install page.
+See [Gradle artifacts and BOM](/docs/reference/artifacts/) for the full table, and [Install Koin](/docs/get-started/install/) to land on the right install page.
 
 ### Can I use the BOM in Kotlin Multiplatform?
 
@@ -31,7 +31,7 @@ Yes. It was tested with Koin 4.2.2, Kotlin 2.3.20 and Gradle 8.11.1: in `commonM
 
 ### Can I mix styles?
 
-Pick one style per project. The three DSL forms can coexist in one module, and the Compiler Plugin checks all of them. See [Choose your style](/docs/get-started/choose-your-style/).
+Pick one style per project. The three DSL forms can coexist in one module, and the Compiler Plugin checks all of them. See [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
 
 ### What is the minimum Android version?
 
@@ -73,7 +73,7 @@ With the Compiler Plugin, not by default: the build checks the graph. `verify()`
 
 ### Is Koin a service locator? Does it use reflection?
 
-`get()` and `by inject()` are service location. Constructor injection is dependency injection, and it is the recommended way. Both are explained in [What is dependency injection?](/docs/get-started/what-is-di/). The reflection-based API (`@KoinReflectAPI`) was removed in Koin 4.0, see [Releases](/docs/support/releases/).
+`get()` and `by inject()` are service location. Constructor injection is dependency injection, and it is the recommended way. Both are explained in [What is dependency injection?](/docs/concepts/what-is-di/). The reflection-based API (`@KoinReflectAPI`) was removed in Koin 4.0, see [Releases](/docs/support/releases/).
 
 ### How does Koin compare with Hilt and Dagger?
 

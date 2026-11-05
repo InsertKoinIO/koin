@@ -21,8 +21,10 @@ interface Props {
   ktorServer?: boolean;
   /** Non-Koin dependencies: [catalog alias, coordinates, key in versions.ts]. */
   extra?: [string, string, keyof typeof versions][];
+  /** Shows only the Kotlin DSL file, for a page where the build tool is not the point. */
+  ktsOnly?: boolean;
 }
-const { artifacts = [], test = [], plugin = false, bom = false, sourceSet, jvmApp, ktorServer = false, extra = [] } = Astro.props;
+const { artifacts = [], test = [], plugin = false, bom = false, sourceSet, jvmApp, ktorServer = false, extra = [], ktsOnly = false } = Astro.props;
 const useBom = bom;
 const alias = (a: string) => a.replaceAll('-', '.');
 const pluginId = 'io.insert-koin.compiler.plugin';
@@ -120,11 +122,15 @@ const groovy = (
   ].map((l) => `    ${l}`).join('\n')}\n}`
 ).trim();
 ---
-<Tabs syncKey="gradle">
-  <TabItem label="Kotlin DSL"><Code code={kts} lang="kotlin" title="build.gradle.kts" /></TabItem>
-  <TabItem label="Version catalog">
-    <Code code={toml} lang="toml" title="gradle/libs.versions.toml" />
-    <Code code={catalogKts} lang="kotlin" title="build.gradle.kts" />
-  </TabItem>
-  {!sourceSet && <TabItem label="Groovy DSL"><Code code={groovy} lang="groovy" title="build.gradle" /></TabItem>}
-</Tabs>
+{ktsOnly ? (
+  <Code code={kts} lang="kotlin" title="build.gradle.kts" />
+) : (
+  <Tabs syncKey="gradle">
+    <TabItem label="Kotlin DSL"><Code code={kts} lang="kotlin" title="build.gradle.kts" /></TabItem>
+    <TabItem label="Version catalog">
+      <Code code={toml} lang="toml" title="gradle/libs.versions.toml" />
+      <Code code={catalogKts} lang="kotlin" title="build.gradle.kts" />
+    </TabItem>
+    {!sourceSet && <TabItem label="Groovy DSL"><Code code={groovy} lang="groovy" title="build.gradle" /></TabItem>}
+  </Tabs>
+)}

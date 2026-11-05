@@ -57,7 +57,7 @@ import Install from '~/components/Install.astro';
 
 **Accuracy**
 
-Every function, annotation, artifact and plugin id must exist in `../projects`, the Compiler Plugin repository or Maven Central. If a behavior was not checked with a build, say so or leave it out. Mark the code blocks of new JVM pages for `check:snippets`, and add a fixture for any behavior you state in prose.
+Every function, annotation, artifact and plugin id must exist in `../projects`, the Compiler Plugin repository or Maven Central. If a behavior was not checked with a build, say so or leave it out. Mark the code blocks of new JVM pages for `check:snippets`, and add a fixture for any behavior you state in prose. The adoption figures in `why-koin` are a dated snapshot: refresh them and their date together.
 
 **Vocabulary** (see `reference/glossary`)
 

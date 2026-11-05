@@ -1,24 +1,114 @@
 ---
-title: "Welcome"
-description: "What Koin is, how it works, and a starting point for each kind of reader."
+title: "Quickstart"
+description: "Run your first Koin app in a few minutes, then watch the build catch a missing dependency."
 ---
 
-import DiDiagram from '~/components/DiDiagram.astro';
+import Install from '~/components/Install.astro';
 import Version from '~/components/Version.astro';
 
-Koin is a dependency injection framework for Kotlin. It runs on Android, Compose, Kotlin Multiplatform, Ktor and any Kotlin/JVM application. The current release is Koin <Version of="koin" />.
+Koin is a dependency injection framework for Kotlin. You list your classes, Koin builds them in the right order, and the Koin Compiler Plugin checks at build time that nothing is missing. This page uses Koin <Version of="koin" />.
 
-<DiDiagram name="flow" />
+New to the idea? Read [What is dependency injection?](/docs/concepts/what-is-di/) first.
 
-## Start here
+## What you will do
 
-| You are... | Read this |
-|---|---|
-| New to dependency injection | [What is dependency injection?](/docs/get-started/what-is-di/), then [Core concepts in 5 minutes](/docs/get-started/core-concepts/) |
-| Evaluating Koin | [Why Koin?](/docs/get-started/why-koin/), then [Koin vs Hilt](/docs/migration/koin-vs-hilt/) if you know Hilt |
-| Starting a new project | [Choose your style](/docs/get-started/choose-your-style/), then [Pick your platform](/docs/get-started/pick-your-platform/) |
-| Moving from Hilt or Dagger, upgrading from Koin 3.x, 4.0 or 4.1, or leaving the KSP processor | [Migration](/docs/migration/) |
-| Looking for a keyword, annotation or artifact | [DSL reference](/docs/reference/dsl/), [Annotations reference](/docs/reference/annotations/), [Gradle artifacts](/docs/reference/artifacts/) |
-| Debugging an error | [Troubleshooting](/docs/support/troubleshooting/) |
+You build a small console app with three classes, run it, then remove a declaration and watch the build fail. It takes a few minutes.
 
-Documentation for Koin 4.1 and 4.0 is at [legacy.insert-koin.io/docs/4.1](https://legacy.insert-koin.io/docs/4.1/) and [legacy.insert-koin.io/docs/4.0](https://legacy.insert-koin.io/docs/4.0/).
+This page runs on the JVM, whatever you plan to build, because that is the shortest way to see Koin work. [Your platform guide](#next-steps) comes next.
+
+## Prerequisites
+
+- JDK 17 or later.
+- [Gradle](https://gradle.org/install/), and an empty folder.
+
+## Add Koin
+
+In the empty folder, create `build.gradle.kts`:
+
+<Install artifacts={['koin-core']} plugin bom jvmApp="MainKt" ktsOnly />
+
+## Write the app
+
+Create `src/main/kotlin/Main.kt`:
+
+{/* check: quickstart */}
+
+```kotlin title="src/main/kotlin/Main.kt"
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class UserRepository {
+    fun findName() = "Alice"
+}
+
+class UserService(private val repository: UserRepository) {
+    fun greet() = "Hello, ${repository.findName()}!"
+}
+
+class UserApplication(private val service: UserService) {
+    fun run() = println(service.greet())
+}
+
+val appModule = module {
+    single<UserRepository>()
+    single<UserService>()
+    single<UserApplication>()
+}
+
+fun main() {
+    val koin = startKoin { modules(appModule) }.koin
+
+    koin.get<UserApplication>().run()
+}
+```
+
+The three classes are plain Kotlin: each one receives what it needs in its constructor. `appModule` lists them, and `startKoin` loads the list. You ask for a `UserApplication`, and Koin creates the other two first.
+
+## Run it
+
+```bash
+gradle run
+```
+
+The output includes:
+
+```text
+Hello, Alice!
+```
+
+You didn't call a single constructor.
+
+## Break it on purpose
+
+Remove this line from `appModule`:
+
+```kotlin
+single<UserRepository>()
+```
+
+Run `gradle run` again. The build fails before the app starts, and the error names what is missing, who needs it and where:
+
+```text
+[Koin][KOIN-D001] Missing dependency: UserRepository
+  required by: dsl:UserService (parameter 'repository')
+  in module: appModule
+```
+
+Without a check like this, you would find out when the code runs. Put the line back.
+
+## Next steps
+
+Build a real app on your platform:
+
+- [Android tutorial](/docs/platforms/android/tutorial/), with Jetpack Compose
+- [Kotlin Multiplatform walkthrough](/docs/platforms/kmp/walkthrough/), for Android and iOS
+- [Ktor tutorial](/docs/platforms/ktor/tutorial/), for a server
+- [Kotlin tutorial](/docs/platforms/kotlin/tutorial/), for any JVM app
+
+Or keep reading:
+
+- [How Koin works](/docs/get-started/how-koin-works/): what just happened, in five ideas.
+- [Install Koin](/docs/get-started/install/): add Koin to an existing project.
+- [Why Koin?](/docs/why-koin/): what it gives, what it costs, and when another tool fits.
+- [Migration](/docs/migration/): from Hilt, Dagger, Koin 3.x, or the KSP processor.

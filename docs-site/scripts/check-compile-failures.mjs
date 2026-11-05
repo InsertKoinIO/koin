@@ -10,6 +10,7 @@ const generated = join(root, 'snippet-tests/.generated');
 const dropSingleton = (name) => new RegExp(`@Singleton\\s*\\n?\\s*((?:internal )?class ${name}\\b)`);
 
 const cases = [
+  { name: 'Quickstart', dir: 'with-plugin/quickstart', project: '', task: ':with-plugin:compileKotlin', remove: /.*single<UserRepository>\(\)\n/ },
   { name: 'Kotlin tutorial, DSL', dir: 'with-plugin/kotlin-tutorial-dsl', project: '', task: ':with-plugin:compileKotlin', remove: /.*single<UserRepositoryImpl>\(\) bind.*\n/ },
   { name: 'Kotlin tutorial, Annotations', dir: 'with-plugin-kotlin-annotations/kotlin-tutorial-annotations', project: '', task: ':with-plugin-kotlin-annotations:compileKotlin', remove: dropSingleton('UserRepositoryImpl'), keep: '$1' },
   { name: 'Ktor tutorial, DSL', dir: 'with-plugin/ktor-tutorial-dsl', project: '', task: ':with-plugin:compileKotlin', remove: /.*single<UserRepositoryImpl>\(\) bind.*\n/ },

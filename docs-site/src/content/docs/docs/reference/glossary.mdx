@@ -22,7 +22,7 @@ Koin has two styles, three DSL forms, and four ways to declare a definition.
 
 The code tabs in this documentation are named "Compiler Plugin DSL", "Annotations" and "Constructor / Classic DSL". The last tab covers two forms that differ in imports: `org.koin.core.module.dsl.*` for the Constructor DSL and `org.koin.dsl.*` for the Classic DSL.
 
-Qualifiers and injected parameters in the Compiler Plugin DSL use annotations on the class (`@Named`, `@InjectedParam`). The DSL keeps your definitions out of your classes, but those two annotations still depend on the annotation artifacts. See [Gradle artifacts and BOM](/docs/reference/artifacts/).
+Special cases in the Compiler Plugin DSL use annotations on the class, such as qualifiers (`@Named`), injected parameters (`@InjectedParam`) and properties (`@Property`). The DSL keeps your definitions out of your classes, but these annotations still depend on the annotation artifacts. See [Gradle artifacts and BOM](/docs/reference/artifacts/).
 
 ## Koin concepts
 
@@ -72,6 +72,6 @@ Qualifiers and injected parameters in the Compiler Plugin DSL use annotations on
 
 ## Related
 
-- [Core concepts](/docs/get-started/core-concepts/): the main concepts on one running example.
-- [Choose your style](/docs/get-started/choose-your-style/): pick between the styles and forms.
+- [How Koin works](/docs/get-started/how-koin-works/): the main concepts on one running example.
+- [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/): pick between the styles and forms.
 - [DSL reference](/docs/reference/dsl/) and [Annotations reference](/docs/reference/annotations/): every keyword and annotation.

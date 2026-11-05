@@ -1,0 +1,114 @@
+---
+title: "How Koin works"
+description: "What happens between your module and your objects, in five ideas: definition, module, container, lifetime and injection."
+---
+
+import DiDiagram from '~/components/DiDiagram.astro';
+
+This page explains what happened in the [Quickstart](/docs/get-started/), using the same code. It only takes five ideas: definition, module, container, lifetime and injection.
+
+{/* check: how-koin-works */}
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+val appModule = module {
+    single<UserRepository>()
+    single<UserService>()
+    single<UserApplication>()
+}
+
+fun main() {
+    val koin = startKoin { modules(appModule) }.koin
+
+    koin.get<UserApplication>().run()
+}
+```
+
+Koin does its work in two steps:
+
+<DiDiagram name="flow" />
+
+This page uses the Compiler Plugin DSL, the default form of the Koin DSL. [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/) shows the other ways to write the same module.
+
+## Definition
+
+A **definition** tells Koin how to create one type and how long to keep the instance. `single<UserService>()` is a definition.
+
+When you build, the Koin Compiler Plugin reads the constructor of `UserService`, sees that it needs a `UserRepository`, and generates the equivalent of `single { UserService(get()) }` inside the compiled module, where `get()` asks the container for the parameter. No source file is added to your project, and the generated wiring uses no reflection. See [Definitions](/docs/concepts/definitions/).
+
+## Module
+
+A **module** groups definitions, usually by feature or layer. It is only a description: nothing is created when you declare it. Modules can include other modules. See [Modules](/docs/concepts/modules/).
+
+## Container
+
+The **container** holds your definitions and the instances created so far. `startKoin` creates it, once, at the entry point of your app, and `stopKoin()` closes it. On Android, call `startKoin` in `Application.onCreate()`. See [Starting Koin](/docs/concepts/starting-koin/).
+
+## Lifetime
+
+The keyword of a definition sets how long its instance lives:
+
+- **`single`** keeps one instance, created on its first request, until `stopKoin()`.
+- **`factory`** creates a new instance on every request and keeps none.
+- **`viewModel`** follows the screen and survives rotation.
+- **`scoped`** keeps one instance per open scope, such as a user session. See [Scopes](/docs/concepts/scopes/).
+
+<DiDiagram name="lifetimes" />
+
+## Injection
+
+An object gets its dependencies in one of two ways.
+
+**Constructor injection** is the default: Koin passes each dependency when it creates the object. `UserService` and `UserApplication` work this way. They stay plain Kotlin, and a test can call their constructors with fakes.
+
+**Asking Koin** is for classes that a framework creates, because you don't call their constructors yourself. The Quickstart already does it in `main()`, with `koin.get()`. On Android, an `Activity` or a composable asks for a ViewModel declared with `viewModel<UserViewModel>()`:
+
+{/* check: android-how-koin-works */}
+
+```kotlin
+import androidx.lifecycle.ViewModel
+
+class UserViewModel(service: UserService) : ViewModel() {
+    val greeting = service.greet()
+}
+```
+
+{/* check: android-how-koin-works */}
+
+```kotlin
+import androidx.activity.ComponentActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class UserActivity : ComponentActivity() {
+    private val viewModel: UserViewModel by viewModel()
+}
+```
+
+{/* check: android-how-koin-works */}
+
+```kotlin
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun UserScreen(viewModel: UserViewModel = koinViewModel()) {
+    Text(viewModel.greeting)
+}
+```
+
+Ask only at these entry points, and let Koin build everything below them:
+
+<DiDiagram name="resolve" />
+
+See [Retrieving dependencies](/docs/concepts/injection/), [Android entry points](/docs/platforms/android/components/) and [Koin for Compose](/docs/platforms/compose/).
+
+## Next steps
+
+- [Install Koin](/docs/get-started/install/): add Koin and the Compiler Plugin to your project.
+- [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/): how you want to write your modules.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the build checks, and what it can't.
+- [Qualifiers](/docs/concepts/qualifiers/): two definitions of the same type.

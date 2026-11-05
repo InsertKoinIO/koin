@@ -113,7 +113,7 @@ Found while testing. They are documented as pitfalls, but belong upstream. I hav
 - **Homepage:** it has app logos, sponsors, talks and a new hero title. "Koin is used in thousands of apps" and the listed apps were not verified as part of this rebuild. Marketing content is yours to decide.
 - **`migration/from-dagger` and `from-hilt` side by side:** new, and the least tested.
 - **`platforms/kmp/swift`:** it publicly states limits of the product.
-- **`get-started/why-koin`:** it says Koin is the most widely used DI framework for KMP. The figures are dated November 2, 2026, so they need refreshing, and no independent survey confirms the ranking. The page now states that the KotlinConf client moved from Koin to Metro in 2026 (PR #581) and that its backend still uses Koin.
+- **`why-koin`:** it says Koin is the most widely used DI framework for KMP. The figures are dated November 2, 2026, so they need refreshing, and no independent survey confirms the ranking. The page now states that the KotlinConf client moved from Koin to Metro in 2026 (PR #581) and that its backend still uses Koin.
 - **Prose around tabs:** the converter guessed where a tab's content ends, so a sentence may sit just outside the tab it belongs to.
 - **"Last updated" dates:** they come from git, so every page shows this rebuild's date.
 

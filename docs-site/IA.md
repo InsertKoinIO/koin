@@ -39,12 +39,12 @@ Status shows how each page is produced. Paths are relative to `/docs/`.
 
 | Page | Path | Purpose | Status |
 |---|---|---|---|
-| Welcome | `get-started` | Map of the docs and routes for each kind of reader. | merge |
-| What is dependency injection? | `get-started/what-is-di` | Explains DI and service location to someone new to the idea. | keep |
-| Why Koin | `get-started/why-koin` | What Koin is, what it costs, and when it fits. | rewrite |
-| Core concepts in 5 minutes | `get-started/core-concepts` | Container, definition, module, scope, on one running example. | rewrite |
-| Choose your style | `get-started/choose-your-style` | Decide between Koin DSL (three forms) and Koin Annotations. | rewrite |
-| Pick your platform | `get-started/pick-your-platform` | Routes to each platform guide, with a target support matrix. | merge |
+| Quickstart | `get-started` | Run a first app, then see the build catch a missing dependency. | rewrite |
+| How Koin works | `get-started/how-koin-works` | Definition, module, container, lifetime and injection, on the Quickstart's code. | rewrite |
+| Install Koin | `get-started/install` | The Gradle setup, and the artifacts and guide for each platform. Target support lives in `reference/artifacts`. | rewrite |
+| Koin DSL or annotations? | `get-started/dsl-or-annotations` | Two questions: where you declare classes, and whether you use the Compiler Plugin. | rewrite |
+
+Get Started leads to running code, then explains it. The pages about deciding or background are outside this path: `why-koin` (with `migration/koin-vs-hilt`, under Evaluate Koin in the sidebar) and `concepts/what-is-di`. The introductory pages all use the classes of the Kotlin tutorial: `UserRepository`, `UserService`, `UserApplication`.
 
 ### Platforms
 
@@ -258,7 +258,7 @@ Also fixes the dropdown problem: the "Older versions" link goes to a short secti
 **Merge several pages** (10)
 
 - `get-started` from `/docs/intro`
-- `get-started/pick-your-platform` from `/docs/setup`
+- `get-started/install` from `/docs/setup`
 - `platforms/kotlin/tutorial` from `/docs/quickstart/kotlin`, `/docs/quickstart/kotlin-annotations`
 - `platforms/android/tutorial` from `/docs/quickstart/android-viewmodel`, `/docs/quickstart/android`, `/docs/quickstart/android-annotations`
 - `platforms/android/libraries` from `/docs/reference/koin-android/binding-patterns`, `/docs/reference/koin-android/advanced-patterns`
@@ -270,9 +270,9 @@ Also fixes the dropdown problem: the "Older versions" link goes to a short secti
 
 **Rewrite** (21)
 
-- `get-started/why-koin` from `/docs/intro/what-is-koin`
-- `get-started/core-concepts` from `/docs/intro/core-concepts`
-- `get-started/choose-your-style` from `/docs/intro/choosing-your-style`
+- `why-koin` from `/docs/intro/what-is-koin`
+- `get-started/how-koin-works` from `/docs/intro/core-concepts`
+- `get-started/dsl-or-annotations` from `/docs/intro/choosing-your-style`
 - `platforms/android` from `/docs/reference/koin-android/start`
 - `platforms/android/tutorial` from `/docs/quickstart/android-compose`
 - `platforms/android/best-practices` from `/docs/reference/koin-android/best-practices`
@@ -308,14 +308,14 @@ Every URL in the live sitemap (204), every file in repo `docs/` (87), and URLs r
 | `/architecture` | removed | `(none)` | Waitlist form, not documentation; not linked from nav. Redirect to / unless you want it kept. |
 | `/docs` | moved to | `/docs/get-started` | Linked from AGENTS.md and sibling repos. |
 | `/docs/intro` | moved to | `/docs/get-started` |  |
-| `/docs/intro/choosing-your-style` | moved to | `/docs/get-started/choose-your-style` |  |
-| `/docs/intro/core-concepts` | moved to | `/docs/get-started/core-concepts` |  |
+| `/docs/intro/choosing-your-style` | moved to | `/docs/get-started/dsl-or-annotations` |  |
+| `/docs/intro/core-concepts` | moved to | `/docs/get-started/how-koin-works` |  |
 | `/docs/intro/index` | moved to | `/docs/get-started` | Accidental alias currently served with status 200. |
 | `/docs/intro/koin-compiler-plugin` | merged into | `/docs/tooling/compiler-plugin` |  |
 | `/docs/intro/koin-vs-hilt` | moved to | `/docs/migration/koin-vs-hilt` |  |
-| `/docs/intro/what-is-dependency-injection` | moved to | `/docs/get-started/what-is-di` |  |
-| `/docs/intro/what-is-koin` | moved to | `/docs/get-started/why-koin` |  |
-| `/docs/intro/what-is-koin-annotations` | moved to | `/docs/get-started/choose-your-style` | Existing redirect, retargeted. |
+| `/docs/intro/what-is-dependency-injection` | moved to | `/docs/concepts/what-is-di` |  |
+| `/docs/intro/what-is-koin` | moved to | `/docs/why-koin` |  |
+| `/docs/intro/what-is-koin-annotations` | moved to | `/docs/get-started/dsl-or-annotations` | Existing redirect, retargeted. |
 | `/docs/migration/from-ksp-to-compiler-plugin` | moved to | `/docs/migration/from-ksp` |  |
 | `/docs/quickstart/android` | merged into | `/docs/platforms/android/tutorial` |  |
 | `/docs/quickstart/android-annotations` | merged into | `/docs/platforms/android/tutorial` |  |
@@ -390,7 +390,7 @@ Every URL in the live sitemap (204), every file in repo `docs/` (87), and URLs r
 | `/docs/reference/koin-mp/kmp` | split, main part at | `/docs/platforms/kmp/swift` | Split: Swift to swift; Context to platform-dependencies; Desktop and Web to start-koin. |
 | `/docs/reference/koin-test/testing` | moved to | `/docs/testing` |  |
 | `/docs/reference/koin-test/verify` | moved to | `/docs/testing/verify` |  |
-| `/docs/setup` | moved to | `/docs/get-started/pick-your-platform` |  |
+| `/docs/setup` | moved to | `/docs/get-started/install` |  |
 | `/docs/setup/annotations` | moved to | `/docs/tooling/compiler-plugin` | Existing redirect, retargeted. |
 | `/docs/setup/annotations-ksp` | moved to | `/docs/migration/ksp-setup` |  |
 | `/docs/setup/compiler-plugin` | moved to | `/docs/tooling/compiler-plugin` |  |
@@ -398,7 +398,7 @@ Every URL in the live sitemap (204), every file in repo `docs/` (87), and URLs r
 | `/docs/setup/koin` | moved to | `/docs/reference/artifacts` | Existing redirect; README.md links here. |
 | `/docs/setup/migrate` | moved to | `/docs/migration/upgrade-4-2` | Existing redirect, better target than today. |
 | `/docs/setup/v3` | moved to | `/docs/reference/artifacts` | 404 today; linked by the koin-getting-started README. |
-| `/docs/setup/why` | moved to | `/docs/get-started/why-koin` | Existing redirect, retargeted. |
+| `/docs/setup/why` | moved to | `/docs/why-koin` | Existing redirect, retargeted. |
 | `/docs/support` | same URL | `/docs/support` |  |
 | `/docs/support/api-stability` | same URL | `/docs/support/api-stability` |  |
 | `/docs/support/embedded` | same URL | `/docs/support/embedded` |  |

@@ -65,7 +65,7 @@ export const steps: Step[] = [
 
 export const diNote = {
   text: 'New to dependency injection?',
-  slug: 'docs/get-started/what-is-di',
+  slug: 'docs/concepts/what-is-di',
   label: 'Start with the basics',
 };
 
@@ -73,13 +73,14 @@ export const results: Result[] = [
   {
     id: 'new-android',
     route: 'New to Koin, Android',
-    links: [{ slug: 'docs/platforms/android/tutorial' }],
+    links: [{ slug: 'docs/get-started' }, { slug: 'docs/platforms/android/tutorial' }],
     showDiNote: true,
   },
   {
     id: 'new-kmp',
     route: 'New to Koin, Kotlin Multiplatform',
     links: [
+      { slug: 'docs/get-started' },
       { slug: 'docs/platforms/kmp', title: 'Kotlin Multiplatform overview' },
       { slug: 'docs/platforms/kmp/install' },
       { slug: 'docs/platforms/kmp/swift' },
@@ -89,19 +90,19 @@ export const results: Result[] = [
   {
     id: 'new-cmp',
     route: 'New to Koin, Compose Multiplatform',
-    links: [{ slug: 'docs/platforms/kmp/walkthrough' }, { slug: 'docs/platforms/kmp/compose-multiplatform' }],
+    links: [{ slug: 'docs/get-started' }, { slug: 'docs/platforms/kmp/walkthrough' }, { slug: 'docs/platforms/kmp/compose-multiplatform' }],
     showDiNote: true,
   },
   {
     id: 'new-ktor',
     route: 'New to Koin, Ktor',
-    links: [{ slug: 'docs/platforms/ktor/tutorial' }],
+    links: [{ slug: 'docs/get-started' }, { slug: 'docs/platforms/ktor/tutorial' }],
     showDiNote: true,
   },
   {
     id: 'new-jvm',
     route: 'New to Koin, Kotlin / JVM',
-    links: [{ slug: 'docs/platforms/kotlin/tutorial' }],
+    links: [{ slug: 'docs/get-started' }, { slug: 'docs/platforms/kotlin/tutorial' }],
     showDiNote: true,
   },
   {

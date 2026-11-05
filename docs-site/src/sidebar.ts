@@ -5,12 +5,10 @@ export const sidebar: NonNullable<StarlightUserConfig['sidebar']> = [
   {
     label: "Get Started",
     items: [
-      { label: "Welcome", slug: "docs/get-started" },
-      { label: "What is dependency injection?", slug: "docs/get-started/what-is-di" },
-      { label: "Why Koin?", slug: "docs/get-started/why-koin" },
-      { label: "Core concepts in 5 minutes", slug: "docs/get-started/core-concepts" },
-      { label: "Choose your style", slug: "docs/get-started/choose-your-style" },
-      { label: "Pick your platform", slug: "docs/get-started/pick-your-platform" },
+      { label: "Quickstart", slug: "docs/get-started" },
+      { label: "How Koin works", slug: "docs/get-started/how-koin-works" },
+      { label: "Install Koin", slug: "docs/get-started/install" },
+      { label: "Koin DSL or annotations?", slug: "docs/get-started/dsl-or-annotations" },
     ],
   },
   {
@@ -89,6 +87,7 @@ export const sidebar: NonNullable<StarlightUserConfig['sidebar']> = [
   {
     label: "Concepts",
     items: [
+      { label: "What is dependency injection?", slug: "docs/concepts/what-is-di" },
       { label: "Definitions", slug: "docs/concepts/definitions" },
       { label: "Modules", slug: "docs/concepts/modules" },
       { label: "Starting Koin", slug: "docs/concepts/starting-koin" },
@@ -129,10 +128,16 @@ export const sidebar: NonNullable<StarlightUserConfig['sidebar']> = [
     ],
   },
   {
+    label: "Evaluate Koin",
+    items: [
+      { label: "Why Koin?", slug: "docs/why-koin" },
+      { label: "Koin vs Hilt", slug: "docs/migration/koin-vs-hilt" },
+    ],
+  },
+  {
     label: "Migration & Upgrades",
     items: [
       { label: "Which guide do I need?", slug: "docs/migration" },
-      { label: "Koin vs Hilt", slug: "docs/migration/koin-vs-hilt" },
       { label: "Migrate from Hilt", slug: "docs/migration/from-hilt" },
       { label: "Migrate from Dagger", slug: "docs/migration/from-dagger" },
       { label: "JSR-330 annotations", slug: "docs/migration/jsr330" },

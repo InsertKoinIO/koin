@@ -11,7 +11,7 @@ import Version from '~/components/Version.astro';
 
 You build a Kotlin console app that loads a list of users and prints a greeting. You declare a Koin module, bind implementations to interfaces, and start Koin. It takes about 10 minutes.
 
-The code of the classes is the same in every style, and the Annotations style only adds an annotation on each class. The Gradle setup, the module and the startup code change, so pick a style in the tabs and the choice follows you across the docs. To compare the styles, see [Choose your style](/docs/get-started/choose-your-style/).
+The code of the classes is the same in every style, and the Annotations style only adds an annotation on each class. The Gradle setup, the module and the startup code change, so pick a style in the tabs and the choice follows you across the docs. To compare the styles, see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
 
 ## Prerequisites
 
@@ -155,7 +155,7 @@ class UserApplication(
 
 ## Declare the Koin module
 
-A module is where you declare the components Koin creates (see [Core concepts](/docs/get-started/core-concepts/)). Declare the three classes as singletons, and bind the implementations to their interfaces.
+A module is where you declare the components Koin creates (see [How Koin works](/docs/get-started/how-koin-works/)). Declare the three classes as singletons, and bind the implementations to their interfaces.
 
 <Tabs syncKey="koin-style">
 <TabItem label="Compiler Plugin DSL">

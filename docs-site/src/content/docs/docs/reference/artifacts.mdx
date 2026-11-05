@@ -6,7 +6,7 @@ description: "Every published Koin artifact with its targets, how to use the BOM
 import Install from '~/components/Install.astro';
 import Version from '~/components/Version.astro';
 
-This page is the single reference for what you can install: every artifact with the targets it supports, the BOM, the Compiler Plugin, and the versions and requirements. To pick the artifacts for your platform, start from [Pick your platform](/docs/get-started/pick-your-platform/).
+This page is the single reference for what you can install: every artifact with the targets it supports, the BOM, the Compiler Plugin, and the versions and requirements. To pick the artifacts for your platform, start from [Install Koin](/docs/get-started/install/).
 
 All artifacts are on [Maven Central](https://central.sonatype.com/search?q=io.insert-koin) under the group `io.insert-koin`. The current Koin version is <Version of="koin" />. All Koin libraries, including `koin-annotations`, share this one version. Version history and upgrade notes are in [Releases](/docs/support/releases/).
 
@@ -114,7 +114,7 @@ The Koin Compiler Plugin is a Kotlin compiler plugin applied through a Gradle pl
 | Koin libraries | <Version of="koin" /> | Built with <Version of="kotlinMin" /> |
 | Koin Compiler Plugin | <Version of="compilerPlugin" /> | Requires <Version of="kotlinMin" /> or later. Verified on 2.3.20, 2.4.0, 2.4.10 and 2.4.20 |
 
-"Built with" is the Kotlin version used to compile the Koin libraries. It is not a minimum: the minimum Kotlin version for an app that uses the Koin runtime libraries is not published, so this page does not state one. The Compiler Plugin is different: it requires Kotlin <Version of="kotlinMin" /> or later. A Kotlin version that is not on its verified list compiles with a warning. The list is maintained in the [Compiler Plugin repository](https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/supported-kotlin-versions.txt) and summarized on [Compiler Plugin](/docs/tooling/compiler-plugin/).
+"Built with" is the Kotlin version used to compile the Koin libraries. It is not a minimum: without the Compiler Plugin, an app that uses the Koin runtime libraries needs Kotlin <Version of="kotlinRuntimeMin" /> or later (see the [FAQ](/docs/support/faq/#which-kotlin-version-does-the-koin-runtime-need) for what was tested). The Compiler Plugin is different: it requires Kotlin <Version of="kotlinMin" /> or later. A Kotlin version that is not on its verified list compiles with a warning. The list is maintained in the [Compiler Plugin repository](https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/supported-kotlin-versions.txt) and summarized on [Compiler Plugin](/docs/tooling/compiler-plugin/).
 
 :::caution
 Annotation-based definitions (`@Module`, `@ComponentScan`) on JS and wasmJs require Kotlin 2.4.0 or later ([KT-82395](https://youtrack.jetbrains.com/issue/KT-82395)). The Compiler Plugin DSL works on these targets across the whole supported range, and so do JVM, Android and Kotlin/Native for both styles.
@@ -140,7 +140,7 @@ Koin 4.2 is the version documented on this site. For earlier versions, see [Rele
 
 ## Related
 
-- [Pick your platform](/docs/get-started/pick-your-platform/): which artifacts to install for your platform.
+- [Install Koin](/docs/get-started/install/): which artifacts to install for your platform.
 - [Compiler Plugin](/docs/tooling/compiler-plugin/): install and configure the plugin.
 - [Annotations reference](/docs/reference/annotations/): what `koin-annotations` contains.
 - [Releases](/docs/support/releases/): versions and upgrade notes.

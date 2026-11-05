@@ -9,7 +9,7 @@ import Version from '~/components/Version.astro';
 
 The Koin Compiler Plugin is a Kotlin compiler plugin that runs inside the Kotlin compiler (K2). It writes the constructor wiring for your definitions and checks your dependency graph at build time. It powers both the Compiler Plugin DSL and Koin Annotations. This page is the canonical place for what it does, what it requires, how to install it, what it cannot do, and how to fix setup problems.
 
-To compare it with the Constructor and Classic DSL, see [Choose your style](/docs/get-started/choose-your-style/). The source is on GitHub: [InsertKoinIO/koin-compiler-plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
+To compare it with the Constructor and Classic DSL, see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/). The source is on GitHub: [InsertKoinIO/koin-compiler-plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
 
 ## Requirements
 
@@ -292,7 +292,7 @@ A Gradle convention plugin that calls `configure<KoinGradleExtension> { }` needs
 
 ## Moving to the Compiler Plugin
 
-- **From the Constructor or Classic DSL**: apply the plugin. Your existing `singleOf(::T)` definitions and `get()` calls are checked at build time without changes. You can then replace them with `single<T>()` module by module. See [Choose your style](/docs/get-started/choose-your-style/).
+- **From the Constructor or Classic DSL**: apply the plugin. Your existing `singleOf(::T)` definitions and `get()` calls are checked at build time without changes. You can then replace them with `single<T>()` module by module. See [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
 - **From the KSP processor** (`koin-ksp-compiler`, deprecated): remove KSP, apply the plugin, and replace the generated `.module` extensions with `startKoin<MyApp>()`. Your annotations stay the same. See [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/).
 
 ## Next steps
