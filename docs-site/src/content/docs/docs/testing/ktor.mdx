@@ -1,0 +1,246 @@
+---
+title: "Ktor tests"
+description: "Test a Ktor server that uses Koin: run routes with testApplication, replace definitions with test modules and isolate tests from each other."
+---
+
+import Install from '~/components/Install.astro';
+
+This page covers testing a Ktor server that uses Koin: running your routes with `testApplication`, replacing definitions with test modules, and isolating tests from each other. It assumes you know how to [install Koin in Ktor](/docs/platforms/ktor/). For tests of plain classes, with no HTTP layer, use the techniques of [Unit tests](/docs/testing/).
+
+## Dependencies
+
+<Install test={['koin-test', 'koin-test-junit4']} bom />
+
+Use `koin-test-junit5` instead of `koin-test-junit4` for JUnit 5. You also need Ktor's test host, which is not a Koin artifact:
+
+```kotlin
+dependencies {
+    testImplementation("io.ktor:ktor-server-test-host")
+}
+```
+
+## Run routes with testApplication
+
+`install(Koin)` works inside `testApplication` as in production. Install it with your test modules, then add your routes:
+
+With any DSL form (Compiler Plugin, Constructor or Classic DSL), pass your modules:
+
+```kotlin
+import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.install
+import io.ktor.server.testing.testApplication
+import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
+
+val testModule = module {
+    single<UserRepository> { InMemoryUserRepository(User("1", "Alice")) }
+}
+
+class UserRoutesTest {
+
+    @Test
+    fun `returns a user`() = testApplication {
+        application {
+            install(Koin) {
+                modules(appModule, testModule)
+            }
+            configureRouting()
+        }
+
+        val response = client.get("/users/1")
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+}
+```
+
+With annotations, `MyApp` is the `@KoinApplication` class of your server. Load it with `withConfiguration<MyApp>()`, then add the test module:
+
+```kotlin
+import org.koin.core.annotation.KoinApplication
+import org.koin.plugin.module.dsl.withConfiguration
+
+// in src/main
+@KoinApplication
+object MyApp
+
+class UserRoutesTest {
+
+    @Test
+    fun `returns a user`() = testApplication {
+        application {
+            install(Koin) {
+                withConfiguration<MyApp>()
+                modules(testModule)
+            }
+            configureRouting()
+        }
+
+        val response = client.get("/users/1")
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+}
+```
+
+The test module is loaded last, so its `UserRepository` replaces the production one (see [Definitions](/docs/concepts/definitions/)). A lambda definition like this one works in every style.
+
+Routes resolve dependencies with `inject()` and `get()` from `org.koin.ktor.ext`, as in production (for example `import org.koin.ktor.ext.inject`). When `testApplication` ends, Ktor stops the application and the Koin plugin closes its container.
+
+## Reuse your application module
+
+If your production `Application.module()` installs Koin, call it in the test and add overrides with `koinModules()`:
+
+```kotlin
+import org.koin.ktor.plugin.koinModules
+
+// production
+fun Application.module() {
+    install(Koin) {
+        modules(appModule)
+    }
+    configureRouting()
+}
+
+// test
+@Test
+fun `returns a user`() = testApplication {
+    application {
+        module()
+        koinModules(testModule)
+    }
+
+    assertEquals(HttpStatusCode.OK, client.get("/users/1").status)
+}
+```
+
+`koinModules()` loads modules into the container created by `install(Koin)`. Ktor plugins can only be installed once, so a second `install(Koin)` in the test would fail.
+
+`koinModules()` loads the overrides after `install(Koin)`. A definition created at install time (for example with `createdAtStart`) keeps the production dependencies.
+
+## Isolate tests
+
+`install(Koin)` starts Koin in the global context. If a container is already running, the plugin stops it first. Tests in sequence are fine, but two tests that run at the same time share the global context and break each other.
+
+Extend `AutoCloseKoinTest` to stop Koin after each test, even when a test fails before the application shuts down:
+
+```kotlin
+import org.koin.test.AutoCloseKoinTest
+
+class UserRoutesTest : AutoCloseKoinTest() {
+    // tests
+}
+```
+
+For parallel tests, install `KoinIsolated` instead. Each application gets its own container, outside the global context:
+
+```kotlin
+import org.koin.ktor.plugin.KoinIsolated
+
+@Test
+fun `returns a user`() = testApplication {
+    application {
+        install(KoinIsolated) {
+            modules(appModule, testModule)
+        }
+        configureRouting()
+    }
+
+    assertEquals(HttpStatusCode.OK, client.get("/users/1").status)
+}
+```
+
+With `KoinIsolated`, resolve dependencies through the Ktor extensions (`inject()`, `get()`, `call.scope`). A `KoinComponent` or `GlobalContext.get()` does not see the isolated container. See [Isolated context in Ktor](/docs/platforms/ktor/isolated-context/).
+
+## Mock a dependency
+
+Put the mock in the test module:
+
+```kotlin
+@Test
+fun `returns 404 for an unknown user`() = testApplication {
+    val repository = mockk<UserRepository> {
+        every { findById(any()) } returns null
+    }
+
+    application {
+        install(Koin) {
+            modules(appModule, module { single { repository } })
+        }
+        configureRouting()
+    }
+
+    assertEquals(HttpStatusCode.NotFound, client.get("/users/999").status)
+    verify { repository.findById("999") }
+}
+```
+
+`declareMock` (see [Mocking with declareMock](/docs/testing/#mocking-with-declaremock)) also works with `install(Koin)`, since it uses the global context. It does not work with `KoinIsolated`.
+
+## Request scope
+
+Definitions declared in `requestScope { }` are created for each call and closed when the response is sent (see [Request scopes](/docs/platforms/ktor/request-scopes/)). Test them through a request:
+
+```kotlin
+import io.ktor.client.statement.bodyAsText
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import org.koin.ktor.plugin.scope
+
+@Test
+fun `each call gets its own request logger`() = testApplication {
+    application {
+        install(Koin) {
+            modules(module {
+                requestScope {
+                    scoped { RequestLogger() }
+                }
+            })
+        }
+        routing {
+            get("/id") {
+                call.respondText(call.scope.get<RequestLogger>().id)
+            }
+        }
+    }
+
+    val first = client.get("/id").bodyAsText()
+    val second = client.get("/id").bodyAsText()
+    assertNotEquals(first, second)
+}
+```
+
+`call.scope` exists only while a call is processed. Resolving a request-scoped definition outside a route fails.
+
+## Ktor DI bridge
+
+When the [Ktor DI bridge](/docs/platforms/ktor/di-bridge/) is enabled, provide test values with Ktor's `dependencies { }` in the test application, the same way as in production. `koinToKtor()` lets Koin definitions resolve them:
+
+```kotlin
+@Test
+fun `uses the Ktor-provided database`() = testApplication {
+    application {
+        dependencies {
+            provide<Database> { InMemoryDatabase() }
+        }
+        install(Koin) {
+            bridge { koinToKtor() }
+            modules(appModule)
+        }
+        configureRouting()
+    }
+
+    assertEquals(HttpStatusCode.OK, client.get("/users").status)
+}
+```
+
+## Check your configuration
+
+With the Compiler Plugin, the build already checks that every definition's dependencies are declared. To check a configuration without starting a server, for example without the plugin, see [Verifying your configuration](/docs/testing/verify/). Types provided by Ktor at runtime, such as `ApplicationCall` in a request scope, go in `extraTypes`.
+
+## Next steps
+
+- [Ktor: install and start](/docs/platforms/ktor/): install the plugin and inject in routes.
+- [Isolated context in Ktor](/docs/platforms/ktor/isolated-context/): `KoinIsolated` and when to use it.
+- [Request scopes](/docs/platforms/ktor/request-scopes/): definitions bound to a call.
+- [Unit tests](/docs/testing/): `KoinTest`, overrides and `declareMock`.

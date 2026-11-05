@@ -1,0 +1,303 @@
+---
+title: "Koin Compiler Plugin"
+description: "What the Koin Compiler Plugin does, its requirements, how to install it, its limits, and how to fix common setup problems."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+The Koin Compiler Plugin is a Kotlin compiler plugin that runs inside the Kotlin compiler (K2). It writes the constructor wiring for your definitions and checks your dependency graph at build time. It powers both the Compiler Plugin DSL and Koin Annotations. This page is the canonical place for what it does, what it requires, how to install it, what it cannot do, and how to fix setup problems.
+
+To compare it with the Constructor and Classic DSL, see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/). The source is on GitHub: [InsertKoinIO/koin-compiler-plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
+
+## Requirements
+
+- Kotlin <Version of="kotlinMin" /> or later (K2 compiler).
+- Koin 4.2.0 or later.
+- The plugin applied in every Gradle module that declares Koin definitions.
+
+The plugin has its own version, separate from Koin, and it is not part of the Koin BOM. The current version is <Version of="compilerPlugin" />.
+
+Each plugin release is verified on a list of Kotlin versions:
+
+| Kotlin | Koin Compiler Plugin |
+|--------|----------------------|
+| 2.3.20, 2.4.0, 2.4.10 | 1.2.0+ |
+| 2.4.20 | 1.2.1+ |
+
+On a Kotlin version that is not in the list, the plugin prints a warning and the build continues.
+
+:::caution
+On Kotlin 2.4.20, plugin 1.2.0 fails with `NoSuchMethodError` during IR generation. Use 1.2.1 or later.
+:::
+
+:::caution
+Annotation-based definitions (`@Module`, `@ComponentScan`) on WASM and JS targets require Kotlin 2.4.0 or later ([KT-82395](https://youtrack.jetbrains.com/issue/KT-82395)). JVM, Android and iOS or Native targets, and DSL-based WASM or JS, work across the whole range.
+:::
+
+The plugin repository does not state a minimum Gradle version. The Koin docs examples were built and tested with Gradle 8.11.1.
+
+### Plugin id and artifact id
+
+Two names are easy to mix up:
+
+- **Gradle plugin id**: `io.insert-koin.compiler.plugin`. This is what you apply in `plugins { }`.
+- **Compiler artifact**: `io.insert-koin:koin-compiler-plugin`. The Gradle plugin pulls it in for you, you never declare it.
+
+This is not `koin-gradle-plugin`, an older, unrelated Gradle plugin (id `koin`) that registers the deprecated `checkModules` tasks. Do not apply it for the Compiler Plugin.
+
+## What it does to your code
+
+You write the type, the plugin writes the constructor call:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.plugin.module.dsl.single
+
+class UserRepository(private val api: ApiService, private val cache: UserCache)
+
+val appModule = module {
+    single<UserRepository>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@Singleton
+class UserRepository(private val api: ApiService, private val cache: UserCache)
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+The Classic DSL does not need the plugin: you write the wiring yourself. The Constructor DSL (`singleOf(::T)`) does not need it either.
+
+```kotlin
+val appModule = module {
+    single { UserRepository(get(), get()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+If the plugin is applied, it still checks the `get()` calls and `singleOf(::T)` definitions of the last tab at build time.
+
+During compilation, the plugin replaces `single<UserRepository>()` (or the `@Singleton` class) with the equivalent of:
+
+```kotlin
+single { UserRepository(get(), get()) }
+```
+
+The generated code is the same runtime code the Classic DSL uses. Nothing changes at runtime: definitions go into the same container, and Koin resolves them the same way. Each parameter type is handled: nullable types use `getOrNull()`, `Lazy<T>` uses `inject()`, `List<T>` uses `getAll()`, and annotated parameters (`@Named`, `@InjectedParam`, `@Property`) use the matching call. The full table is in [Definitions](/docs/concepts/definitions/).
+
+In DSL style, the module says where a class is registered, and annotations on the class's parameters say how they are resolved:
+
+```kotlin
+class UserPresenter(
+    @InjectedParam val userId: String,
+    @Named("remote") val api: ApiService,
+    val repository: UserRepository,
+)
+
+val appModule = module {
+    factory<UserPresenter>()
+}
+```
+
+## How it works
+
+The plugin hooks into two phases of the Kotlin K2 compiler:
+
+```text
+Kotlin sources
+     |
+     v
+  FIR (frontend)   finds @Module, @ComponentScan, @Configuration and declares
+                   the generated module properties and cross-module hints
+     |
+     v
+  IR (backend)     1. collects annotated definitions and fills the modules
+                   2. rewrites DSL calls: single<T>() becomes single { T(get()) }
+                   3. at entry points (startKoin, @KoinApplication), assembles
+                      the full graph and validates it
+                   4. validates get(), inject(), koinViewModel() call sites
+     |
+     v
+  Bytecode (JVM, Android, Native, JS, Wasm)
+```
+
+No source file is generated in your project. To see across Gradle modules, the plugin adds small synthetic marker functions ("hints") to each compiled module. A downstream module reads them to find definitions declared in its dependencies. This is why every Gradle module that declares Koin definitions must apply the plugin.
+
+At each Koin entry point, the plugin checks that every non-nullable constructor parameter has a matching definition, and checks every `get<T>()`, `inject<T>()` and `koinViewModel<T>()` call. A missing dependency fails the build with a `KOIN-D001` error. The full list of checks and diagnostics is in [Compile-time safety](/docs/tooling/compile-time-safety/).
+
+## Install
+
+### 1. Plugin repositories
+
+The plugin is published on Maven Central and the Gradle Plugin Portal. In `settings.gradle.kts`:
+
+```kotlin
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+```
+
+### 2. Apply the plugin and add the libraries
+
+In the `build.gradle.kts` of each Gradle module that declares Koin definitions:
+
+<Install artifacts={['koin-core', 'koin-annotations']} plugin bom />
+
+Use `koin-android` or `koin-ktor` in place of `koin-core` where it applies. Add `koin-annotations` if you use annotations, including parameter annotations such as `@Named` or `@InjectedParam` in DSL style. If you use the Compiler Plugin DSL only, without any annotation, you can leave it out.
+
+The Compiler Plugin DSL (`single<T>()`, `factory<T>()`, `viewModel<T>()`) ships with the Koin libraries, in the package `org.koin.plugin.module.dsl`.
+
+:::tip
+`@KoinViewModel` and `@KoinWorker` need their runtime library on the classpath: `koin-core-viewmodel` (included in `koin-android` and `koin-compose-viewmodel`) and `koin-androidx-workmanager`. If one is missing, the build fails with an error that names the artifact.
+:::
+
+### 3. Check that it works
+
+Turn on the plugin logs for one build:
+
+```kotlin
+koinCompiler {
+    userLogs = true
+}
+```
+
+The build output lists each definition the plugin detected. Turn it off again once you have checked. Then start Koin as described in [Starting Koin](/docs/concepts/starting-koin/), with `startKoin { }` or, for annotations, `startKoin<MyApp>()`.
+
+A green build can also mean the plugin does not see your modules. To check that the check runs, remove one definition that another definition needs and build again. You should get `KOIN-D001`. If the build still passes, look for `KOIN-W003` in the output, which means the plugin skipped that entry point. Then restore the definition. See [Limits](/docs/tooling/compile-time-safety/#limits).
+
+### Multi-module projects
+
+Apply the plugin in every Gradle module that declares definitions, not only in the app module. Each module compiled with the plugin carries metadata about its definitions, and the app module reads it to check the full graph at `startKoin`. A library module without the plugin is invisible to these checks.
+
+How to assemble modules across Gradle modules (`includes`, `@Configuration`) is covered in [Modules](/docs/concepts/modules/) and [Multi-module apps](/docs/platforms/android/multi-module/).
+
+### Kotlin Multiplatform
+
+Apply the plugin once, on the shared module, next to the Kotlin Multiplatform plugin, and add the libraries to `commonMain`. There is no per-target configuration:
+
+<Install artifacts={['koin-core', 'koin-annotations']} plugin bom sourceSet="commonMain" />
+
+See [Install and project structure](/docs/platforms/kmp/install/) for the full setup, and the WASM and JS caveat in [Requirements](#requirements).
+
+## Options
+
+The `koinCompiler` block configures the plugin. The defaults fit most projects:
+
+```kotlin
+koinCompiler {
+    compileSafety = true      // validate the graph at build time
+    skipDefaultValues = true  // use Kotlin default values instead of injecting
+    userLogs = false          // log detected definitions
+}
+```
+
+Every option, including `strictSafety`, `unsafeDslChecks`, `logSeverity`, `debugLogs` and `aiAssist`, is described in [Compiler Plugin options](/docs/reference/compiler-options/).
+
+## Limits
+
+- **Runtime-loaded modules**: modules added later with `loadKoinModules()` are not part of the graph the plugin sees. Types they provide must be marked `@Provided`.
+- **Library modules alone**: a Gradle module with no Koin entry point is not validated on its own. It is checked when an app module assembles it.
+- **Dynamic module lists**: a module list built with `if`, `when` or varargs cannot be followed. The plugin skips the full-graph check for that entry point and reports `KOIN-W003`.
+- **Incremental compilation**: like other IR compiler plugins, some changes (moving classes between scanned packages, changing qualifiers) can leave stale results. A clean build fixes them: see [Stale results after a refactor](#stale-results-after-a-refactor).
+- **Kotlin versions**: the plugin uses compiler APIs that change between Kotlin releases. Other versions than the verified ones print a warning.
+
+How to handle these cases is explained in [Compile-time safety](/docs/tooling/compile-time-safety/#limits).
+
+## Troubleshooting
+
+### Plugin not found
+
+Gradle can't resolve `io.insert-koin.compiler.plugin`. Check that `mavenCentral()` and `gradlePluginPortal()` are in `pluginManagement.repositories` in `settings.gradle.kts`.
+
+### NotImplementedError at runtime
+
+`single<T>()`, `factory<T>()` and `create(::T)` are placeholders that the plugin replaces. If the plugin is not applied to the Gradle module that contains them, the code compiles and throws `NotImplementedError` when the module is created. Apply the plugin to that module.
+
+### Wrong imports
+
+The Compiler Plugin DSL and the Constructor DSL have functions with the same names in different packages:
+
+```kotlin
+// Compiler Plugin DSL: single<T>(), factory<T>(), viewModel<T>()
+import org.koin.plugin.module.dsl.*
+
+// Constructor DSL: singleOf, factoryOf, viewModelOf
+import org.koin.core.module.dsl.*
+
+// both
+import org.koin.dsl.module
+```
+
+Without the `org.koin.plugin.module.dsl` import, `single<T>()` has no match. With the Constructor DSL import, it resolves to a different function.
+
+### Stale results after a refactor
+
+Like other Kotlin IR plugins (the Compose compiler, for example), the Koin Compiler Plugin can produce stale results with incremental compilation. Symptoms:
+
+- A compile-time safety error that should not appear, or none after you removed a definition.
+- `NoSuchMethodError` or `ClassNotFoundException` at runtime after a refactor.
+
+It usually follows these changes:
+
+- Changing an annotation on a class (`@Singleton` to `@Factory`, adding or removing `@Named`).
+- Moving classes between packages scanned by `@ComponentScan`.
+- Changing module `includes` or `@Configuration` labels.
+- Adding or removing definitions in a library module another module depends on.
+
+Run a clean build: `./gradlew clean build`, or in Android Studio, Build > Clean Project then Build > Rebuild Project.
+
+For changes inside `module { }` lambdas, the plugin turns on `strictSafety` for modules that contain an entry point (`startKoin`, `koinApplication`, `@KoinApplication`). It re-runs the full graph check on each build of those modules. See [Compiler Plugin options](/docs/reference/compiler-options/).
+
+### Missing dependency reported across modules
+
+If the plugin reports a missing dependency that a library module does declare:
+
+1. Apply the plugin to the library module too. Without it, the library carries no metadata.
+2. Make sure the library is built before the module that uses it. `implementation(project(":lib"))` normally does this.
+3. Run a clean build after adding the plugin to a library for the first time.
+4. Use plugin 1.2.1 or later. Earlier versions missed definitions two or more `implementation` levels away and merged `@Named` providers across modules. If you turned `compileSafety` off because of false `KOIN-D001` errors, turn it back on.
+
+### False KOIN-D001 on parameters that should be skipped
+
+On plugin 1.2.0 and 1.2.1, the full-graph check reports a false `KOIN-D001` for a Compiler Plugin DSL definition declared in another Gradle module when its constructor has an `@InjectedParam`, defaulted, nullable or `List<T>` parameter. The same definition passes when it is in the module that calls `startKoin`, and it runs correctly. This is [issue #115](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/115). It is fixed in the plugin repository, for the release after 1.2.1.
+
+Until then, declare the definition with a lambda:
+
+```kotlin
+viewModel { (itemId: Long) -> DetailViewModel(itemId, get()) }
+```
+
+Keep `compileSafety` on, so the check still covers the rest of your graph.
+
+### NoClassDefFoundError with a convention plugin
+
+A Gradle convention plugin that calls `configure<KoinGradleExtension> { }` needs the Koin Gradle plugin on its classpath when it runs. If its dependency on that plugin is `compileOnly`, it compiles but can fail with `NoClassDefFoundError: org/koin/compiler/plugin/KoinGradleExtension`. Fix it in one of two ways:
+
+- Use `implementation` for that dependency.
+- Keep `compileOnly`, and declare the plugin in the `plugins { }` block of the root build file with `apply false`.
+
+## Moving to the Compiler Plugin
+
+- **From the Constructor or Classic DSL**: apply the plugin. Your existing `singleOf(::T)` definitions and `get()` calls are checked at build time without changes. You can then replace them with `single<T>()` module by module. See [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
+- **From the KSP processor** (`koin-ksp-compiler`, deprecated): remove KSP, apply the plugin, and replace the generated `.module` extensions with `startKoin<MyApp>()`. Your annotations stay the same. See [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/).
+
+## Next steps
+
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the plugin checks and how to handle findings.
+- [Compiler Plugin options](/docs/reference/compiler-options/): every Gradle option.
+- [Gradle artifacts and BOM](/docs/reference/artifacts/): the Koin libraries and the BOM.
+- [Starting Koin](/docs/concepts/starting-koin/): typed start APIs such as `startKoin<MyApp>()`.

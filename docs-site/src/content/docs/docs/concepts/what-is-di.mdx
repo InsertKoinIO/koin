@@ -1,0 +1,179 @@
+---
+title: "What is dependency injection?"
+description: "Dependency injection means a class receives the objects it needs instead of creating them itself."
+---
+
+import DiDiagram from '~/components/DiDiagram.astro';
+
+Dependency injection (DI) means that a class **receives** the objects it needs, instead of creating them itself.
+
+That is the whole idea. This page shows why it helps, using one small example. You don't need to know Koin to read it.
+
+## What is a dependency?
+
+A dependency is an object that another object needs to do its work. A `UserService` needs a repository to find a user, so the repository is a dependency of the service.
+
+## The problem
+
+Here, `UserService` creates its own repository:
+
+{/* check: what-is-di-problem */}
+
+```kotlin
+class DatabaseRepository {
+    fun findName() = "Alice"
+}
+
+class UserService {
+    private val repository = DatabaseRepository() // creates its repository
+
+    fun greet() = "Hello, ${repository.findName()}!"
+}
+```
+
+<DiDiagram name="creates" />
+
+This works, but `UserService` can only ever use a `DatabaseRepository`:
+
+- **It's hard to change.** To read users from somewhere else, you have to edit `UserService`.
+- **It's hard to test.** Every test of `UserService` uses the real database, so your tests become slow and unreliable.
+
+## The solution
+
+Give `UserService` its repository through the constructor:
+
+{/* check: what-is-di */}
+
+```kotlin
+interface UserRepository {
+    fun findName(): String
+}
+
+class DatabaseRepository : UserRepository {
+    override fun findName() = "Alice"
+}
+
+class InMemoryRepository : UserRepository {
+    override fun findName() = "Bob"
+}
+
+// receives its repository
+class UserService(private val repository: UserRepository) {
+    fun greet() = "Hello, ${repository.findName()}!"
+}
+```
+
+<DiDiagram name="receives" />
+
+`UserService` no longer cares which repository it gets, so you choose when you create it:
+
+{/* check: what-is-di */}
+
+```kotlin
+val databaseService = UserService(DatabaseRepository())
+val inMemoryService = UserService(InMemoryRepository())
+```
+
+Testing also becomes easy, because you can pass a fake:
+
+{/* check: what-is-di */}
+
+```kotlin
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class FakeRepository : UserRepository {
+    override fun findName() = "Test user"
+}
+
+class UserServiceTest {
+    @Test
+    fun greetsTheUser() {
+        val service = UserService(FakeRepository())
+
+        assertEquals("Hello, Test user!", service.greet())
+    }
+}
+```
+
+This is dependency injection. You haven't used a library yet: it's only a constructor parameter.
+
+## Why use a library?
+
+In a small program, you can create everything by hand. In a real app, classes depend on classes that depend on other classes:
+
+{/* check: what-is-di-graph */}
+
+```kotlin
+val database = Database()
+val logger = Logger()
+val repository = DatabaseRepository(database, logger)
+val service = UserService(repository)
+val application = UserApplication(service)
+```
+
+<DiDiagram name="graph" />
+
+You would have to write this code, keep it in the right order, and update it each time a constructor changes. You would also have to make sure that the whole app shares the same `Database`.
+
+A DI library such as Koin does this work for you. You list your classes in a **module**, and Koin creates them in the right order and passes each one what it needs:
+
+{/* check: what-is-di */}
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+val appModule = module {
+    single<DatabaseRepository>() bind UserRepository::class
+    single<UserService>()
+}
+
+fun main() {
+    val koin = startKoin { modules(appModule) }.koin
+
+    println(koin.get<UserService>().greet())
+}
+```
+
+<DiDiagram name="koin" />
+
+You ask for a `UserService`, and Koin builds the `DatabaseRepository` and passes it in. `UserService` itself doesn't change, and it doesn't know that Koin exists. To run code like this yourself, follow the [Quickstart](/docs/get-started/).
+
+## When a framework creates the class
+
+You can't always use the constructor. Android creates each `Activity` itself, so you can't pass it parameters. In these classes, you ask Koin for what you need, as [How Koin works](/docs/get-started/how-koin-works/#injection) shows.
+
+Asking a shared registry for an object like this is called the **service locator** pattern. It is easy to confuse with DI, so here is the difference. With a service locator, the class asks for what it needs. You can't see the dependency from outside, and tests need Koin:
+
+{/* check: what-is-di-locator */}
+
+```kotlin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+class UserService : KoinComponent {
+    private val repository: UserRepository by inject()
+}
+```
+
+With dependency injection, the class receives what it needs. The constructor shows the dependency, and tests can pass a fake:
+
+{/* check: what-is-di-injection */}
+
+```kotlin
+class UserService(private val repository: UserRepository)
+```
+
+Follow this rule:
+
+- **For your own classes,** such as repositories, services and ViewModels, use constructor parameters.
+- **For classes a framework creates,** such as an `Activity` or a Ktor route, ask Koin.
+
+## Next steps
+
+- [Quickstart](/docs/get-started/): run your first Koin app.
+- [How Koin works](/docs/get-started/how-koin-works/): definitions, modules and the container.
+- [Why Koin?](/docs/why-koin/): what Koin gives you over plain constructors, and what it costs.

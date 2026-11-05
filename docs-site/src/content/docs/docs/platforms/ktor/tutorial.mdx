@@ -1,0 +1,332 @@
+---
+title: "Tutorial: your first Ktor service"
+description: "Build a Ktor server with a /hello endpoint that uses Koin, in the Compiler Plugin DSL, Annotations or Constructor DSL style."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+You build a Ktor web app with a `/hello` endpoint that greets a user picked from a list. You declare Koin definitions, install Koin as a Ktor plugin, and inject a service in your route. It takes about 10 minutes.
+
+Pick your style in any tab below. Your choice follows you through the page. To compare the styles first, see [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/).
+
+## Prerequisites
+
+- JDK 17 and Gradle, in a new empty project.
+- Kotlin <Version of="kotlinMin" /> or later for the Compiler Plugin DSL and Annotations styles.
+- The full samples are in [koin-getting-started](https://github.com/InsertKoinIO/koin-getting-started): `ktor` (Compiler Plugin DSL) and `ktor-annotations`. The samples name the Ktor application function `main`; this page calls it `module`.
+
+## Gradle setup
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+<Install artifacts={['koin-ktor', 'koin-logger-slf4j']} test={['koin-test', 'koin-test-junit4']} plugin bom jvmApp="MainKt" ktorServer />
+
+</TabItem>
+<TabItem label="Annotations">
+
+<Install artifacts={['koin-ktor', 'koin-logger-slf4j', 'koin-annotations']} test={['koin-test', 'koin-test-junit4']} plugin bom jvmApp="org.koin.sample.MainKt" ktorServer />
+
+The Compiler Plugin processes the annotations at build time. Put every file of this tutorial in the package `org.koin.sample`, which the module scans below.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+<Install artifacts={['koin-ktor', 'koin-logger-slf4j']} test={['koin-test', 'koin-test-junit4']} bom jvmApp="MainKt" ktorServer />
+
+</TabItem>
+</Tabs>
+
+This is the whole build file, including the Ktor server and Logback, which are not Koin artifacts. `MainKt` is the class Kotlin generates for `Main.kt`, the file that holds `main()`. For plugin options, see [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## The application
+
+The `/hello` route asks `UserService` for a user, and `UserService` reads from `UserRepository`:
+
+```
+User -> UserRepository -> UserService -> /hello route
+```
+
+## Write the user data
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-annotations, ktor-tutorial-constructor */}
+
+```kotlin
+data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
+```
+
+## Write the repository
+
+The repository keeps users in memory and finds one by name. It has no dependency, so Koin can create it without extra information:
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-constructor */}
+
+```kotlin
+interface UserRepository {
+    fun findUserOrNull(name: String): User?
+    fun addUsers(users: List<User>)
+}
+
+class UserRepositoryImpl : UserRepository {
+
+    private val _users = arrayListOf<User>()
+
+    override fun findUserOrNull(name: String): User? {
+        return _users.firstOrNull { it.name == name }
+    }
+
+    override fun addUsers(users: List<User>) {
+        _users.addAll(users)
+    }
+}
+```
+
+## Write the service
+
+`UserServiceImpl` loads the users and prepares the greeting. It depends on `UserRepository`, which Koin passes through the constructor:
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-constructor */}
+
+```kotlin
+interface UserService {
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
+    fun loadUsers()
+    fun prepareHelloMessage(user: User?): String
+}
+
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService {
+
+    override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
+
+    override fun loadUsers() {
+        userRepository.addUsers(DEFAULT_USERS)
+    }
+
+    override fun prepareHelloMessage(user: User?): String {
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
+    }
+}
+```
+
+## Declare the Koin definitions
+
+A module is where you declare the components Koin creates (see [How Koin works](/docs/get-started/how-koin-works/)). Both components are singletons, bound to their interfaces.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: ktor-tutorial-dsl */}
+
+```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+val appModule = module {
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+Annotate both implementations with `@Singleton`. Koin binds each class to its supertypes, so a request for `UserRepository` gets `UserRepositoryImpl`:
+
+```kotlin
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class UserRepositoryImpl : UserRepository { /* ... */ }
+
+@Singleton
+class UserServiceImpl(
+    private val userRepository: UserRepository
+) : UserService { /* ... */ }
+```
+
+Then declare a module class that scans the sample package, and an entry point that collects the `@Configuration` modules:
+
+{/* check: ktor-tutorial-annotations */}
+
+```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan("org.koin.sample")
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinUserApplication
+```
+
+`@ComponentScan` registers every annotated class in the package and its subpackages. `@Configuration` makes the module discoverable by `@KoinApplication`. See [Modules](/docs/concepts/modules/).
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: ktor-tutorial-constructor */}
+
+```kotlin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val appModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserServiceImpl) bind UserService::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+`single` and `bind` are described in [Definitions](/docs/concepts/definitions/).
+
+## Install Koin and write the route
+
+Install the `Koin` plugin in your Ktor application module, then inject `UserService` and use it in the `/hello` route.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-constructor */}
+
+```kotlin
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+
+fun Application.module() {
+    install(Koin) {
+        slf4jLogger()
+        modules(appModule)
+    }
+    helloRoute()
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: ktor-tutorial-annotations */}
+
+```kotlin
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+import org.koin.plugin.module.dsl.withConfiguration
+
+fun Application.module() {
+    install(Koin) {
+        slf4jLogger()
+        withConfiguration<KoinUserApplication>()
+    }
+    helloRoute()
+}
+```
+
+`withConfiguration<KoinUserApplication>()` loads every `@Configuration` module, so you do not call `modules()`. The Compiler Plugin validates the full graph at build time.
+
+</TabItem>
+</Tabs>
+
+The route is the same in every style:
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-annotations, ktor-tutorial-constructor */}
+
+```kotlin
+import io.ktor.server.application.Application
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import org.koin.ktor.ext.inject
+
+fun Application.helloRoute() {
+    val service by inject<UserService>()
+    service.loadUsers()
+
+    routing {
+        get("/hello") {
+            val userName = call.queryParameters["name"] ?: "Alice"
+            val user = service.getUserOrNull(userName)
+            call.respondText(service.prepareHelloMessage(user))
+        }
+    }
+}
+```
+
+`install(Koin)` starts Koin with the Ktor application. `inject()` comes from `org.koin.ktor.ext` and is available on `Application`, `Route` and `ApplicationCall`. See [Ktor: install and start](/docs/platforms/ktor/) for the other Ktor APIs.
+
+## Start the server
+
+Start an embedded Netty server that runs your application module:
+
+{/* check: ktor-tutorial-dsl, ktor-tutorial-annotations, ktor-tutorial-constructor */}
+
+```kotlin
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+
+fun main() {
+    embeddedServer(Netty, port = 8080) {
+        module()
+    }.start(wait = true)
+}
+```
+
+Run `./gradlew run`, then open:
+
+- `http://localhost:8080/hello`: greets Alice, the default user.
+- `http://localhost:8080/hello?name=Bob`: greets Bob.
+
+## See the build catch a mistake
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Remove `single<UserRepositoryImpl>() bind UserRepository::class` from the module and run `./gradlew build`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the line back.
+
+</TabItem>
+<TabItem label="Annotations">
+
+Remove `@Singleton` from `UserRepositoryImpl` and run `./gradlew build`. The build fails with `KOIN-D001`, which names the missing type, the class that needs it and the module. Put the annotation back.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Remove `singleOf(::UserRepositoryImpl) bind UserRepository::class` from the module. The build still passes, because this form has no Compiler Plugin, and the app fails at runtime when it first needs the class. Put the line back.
+
+</TabItem>
+</Tabs>
+
+See [Compile-time safety](/docs/tooling/compile-time-safety/) for what the plugin checks.
+
+## Next steps
+
+- [Ktor: install and start](/docs/platforms/ktor/): install options, injection in routes and Ktor events.
+- [Request scopes](/docs/platforms/ktor/request-scopes/): instances that live for one HTTP request.
+- [Ktor tests](/docs/testing/ktor/): test your routes with `testApplication` and Koin.
+- [Configuration and properties](/docs/platforms/ktor/configuration/): Koin properties and the repository samples.

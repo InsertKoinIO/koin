@@ -1,0 +1,46 @@
+---
+// A row of linked logos. App icons are square. Sponsor logos sit on a white tile,
+// because their artwork is dark and must stay readable in both themes.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Logo } from '~/data/home';
+
+interface Props {
+  logos: Logo[];
+  kind: 'icon' | 'wordmark';
+  rel?: string;
+}
+const { logos, kind, rel } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/logos/*', { eager: true });
+const source = (file: string) => {
+  const image = files[`/src/assets/logos/${file}`];
+  if (!image) throw new Error(`LogoWall: no file src/assets/logos/${file}`);
+  return image.default;
+};
+---
+<ul class:list={['logos', kind]}>
+  {logos.map(({ name, file, href }) => (
+    <li>
+      <a href={href} rel={rel} title={name}>
+        <Image src={source(file)} alt={name} height={kind === 'icon' ? 64 : 40} loading="lazy" />
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .logos { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+  .logos li { margin: 0; }
+  .logos a { display: block; }
+  .logos img { display: block; width: auto; margin: 0; }
+
+  .icon img { width: 4rem; height: 4rem; object-fit: cover; border-radius: 22%; }
+  .wordmark a { padding: 0.75rem 1.25rem; background: #fff; border: 1px solid var(--sl-color-gray-5); border-radius: var(--koin-radius); }
+  .wordmark img { height: 2.5rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .logos a { transition: transform 150ms ease-out; }
+    .logos a:hover { transform: translateY(-2px); }
+  }
+</style>

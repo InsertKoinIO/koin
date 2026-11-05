@@ -1,0 +1,105 @@
+---
+title: "Properties"
+description: "Load key-value configuration into the Koin container and inject it into your definitions."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Properties are key-value pairs stored in the Koin container. Use them for configuration values such as a server URL or a key. This page covers how to load properties on each platform, how to inject them, and how to read them at runtime. It assumes you know how to [start Koin](/docs/concepts/starting-koin/).
+
+## Load properties
+
+Everything below goes in the `startKoin { }` block:
+
+```kotlin
+startKoin {
+    properties(mapOf("server_url" to "https://api.example.com"))
+    modules(appModule)
+}
+```
+
+| Function | Platforms | What it does |
+|----------|-----------|--------------|
+| `properties(map)` | All | Adds the entries of a `Map<String, Any>` |
+| `fileProperties(fileName)` | JVM only | Reads a file from the classpath, `/koin.properties` by default |
+| `environmentProperties()` | JVM only | Reads system properties and environment variables |
+| `androidFileProperties(fileName)` | Android (`koin-android`) | Reads `koin.properties` from the `assets` folder by default |
+
+On iOS, JS, Wasm and the other native targets, only `properties(map)` exists: build the map yourself, for example from a platform configuration object passed to your shared `initKoin()` function (see [Start Koin on each platform](/docs/platforms/kmp/start-koin/)). On Ktor, properties can come from `application.conf` (see [Configuration and properties](/docs/platforms/ktor/configuration/)).
+
+Values loaded from a file or the environment are `String`. Convert them yourself.
+
+## Inject a property
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+Annotate the constructor parameter with `@Property`:
+
+```kotlin
+import org.koin.core.annotation.Property
+
+class ApiClient(@Property("server_url") val url: String)
+
+val networkModule = module {
+    single<ApiClient>()
+}
+```
+
+`@Property` comes from the `koin-annotations` artifact. See the [artifacts reference](/docs/reference/artifacts/).
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@Singleton
+class ApiClient(@Property("server_url") val url: String)
+```
+
+To give a property a default value, annotate a top-level value with `@PropertyValue` and the same key:
+
+```kotlin
+@PropertyValue("server_url")
+val defaultServerUrl = "https://api.example.com"
+```
+
+The generated code reads `getProperty("server_url", defaultServerUrl)`, so `ApiClient` gets the default when nobody set the property. Without a `@PropertyValue`, the build shows warning `KOIN-P001` (see [Diagnostics](/docs/reference/diagnostics/)) and the property must be set at startup.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val networkModule = module {
+    single { ApiClient(url = getProperty("server_url")) }
+
+    // with a default value
+    single { ApiClient(url = getProperty("server_url", "https://api.example.com")) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Inside a definition, `getProperty(key)` throws `MissingPropertyException` when the property is missing, and `getPropertyOrNull(key)` returns `null`. Pass a second argument for a default value.
+
+Read properties in one configuration class and inject that class, instead of calling `getProperty` in many places. The keys then live in one file.
+
+## Read and write at runtime
+
+On the `Koin` instance, you can set, read and delete a property after start:
+
+```kotlin
+val koin = KoinPlatform.getKoin()
+koin.setProperty("session_token", token)
+val current: String? = koin.getProperty("session_token") // null when missing
+koin.deleteProperty("session_token")
+```
+
+A `@Property` parameter is read when the instance is created. A `single` created before you call `setProperty` keeps the value it read.
+
+## Related
+
+- [Starting Koin](/docs/concepts/starting-koin/): the other start options.
+- [Annotations reference](/docs/reference/annotations/): `@Property` and `@PropertyValue`.
+- [Diagnostics](/docs/reference/diagnostics/): `KOIN-P001`.
+- [Definitions](/docs/concepts/definitions/): how constructor parameters are resolved.

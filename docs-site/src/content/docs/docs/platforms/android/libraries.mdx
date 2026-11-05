@@ -1,0 +1,930 @@
+---
+title: "Library integration and recipes"
+description: "Complete Koin setups for Retrofit, OkHttp, Room, DataStore and JSON serialization, authentication, dispatchers, a layered app structure, and Android-only patterns such as build variants and Activity helpers."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page gives complete Koin setups for libraries most Android apps use (Retrofit with OkHttp, an authenticated client, Room, DataStore, a JSON serializer), injected dispatchers, a layered app structure, and Android-only patterns: choosing an implementation per build variant and declaring UI helpers that need the Activity. Library classes come from builders, so they are declared with provider functions. How that works (`create(::function)`, annotated functions) is explained in [Definitions](/docs/concepts/definitions/#classes-you-dont-own); this page only shows the Android setups. Patterns that work on every platform (collections, generics, decorators, providers) are in [Patterns](/docs/concepts/patterns/).
+
+## Retrofit and OkHttp
+
+{/* check: android-libraries-dsl, android-libraries-annotations, android-libraries-constructor */}
+
+```kotlin
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+interface ApiService {
+    @GET("users/{id}")
+    suspend fun getUser(@Path("id") id: String): User
+}
+```
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import java.util.concurrent.TimeUnit
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+fun okHttpClient(): OkHttpClient =
+    OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        })
+        .build()
+
+fun retrofit(client: OkHttpClient, json: Json): Retrofit =
+    Retrofit.Builder()
+        .baseUrl(BuildConfig.API_URL)
+        .client(client)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .build()
+
+fun apiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+
+val networkModule = module {
+    single { create(::okHttpClient) }
+    single { create(::retrofit) }
+    single { create(::apiService) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import java.util.concurrent.TimeUnit
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+class NetworkModule {
+
+    @Singleton
+    fun okHttpClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            })
+            .build()
+
+    @Singleton
+    fun retrofit(client: OkHttpClient, json: Json): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+
+    @Singleton
+    fun apiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import java.util.concurrent.TimeUnit
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import org.koin.dsl.module
+
+val networkModule = module {
+    single {
+        OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            })
+            .build()
+    }
+    single {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(get())
+            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+    single { get<Retrofit>().create(ApiService::class.java) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Declare `OkHttpClient` and `Retrofit` as `single`: each one holds a connection pool and thread pools, and creating several wastes them. `BuildConfig.API_URL` is a `buildConfigField` you define per build type. The `Json` instance comes from the next section.
+
+## JSON serialization
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+fun json(): Json = Json {
+    ignoreUnknownKeys = true
+    explicitNulls = false
+}
+
+val serializationModule = module {
+    single { create(::json) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+class SerializationModule {
+
+    @Singleton
+    fun json(): Json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import org.koin.dsl.module
+
+val serializationModule = module {
+    single {
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+The same pattern works for Gson (`single { create(::gson) }` with `fun gson(): Gson = GsonBuilder().create()`) or Moshi. One shared instance keeps the serializer configuration in one place.
+
+## Room
+
+{/* check: android-libraries-dsl, android-libraries-annotations, android-libraries-constructor */}
+
+```kotlin
+import androidx.room.Database
+import androidx.room.RoomDatabase
+
+@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}
+```
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import android.content.Context
+import androidx.room.Room
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+fun appDatabase(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "app-database").build()
+
+fun userDao(database: AppDatabase): UserDao = database.userDao()
+
+val databaseModule = module {
+    single { create(::appDatabase) }
+    single { create(::userDao) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import android.content.Context
+import androidx.room.Room
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+class DatabaseModule {
+
+    @Singleton
+    fun appDatabase(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "app-database").build()
+
+    @Singleton
+    fun userDao(database: AppDatabase): UserDao = database.userDao()
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import androidx.room.Room
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "app-database").build()
+    }
+    single { get<AppDatabase>().userDao() }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Declare the database as a `single`: a `RoomDatabase` instance is costly, and the Room documentation asks for one instance per database in a process. `Context` here is the `Application`, given by `androidContext()` at start (see [Android: install and start](/docs/platforms/android/)). DAOs are cheap and Room returns the same instance for each call, so `single` or `factory` both work.
+
+## Authenticated and public clients
+
+Interceptors are ordinary classes, so Koin can pass them what they need. When only some calls must carry a token, keep two `OkHttpClient` instances and tell them apart with a [qualifier](/docs/concepts/qualifiers/):
+
+{/* check: android-libraries-dsl, android-libraries-annotations, android-libraries-constructor */}
+
+```kotlin
+import okhttp3.Interceptor
+import okhttp3.Response
+import retrofit2.http.GET
+
+interface TokenStore {
+    fun token(): String?
+}
+
+class AuthInterceptor(private val tokens: TokenStore) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder().apply {
+            tokens.token()?.let { header("Authorization", "Bearer $it") }
+        }.build()
+        return chain.proceed(request)
+    }
+}
+
+interface AccountApi {
+    @GET("me")
+    suspend fun me(): User
+}
+```
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import org.koin.core.annotation.Named
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+
+fun authenticatedClient(auth: AuthInterceptor): OkHttpClient =
+    OkHttpClient.Builder().addInterceptor(auth).build()
+
+fun accountApi(@Named("authenticated") client: OkHttpClient, json: Json): AccountApi =
+    Retrofit.Builder()
+        .baseUrl(BuildConfig.API_URL)
+        .client(client)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .build()
+        .create(AccountApi::class.java)
+
+val authModule = module {
+    single<AuthInterceptor>()
+    single<OkHttpClient>(named("authenticated")) { create(::authenticatedClient) }
+    single { create(::accountApi) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Singleton
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+
+@Module
+@Configuration
+class AuthModule {
+
+    @Singleton
+    fun authInterceptor(tokens: TokenStore): AuthInterceptor = AuthInterceptor(tokens)
+
+    @Singleton
+    @Named("authenticated")
+    fun authenticatedClient(auth: AuthInterceptor): OkHttpClient =
+        OkHttpClient.Builder().addInterceptor(auth).build()
+
+    @Singleton
+    fun accountApi(@Named("authenticated") client: OkHttpClient, json: Json): AccountApi =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(client)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(AccountApi::class.java)
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+
+val authModule = module {
+    singleOf(::AuthInterceptor)
+    single(named("authenticated")) {
+        OkHttpClient.Builder().addInterceptor(get<AuthInterceptor>()).build()
+    }
+    single {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(get<OkHttpClient>(named("authenticated")))
+            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(AccountApi::class.java)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A request for `OkHttpClient` with no qualifier still gets the public client from the previous section. Provide `TokenStore` from your own session code. In the Compiler Plugin DSL, `@Named` comes from the `koin-annotations` artifact, so add it to your dependencies.
+
+## Coroutine dispatchers
+
+Inject dispatchers instead of calling `Dispatchers.IO` in your classes, so that a test can replace them:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class SyncRepository(@Named("io") private val io: CoroutineDispatcher) {
+    suspend fun sync() = withContext(io) { /* ... */ }
+}
+
+val dispatchersModule = module {
+    single<CoroutineDispatcher>(named("io")) { Dispatchers.IO }
+    single<SyncRepository>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class SyncRepository(@Named("io") private val io: CoroutineDispatcher) {
+    suspend fun sync() = withContext(io) { /* ... */ }
+}
+
+@Module
+@Configuration
+class DispatchersModule {
+
+    @Singleton
+    @Named("io")
+    fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+
+class SyncRepository(private val io: CoroutineDispatcher) {
+    suspend fun sync() = withContext(io) { /* ... */ }
+}
+
+val dispatchersModule = module {
+    single<CoroutineDispatcher>(named("io")) { Dispatchers.IO }
+    single { SyncRepository(get(named("io"))) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A custom qualifier annotation, which avoids repeating a string, is shown in [Qualifiers](/docs/concepts/qualifiers/).
+
+## DataStore
+
+Declare a `DataStore` as a `single`: two active instances on one file throw an exception at the first read or write.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+
+fun settingsDataStore(context: Context): DataStore<Preferences> =
+    PreferenceDataStoreFactory.create { context.preferencesDataStoreFile("settings") }
+
+val dataStoreModule = module {
+    single { create(::settingsDataStore) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+@Configuration
+class DataStoreModule {
+
+    @Singleton
+    fun settingsDataStore(context: Context): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create { context.preferencesDataStoreFile("settings") }
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
+
+val dataStoreModule = module {
+    single<DataStore<Preferences>> {
+        PreferenceDataStoreFactory.create { androidContext().preferencesDataStoreFile("settings") }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`DataStore` is generic, and Koin [erases type arguments](/docs/concepts/qualifiers/#generic-types): a second `DataStore` in the same graph needs a qualifier, even with another type argument.
+
+## Layered architecture
+
+A typical Android app has a data layer (network, database, repositories), a domain layer (use cases) and a UI layer (ViewModels). Each layer uses the definition type that matches its lifetime:
+
+| Layer | Classes | Definition |
+|-------|---------|------------|
+| Data | `OkHttpClient`, `Retrofit`, `AppDatabase`, data sources, repositories | `single` |
+| Domain | Use cases, with no state | `factory` |
+| UI | ViewModels | `viewModel` |
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.factory
+import org.koin.plugin.module.dsl.single
+import org.koin.plugin.module.dsl.viewModel
+
+val dataModule = module {
+    includes(networkModule, databaseModule, serializationModule)
+    single<UserRemoteDataSource>()
+    single<UserLocalDataSource>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+}
+
+val domainModule = module {
+    factory<GetUserUseCase>()
+}
+
+val uiModule = module {
+    viewModel<UserViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class UserRemoteDataSource(private val api: ApiService)
+
+@Singleton
+class UserLocalDataSource(private val dao: UserDao)
+
+@Singleton
+class UserRepositoryImpl(
+    private val remote: UserRemoteDataSource,
+    private val local: UserLocalDataSource,
+) : UserRepository
+
+@Factory
+class GetUserUseCase(private val repository: UserRepository) {
+    suspend operator fun invoke(userId: String): User = repository.getUser(userId)
+}
+
+@KoinViewModel
+class UserViewModel(
+    private val getUser: GetUserUseCase,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel()
+```
+
+The `@Module` classes of the previous sections load only if something includes them. Assemble them in one module that the app discovers:
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+
+@Module(includes = [NetworkModule::class, DatabaseModule::class, SerializationModule::class])
+@ComponentScan
+@Configuration
+class AppModule
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val dataModule = module {
+    includes(networkModule, databaseModule, serializationModule)
+    singleOf(::UserRemoteDataSource)
+    singleOf(::UserLocalDataSource)
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+}
+
+val domainModule = module {
+    factoryOf(::GetUserUseCase)
+}
+
+val uiModule = module {
+    viewModelOf(::UserViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+The ViewModel depends on the use case, the use case on the `UserRepository` interface, and only the data module knows `UserRepositoryImpl`. To swap the data source in tests, override the `UserRepository` binding (see [Unit tests](/docs/testing/)). When each layer lives in its own Gradle module, see [Multi-module apps](/docs/platforms/android/multi-module/).
+
+## Implementations per build variant
+
+### With BuildConfig
+
+Choose the implementation in a provider function:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import android.content.Context
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+fun analytics(context: Context): Analytics =
+    if (BuildConfig.ENABLE_ANALYTICS) FirebaseAnalyticsTracker(context) else NoOpAnalytics()
+
+val analyticsModule = module {
+    single { create(::analytics) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import android.content.Context
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
+@Module
+class AnalyticsModule {
+
+    @Singleton
+    fun analytics(context: Context): Analytics =
+        if (BuildConfig.ENABLE_ANALYTICS) FirebaseAnalyticsTracker(context) else NoOpAnalytics()
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
+
+val analyticsModule = module {
+    single<Analytics> {
+        if (BuildConfig.ENABLE_ANALYTICS) FirebaseAnalyticsTracker(androidContext()) else NoOpAnalytics()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+With annotations, add `AnalyticsModule` to the `includes` of your app module. `ENABLE_ANALYTICS` is a `buildConfigField` set per build type or flavor. `BuildConfig.DEBUG` works the same way. Both implementations are compiled into every variant; only one is created.
+
+### With source sets
+
+To keep debug-only code out of the release APK, declare the same Koin module in each variant source set:
+
+```kotlin
+// src/debug/kotlin/com/app/di/VariantModule.kt
+val variantModule = module {
+    single<Logger> { VerboseLogger() }
+    single<NetworkInspector> { ChuckerInspector(androidContext()) }
+}
+```
+
+```kotlin
+// src/release/kotlin/com/app/di/VariantModule.kt
+val variantModule = module {
+    single<Logger> { CrashlyticsLogger() }
+    single<NetworkInspector> { NoOpInspector() }
+}
+```
+
+```kotlin
+// src/main
+startKoin {
+    androidContext(this@MainApplication)
+    modules(appModule, variantModule)
+}
+```
+
+`src/main` sees one `variantModule` per build, so it compiles in both. Each variant only ships its own implementations and their libraries (use `debugImplementation` for debug-only dependencies).
+
+## UI helpers that need the Activity
+
+Some helpers need the current Activity, not the Application: dialogs, permission requests, anything that uses the Activity theme. An `AlertDialog` built with the Application context fails when it is shown. Declare these helpers in the Activity scope, where `Context` resolves to the Activity:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: android-libraries-dsl */}
+
+```kotlin
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.scoped
+
+class DialogProvider(private val context: Context) {
+
+    fun confirm(title: String, onConfirm: () -> Unit): AlertDialog =
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setPositiveButton(android.R.string.ok) { _, _ -> onConfirm() }
+            .create()
+}
+
+val dialogModule = module {
+    activityScope {
+        scoped<DialogProvider>()
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+{/* check: android-libraries-annotations */}
+
+```kotlin
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import org.koin.android.annotation.ActivityScope
+
+@ActivityScope
+class DialogProvider(private val context: Context) {
+
+    fun confirm(title: String, onConfirm: () -> Unit): AlertDialog =
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setPositiveButton(android.R.string.ok) { _, _ -> onConfirm() }
+            .create()
+}
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: android-libraries-constructor */}
+
+```kotlin
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import org.koin.androidx.scope.dsl.activityScope
+import org.koin.core.module.dsl.scopedOf
+import org.koin.dsl.module
+
+class DialogProvider(private val context: Context) {
+
+    fun confirm(title: String, onConfirm: () -> Unit): AlertDialog =
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setPositiveButton(android.R.string.ok) { _, _ -> onConfirm() }
+            .create()
+}
+
+val dialogModule = module {
+    activityScope {
+        scopedOf(::DialogProvider)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+The Activity is the same in every style:
+
+{/* check: android-libraries-dsl, android-libraries-annotations, android-libraries-constructor */}
+
+```kotlin
+import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.ScopeActivity
+
+class SettingsActivity : ScopeActivity() {
+
+    private val dialogs: DialogProvider by inject()
+
+    fun onResetClicked() {
+        dialogs.confirm("Reset settings?") { resetSettings() }.show()
+    }
+
+    private fun resetSettings() {
+        // ...
+    }
+}
+```
+
+The Activity must have a scope (`ScopeActivity` or `AndroidScopeComponent`). From an Activity without a scope, `DialogProvider` is not found. The scope closes with the Activity, so the helper never outlives it. Why `Context` resolves to the Activity here, and to the `Application` in a `single`, is explained in [Android scopes](/docs/platforms/android/scopes/#context-in-an-activity-scope).
+
+## Next steps
+
+- [Definitions](/docs/concepts/definitions/): definition types, interface binding and provider functions.
+- [ViewModel on Android](/docs/platforms/android/viewmodel/): retrieve ViewModels in Activities and Fragments.
+- [WorkManager](/docs/platforms/android/workmanager/): constructor injection in Workers.
+- [Multi-module apps](/docs/platforms/android/multi-module/): one Koin module per Gradle module.

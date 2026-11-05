@@ -1,0 +1,328 @@
+---
+title: "Koin for SDKs and libraries"
+description: "How SDK and library authors keep Koin from colliding with the host app: relocation, the self-service options and Koin Embedded LTS."
+---
+
+Koin Embedded lets SDK and library developers package a relocated version of Koin under a different package name. The Koin your library uses internally then can't collide with the Koin used by anything else in the application. This page is for library authors. For a regular app, use standard Koin.
+
+There are two ways to get a relocated Koin: self-service, with the prebuilt artifacts or the relocation scripts, or [Koin Embedded LTS](#koin-embedded-lts), where Kotzilla builds, signs, hosts and maintains a dedicated version for you as part of [enterprise support](/docs/support/#enterprise-support-by-kotzilla).
+
+## The conflict problem
+
+A library that uses Koin internally publishes `org.koin.*` as part of its dependency graph. That creates two collision risks, and the second one is often missed.
+
+### Case 1: conflict with the host application
+
+The application that consumes your SDK uses Koin too, on its own release schedule:
+
+```kotlin
+// Your SDK uses Koin 3.5.6
+implementation("io.insert-koin:koin-core:3.5.6")
+
+// Consumer app uses a newer Koin 4.x
+implementation("io.insert-koin:koin-core:4.x")
+// Conflict: Gradle resolves one version for both
+```
+
+What this causes:
+
+- **One version for everyone**: Gradle picks a single `org.koin` version for the whole app, so one of you runs against a version you never tested.
+- **Runtime failures**: API changes between versions break at runtime.
+- **Forced upgrades**: your SDK forces a Koin upgrade on its consumers, or blocks one.
+
+### Case 2: conflict with other SDKs
+
+Your SDK is rarely the only one in the app. If another vendor's SDK also embeds Koin, you collide with each other, and neither of you controls the other's release cycle:
+
+```kotlin
+// The app integrates two SDKs, both using Koin internally
+implementation("com.vendor-a:analytics-sdk:2.1.0")  // embeds Koin 3.5.6
+implementation("com.vendor-b:payments-sdk:5.0.0")   // embeds a newer Koin 4.x
+// Same conflict, and nobody in the chain can fix it
+```
+
+This is why a shared relocation namespace is not enough. Moving off `org.koin.*` onto a namespace that every embedder shares only moves the collision: two SDKs relocated to the same target conflict exactly as before. You need a namespace that is yours alone.
+
+## Package relocation
+
+Relocation rewrites Koin's packages into a different namespace and rebuilds it as a separate artifact:
+
+```kotlin
+// Before relocation
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.context.startKoin
+
+// After relocation
+import acme.koin.core.module.dsl.singleOf
+import acme.koin.core.context.startKoin
+```
+
+Two namespaces are two different sets of classes, so they coexist with no resolution conflict:
+
+```kotlin
+// Your SDK bundles its own relocated Koin
+implementation("io.insert-koin:acme-koin-core:3.5.6")
+
+// Consumer app uses standard Koin
+implementation("io.insert-koin:koin-core:4.x")
+// No conflict: two separate packages
+```
+
+:::caution
+Don't use embedded Koin for regular app development. It is for library authors (payment, analytics or authentication SDKs, shared internal libraries, third-party integrations) who need to avoid dependency conflicts.
+:::
+
+## Prebuilt embedded version
+
+Kotzilla maintains prebuilt artifacts, `embedded-koin-core` and `embedded-koin-android`, relocated to a shared `embedded.koin.*` namespace. Access is granted on request: contact the [Koin team](mailto:koin@kotzilla.io).
+
+:::caution
+These artifacts are in beta and use a shared namespace. They are for evaluation, not for a published SDK. Every consumer relocates to the same `embedded.koin.*` namespace, so two SDKs built on them in one application collide exactly as they would on `org.koin.*` (see [Case 2](#case-2-conflict-with-other-sdks)). Use them to try relocation, or for internal builds you control end to end. To ship an SDK to third parties, relocate it yourself with the [relocation scripts](#custom-relocation) or use [Koin Embedded LTS](#koin-embedded-lts).
+:::
+
+## Custom relocation
+
+For a namespace that is yours alone, use the relocation scripts to rebuild Koin yourself.
+
+:::caution
+The scripts are a beta initiative, provided as-is, without maintenance guarantees. Everything downstream of them is your responsibility: building, verifying, publishing, and rebuilding on every future Koin release, security fixes included.
+:::
+
+### Using the relocation scripts
+
+The [koin-relocate](https://github.com/InsertKoinIO/koin-relocate) project provides scripts to rebuild Koin with custom package names. Relocation is driven by a prefix, applied to both packages and module names:
+
+```
+RELOCATION_PREFIX=acme   ->   org.koin.*  becomes  acme.koin.*
+                              koin-core   becomes  acme-koin-core
+```
+
+Steps:
+
+1. Clone the relocation scripts repository:
+
+   ```bash
+   git clone https://github.com/InsertKoinIO/koin-relocate.git
+   cd koin-relocate
+   ```
+
+2. Edit `relocate.properties` to configure the build:
+
+   ```properties
+   RELOCATION_PREFIX=acme
+   TARGET_KOIN_VERSION=3.5.6
+   KOIN_MODULES=core/koin-core;android/koin-android
+   BUILD_DIR=./build
+   ```
+
+   - `RELOCATION_PREFIX`: the prefix applied to packages and module names.
+   - `TARGET_KOIN_VERSION`: the Koin version tag to build from.
+   - `KOIN_MODULES`: the Koin modules to relocate.
+   - `BUILD_DIR`: where the built artifacts are copied.
+
+3. Run the relocation. It clones and rebuilds Koin from source, and needs a JDK 17 environment:
+
+   ```bash
+   ./relocate.sh
+   ```
+
+4. Collect the `aar` and `jar` artifacts from `BUILD_DIR`. All relocated modules are also installed into your local Maven repository, so you can consume them right away while testing.
+
+5. Publish them to your own Maven repository for your SDK builds.
+
+For detailed instructions, see the [koin-relocate repository](https://github.com/InsertKoinIO/koin-relocate).
+
+### What self-hosting involves
+
+The scripts get you a first build. Running a relocated Koin as a dependency of a shipping SDK is a longer commitment. Know its shape before you commit:
+
+- **Koin's build structure**: relocation rebuilds Koin from source. You inherit its multi-module Gradle setup, its version catalog and its toolchain requirements, and you need a JDK 17 environment that stays reproducible in CI.
+- **More than package statements**: rewriting `org.koin` in Kotlin sources is the simple part. Resources and declarative service files such as `META-INF/services` entries also carry fully qualified names. Anything the rewrite misses fails at runtime, not at compile time.
+- **Android and multiplatform artifacts**: `koin-android` produces `aar` artifacts with their own manifests and consumer rules. With Kotlin Multiplatform, each target publishes its own artifact with its own metadata, and the relocated coordinates must stay consistent across all of them.
+- **Publishing and signing**: the scripts produce artifacts under the `io.insert-koin` group with a prefixed module name, installed to your local Maven repository. Publishing them to a repository you control is enough for internal use. Distributing publicly means taking on the POM metadata, group ownership and signing your consumers expect, since the relocated Koin is now part of your supply chain.
+- **Verifying equivalence**: a relocated build must behave exactly like the original. Koin's own test suite runs against `org.koin`, so you need your own assurance that resolution, scoping and lifecycle behavior survived the rewrite, for the part of Koin your SDK uses.
+- **Repeating it on every Koin patch**: every upstream release you want, every security fix included, means running relocation again, rebuilding, verifying, signing and publishing. A relocation done once is a snapshot that ages from the day you cut it.
+
+None of this is a reason not to self-host. It is a reason to decide deliberately, instead of discovering the cost at the third security advisory.
+
+### Koin Annotations and the Compiler Plugin
+
+:::caution
+Koin Annotations and the Koin Compiler Plugin are not supported in relocated builds.
+:::
+
+Both generate code that references `org.koin` directly. This code is generated in your project at compile time, after relocation has already happened, so it targets the standard Koin packages that your relocated build no longer provides. The scripts don't relocate generated code.
+
+In a relocated build, declare your modules with the Constructor or Classic DSL (`module { }`, `single`, `factory`, `singleOf`, `factoryOf`).
+
+## Limits of the self-service paths
+
+Beyond the beta status and the shared-namespace caveat, the self-service paths have these limits:
+
+- **No annotations**: Koin Annotations and the Compiler Plugin can't be used.
+- **Limited modules**: not all Koin modules relocate cleanly.
+- **Build complexity**: relocation means owning a build, verification and publishing pipeline.
+- **Maintenance**: every Koin update, security fixes included, is yours to relocate and publish again.
+
+The last one never goes away, and it is what Koin Embedded LTS takes off your hands.
+
+## Koin Embedded LTS
+
+Koin Embedded LTS gives you your own version of Koin LTS, conflict-free, maintained for at least 18 months. It is part of [enterprise support by Kotzilla](/docs/support/#enterprise-support-by-kotzilla). Instead of scripts, Kotzilla builds, signs, hosts and maintains a relocated Koin that belongs to you.
+
+### Your own version
+
+You get a dedicated namespace, used by you and nobody else. Kotzilla cuts the build from a maintained Koin LTS line, relocates it into your namespace, signs it, and hosts it in a private repository for your organization. You add one Maven repository and depend on your own relocated modules.
+
+You don't run relocation scripts, maintain a build pipeline, or publish the artifacts.
+
+### Conflict-free
+
+Because the namespace is yours alone, your embedded Koin is invisible to the host application and to every other SDK shipped alongside yours, whatever Koin version they run and whether or not they embed Koin. Neither self-service path gives you that: the prebuilt artifacts share one namespace across all their users, and a namespace you relocate yourself stays isolated only as long as you keep it patched.
+
+### 18 months of maintenance
+
+Your build sits on a maintained LTS line, [Koin 3.5.6 for Kotlin 1.x or Koin 4.2.x for Kotlin 2.x](/docs/support/#available-lts-lines), with at least 18 months of maintenance from designation. Support continues while your subscription is active, on the version you ship.
+
+Every patch on that line is rebuilt and published into your namespace, security backports included. You consume a new version of your own artifact. You don't redo the relocation.
+
+### Scope
+
+Koin Embedded LTS covers `koin-core` and `koin-android`.
+
+Onboarding includes moving you to the LTS patch level. If you are on an older version of the line today, that migration is part of the setup, not something you do first.
+
+:::note
+Embedded LTS builds only from LTS lines. Relocating an arbitrary Koin version is a one-off: the artifact lives outside any maintained line, so there is no stream of upstream fixes to rebuild from. That is the artifact nobody patches, and an unpatched DI framework compiled into a widely distributed SDK is the problem this offer exists to prevent. An LTS line always has a next patch to relocate, for as long as your subscription runs.
+:::
+
+See [Koin Embedded LTS](https://kotzilla.io/koin-lts) on kotzilla.io.
+
+## SDK development practices
+
+When Koin runs inside your SDK:
+
+- **Keep Koin internal**: it is an implementation detail of your SDK.
+- **Don't expose Koin types**: keep `KoinComponent`, `Module` and other Koin types out of your SDK's public API.
+- **Use an isolated instance**: start a separate Koin instance for your SDK with `koinApplication`, never the global `startKoin`. See [Context isolation](/docs/concepts/context-isolation/).
+- **Pin the version**: depend on an exact relocated version, never a range.
+- **Document the dependency**: say in your SDK documentation that it uses Koin internally.
+
+Koin as an internal detail:
+
+```kotlin
+class PaymentSDK private constructor(context: Context) {
+
+    companion object {
+        private var instance: PaymentSDK? = null
+
+        fun initialize(context: Context): PaymentSDK {
+            return instance ?: PaymentSDK(context).also { instance = it }
+        }
+    }
+
+    private val koinApp = koinApplication {
+        androidContext(context)
+        modules(paymentModule)
+    }
+
+    private val paymentService: PaymentService = koinApp.koin.get()
+
+    fun processPayment(amount: Double): PaymentResult {
+        return paymentService.process(amount)
+    }
+}
+```
+
+Avoid exposing Koin in the public API:
+
+```kotlin
+// Don't: KoinComponent and get() leak into your public API
+class PaymentSDK : KoinComponent {
+    fun getPaymentService(): PaymentService = get()
+}
+```
+
+In your SDK documentation, state the internal dependency:
+
+```markdown
+## Dependencies
+
+This SDK uses Koin internally (embedded version) for dependency injection.
+The embedded version is isolated and will not conflict with Koin usage
+in your application.
+
+Internal dependency: `io.insert-koin:acme-koin-core:3.5.6`
+Package namespace: `acme.koin.*`
+```
+
+## Moving an SDK to a relocated Koin
+
+1. **Swap the dependencies**: `io.insert-koin:koin-core` becomes your relocated coordinates, for example `io.insert-koin:acme-koin-core`.
+2. **Update the imports**: replace `import org.koin` with `import acme.koin`.
+3. **Replace annotations with the DSL**: if your SDK uses Koin Annotations or the Compiler Plugin, rewrite those declarations with the Constructor or Classic DSL. See [Koin Annotations and the Compiler Plugin](#koin-annotations-and-the-compiler-plugin).
+4. **Test in a realistic deployment**: in an app that also uses standard Koin, and next to another SDK that embeds Koin if your SDK will meet that situation.
+
+Going back is the same in reverse: restore the standard `koin-*` coordinates and the `org.koin` imports.
+
+## Troubleshooting
+
+### The relocated artifact can't be resolved
+
+```
+Could not find io.insert-koin:acme-koin-core:3.5.6
+```
+
+Check that the relocated artifact was published, and that the repository you published it to is declared in the consuming build:
+
+```kotlin
+repositories {
+    maven("https://maven.acme.com/releases")  // wherever you published it
+}
+```
+
+### ClassNotFoundException at runtime
+
+Check that you use the relocated package names everywhere:
+
+```kotlin
+// Wrong
+import org.koin.core.context.startKoin
+
+// Correct
+import acme.koin.core.context.startKoin
+```
+
+If the missing class is only referenced from a resource or a `META-INF/services` entry, the relocation missed a non-source reference. Check that those files carry the relocated names too.
+
+### Version conflicts remain
+
+Don't mix standard and relocated Koin in the same module:
+
+```kotlin
+// Don't mix
+implementation("io.insert-koin:koin-core:3.5.6")       // standard
+implementation("io.insert-koin:acme-koin-core:3.5.6")  // relocated
+
+// Use only your relocated build
+implementation("io.insert-koin:acme-koin-core:3.5.6")
+```
+
+### Conflict with another SDK that embeds Koin
+
+You are both relocated to the same namespace, most likely both on the prebuilt `embedded.koin.*` artifacts. One of you needs a namespace of its own: relocate it yourself, or use [Koin Embedded LTS](#koin-embedded-lts).
+
+## Feedback
+
+For the self-service paths (prebuilt artifacts and relocation scripts):
+
+- **Issues**: [koin-relocate GitHub issues](https://github.com/InsertKoinIO/koin-relocate/issues)
+- **Questions**: [Kotlin Slack #koin](https://kotlinlang.slack.com/messages/koin/)
+- **Email**: [koin@kotzilla.io](mailto:koin@kotzilla.io)
+
+## Next steps
+
+- [Context isolation](/docs/concepts/context-isolation/): run a private Koin instance inside a library.
+- [Starting Koin](/docs/concepts/starting-koin/): `startKoin` and `koinApplication`.
+- [Versions, roadmap and support](/docs/support/): LTS lines and enterprise support.
+- [koin-relocate](https://github.com/InsertKoinIO/koin-relocate): relocation scripts and their documentation.

@@ -1,0 +1,66 @@
+---
+title: "Logging"
+description: "Turn on Koin logging, choose a level and a logger for your platform, or plug in your own."
+---
+
+Koin logs nothing by default: the container starts with `EmptyLogger`. Turn logging on in the start block to see each module load and each instance resolution. This page covers the levels, the logger for each platform, and how to write your own.
+
+## Turn logging on
+
+```kotlin
+startKoin {
+    printLogger(Level.DEBUG)
+    modules(appModule)
+}
+```
+
+## Levels
+
+`Level` is `DEBUG`, `INFO`, `WARNING`, `ERROR` or `NONE`. The default level of each logger is `INFO`.
+
+| Level | What you see |
+|-------|--------------|
+| `Level.DEBUG` | Every definition registered and every resolution, with the scopes Koin searched. Use it to understand a failure |
+| `Level.INFO` | A startup summary of the definitions loaded. The default for `printLogger()` |
+| `Level.WARNING` | Warnings, such as a definition that overrides another |
+| `Level.ERROR` | Errors only |
+| `Level.NONE` | Nothing. This is the level of `EmptyLogger` |
+
+`Level.DEBUG` is verbose and costs time on every resolution. Keep it for debugging sessions, not for release builds.
+
+## Loggers
+
+| Logger | Start option | Platform | Artifact |
+|--------|--------------|----------|----------|
+| `EmptyLogger` | (default) | All | `koin-core` |
+| `PrintLogger` | `printLogger(level)` | All | `koin-core` |
+| `AndroidLogger` | `androidLogger(level)` | Android (Logcat) | `koin-android` |
+| `SLF4JLogger` | `slf4jLogger(level)` | JVM | `koin-logger-slf4j` |
+
+On Android, call `androidLogger()` next to `androidContext()`. See [Android](/docs/platforms/android/). On Ktor, `slf4jLogger()` goes in the `install(Koin) { }` block. See [Ktor](/docs/platforms/ktor/).
+
+## Write your own logger
+
+To send logs somewhere else, extend `Logger` and pass it with `logger()`:
+
+```kotlin
+import org.koin.core.logger.Level
+import org.koin.core.logger.Logger
+import org.koin.core.logger.MESSAGE
+
+class AppLogger : Logger(Level.INFO) {
+    override fun display(level: Level, msg: MESSAGE) {
+        MyLogSystem.log(level.name, msg)
+    }
+}
+
+startKoin {
+    logger(AppLogger())
+}
+```
+
+## Related
+
+- [Starting Koin](/docs/concepts/starting-koin/): the other start options.
+- [Troubleshooting](/docs/support/troubleshooting/): read Koin's error messages.
+- [Production monitoring](/docs/tooling/production-monitoring/): see resolutions and scopes in real user sessions.

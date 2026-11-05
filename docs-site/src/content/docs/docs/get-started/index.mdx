@@ -1,0 +1,114 @@
+---
+title: "Quickstart"
+description: "Run your first Koin app in a few minutes, then watch the build catch a missing dependency."
+---
+
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+Koin is a dependency injection framework for Kotlin. You list your classes, Koin builds them in the right order, and the Koin Compiler Plugin checks at build time that nothing is missing. This page uses Koin <Version of="koin" />.
+
+New to the idea? Read [What is dependency injection?](/docs/concepts/what-is-di/) first.
+
+## What you will do
+
+You build a small console app with three classes, run it, then remove a declaration and watch the build fail. It takes a few minutes.
+
+This page runs on the JVM, whatever you plan to build, because that is the shortest way to see Koin work. [Your platform guide](#next-steps) comes next.
+
+## Prerequisites
+
+- JDK 17 or later.
+- [Gradle](https://gradle.org/install/), and an empty folder.
+
+## Add Koin
+
+In the empty folder, create `build.gradle.kts`:
+
+<Install artifacts={['koin-core']} plugin bom jvmApp="MainKt" ktsOnly />
+
+## Write the app
+
+Create `src/main/kotlin/Main.kt`:
+
+{/* check: quickstart */}
+
+```kotlin title="src/main/kotlin/Main.kt"
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class UserRepository {
+    fun findName() = "Alice"
+}
+
+class UserService(private val repository: UserRepository) {
+    fun greet() = "Hello, ${repository.findName()}!"
+}
+
+class UserApplication(private val service: UserService) {
+    fun run() = println(service.greet())
+}
+
+val appModule = module {
+    single<UserRepository>()
+    single<UserService>()
+    single<UserApplication>()
+}
+
+fun main() {
+    val koin = startKoin { modules(appModule) }.koin
+
+    koin.get<UserApplication>().run()
+}
+```
+
+The three classes are plain Kotlin: each one receives what it needs in its constructor. `appModule` lists them, and `startKoin` loads the list. You ask for a `UserApplication`, and Koin creates the other two first.
+
+## Run it
+
+```bash
+gradle run
+```
+
+The output includes:
+
+```text
+Hello, Alice!
+```
+
+You didn't call a single constructor.
+
+## Break it on purpose
+
+Remove this line from `appModule`:
+
+```kotlin
+single<UserRepository>()
+```
+
+Run `gradle run` again. The build fails before the app starts, and the error names what is missing, who needs it and where:
+
+```text
+[Koin][KOIN-D001] Missing dependency: UserRepository
+  required by: dsl:UserService (parameter 'repository')
+  in module: appModule
+```
+
+Without a check like this, you would find out when the code runs. Put the line back.
+
+## Next steps
+
+Build a real app on your platform:
+
+- [Android tutorial](/docs/platforms/android/tutorial/), with Jetpack Compose
+- [Kotlin Multiplatform walkthrough](/docs/platforms/kmp/walkthrough/), for Android and iOS
+- [Ktor tutorial](/docs/platforms/ktor/tutorial/), for a server
+- [Kotlin tutorial](/docs/platforms/kotlin/tutorial/), for any JVM app
+
+Or keep reading:
+
+- [How Koin works](/docs/get-started/how-koin-works/): what just happened, in five ideas.
+- [Install Koin](/docs/get-started/install/): add Koin to an existing project.
+- [Why Koin?](/docs/why-koin/): what it gives, what it costs, and when another tool fits.
+- [Migration](/docs/migration/): from Hilt, Dagger, Koin 3.x, or the KSP processor.

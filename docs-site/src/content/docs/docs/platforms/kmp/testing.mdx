@@ -1,0 +1,193 @@
+---
+title: "Testing in commonTest"
+description: "Test shared Koin modules in common code on every target, and see what is JVM only."
+---
+
+import Install from '~/components/Install.astro';
+
+This page shows how to write a test in `commonTest` that runs on JVM, iOS and Web, replace a dependency, and test a shared screen.
+
+## Prerequisites
+
+A shared module with [Koin installed](/docs/platforms/kmp/install/). JVM-only tests use the [unit tests](/docs/testing/) page.
+
+## Add koin-test
+
+<Install artifacts={['koin-test']} bom sourceSet="commonTest" />
+
+`koin-test` also brings `kotlin("test")`, so you do not add it yourself.
+
+## Write a test
+
+JUnit rules are JVM only, so start and stop Koin yourself with `kotlin.test`:
+
+{/* check: kmp-testing-dsl */}
+
+```kotlin
+// commonTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.get
+
+class GreeterTest : KoinTest {
+
+    @BeforeTest
+    fun setUp() {
+        startKoin { modules(appModule) }
+    }
+
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
+
+    @Test
+    fun greeterSaysHello() {
+        assertEquals("hello", get<Greeter>().hello())
+    }
+}
+```
+
+Always stop Koin in `@AfterTest`. Otherwise the next test throws `KoinApplicationAlreadyStartedException`.
+
+If your `appModule` includes `platformModule()`, this also tests each platform's `actual` module when the test runs on that target.
+
+## Run on every target
+
+```bash
+./gradlew :shared:allTests                  # every target
+./gradlew :shared:jvmTest                   # JVM only
+./gradlew :shared:iosSimulatorArm64Test     # iOS simulator
+./gradlew :shared:wasmJsNodeTest            # Wasm on Node
+```
+
+Use `allTests` before you trust a change. `test` does not run native, JS or Wasm tests.
+
+## Replace a dependency
+
+The simplest option is a fake, in a test module loaded after your app module:
+
+```kotlin
+startKoin {
+    modules(appModule, module {
+        single<UserRepository> { FakeUserRepository() }
+    })
+}
+```
+
+The later definition overrides the earlier one, as described on [Definitions](/docs/concepts/definitions/).
+
+:::caution[Keep the real definition in main]
+A fake in `commonTest` overriding a `single<Svc>()` from `commonMain` works on every target. But declaring `single<Svc>()` and `single<Svc> { FakeSvc() }` for the same type in **one compilation**, both in `commonTest` for example, fails on iOS and wasmJs. See [Different declarations with the same signatures](/docs/platforms/kmp/troubleshooting/#different-declarations-with-the-same-signatures).
+:::
+
+### Mocks
+
+`declareMock` is available in common code, but off the JVM it fails with `Missing MockProvider` until you register a provider. Pass any function that creates the replacement. This example uses a hand-written fake, and a mocking library plugs in the same way:
+
+{/* check: kmp-testing-dsl */}
+
+```kotlin
+// commonTest
+import kotlin.test.AfterTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.KoinTest
+import org.koin.test.get
+import org.koin.test.mock.MockProvider
+import org.koin.test.mock.declareMock
+
+class ServiceTest : KoinTest {
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
+
+    @Test
+    fun usesFake() {
+        MockProvider.register { FakeService() }
+        startKoin { modules(serviceModule) }
+
+        declareMock<Service>()
+
+        assertEquals("fake", get<Service>().value())
+    }
+}
+```
+
+## Test a shared screen
+
+Use `runComposeUiTest` from the Compose Multiplatform test library. Add `compose.uiTest` to `commonTest`, and `compose.desktop.currentOs` to `jvmTest` if you run it on the JVM:
+
+{/* check: kmp-testing-dsl */}
+
+```kotlin
+// commonTest
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.runComposeUiTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+import org.koin.test.KoinTest
+
+@OptIn(ExperimentalTestApi::class)
+class UserScreenCommonTest : KoinTest {
+
+    @BeforeTest
+    fun before() {
+        startKoin {
+            modules(module {
+                single<UserRepository> { FakeUserRepository(sampleUsers) }
+                viewModel { UserViewModel(get()) }
+            })
+        }
+    }
+
+    @AfterTest
+    fun after() {
+        stopKoin()
+    }
+
+    @Test
+    fun displaysUserList() = runComposeUiTest {
+        setContent { UserScreen() }
+
+        onNodeWithText("Alice").assertIsDisplayed()
+    }
+}
+```
+
+## What is JVM only
+
+| Available in `commonTest` | JVM only |
+|---|---|
+| `KoinTest`, `get`, `inject` | `verify()`, `verifyAll()` |
+| `declare`, `declareMock`, `MockProvider` | `KoinTestRule`, `MockProviderRule`, `AutoCloseKoinTest` |
+| `startKoin`, `stopKoin` | `koin-test-junit4`, `koin-test-junit5`, `koin-test-coroutines` |
+
+To use `verify()` in a KMP project, put it in `jvmTest`. With the Compiler Plugin, you usually do not need it: see [Verifying your configuration](/docs/testing/verify/).
+
+## Rules for off-JVM tests
+
+- **No backtick test names.** Names with spaces and special characters can break JS, Wasm and native test runs.
+- **Return the result of `runTest`.** Write `fun test() = runTest { }`. On JS and wasmJs, `runTest` returns a promise. `fun test() { runTest { } }` discards it, so the test passes even when its body fails.
+- **Do not rely on `createdAtStart` on wasmJs.** See [Troubleshooting](/docs/platforms/kmp/troubleshooting/#createdatstart-does-nothing-on-wasmjs).
+
+## Next steps
+
+- [Troubleshooting and recipes](/docs/platforms/kmp/troubleshooting/): errors you may hit.
+- [Testing composables](/docs/testing/compose/): more on Compose tests.
+- [Unit tests](/docs/testing/): overrides and mocks on the JVM.

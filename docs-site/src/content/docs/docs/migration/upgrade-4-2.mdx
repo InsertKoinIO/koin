@@ -1,0 +1,85 @@
+---
+title: "Upgrade to Koin 4.2"
+description: "A checklist for moving a project from Koin 4.0 or 4.1 to Koin 4.2: floors, breaking changes, deprecations and the KSP decision."
+---
+
+import Version from '~/components/Version.astro';
+
+## What you will do
+
+Move a project from Koin 4.0 or 4.1 to Koin 4.2, in this order: pick the target version, fix the breaking changes, clear the deprecations, then decide about the Compiler Plugin. Every item below comes from the [release notes](/docs/support/releases/) or from the source in `projects/`. On Koin 3.x, start with [Upgrade from Koin 3.x](/docs/migration/upgrade-from-3/).
+
+## Prerequisites
+
+- Your project builds and its tests pass on the version you are leaving.
+- You know your Kotlin version. Koin <Version of="koin" /> is built with Kotlin <Version of="kotlinMin" />, and the Compiler Plugin requires it or later. The minimum Kotlin version for the Koin runtime artifacts alone is not stated in the documentation.
+
+## Target the latest 4.2.x
+
+Upgrade straight to <Version of="koin" /> (the latest 4.2.x), not to 4.2.0 or 4.2.1. Version 4.2.0 rewrote the resolver (`CoreResolverV2`), and 4.2.1 and 4.2.2 fix regressions from it: stacked parameters, linked scopes, factories resolved from child scopes, and ViewModel scopes. See [4.2.2](/docs/support/releases/#422) and [4.2.1](/docs/support/releases/#421).
+
+Use the BOM so all Koin artifacts share one version: see [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+## Breaking changes
+
+| Change | Version | What to do |
+|--------|---------|------------|
+| Android minSdk raised from 21 to 23 (`koin-android`, and `koin-compose-navigation3` needs API 23) | 4.2.0 | Raise `minSdk` to <Version of="androidMinSdk" /> or later. The repository builds with `androidMinSDK=23` |
+| `koin-ktor3` is merged into `koin-ktor` | 4.1.0 (merged), 4.2.0 | Replace `koin-ktor3` with `koin-ktor`. There is no `koin-ktor3` module in the repository |
+| `getAll()` results are no longer sorted | 4.2.0 | Do not rely on the order of `getAll<T>()`. Sort explicitly if you need an order |
+| Old state ViewModel APIs removed (`stateViewModel()`, `getStateViewModel()`, `getSharedStateViewModel()`, `sharedStateViewModel()`) | 4.1.0 | Use `viewModel()`, or `activityViewModel()` for a shared instance |
+| Old Compose APIs removed (`inject()`, `getViewModel()`, `rememberKoinInject()`) | 4.1.0 | Use `koinInject()` and `koinViewModel()` |
+
+The 4.2.0 release notes name the sorting change on `Module.getAll(...)`. The functions in the source are `Scope.getAll()` and `Koin.getAll()`, and the sorting in `InstanceRegistry.getAll` is commented out, so treat the order of any `getAll` result as undefined.
+
+## Deprecations to clear
+
+Remove these now rather than at the next upgrade. They still compile, some with a warning, except `Application.koin { }`, which is at error level and no longer compiles.
+
+| Deprecated | Replacement | Since |
+|-----------|-------------|-------|
+| `KoinContext` (Compose), `KoinAndroidContext` | Remove it: the Koin context is set up when Koin starts | 4.1.0 |
+| `koinNavViewModel` | `koinViewModel` | 4.1.0 |
+| `ScopeViewModel` in `koin-android` | `ScopeViewModel` from `koin-core-viewmodel` | 4.1.0 |
+| `Application.koin` in `koin-ktor` | `Application.koinModules` and `Application.koinModule` | 4.1.0 |
+| `org.koin.android.annotation.KoinViewModel` | `org.koin.core.annotation.KoinViewModel` | 4.2.0 |
+| The whole `checkModules` API | The Compiler Plugin, or `verify()` for a project without it. See [Verify your configuration](/docs/testing/verify/) | 4.0.4 |
+
+In the source, `checkModules` carries `@Deprecated` with the message "Migrate to verify() API", and `KoinContext` carries "KoinContext is not needed anymore".
+
+### The koin-gradle-plugin (`id("koin")`)
+
+If your build applies a Gradle plugin with the id `koin`, that is `koin-gradle-plugin`, an older plugin. It registers `checkModules` and `checkAndroidModules` tasks that run the deprecated `checkModules` tests. It is not the Compiler Plugin, whose id is `io.insert-koin.compiler.plugin`. Remove `id("koin")` when you remove the `checkModules` tests, and apply the Compiler Plugin if you want build-time checks.
+
+## Stay on 4.1 or move to 4.2
+
+Koin 4.1.x is built with Kotlin 2.1. Koin 4.2 is built with Kotlin <Version of="kotlinMin" /> and the Compiler Plugin needs that version or later. Your Kotlin version and your declaration style decide the path.
+
+| Your project | Path |
+|--------------|------|
+| Koin DSL (Constructor or Classic), Kotlin <Version of="kotlinRuntimeMin" /> or later | Move to 4.2 after the checklists above. The Compiler Plugin is optional |
+| Koin DSL (Constructor or Classic), Kotlin below <Version of="kotlinRuntimeMin" /> | Upgrade Kotlin first, or stay on 4.1.x. Compiling against 4.2 crashes the Kotlin compiler with `source must not be null` |
+| Koin Annotations with the KSP processor, Kotlin below <Version of="kotlinMin" /> | Stay on 4.1.x with the KSP setup, see [KSP processor setup (deprecated)](/docs/migration/ksp-setup/). The processor is deprecated and will be removed in a future version |
+| Koin Annotations with the KSP processor, Kotlin <Version of="kotlinMin" /> or later | Move to 4.2 and the Compiler Plugin: [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/) |
+| You want the Compiler Plugin DSL (`single<T>()`) | Move to 4.2 and the Compiler Plugin. It requires Koin 4.2.0 or later and Kotlin <Version of="kotlinMin" /> or later |
+
+The minimum for the Koin DSL was tested with `koin-core` <Version of="koin" /> on the JVM: Kotlin 2.2.21 compiles, 2.1.21 and 2.0.21 crash. Other targets were not tested.
+
+The Compiler Plugin is not in the BOM and has its own version, <Version of="compilerPlugin" />. See [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## Check the upgrade
+
+1. Raise the Koin version (or the BOM) to <Version of="koin" />.
+2. Build. Fix the removed APIs from the breaking changes table.
+3. Run your tests, and the app on a real device or emulator at the new minSdk.
+4. Search your code for the deprecated names above and replace them.
+5. Read [Troubleshooting](/docs/support/troubleshooting/) if a start or a resolution fails.
+
+Library versions used by each release are in its `libs.versions.toml`, for example [4.2.0](https://github.com/InsertKoinIO/koin/blob/4.2.0/projects/gradle/libs.versions.toml), [4.0.4](https://github.com/InsertKoinIO/koin/blob/4.0.4/projects/gradle/libs.versions.toml) and [3.5.6](https://github.com/InsertKoinIO/koin/blob/3.5.6/projects/gradle/libs.versions.toml).
+
+## Next steps
+
+- [Release notes](/docs/support/releases/): the full change list for each version.
+- [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/): the annotation path.
+- [API stability](/docs/support/api-stability/): what deprecated and experimental mean.
+- [Older versions](/docs/support/#older-versions): documentation for 4.1 and 4.0.

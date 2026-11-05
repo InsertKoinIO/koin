@@ -1,0 +1,57 @@
+---
+title: "AI agents and Koin skills"
+description: "Install the official Koin skills so your coding agent can set up, write, migrate and diagnose Koin code."
+---
+
+The Koin skills teach a coding agent how to work with Koin 4.x and the Koin Compiler Plugin: which style to use, how to declare and wire definitions, how to migrate from another DI framework and how to diagnose a Koin error. They are maintained by the Koin team in the [koin-skills repository](https://github.com/InsertKoinIO/koin-skills) on GitHub, and published as the `koin` plugin for Claude Code and as standard agent skills for other agents. This page shows how to install them and what each one does.
+
+## Install in Claude Code
+
+```
+/plugin marketplace add InsertKoinIO/koin-skills
+/plugin install koin@koin-skills
+```
+
+The first command adds the Koin skills repository as a plugin marketplace, the second installs the `koin` plugin from it. Update later with `/plugin marketplace update koin-skills`.
+
+The skills load on their own when a task touches dependency injection in a Kotlin, Android, Compose, KMP or Ktor project. You don't need to call them by name.
+
+## Install in other agents
+
+For Cursor, Codex, Copilot, Windsurf, Gemini and other agents that read agent skills, use the [skills](https://skills.sh) CLI (Node.js 22 or later):
+
+```bash
+npx skills add InsertKoinIO/koin-skills
+```
+
+It reads the skills from the [koin-skills repository](https://github.com/InsertKoinIO/koin-skills) (the full URL `https://github.com/InsertKoinIO/koin-skills` works too), lists the four skills and installs the ones you pick, for the agents you pick. To install all of them without prompts: `npx skills add InsertKoinIO/koin-skills --skill '*' -y`. Each [GitHub release](https://github.com/InsertKoinIO/koin-skills/releases) also attaches one `.skill` archive per skill and the full plugin as `koin-plugin.zip`.
+
+## What the skills do
+
+| Skill | Use it to |
+|---|---|
+| `koin-setup` | Add Koin to a new or existing project, or next to a DI container you keep |
+| `koin` | Write Koin code in the project's style: definitions, modules, entry points, scopes, tests |
+| `di-migration` | Migrate from Hilt, Dagger, Toothpick, Kodein, Metro, Koin 3.x, Koin DSL or Koin KSP, module by module |
+| `koin-diagnose` | Fix Koin errors and crashes, and check how the app behaves at runtime |
+
+The skills follow the rules of these docs. They use [constructor injection](/docs/reference/dsl/), the Compiler Plugin DSL or Koin Annotations, and never Koin KSP for new code. A migration is progressive: the old container keeps running until the last binding has moved.
+
+## Kotzilla MCP Server
+
+The skills can use the [Kotzilla](https://kotzilla.io) MCP Server to diagnose Koin errors and to measure how definitions behave at runtime (lifetime, scopes, startup cost). It needs a free Kotzilla account. The skills propose it when it helps and never require it.
+
+In Claude Code, the `koin` plugin includes the server. It stays inactive until you sign in: run `/mcp`, select `plugin:koin:kotzilla` and sign in. In other agents, add the endpoint `https://mcp.kotzilla.io/mcp` (HTTP transport, OAuth) to the agent's MCP configuration.
+
+## Limits
+
+- The skills target Koin 4.2.2 or later with Kotlin 2.3.20 or later. On an older Koin, they work in the current setup and propose the upgrade once.
+- The skills guide the agent, they don't replace review. Read the changes before you merge them.
+- Runtime checks (startup, memory, instances created twice) need the Kotzilla SDK in the app. Without it, the skills point out likely causes from the code, not measurements.
+
+## Next steps
+
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): the build-time checks the skills rely on.
+- [Koin vs Hilt](/docs/migration/koin-vs-hilt/): what changes when you migrate from Hilt.
+- [Production monitoring](/docs/tooling/production-monitoring/): the Kotzilla SDK behind the runtime checks.
+- [Koin skills on GitHub](https://github.com/InsertKoinIO/koin-skills): sources, issues and releases.

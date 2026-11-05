@@ -1,0 +1,21 @@
+---
+// Conference talks. The privacy-enhanced YouTube host sets no cookie until play,
+// and lazy loading keeps the players out of the first page load.
+import { talks } from '~/data/home';
+---
+<div class="talks">
+  {talks.map(({ id, title }) => (
+    <iframe
+      src={`https://www.youtube-nocookie.com/embed/${id}`}
+      title={title}
+      loading="lazy"
+      allow="encrypted-media; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  ))}
+</div>
+
+<style>
+  .talks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; }
+  iframe { display: block; width: 100%; aspect-ratio: 16 / 9; margin: 0; border: 0; border-radius: var(--koin-radius); }
+</style>

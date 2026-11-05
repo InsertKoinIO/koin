@@ -1,0 +1,173 @@
+// Sidebar defined explicitly, following docs-site/IA.md. This is the only navigation.
+import type { StarlightUserConfig } from '@astrojs/starlight/types';
+
+export const sidebar: NonNullable<StarlightUserConfig['sidebar']> = [
+  {
+    label: "Get Started",
+    items: [
+      { label: "Quickstart", slug: "docs/get-started" },
+      { label: "How Koin works", slug: "docs/get-started/how-koin-works" },
+      { label: "Install Koin", slug: "docs/get-started/install" },
+      { label: "Koin DSL or annotations?", slug: "docs/get-started/dsl-or-annotations" },
+    ],
+  },
+  {
+    label: "Platforms",
+    items: [
+      {
+        label: "Kotlin / JVM",
+        collapsed: true,
+        items: [
+          { label: "Kotlin: install and start", slug: "docs/platforms/kotlin" },
+          { label: "Tutorial: your first Kotlin app", slug: "docs/platforms/kotlin/tutorial" },
+        ],
+      },
+      {
+        label: "Android",
+        collapsed: true,
+        items: [
+          { label: "Android: install and start", slug: "docs/platforms/android" },
+          { label: "Tutorial: your first Android app", slug: "docs/platforms/android/tutorial" },
+          { label: "Startup options", slug: "docs/platforms/android/startup-options" },
+          { label: "Inject into Android components", slug: "docs/platforms/android/components" },
+          { label: "ViewModel on Android", slug: "docs/platforms/android/viewmodel" },
+          { label: "Android scopes", slug: "docs/platforms/android/scopes" },
+          { label: "Navigation component", slug: "docs/platforms/android/navigation" },
+          { label: "WorkManager", slug: "docs/platforms/android/workmanager" },
+          { label: "Fragment factory", slug: "docs/platforms/android/fragments" },
+          { label: "Library integration and recipes", slug: "docs/platforms/android/libraries" },
+          { label: "Multi-module apps", slug: "docs/platforms/android/multi-module" },
+          { label: "Lifecycle and leak pitfalls", slug: "docs/platforms/android/best-practices" },
+          { label: "R8 and ProGuard", slug: "docs/platforms/android/r8-proguard" },
+        ],
+      },
+      {
+        label: "Compose",
+        collapsed: true,
+        items: [
+          { label: "Koin in Compose", slug: "docs/platforms/compose" },
+          { label: "ViewModel in Compose", slug: "docs/platforms/compose/viewmodel" },
+          { label: "Scopes in Compose", slug: "docs/platforms/compose/scopes" },
+          { label: "Lifecycle in Compose", slug: "docs/platforms/compose/lifecycle" },
+          { label: "Load modules with a Composable", slug: "docs/platforms/compose/dynamic-modules" },
+          { label: "Isolated context in Compose", slug: "docs/platforms/compose/isolated-context" },
+          { label: "Navigation 3", slug: "docs/platforms/compose/navigation3" },
+        ],
+      },
+      {
+        label: "Kotlin Multiplatform",
+        collapsed: true,
+        items: [
+          { label: "Overview", slug: "docs/platforms/kmp" },
+          { label: "Install and project structure", slug: "docs/platforms/kmp/install" },
+          { label: "Start Koin once", slug: "docs/platforms/kmp/start-koin" },
+          { label: "Platform-specific dependencies", slug: "docs/platforms/kmp/platform-dependencies" },
+          { label: "Koin from Swift and SwiftUI", slug: "docs/platforms/kmp/swift" },
+          { label: "Shared ViewModels", slug: "docs/platforms/kmp/viewmodels" },
+          { label: "Compose Multiplatform", slug: "docs/platforms/kmp/compose-multiplatform" },
+          { label: "Testing in commonTest", slug: "docs/platforms/kmp/testing" },
+          { label: "Troubleshooting and recipes", slug: "docs/platforms/kmp/troubleshooting" },
+          { label: "Walkthrough: Android and iOS app", slug: "docs/platforms/kmp/walkthrough" },
+        ],
+      },
+      {
+        label: "Ktor",
+        collapsed: true,
+        items: [
+          { label: "Ktor: install and start", slug: "docs/platforms/ktor" },
+          { label: "Tutorial: your first Ktor service", slug: "docs/platforms/ktor/tutorial" },
+          { label: "Request scopes", slug: "docs/platforms/ktor/request-scopes" },
+          { label: "Isolated context in Ktor", slug: "docs/platforms/ktor/isolated-context" },
+          { label: "Ktor DI bridge", slug: "docs/platforms/ktor/di-bridge" },
+          { label: "Configuration and properties", slug: "docs/platforms/ktor/configuration" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Concepts",
+    items: [
+      { label: "What is dependency injection?", slug: "docs/concepts/what-is-di" },
+      { label: "Definitions", slug: "docs/concepts/definitions" },
+      { label: "Modules", slug: "docs/concepts/modules" },
+      { label: "Starting Koin", slug: "docs/concepts/starting-koin" },
+      { label: "Injection", slug: "docs/concepts/injection" },
+      { label: "Qualifiers", slug: "docs/concepts/qualifiers" },
+      { label: "Injected parameters", slug: "docs/concepts/parameters" },
+      { label: "Scopes", slug: "docs/concepts/scopes" },
+      { label: "ViewModel definitions", slug: "docs/concepts/viewmodels" },
+      { label: "Properties", slug: "docs/concepts/properties" },
+      { label: "Lazy modules", slug: "docs/concepts/lazy-modules" },
+      { label: "Context isolation", slug: "docs/concepts/context-isolation" },
+      { label: "Logging", slug: "docs/concepts/logging" },
+      { label: "Patterns", slug: "docs/concepts/patterns" },
+    ],
+  },
+  {
+    label: "Testing",
+    items: [
+      { label: "Tutorial: your first test", slug: "docs/testing/first-test" },
+      { label: "Unit tests", slug: "docs/testing" },
+      { label: "Verifying your configuration", slug: "docs/testing/verify" },
+      { label: "Testing composables", slug: "docs/testing/compose" },
+      { label: "Android instrumented tests", slug: "docs/testing/android-instrumented" },
+      { label: "Ktor tests", slug: "docs/testing/ktor" },
+      { label: 'Testing in commonTest', slug: 'docs/platforms/kmp/testing' },
+    ],
+  },
+  {
+    label: "Tooling & Production",
+    items: [
+      { label: "Overview", slug: "docs/tooling" },
+      { label: "Koin Compiler Plugin", slug: "docs/tooling/compiler-plugin" },
+      { label: "Compile-time safety", slug: "docs/tooling/compile-time-safety" },
+      { label: "IDE plugin", slug: "docs/tooling/ide-plugin" },
+      { label: "AI agents and Koin skills", slug: "docs/tooling/ai-agents" },
+      { label: "Built-in monitoring", slug: "docs/tooling/monitor" },
+      { label: "Production monitoring", slug: "docs/tooling/production-monitoring" },
+    ],
+  },
+  {
+    label: "Evaluate Koin",
+    items: [
+      { label: "Why Koin?", slug: "docs/why-koin" },
+      { label: "Koin vs Hilt", slug: "docs/migration/koin-vs-hilt" },
+    ],
+  },
+  {
+    label: "Migration & Upgrades",
+    items: [
+      { label: "Which guide do I need?", slug: "docs/migration" },
+      { label: "Migrate from Hilt", slug: "docs/migration/from-hilt" },
+      { label: "Migrate from Dagger", slug: "docs/migration/from-dagger" },
+      { label: "JSR-330 annotations", slug: "docs/migration/jsr330" },
+      { label: "Migrate from KSP to the Compiler Plugin", slug: "docs/migration/from-ksp" },
+      { label: "KSP processor setup (deprecated)", slug: "docs/migration/ksp-setup" },
+      { label: "Upgrade from Koin 3.x", slug: "docs/migration/upgrade-from-3" },
+      { label: "Upgrade to Koin 4.2", slug: "docs/migration/upgrade-4-2" },
+    ],
+  },
+  {
+    label: "Reference",
+    items: [
+      { label: "Gradle artifacts and BOM", slug: "docs/reference/artifacts" },
+      { label: "DSL reference", slug: "docs/reference/dsl" },
+      { label: "Annotations reference", slug: "docs/reference/annotations" },
+      { label: "Compiler Plugin options", slug: "docs/reference/compiler-options" },
+      { label: "Compiler Plugin diagnostics", slug: "docs/reference/diagnostics" },
+      { label: "Extension manager", slug: "docs/reference/extensions" },
+      { label: "Glossary", slug: "docs/reference/glossary" },
+    ],
+  },
+  {
+    label: "Support",
+    items: [
+      { label: "Versions, roadmap and support", slug: "docs/support" },
+      { label: "Releases", slug: "docs/support/releases" },
+      { label: "API stability", slug: "docs/support/api-stability" },
+      { label: "Koin for SDKs and libraries", slug: "docs/support/embedded" },
+      { label: "Troubleshooting", slug: "docs/support/troubleshooting" },
+      { label: "FAQ", slug: "docs/support/faq" },
+    ],
+  },
+];

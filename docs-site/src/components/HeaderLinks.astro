@@ -1,0 +1,11 @@
+---
+// Keeps the top bar minimal: one link to older versions, then the social icons.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+---
+<a class="older" href="/docs/support/#older-versions">Older versions</a>
+<Default />
+<style>
+  .older { font-size: var(--sl-text-sm); color: var(--sl-color-gray-2); text-decoration: none; white-space: nowrap; }
+  .older:hover { color: var(--sl-color-white); }
+  @media (max-width: 50rem) { .older { display: none; } }
+</style>

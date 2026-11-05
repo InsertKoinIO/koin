@@ -1,0 +1,197 @@
+---
+title: "Troubleshooting"
+description: "The errors Koin reports, what causes them and how to fix them, quoted as Koin prints them."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page is a catalog of the errors Koin reports, what causes them and how to fix them. The messages are quoted as Koin prints them, so you can search the page for the text of your stack trace.
+
+Looking for something else?
+
+- Android crashes, lifecycle and leaks: [Lifecycle and leak pitfalls](/docs/platforms/android/best-practices/), which has an Android error table.
+- Kotlin Multiplatform, iOS, double start, klib errors: [KMP troubleshooting and recipes](/docs/platforms/kmp/troubleshooting/).
+- Build errors with a code such as `KOIN-D001`: [Compiler Plugin diagnostics](/docs/reference/diagnostics/).
+- Turning logs on: [Logging](/docs/concepts/logging/).
+
+## Find problems early
+
+A configuration error can be seen at three points, from the earliest to the latest.
+
+- **Compile time**: with the [Koin Compiler Plugin](/docs/tooling/compiler-plugin/), a missing dependency or a dependency cycle fails the build. See [Compile-time safety](/docs/tooling/compile-time-safety/).
+- **In the IDE**: the [Koin IDE plugin](/docs/tooling/ide-plugin/) shows where each definition is declared, where it is used and what is missing.
+- **In tests**: for runtime-only cases and projects without the plugin, see [Verify your configuration](/docs/testing/verify/).
+
+To understand a failure, turn on `Level.DEBUG` logging: it prints every resolution with the scopes Koin searched. See [Logging](/docs/concepts/logging/).
+
+## Runtime errors
+
+### No definition found
+
+```
+NoDefinitionFoundException: No definition found for type 'com.example.UserRepository' on scope '['_root_']'.
+Check or add definition for type 'com.example.UserRepository' in scope '_root_'.
+```
+
+Koin was asked for a type that no loaded module declares. Check, in this order:
+
+- **Module not loaded**: the definition exists but its module is not in `modules(...)` or in an `includes(...)`.
+- **Missing qualifier**: the definition has a qualifier and the request has none, or the reverse. The message then contains `and qualifier '...'`. See [Qualifiers](/docs/concepts/qualifiers/).
+- **Interface not bound**: the definition declares `UserRepositoryImpl` and the request asks for `UserRepository`. Bind the interface, see [Definitions](/docs/concepts/definitions/#interface-binding).
+- **Wrong scope**: the definition is `scoped` in a scope, and the request comes from another scope or from the root. The message lists the searched scopes. See [Scopes](/docs/concepts/scopes/).
+- **`@Scope` without `@Scoped`**: with the Compiler Plugin, a class needs both annotations to be registered in the scope. With only one, the class has no definition. The build reports it only if the plugin sees a use of the class.
+
+For `SavedStateHandle`, the message says instead that it is provided by the ViewModel `CreationExtras`. Resolve the ViewModel with `koinViewModel()` or `by viewModel()` and take `SavedStateHandle` as a constructor parameter. See [ViewModel definitions](/docs/concepts/viewmodels/).
+
+### Could not create instance
+
+```
+InstanceCreationException: Could not create instance for '[Singleton: 'com.example.UserRepository']'
+```
+
+Koin found the definition, but creating the instance threw an exception. The real cause is the nested exception (`Caused by:`) in the stack trace. Often it is a `NoDefinitionFoundException` for one of the constructor parameters, or an exception thrown by the constructor itself.
+
+### Already existing definition
+
+```
+DefinitionOverrideException: Already existing definition for [Singleton: 'com.example.ApiService'] at com.example.ApiService::_root_
+```
+
+Two modules declare the same type and qualifier, and overriding is off (`allowOverride(false)`). Remove the duplicate, give it a [qualifier](/docs/concepts/qualifiers/), or mark the intended one with `.override()`. See [Definitions](/docs/concepts/definitions/#overriding-a-definition).
+
+### Scope errors
+
+| Message | Exception | Cause |
+|---------|-----------|-------|
+| `Scope 'user_session' is closed` | `ClosedScopeException` | The scope was closed and something still asks it for an instance. Often a callback or a coroutine that outlives the screen |
+| `No scope found for id 'user_session'` | `ScopeNotCreatedException` | `getScope(id)` was called before `createScope(id, ...)`. Use `getOrCreateScope` or create the scope first |
+| `Scope with id 'user_session' is already created` | `ScopeAlreadyCreatedException` | `createScope` was called twice with the same id |
+| `No value for scope 'user_session' in [Scoped: ...]` | `MissingScopeValueException` | A scoped value declared with `declare()` was not provided for this scope |
+| `Activity should implement AndroidScopeComponent` | `IllegalStateException` | An Android scope API was used in an Activity that has no scope. See [Android scopes](/docs/platforms/android/scopes/) |
+
+See [Scopes](/docs/concepts/scopes/) for the scope lifecycle.
+
+### Injected parameters
+
+| Message | Exception | Cause |
+|---------|-----------|-------|
+| `Can't get injected parameter #0 from DefinitionParameters[] for type 'kotlin.String'` | `NoParameterFoundException` | The definition reads a parameter that the caller did not pass with `parametersOf(...)` |
+| `No value found for type 'kotlin.String'` | `DefinitionParameterException` | `params.get<T>()` found no parameter of that type |
+
+See [Injected parameters](/docs/concepts/parameters/).
+
+### Start and properties
+
+| Message | Exception | Cause |
+|---------|-----------|-------|
+| `KoinApplication has not been started` | `IllegalStateException` | Code used the global context (`KoinComponent`, `by inject()`) before `startKoin`. On Android, check that your `Application` class is declared in the manifest |
+| `A Koin Application has already been started` | `KoinApplicationAlreadyStartedException` | `startKoin` was called twice. It is not idempotent: a second call throws, on JVM, iOS and wasmJs (tested). In tests, call `stopKoin()` after each test. See [Starting Koin](/docs/concepts/starting-koin/) |
+| `Can't resolve Context instance. Please use androidContext() function in your KoinApplication configuration.` | `MissingAndroidContextException` | A definition uses `androidContext()` and `startKoin` has no `androidContext(this)` |
+| `Property 'api_url' not found` | `MissingPropertyException` | `getProperty("api_url")` with no such property and no default value |
+| `No properties found for file '/koin.properties'` | `NoPropertyFileFoundException` | `fileProperties()` could not find the file |
+
+### Compiler Plugin not applied
+
+```
+NotImplementedError: Error while using 'single<T>()'. The Koin Compiler plugin is missing. Please fix your setup to use 'io.insert-koin.compiler.plugin' Koin Gradle Plugin.
+```
+
+The code uses the Compiler Plugin DSL (`single<T>()`, `factory<T>()`, `startKoin<T>()`) but the plugin is not applied to this Gradle module. The message says "Koin Gradle Plugin": it means the Koin Compiler Plugin, id `io.insert-koin.compiler.plugin`. Apply it in every module that uses these functions. See [Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## Circular dependencies
+
+A cycle happens when two classes need each other in their constructors:
+
+```kotlin
+class SessionManager(private val authService: AuthService)
+class AuthService(private val sessionManager: SessionManager)
+```
+
+With the Compiler Plugin, the build fails:
+
+```
+[Koin][KOIN-D004] Circular dependency detected:
+  com.example.AuthService → com.example.SessionManager → com.example.AuthService
+  Break with Lazy<T> injection or refactor to remove the cycle.
+```
+
+With `verify()` in a test, the failure is `Circular injection between ... Fix your Koin configuration!`.
+
+Without those checks, Koin does not detect the cycle. Each class resolves the other until the call stack overflows, and the app crashes with a `StackOverflowError`.
+
+### Break the cycle with Lazy
+
+Make one side lazy, so it is resolved on first use and not during construction:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+class AuthService(private val sessionManager: Lazy<SessionManager>)
+
+val authModule = module {
+    single<SessionManager>()
+    single<AuthService>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@Singleton
+class SessionManager(private val authService: AuthService)
+
+@Singleton
+class AuthService(private val sessionManager: Lazy<SessionManager>)
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+class AuthService(private val sessionManager: Lazy<SessionManager>)
+
+val authModule = module {
+    single { SessionManager(get()) }
+    single { AuthService(inject()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`AuthService` must not read `sessionManager.value` in its constructor or `init` block, or the cycle comes back.
+
+### Remove the cycle
+
+A lazy parameter hides the problem but keeps the coupling. Most cycles mean that both classes share a responsibility. Move it to a third class that both depend on, or make one side depend on an interface that exposes only what it needs.
+
+```kotlin
+class TokenStore
+
+class SessionManager(private val tokenStore: TokenStore)
+class AuthService(private val tokenStore: TokenStore)
+```
+
+## Patterns that lead to these errors
+
+Each of these has a canonical page:
+
+- Resolving inside methods with `get()` or `KoinComponent` hides dependencies from the checks: [Injection](/docs/concepts/injection/).
+- Creating dependencies yourself (`private val api = ApiService()`) bypasses Koin and the checks: [Definitions](/docs/concepts/definitions/).
+- Using a qualifier for different types is not needed, and a missing one for the same type causes the wrong instance: [Qualifiers](/docs/concepts/qualifiers/).
+- Work inside a definition lambda runs at an unpredictable time: [Lazy modules](/docs/concepts/lazy-modules/).
+- One large module is hard to override and load lazily: [Modules](/docs/concepts/modules/).
+- A scoped instance kept in a `single` or a static field outlives its scope and leads to `ClosedScopeException`: [Scopes](/docs/concepts/scopes/).
+
+:::tip
+Some problems only show up on real devices: slow resolutions on startup, scopes that never close, crashes in rare paths. To see them in real user sessions, see [Production monitoring](/docs/tooling/production-monitoring/).
+:::
+
+## Next steps
+
+- [FAQ](/docs/support/faq/): short answers with links.
+- [Compiler Plugin diagnostics](/docs/reference/diagnostics/): every build-time error code.
+- [Scopes](/docs/concepts/scopes/): scope lifecycle and closing.
+- [Starting Koin](/docs/concepts/starting-koin/): start options and loggers.

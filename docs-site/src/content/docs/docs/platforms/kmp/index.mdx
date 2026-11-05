@@ -1,0 +1,54 @@
+---
+title: "Overview"
+description: "How Koin fits a Kotlin Multiplatform project: shared modules, one shared start function, and a platform module per target."
+---
+
+import KmpDiagram from '~/components/KmpDiagram.astro';
+
+This section takes you from an empty Kotlin Multiplatform (KMP) project to Android, iOS and Compose Multiplatform with tests. Read it in order, or jump to what you need. To learn by building, go straight to the [walkthrough](/docs/platforms/kmp/walkthrough/).
+
+## How Koin fits
+
+Koin lives in your shared code. You declare your classes in `commonMain`, write one function that starts Koin, and call it once from each platform app. Whatever differs per platform goes in a platform module, which common code reaches through `expect`/`actual`.
+
+<KmpDiagram />
+
+Three rules cover most of what follows:
+
+- **Declare in `commonMain` by default.** Only the classes that truly differ per platform belong in a platform source set.
+- **Start Koin once.** A second `startKoin` throws `KoinApplicationAlreadyStartedException` on every target, so each app has a single start point.
+- **Keep constructor injection.** Shared classes receive dependencies through their constructors. `KoinComponent` is only for the boundary with code Koin does not create, such as Swift.
+
+## What runs where
+
+Not every artifact supports every target. Check this before you add a target to your project.
+
+| Artifact | Android | JVM | iOS, macOS | tvOS | watchOS, Linux, Windows | JS, wasmJs |
+|---|---|---|---|---|---|---|
+| `koin-core`, `koin-annotations`, `koin-test` | Yes | Yes | Yes | Yes | Yes | Yes |
+| `koin-core-coroutines` | Yes | Yes | Yes | Yes | Yes | JS only |
+| `koin-core-viewmodel` | Yes | Yes | Yes | Yes | No | Yes |
+| `koin-compose`, `koin-compose-viewmodel`, `koin-compose-viewmodel-navigation`, `koin-compose-navigation3` | Yes | Yes | Yes | No | No | Yes |
+| `koin-android*`, `koin-androidx-*` | Yes | No | No | No | No | No |
+| `koin-test-junit4`, `koin-test-junit5`, `koin-test-coroutines` | JVM tests | Yes | No | No | No | No |
+
+The [artifacts reference](/docs/reference/artifacts/) lists every artifact. Android has no separate target in `koin-core`: it uses the JVM variant.
+
+## Which page do I need?
+
+| I want to | Go to |
+|---|---|
+| Set up Gradle and the project layout | [Install and project structure](/docs/platforms/kmp/install/) |
+| Start Koin from Android, iOS, Desktop and Web | [Start Koin once](/docs/platforms/kmp/start-koin/) |
+| Use a different implementation per platform, or the Android `Context` | [Platform-specific dependencies](/docs/platforms/kmp/platform-dependencies/) |
+| Call Koin from Swift | [Koin from Swift and SwiftUI](/docs/platforms/kmp/swift/) |
+| Share ViewModels | [Shared ViewModels](/docs/platforms/kmp/viewmodels/) |
+| Choose `KoinApplication` or `initKoin` with Compose | [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/) |
+| Test shared code | [Testing in commonTest](/docs/platforms/kmp/testing/) |
+| Fix an error | [Troubleshooting and recipes](/docs/platforms/kmp/troubleshooting/) |
+
+## Next steps
+
+- [Install and project structure](/docs/platforms/kmp/install/): the next page in this section.
+- [Walkthrough: Android and iOS app](/docs/platforms/kmp/walkthrough/): build a full app.
+- [How Koin works](/docs/get-started/how-koin-works/): if definitions and modules are new to you.

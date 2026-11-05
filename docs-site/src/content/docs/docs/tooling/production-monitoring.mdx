@@ -1,0 +1,115 @@
+---
+title: "Production monitoring"
+description: "Monitor Koin apps in production with the Kotzilla platform: startup, main thread and background performance issues and crashes."
+---
+
+The Kotzilla platform monitors Koin apps in production. The Kotzilla SDK plugs into the Koin container, records how dependencies are resolved in real user sessions, and the Kotzilla console turns this data into performance issues and crash reports. Kotzilla is the company that builds Koin. The platform is a separate, optional service: Koin works fully without it.
+
+Before production, Koin's own tools catch most configuration errors: [Compile-time safety](/docs/tooling/compile-time-safety/), [logging](/docs/concepts/logging/) and [testing](/docs/testing/). This page covers what happens after release. For an overview of all tools, see [Tooling overview](/docs/tooling/).
+
+## What it detects
+
+The console groups session data into issues:
+
+| Issue | What it means |
+|-------|---------------|
+| Startup Performance | Delays during app initialization |
+| Main Thread Performance | Work on the main thread that freezes the screen. A dependency resolution of 100 ms or more on the main thread is reported here |
+| Background Performance | Bottlenecks in background thread processing |
+| Crashes | Crashes from real user sessions |
+
+The console gives graphical views to investigate performance bottlenecks, crashes and architectural issues. The same issues appear in the [IDE plugin](/docs/tooling/ide-plugin/).
+
+## How it works
+
+The SDK hooks into the Koin container at startup. From then on, it records two kinds of data:
+
+- **Structure**: the dependency graph, with modules, definitions and bindings.
+- **Runtime behavior**: resolution timings, lifecycle events and crashes.
+
+You don't add tracing code to your classes: the data comes from the container. To also trace your own functions, add [@Monitor](/docs/tooling/monitor/).
+
+Platforms supported by the SDK: Android, and Kotlin Multiplatform targets including iOS, JVM desktop, JS and Wasm.
+
+## Setup overview
+
+The detailed, current steps are in the official Kotzilla guides. Use them, the outline below only shows the shape of the setup:
+
+1. Create an account and register your app, from the [Kotzilla console](https://console.kotzilla.io), the [IDE plugin](/docs/tooling/ide-plugin/) or the MCP server. You get a `kotzilla.json` file with your app keys.
+2. Add the Kotzilla Gradle plugin (`io.kotzilla.kotzilla-plugin`) and the SDK dependency (`io.kotzilla:kotzilla-sdk`).
+3. Put `kotzilla.json` in the app module (Android) or the shared module (KMP).
+4. Call `monitoring()` last in your `startKoin` block.
+
+On Android:
+
+```kotlin
+import io.kotzilla.generated.monitoring
+
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@MainApplication)
+            modules(appModule)
+            monitoring()
+        }
+    }
+}
+```
+
+`monitoring()` is generated at build time by the Kotzilla Gradle plugin from your `kotzilla.json`. Call it once per platform entry point, not from a composable.
+
+Platform guides:
+
+- [Android](https://doc.kotzilla.io/docs/getstartedCustom/setupAndroid)
+- [Android Compose](https://doc.kotzilla.io/docs/getstartedCustom/setupAndroidCompose)
+- [Kotlin Multiplatform](https://doc.kotzilla.io/docs/getstartedCustom/setupKMP)
+- [Compose Multiplatform](https://doc.kotzilla.io/docs/getstartedCustom/setupCMP)
+- [SDK for libraries](https://doc.kotzilla.io/docs/getstartedCustom/setupSDKLibrary)
+
+:::note
+On iOS, crash symbolication needs a dSYM upload step. The Kotlin Multiplatform guide covers it.
+:::
+
+## AI assistant integration
+
+The Kotzilla MCP server connects an AI coding assistant (Claude Code, Cursor, Windsurf, Android Studio and other MCP clients) to Koin diagnostics. Paste a Koin error into the assistant and the server classifies it, then returns a step-by-step fix workflow. It recognizes:
+
+- **Compile-time diagnostics** from the Koin Compiler Plugin, from `KOIN-D001` to `KOIN-M001`.
+- **Runtime exceptions** such as `NoBeanDefFoundException`, `InstanceCreationException` and circular dependency errors.
+
+The endpoint is `https://mcp.kotzilla.io/mcp` (streamable HTTP). With Claude Code:
+
+```bash
+claude mcp add kotzilla --transport http https://mcp.kotzilla.io/mcp
+```
+
+The server asks you to sign in with a Kotzilla account on first use. Fixing compile errors works without the SDK. Analyzing runtime behavior needs the SDK and session data.
+
+When a build reports a Koin diagnostic, the Koin Compiler Plugin prints one hint pointing to the MCP server. To turn it off, set `aiAssist = false` in the `koinCompiler { }` block.
+
+See the [MCP server guide](https://doc.kotzilla.io/docs/fixIssues/koinMcp) for other clients.
+
+## Data and privacy
+
+The SDK sends technical session data: the dependency graph and the runtime data listed in [How it works](#how-it-works). The MCP server sends only the error text and structured queries from your assistant. Your source files stay on your machine.
+
+For the full policy, see the [Kotzilla privacy policy](https://kotzilla.io/privacy).
+
+## Cost
+
+The developer plan is free, with no time limit and a limited quota of events. Enterprise plans add team collaboration features. See [kotzilla.io](https://kotzilla.io) for current plans.
+
+## What it does not do
+
+- **It doesn't validate your configuration at build time.** That is the job of [Compile-time safety](/docs/tooling/compile-time-safety/).
+- **It doesn't replace tests.** Use [Unit tests](/docs/testing/) to check behavior before release.
+- **It doesn't change how Koin resolves dependencies.** The SDK observes the container, your definitions stay the same.
+- **It doesn't trace your own code by default.** Only Koin resolutions are recorded, unless you add [@Monitor](/docs/tooling/monitor/).
+
+## Next steps
+
+- [Tooling overview](/docs/tooling/): which tool for which need.
+- [@Monitor](/docs/tooling/monitor/): trace your own functions with the Kotzilla SDK.
+- [IDE plugin](/docs/tooling/ide-plugin/): see production issues next to your code.
+- [Kotzilla documentation](https://doc.kotzilla.io): full platform and SDK documentation.

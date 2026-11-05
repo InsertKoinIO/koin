@@ -1,0 +1,216 @@
+---
+title: "Configuration and properties"
+description: "Inject typed Ktor configuration, close a database pool at shutdown, read Koin properties with getProperty, and find the repository samples."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page shows how to give a Ktor server Koin properties and read them in routes, how to inject your own configuration classes, how to close a connection pool at shutdown, and where to find working samples. Properties are plain key and value pairs stored in the Koin instance. For the general mechanism, see [Properties](/docs/concepts/properties/).
+
+:::note
+Koin does not read Ktor's `application.conf` or `application.yaml`. Ktor configuration stays a Ktor feature (`environment.config`), and Koin properties come from the sources below.
+:::
+
+## Load properties
+
+Properties are set in the `install(Koin)` block, which is a `KoinApplication` configuration like `startKoin { }`:
+
+```kotlin
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import org.koin.ktor.plugin.Koin
+
+fun Application.module() {
+    install(Koin) {
+        properties(mapOf("greeting" to "Hello"))
+        modules(appModule)
+    }
+}
+```
+
+| Source | Function | Notes |
+|--------|----------|-------|
+| A map | `properties(map)` | Available on every target |
+| A file on the classpath | `fileProperties()` or `fileProperties("/file.properties")` | JVM only. Import `org.koin.fileProperties`. Default file is `/koin.properties`. Throws `NoPropertyFileFoundException` if the file is missing |
+| System properties and environment variables | `environmentProperties()` | JVM only. Import `org.koin.environmentProperties` |
+
+You can also set a value at runtime with `getKoin().setProperty(key, value)`.
+
+To feed Koin from Ktor's own configuration, read the value with Ktor's API and pass it in. This is plain Ktor code, not a Koin feature:
+
+```kotlin
+fun Application.module() {
+    val greeting = environment.config.propertyOrNull("app.greeting")?.getString() ?: "Hello"
+
+    install(Koin) {
+        properties(mapOf("greeting" to greeting))
+        modules(appModule)
+    }
+}
+```
+
+## Read properties
+
+`getProperty` is available on `Application`, `Route`, `Routing` and `ApplicationCall`, from `org.koin.ktor.ext`:
+
+```kotlin
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import org.koin.ktor.ext.getProperty
+
+fun Application.module() {
+    install(Koin) {
+        properties(mapOf("greeting" to "Hello"))
+    }
+
+    routing {
+        get("/hello") {
+            val greeting = call.getProperty("greeting", "Hi") // with a default value
+            val optional = call.getProperty<String>("suffix") // null if missing
+            call.respondText("$greeting ${optional.orEmpty()}")
+        }
+    }
+}
+```
+
+On `Application`, `Route` and `ApplicationCall`, `getProperty(key, defaultValue)` takes and returns a `String`. `getProperty<T>(key)` returns `T?`, and the stored value must really be of type `T`.
+
+To use a property when building a definition, read it in the definition lambda with `getProperty("key")` (see [Properties](/docs/concepts/properties/)).
+
+## Inject typed configuration
+
+For more than a few values, read Ktor's configuration into a class of your own and give the instance to Koin. Your classes then depend on `DatabaseConfig`, not on Ktor:
+
+{/* check: ktor-recipes-dsl, ktor-recipes-constructor */}
+
+```kotlin
+import io.ktor.server.config.ApplicationConfig
+
+data class DatabaseConfig(val url: String, val maxPoolSize: Int)
+
+fun ApplicationConfig.databaseConfig() = DatabaseConfig(
+    url = property("database.url").getString(),
+    maxPoolSize = property("database.maxPoolSize").getString().toInt(),
+)
+```
+
+It reads these keys from `application.conf`. The next section gives the instance to Koin:
+
+```text
+database {
+    url = "jdbc:postgresql://localhost/app"
+    maxPoolSize = 10
+}
+```
+
+## Close a connection pool at shutdown
+
+Declare the pool as a `single` with `onClose`. Koin closes when the application stops, which runs the callback. Write `onClose` before `bind`: after `bind`, the callback no longer sees the pool's type. The example uses [HikariCP](https://github.com/brettwooldridge/HikariCP) (`com.zaxxer:HikariCP`, compiled here with version 6.3.0):
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+{/* check: ktor-recipes-dsl */}
+
+```kotlin
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import javax.sql.DataSource
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.dsl.onClose
+import org.koin.ktor.plugin.Koin
+import org.koin.plugin.module.dsl.create
+import org.koin.plugin.module.dsl.single
+
+fun dataSource(config: DatabaseConfig): HikariDataSource =
+    HikariDataSource(HikariConfig().apply {
+        jdbcUrl = config.url
+        maximumPoolSize = config.maxPoolSize
+    })
+
+class UserStore(private val dataSource: DataSource)
+
+val dataModule = module {
+    single { create(::dataSource) } onClose { it?.close() } bind DataSource::class
+    single<UserStore>()
+}
+
+fun Application.module() {
+    val databaseConfig = environment.config.databaseConfig()
+
+    install(Koin) {
+        modules(module { single { databaseConfig } }, dataModule)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+There is no annotation for `onClose`. Declare the pool and the configuration in a DSL module, as in the Compiler Plugin DSL tab, and load it with `modules(...)` next to your annotated modules. Annotated classes can then receive `DataSource` in their constructors.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+{/* check: ktor-recipes-constructor */}
+
+```kotlin
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import javax.sql.DataSource
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.dsl.onClose
+import org.koin.ktor.plugin.Koin
+
+class UserStore(private val dataSource: DataSource)
+
+val dataModule = module {
+    single {
+        val config = get<DatabaseConfig>()
+        HikariDataSource(HikariConfig().apply {
+            jdbcUrl = config.url
+            maximumPoolSize = config.maxPoolSize
+        })
+    } onClose { it?.close() } bind DataSource::class
+    singleOf(::UserStore)
+}
+
+fun Application.module() {
+    val databaseConfig = environment.config.databaseConfig()
+
+    install(Koin) {
+        modules(module { single { databaseConfig } }, dataModule)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Samples
+
+The repository has three Ktor samples under [`examples/`](https://github.com/InsertKoinIO/koin/tree/main/examples):
+
+| Sample | Shows |
+|--------|-------|
+| [`hello-ktor`](https://github.com/InsertKoinIO/koin/tree/main/examples/hello-ktor) | `install(Koin)`, lifecycle events, `call.scope`, tests. Its `application.conf` configures Ktor (port, module list), not Koin |
+| [`ktor-di-sample`](https://github.com/InsertKoinIO/koin/tree/main/examples/ktor-di-sample) | The [Ktor DI bridge](/docs/platforms/ktor/di-bridge/) in both directions |
+| [`multimodule-ktor`](https://github.com/InsertKoinIO/koin/tree/main/examples/multimodule-ktor) | One Koin module per Gradle module, each added from its own `Application` extension function |
+
+:::caution
+`multimodule-ktor` calls `koin { }` on `Application`. That function is deprecated at error level: use `koinModule { }` or `koinModules(...)` instead, as shown in [Ktor: install and start](/docs/platforms/ktor/).
+:::
+
+## Next steps
+
+- [Ktor: install and start](/docs/platforms/ktor/): the plugin, injection in routes and events.
+- [Properties](/docs/concepts/properties/): the property API in Koin core.
+- [Ktor tests](/docs/testing/ktor/): override properties and definitions in `testApplication`.

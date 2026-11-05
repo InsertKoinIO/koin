@@ -1,0 +1,73 @@
+---
+title: "Troubleshooting and recipes"
+description: "Fix common Koin errors in Kotlin Multiplatform projects: double start, missing plugin, klib errors, version mismatches and iOS start placement."
+---
+
+This page covers problems specific to KMP. For the general error catalog, see [Troubleshooting](/docs/support/troubleshooting/).
+
+## KoinApplicationAlreadyStartedException
+
+`startKoin` is not idempotent. A second call throws `A Koin Application has already been started`, on every target. Common causes:
+
+| Cause | Fix |
+|---|---|
+| `initKoin` inside Compose Desktop's `application { }`, which can run again | Move it to `main()`, [before `application { }`](/docs/platforms/kmp/start-koin/#desktop) |
+| `initKoin` in a SwiftUI `View` initializer, which runs many times | Move it to the [`App` initializer](/docs/platforms/kmp/start-koin/#ios) |
+| `initKoin` in `Activity.onCreate`, which runs again on recreation | Move it to `Application.onCreate` |
+| Tests without `stopKoin()` | Add `stopKoin()` in [`@AfterTest`](/docs/platforms/kmp/testing/#write-a-test) |
+
+`KoinApplication` does not throw here. It attaches to a running Koin and ignores its own configuration, so if your modules seem to be missing, check whether another start ran first.
+
+## NotImplementedError from single or startKoin
+
+`single<T>()`, `factory<T>()`, `viewModel<T>()` and `startKoin<T>()` from `org.koin.plugin.module.dsl` are placeholders that the Compiler Plugin replaces at build time. Without the plugin they throw `NotImplementedError`.
+
+Apply the plugin in **each Gradle module that declares definitions**, not only in your app module. See [Install](/docs/platforms/kmp/install/#add-koin).
+
+## Different declarations with the same signatures
+
+This compiler error fails the iOS and wasmJs builds, while JVM and Android succeed. There are two known causes:
+
+- **The same type declared with two DSL forms in one compilation,** for example `single<Svc>()` and `single<Svc> { FakeSvc() }` both in `commonTest`. This is present in Compiler Plugin 1.2.1. Use one form for that type in that source set. A fake in `commonTest` overriding a definition in `commonMain` is fine, as those are separate compilations.
+- **`@Configuration` modules relayed through a dependency,** on `componentscan_*` hints. Fixed in Compiler Plugin 1.2.1, so update the plugin.
+
+## Annotations fail on wasmJs or JS
+
+With Kotlin 2.3.20, annotation-based modules fail on `wasmJs` with `No file found for source null`. This is [KT-82395](https://youtrack.jetbrains.com/issue/KT-82395). Update to Kotlin 2.4.0 or later.
+
+## createdAtStart does nothing on wasmJs
+
+A definition with `createdAtStart()` is not created at start on wasmJs, and no error is raised. It is created the first time something asks for it. JVM and iOS behave as documented.
+
+If your Web target relies on eager creation, resolve the instance yourself right after starting Koin.
+
+## NoSuchMethodError or compiler errors after a Kotlin update
+
+The Compiler Plugin is tied to the Kotlin compiler version. Check that your Kotlin version is on the verified list in [Koin Compiler Plugin](/docs/tooling/compiler-plugin/), and update the plugin if it is not.
+
+## Koin could not create a SavedStateHandle
+
+A ViewModel asks for `SavedStateHandle`, but it was resolved without a `SavedStateRegistryOwner` in its extras. Retrieve it with `koinViewModel()` in a composable, not with `get()`. See [Shared ViewModels](/docs/platforms/kmp/viewmodels/#things-to-watch).
+
+## No definition found for a platform class
+
+Check these in order:
+
+1. The class is declared in the `actual` module for **that** platform.
+2. `platformModule()` is listed in `includes(...)`, or `PlatformModule` in `@Module(includes = [...])`.
+3. On Android, `androidContext()` was called, if the class takes a `Context`.
+4. For a Swift class passed through [`declare`](/docs/platforms/kmp/swift/#declare-a-swift-class-in-koin), Swift has already declared it. These are not checked at build time.
+
+## Android Context in shared code
+
+You cannot use `Context` in `commonMain`. Put it behind an interface: see [Android Context in shared code](/docs/platforms/kmp/platform-dependencies/#android-context-in-shared-code).
+
+## iOS lifecycle
+
+Koin has no iOS lifecycle hooks and needs none. Start it once in the `App` initializer, and it lives for the life of the process. `KoinApplication` does not stop Koin when it leaves the composition.
+
+## Next steps
+
+- [Troubleshooting](/docs/support/troubleshooting/): the general error catalog.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the plugin reports at build time.
+- [Compiler Plugin diagnostics](/docs/reference/diagnostics/): every error code.

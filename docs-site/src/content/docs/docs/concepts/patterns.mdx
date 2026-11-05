@@ -1,0 +1,116 @@
+---
+title: "Patterns"
+description: "The provider pattern for runtime values and the decorator pattern for wrapping an implementation."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page covers two patterns that go beyond one class per definition: providers for objects that need runtime values, and decorators. It assumes you know [definitions](/docs/concepts/definitions/) and [qualifiers](/docs/concepts/qualifiers/). For classes from libraries (Retrofit, Room, OkHttp), see [Classes you don't own](/docs/concepts/definitions/#classes-you-dont-own). To inject every implementation of an interface, see [Collections of dependencies](/docs/concepts/injection/#collections-of-dependencies). For generic types, see [Generic types](/docs/concepts/qualifiers/#generic-types).
+
+## Provider pattern
+
+Some objects need values that exist only at runtime: a title, a callback, a user choice. Instead of resolving them from Koin each time, inject a provider class that creates them:
+
+```kotlin
+class DialogProvider(private val context: Context) {
+
+    fun confirmDialog(title: String, onConfirm: () -> Unit): AlertDialog =
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setPositiveButton("OK") { _, _ -> onConfirm() }
+            .create()
+}
+
+class SettingsScreen(private val dialogs: DialogProvider) {
+    fun askReset() {
+        dialogs.confirmDialog("Reset settings?") { reset() }.show()
+    }
+}
+```
+
+Declare `DialogProvider` like any class (`factory<DialogProvider>()`, `@Factory`, or `factoryOf(::DialogProvider)`). The provider gets its dependencies from Koin, and the created objects get their runtime values from the caller.
+
+For a value known at the call site and needed in the constructor, [injected parameters](/docs/concepts/parameters/) are the simpler option. For an instance that is costly and not always needed, inject `Lazy<T>`: see [Constructor parameters](/docs/concepts/definitions/#constructor-parameters).
+
+## Decorator pattern
+
+A decorator wraps an implementation to add behavior (logging, caching, rate limiting) and exposes the same interface. Koin has no decorator keyword: register the inner implementation under its own type, and bind the interface to the outer decorator.
+
+```kotlin
+interface NotificationService {
+    fun send(message: String)
+}
+
+class PushNotificationService : NotificationService { ... }
+
+class LoggingNotificationService(
+    private val delegate: NotificationService,
+    private val logger: Logger,
+) : NotificationService {
+    override fun send(message: String) {
+        logger.log("Sending: $message")
+        delegate.send(message)
+    }
+}
+```
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.plugin.module.dsl.create
+
+fun loggingNotifications(
+    push: PushNotificationService,
+    logger: Logger,
+): NotificationService = LoggingNotificationService(push, logger)
+
+val notificationModule = module {
+    single<Logger>()
+    single<PushNotificationService>()
+    single { create(::loggingNotifications) }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@Module
+class NotificationModule {
+
+    @Singleton
+    fun notifications(push: PushNotificationService, logger: Logger): NotificationService =
+        LoggingNotificationService(push, logger)
+}
+```
+
+Declare `PushNotificationService` with `@Singleton(binds = [])`. An explicit empty `binds` registers the class under its own type only. Without it (`binds` omitted), Koin binds the class to all its supertypes, including `NotificationService`, and two definitions would answer for that interface.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val notificationModule = module {
+    singleOf(::Logger)
+    singleOf(::PushNotificationService)
+    single<NotificationService> {
+        LoggingNotificationService(delegate = get<PushNotificationService>(), logger = get())
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Consumers ask for `NotificationService` and get the decorated instance. To stack several decorators, nest them in the same function: `RateLimitedNotificationService(LoggingNotificationService(push, logger), limiter)`.
+
+The inner implementation must not be bound to the interface too. Otherwise two definitions answer for `NotificationService` and one overrides the other.
+
+## Related
+
+- [Definitions](/docs/concepts/definitions/): definition types, binding, classes you don't own.
+- [Qualifiers](/docs/concepts/qualifiers/): `named()`, type qualifiers and `@Named`.
+- [Injected parameters](/docs/concepts/parameters/): runtime values passed at resolution.
+- [Injection](/docs/concepts/injection/): `get()`, `getAll()`, `inject()` outside constructors.
+- [Troubleshooting](/docs/support/troubleshooting/): override and missing definition errors.

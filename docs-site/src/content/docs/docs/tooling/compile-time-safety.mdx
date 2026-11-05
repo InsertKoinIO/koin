@@ -1,0 +1,271 @@
+---
+title: "Compile-time safety"
+description: "What the Koin Compiler Plugin checks while your code compiles, which cases it cannot check, and how to handle findings."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+The Koin Compiler Plugin checks your dependency graph while your code compiles. A missing definition, a wrong qualifier or a circular dependency fails the build, with the file and line, instead of crashing at runtime. This page explains what is checked and the cases the plugin cannot check. Every diagnostic code with its message and fix is in [Diagnostics](/docs/reference/diagnostics/). It assumes the plugin is installed (see [Koin Compiler Plugin](/docs/tooling/compiler-plugin/)).
+
+Compile-time safety is enabled by default (`compileSafety = true`, see [Compiler Plugin options](/docs/reference/compiler-options/)).
+
+## Where the checks run
+
+The plugin checks at two levels.
+
+**Full graph**: at each Koin entry point, the plugin assembles every module that the entry point loads, from your sources and from dependency JARs, and checks every definition against that complete graph.
+
+**Call sites**: every `get<T>()`, `inject<T>()`, `koinInject<T>()`, `koinViewModel<T>()`, `by viewModel()` and similar call is checked: `T` must exist in the assembled graph. If a feature module makes the call but cannot see the full graph, the plugin leaves a hint in the compiled module. The app module reads these hints from its dependencies and checks them when it compiles.
+
+Recognized entry points:
+
+| Entry point | Example |
+|-------------|---------|
+| `startKoin` | `startKoin<MyApp>()`, `startKoin { modules(appModule) }` |
+| `koinApplication` | `koinApplication { modules(appModule) }` |
+| `koinConfiguration` | `koinConfiguration<MyApp>()` |
+| `@KoinApplication` | `@KoinApplication object MyApp` |
+| `withConfiguration<T>()` | `startKoin { withConfiguration<MyApp>() }` |
+| Ktor `install(Koin)` | `install(Koin) { modules(appModule) }` |
+
+`modules(...)` accepts lists the plugin can follow: `listOf(...)`, `+`, `.toList()`, a top-level `val`, or a function returning `List<Module>`:
+
+```kotlin
+val dataModules = listOf(databaseModule, networkModule)
+fun featureModules(): List<Module> = listOf(loginModule, profileModule)
+
+startKoin {
+    modules(dataModules + featureModules())
+}
+```
+
+A module declared as a function (`fun dataModule(): Module = module { ... }`) is followed like a top-level `val`.
+
+:::note
+A Gradle module with no entry point of its own (a library, most feature modules) gets no missing-dependency diagnostics in its own compilation. A module checked alone cannot know how the app will wire it. Its definitions are checked when the app module assembles the graph. The plugin says so in the build output:
+
+```
+[Koin] compile-safety validation skipped ... no Koin entry point in this compilation.
+```
+:::
+
+## What is checked
+
+| Case | Result |
+|------|--------|
+| Non-nullable parameter, no definition | Error |
+| Nullable parameter (`T?`), no definition | OK, resolved with `getOrNull()` |
+| Parameter with a default value, no definition | OK, uses the Kotlin default (with `skipDefaultValues = true`) |
+| Parameter with a default value and a qualifier (`@Named`) | Error, the qualifier forces resolution |
+| `@InjectedParam` parameter | OK, passed at runtime with `parametersOf()` |
+| `@Property("key")` parameter | OK. Warning if no `@PropertyValue("key")` default exists |
+| `List<T>` parameter | OK, `getAll()` returns an empty list if nothing matches |
+| `Lazy<T>`, no definition for `T` | Error, the inner type is checked |
+| `@Named("x")` parameter, no definition with that qualifier | Error, with a hint if the type exists with another qualifier |
+| Scoped dependency declared in another scope | Error |
+| Circular dependency (A needs B, B needs A) | Error |
+| `@Provided` type or parameter | OK, provided outside the graph |
+| `@ScopeId` parameter | OK, resolved from a named scope at runtime |
+| `Scope` parameter | OK, the current scope is passed |
+| Android framework type (`Context`, `SavedStateHandle`, ...) | OK, built-in list |
+| `get<T>()` / `inject<T>()` with no definition for `T` | Error |
+| `get<T>()` without `parametersOf()` when `T` has `@InjectedParam` | Error |
+| `parametersOf(...)` with the wrong count or types | Error |
+
+The rules for how each parameter type is resolved are on [Definitions](/docs/concepts/definitions/). The `verify()` test API is stricter about nullable parameters: see [Verifying your configuration](/docs/testing/verify/#what-verify-accepts).
+
+## Checks per declaration style
+
+Every style and DSL form is checked against the same graph. They can live in one project: a DSL definition can depend on an annotated class, and the other way around.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+val appModule = module {
+    single<Database>()
+    single<UserRepository>()      // checked: Database exists
+    viewModel<UserViewModel>()    // checked: UserRepository exists
+}
+```
+
+The plugin reads the constructor, generates the resolution calls and checks every parameter. `create(::function)` is checked the same way, on the function parameters:
+
+```kotlin
+fun buildUserRepository(db: Database): UserRepository = UserRepository(db)
+
+val appModule = module {
+    single { create(::buildUserRepository) }    // checked: Database exists
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@Singleton
+class Database
+
+@Singleton
+class UserRepository(private val db: Database)    // checked: Database exists
+
+@KoinViewModel
+class UserViewModel(private val repo: UserRepository) : ViewModel()
+
+@Module
+@ComponentScan("com.myapp")
+class AppModule
+
+@KoinApplication(modules = [AppModule::class])
+object MyApp
+```
+
+`startKoin<MyApp>()` is the entry point: the plugin checks every definition found by `@ComponentScan`. Annotated top-level functions are checked like classes:
+
+```kotlin
+@Factory
+fun provideCache(db: Database): CacheService = RedisCache(db)    // checked: Database exists
+```
+
+Modules tagged with `@Configuration` are assembled with the `@KoinApplication` that requests their label, across Gradle modules, and checked together.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Constructor references are checked like the Compiler Plugin DSL:
+
+```kotlin
+val appModule = module {
+    singleOf(::Database)
+    singleOf(::UserRepository)        // checked: Database exists
+    viewModelOf(::UserViewModel)      // checked: UserRepository exists
+    scope<UserSession> {
+        scopedOf(::SessionCache)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`singleOf`, `factoryOf`, `scopedOf`, `viewModelOf` and `new(::T)` keep their runtime behavior. The plugin adds the checks, it does not rewrite them.
+
+For a lambda you write yourself, the plugin does not read the constructor. It checks the `get()`, `inject()` and `getOrNull()` calls inside the lambda, like any call site:
+
+```kotlin
+val appModule = module {
+    single { UserRepository(get()) }  // checked: the get() call needs Database
+}
+```
+
+:::caution
+Since Compiler Plugin 1.2.0, `singleOf`, `factoryOf`, `scopedOf` and `viewModelOf` are checked. Code that relied on a missing dependency in these functions no longer compiles. The build was hiding a runtime crash.
+:::
+
+## Handle findings
+
+Every finding has a stable code, printed as `[Koin][CODE]`, for example `KOIN-D001` for a missing dependency. The messages, causes and fixes of all codes are in [Diagnostics](/docs/reference/diagnostics/). In short:
+
+- **Errors fail the build.** Declare the missing definition, add its module to `modules()` or `includes()`, or fix the qualifier (see [Qualifiers](/docs/concepts/qualifiers/)).
+- **Circular dependencies** are broken by changing one parameter to `Lazy<T>`. See [Troubleshooting](/docs/support/troubleshooting/).
+- **Warnings** describe what the plugin could not check. `KOIN-W003`, `KOIN-W004` and `KOIN-W005` are covered in [Limits](#limits). They fail the build only with `allWarningsAsErrors`.
+
+## External types: `@Provided`
+
+Some types reach your graph from outside Koin's declarations: a platform object, an SDK instance, a definition added by hand at runtime. Mark them `@Provided` so the plugin does not report them as missing:
+
+```kotlin
+// on a class: every use of this type is skipped
+@Provided
+class FirebaseAnalytics
+
+// on a parameter: only this parameter is skipped
+@Singleton
+class PaymentProcessor(@Provided val gateway: PaymentGateway)
+```
+
+`@Provided` (`org.koin.core.annotation`) works with every declaration style: annotate the class or the constructor parameter, even when the definition is in a DSL module. It only changes the compile-time check. At runtime the type is still resolved with `get()`, and fails if nobody declared it. Prefer the parameter form: on a class, it turns off the check for every use of that type.
+
+These types are always accepted, without `@Provided`:
+
+- `android.content.Context`
+- `android.app.Application`
+- `android.app.Activity`
+- `androidx.activity.ComponentActivity`
+- `androidx.fragment.app.Fragment`
+- `androidx.lifecycle.SavedStateHandle`
+- `androidx.work.WorkerParameters`
+
+### Modules loaded at runtime
+
+A module loaded with `loadKoinModules(...)` after `startKoin` is not part of the graph the plugin assembles. The plugin cannot know when, or if, that call runs. Types that only come from such a module must be `@Provided`:
+
+```kotlin
+val featureModule = module { single<Repository>() }   // loaded later
+val appModule = module { single<Service>() }          // Service(@Provided val repo: Repository)
+
+startKoin { modules(appModule) }
+loadKoinModules(featureModule)
+```
+
+The plugin still reports the runtime-loaded module as unreachable with `KOIN-W001`. Adding it to `modules()` would defeat on-demand loading, so you can ignore this warning (it fails the build only with `allWarningsAsErrors`).
+
+## Special parameters
+
+**Scope**: a parameter of type `org.koin.core.scope.Scope` receives the current scope. It is not checked, since the code resolves types from it dynamically.
+
+```kotlin
+@Scoped
+class ScopedService(val scope: Scope) {
+    fun load() = scope.get<SomeDependency>()
+}
+```
+
+**@ScopeId**: the parameter is resolved from another scope, by name (`@ScopeId(name = "user_session")`) or by type (`@ScopeId(UserSessionScope::class)`, the scope ID is the full class name). It is not checked, since that scope exists only at runtime. See [Scopes](/docs/concepts/scopes/).
+
+**@Property**: the parameter reads a Koin property. If no `@PropertyValue("key")` default is declared, the build gets a warning, and the property must be set at startup:
+
+```kotlin
+@PropertyValue("api.timeout")
+val defaultTimeout = 30
+
+@Factory
+class ApiClient(@Property("api.timeout") val timeout: Int)    // OK
+
+@Factory
+class Other(@Property("missing.key") val value: String)
+// [Koin][KOIN-P001] Missing @PropertyValue default: "missing.key" ...
+```
+
+**Default values**: with `skipDefaultValues = true` (default), a parameter with a Kotlin default value uses it and is not checked. See [skipDefaultValues](/docs/reference/compiler-options/).
+
+## Generic types
+
+Koin resolves definitions on the erased class: type arguments are not part of the lookup key. The plugin follows the same rule. `get<Box<Int>>()` is checked against any `Box` definition, and `single<Box<A>>()` and `single<Box<B>>()` are the same definition, so the second overrides the first.
+
+To keep several instances of one generic type, give each one a type qualifier derived from its type argument with `named<T>()`. The pattern is described in [Advanced Patterns](/docs/concepts/patterns/).
+
+## Incremental builds
+
+The full-graph check runs when the aggregator module (the one with the entry point) compiles. Kotlin incremental compilation can skip that module after a change elsewhere, for example inside a `module { }` lambda body. The plugin turns on `strictSafety` in modules where it detects an entry point, so the check runs on every build. Details and escape hatch: [strictSafety](/docs/reference/compiler-options/).
+
+## Limits
+
+- **Dynamic module lists**: `modules(if (debug) a else b)`, `modules(*list)` or a list built at runtime cannot be followed. The plugin reports `KOIN-W003` and skips the full-graph check for that entry point. Pass modules directly to keep the check.
+- **Hand-written lambdas and cycles**: a `single { A(get()) }` lambda adds no edge to the cycle check, so a circular dependency through hand-written lambdas is not detected. Use `single<T>()`, `singleOf(::T)` or `create(::T)` where cycles matter.
+- **Custom configuration labels**: modules tagged with a label other than `"default"` are discovered at most one `implementation` dependency away (`KOIN-W004`). Add a direct dependency, or list the module in `@KoinApplication(modules = [...])`.
+- **Function definitions far away**: a `@Module` function definition, or a qualified top-level function, in a module two or more `implementation` hops away is not visible to the check (`KOIN-W005`). It still works at runtime. Add a direct dependency to check it.
+- **DSL entry points with no local definition**: with plugin 1.2.1, when every module an entry point loads is declared in other Gradle modules, for example an `appModule` that only contains `includes(...)`, the full-graph check is skipped with no warning ([issue #142](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/142)). Annotated entry points are not affected. Declare one definition in the Gradle module of the entry point. See [Multi-module apps](/docs/platforms/android/multi-module/).
+- **Modules off the compile classpath**: the plugin can't read the constructors of a module that is not on the compile classpath of the entry point, so it does not check their parameters ([issue #132](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/132)). Make it a direct dependency.
+- **Runtime-loaded modules**: see [Modules loaded at runtime](#modules-loaded-at-runtime).
+
+## Do you still need verify()?
+
+Usually not. See [Verifying your configuration](/docs/testing/verify/) for the cases that still need it.
+
+## Next steps
+
+- [Compiler Plugin options](/docs/reference/compiler-options/): `compileSafety`, `strictSafety`, `skipDefaultValues` and the other options.
+- [Diagnostics](/docs/reference/diagnostics/): every code, message and fix.
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): requirements, install and troubleshooting.
+- [Playground apps](https://github.com/InsertKoinIO/koin-compiler-plugin/tree/main/playground-apps): sample apps with annotations (`app-annotations/`) and the DSL (`app-dsl/`).

@@ -1,0 +1,99 @@
+---
+title: Koin
+description: Pragmatic dependency injection for Kotlin and Kotlin Multiplatform, compile safe with the Koin Compiler Plugin.
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  title: Dependency injection for Kotlin, without the ceremony
+  tagline: Declare your classes in Koin DSL or Koin Annotations. The Koin Compiler Plugin checks your graph at build time, on Android, iOS, desktop, web and server.
+  image:
+    file: ../../assets/koin-logo.png
+    alt: Koin logo
+  actions:
+    - text: Get started
+      link: /docs/get-started/
+      icon: right-arrow
+    - text: Why Koin?
+      link: /docs/why-koin/
+      variant: minimal
+---
+
+import { Image } from 'astro:assets';
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
+import DecisionMap from '~/components/DecisionMap.astro';
+import Install from '~/components/Install.astro';
+import LogoWall from '~/components/LogoWall.astro';
+import Talks from '~/components/Talks.astro';
+import { apps, sponsors } from '~/data/home';
+import koinByKotzilla from '~/assets/koin-by-kotzilla.png';
+
+<div class="home-surface">
+
+## Find your starting point
+
+Answer a question or two and go straight to the right page.
+
+<DecisionMap />
+
+</div>
+
+## Easy and productive Kotlin development
+
+Koin keeps you focused on your app, not on your tools.
+
+<CardGrid>
+  <Card title="Ready for Android" icon="rocket">
+    Retrieve your dependencies in Android components with `by inject()` and `by viewModel()`, and in Jetpack Compose with `koinViewModel()`. See [Android](/docs/platforms/android/) and [Compose](/docs/platforms/compose/).
+  </Card>
+  <Card title="Powering Kotlin Multiplatform" icon="puzzle">
+    Share your modules across Android, iOS, desktop and web, with a platform module where a target needs its own code. See [Kotlin Multiplatform](/docs/platforms/kmp/).
+  </Card>
+  <Card title="Server side with Ktor" icon="laptop">
+    Inject into your routes and scope instances to a request. See [Ktor](/docs/platforms/ktor/).
+  </Card>
+  <Card title="Productive and safe" icon="approve-check">
+    Your classes stay plain Kotlin with constructor parameters, and the Koin Compiler Plugin checks your graph at build time. See [Compile-time safety](/docs/tooling/compile-time-safety/).
+  </Card>
+</CardGrid>
+
+## Install
+
+The recommended setup is the Koin BOM with the Koin Compiler Plugin, which needs Kotlin 2.3.20 or later. Here it is for Android. Each [platform guide](/docs/get-started/install/) lists the artifacts it needs.
+
+<Install artifacts={['koin-android']} plugin bom />
+
+For Koin Annotations, also add `koin-annotations`.
+
+The plugin reports a missing dependency when you build, not when a user opens the screen. See [Koin Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+## Used in apps around the world
+
+Koin is used in thousands of apps. You may already have used one of these.
+
+<LogoWall logos={apps} kind="icon" />
+
+## Talks and videos
+
+Follow the project on [X](https://x.com/insertkoin_io), and read the latest news on the [Kotzilla blog](https://blog.kotzilla.io/).
+
+<Talks />
+
+## Open source and community driven
+
+<Image src={koinByKotzilla} alt="Koin by Kotzilla" width={220} class="koin-by-kotzilla" />
+
+[Arnaud Giuliani](https://x.com/arnogiu) created and released Koin in 2017, and still maintains it with the help of open source [contributors](https://github.com/InsertKoinIO/koin/graphs/contributors). Koin is released under the Apache 2.0 license and is supported by [Kotzilla](https://kotzilla.io), with contributions from individuals and companies around the world.
+
+Get help and follow the project on [GitHub](https://github.com/InsertKoinIO/koin), [Stack Overflow](https://stackoverflow.com/questions/tagged/koin) and the [Kotlin Slack](https://kotlinlang.slack.com/).
+
+## Sponsors
+
+Thank you to our tech sponsors. You can [become a sponsor](https://opencollective.com/koin#sponsor) on Open Collective.
+
+<LogoWall logos={sponsors} kind="wordmark" rel="sponsored" />
+
+## Let's try Koin
+
+<LinkButton href="/docs/get-started/" icon="right-arrow">Get started</LinkButton>
+<LinkButton href="/docs/why-koin/" variant="minimal">Why Koin?</LinkButton>

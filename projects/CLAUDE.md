@@ -75,7 +75,7 @@ Before opening (or approving) any PR, both guards must pass:
 
 - **Never weaken `test.sh` to scoped tasks.** In KMP projects `./gradlew test` resolves only to Android/JVM unit tests and **silently skips** native, JS, and WASM tests. Full verification = `allTests` (or per-target tasks explicitly). Do not add `-x` exclusions to make a run green — fix the failing test at the root cause.
 - **No backtick test names in `commonTest`** — backtick names (`` fun `my test`() ``) break `compileTestKotlinJs`/`compileTestKotlinWasmJs` (invalid JS identifiers). Use snake_case in `commonTest`; backticks are fine in `jvmTest` only.
-- **`runTest {}` in `commonTest` must use block-body syntax** — on wasmJs, expression-body forms (`fun foo() = runTest { }`) fail with return-type mismatch. Use `fun testX() { runTest { ... } }`.
+- **`runTest {}` in `commonTest` must use expression-body syntax**: `fun testX() = runTest { ... }`. On JS and wasmJs, `runTest` returns a promise, and `fun testX() { runTest { ... } }` discards it, so the test passes even when its body fails (checked with Kotlin 2.3.20 and coroutines 1.10.2).
 
 #### Known pre-existing off-JVM failures (not yours — don't chase them)
 

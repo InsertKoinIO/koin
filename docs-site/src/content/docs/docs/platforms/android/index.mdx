@@ -1,0 +1,286 @@
+---
+title: "Android: install and start"
+description: "Install Koin on Android, start it in your Application class with androidContext, and use the Android Context in your definitions."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+This page installs Koin in an Android app and starts it: the `Application` class, the Android `Context` and the Logcat logger. Properties from assets, module loading after start and AndroidX App Startup are in [Startup options](/docs/platforms/android/startup-options/). For what `startKoin` does on every platform, see [Starting Koin](/docs/concepts/starting-koin/).
+
+## Prerequisites
+
+- An Android app built with Gradle. Koin supports a `minSdk` of <Version of="androidMinSdk" /> or later.
+- Kotlin <Version of="kotlinMin" /> or later for the Koin Compiler Plugin.
+
+## Install
+
+`koin-android` includes `koin-core` and the ViewModel support.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+<Install artifacts={['koin-android']} plugin bom />
+
+</TabItem>
+<TabItem label="Annotations">
+
+<Install artifacts={['koin-android', 'koin-annotations']} plugin bom />
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+<Install artifacts={['koin-android']} bom />
+
+</TabItem>
+</Tabs>
+
+Optional Android artifacts:
+
+| Artifact | Adds | Page |
+|----------|------|------|
+| `koin-androidx-workmanager` | Constructor injection in Workers | [WorkManager](/docs/platforms/android/workmanager/) |
+| `koin-androidx-navigation` | `koinNavGraphViewModel()` | [Navigation component](/docs/platforms/android/navigation/) |
+| `koin-androidx-startup` | Start Koin with AndroidX App Startup | [Startup options](/docs/platforms/android/startup-options/#start-with-androidx-app-startup) |
+| `koin-android-compat` | Java APIs for ViewModels and scopes | [ViewModel on Android](/docs/platforms/android/viewmodel/#java) |
+| `koin-compose-viewmodel` | `koinViewModel()` for Compose | [Android tutorial](/docs/platforms/android/tutorial/) |
+
+The full list is in [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+## Start Koin in your Application class
+
+Start Koin once, in `Application.onCreate()`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+```
+
+`appModule` is a `module { }` declared with the Compiler Plugin DSL (`single<UserRepository>()`, `viewModel<UserViewModel>()`).
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.annotation.KoinApplication
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin<MainApplication> {
+            androidLogger()
+            androidContext(this@MainApplication)
+        }
+    }
+}
+```
+
+`startKoin<MainApplication>()` loads every `@Module` class tagged with `@Configuration`. You don't list modules yourself. To pick modules explicitly, use `@KoinApplication(modules = [AppModule::class])`. Module discovery is explained in [Modules](/docs/concepts/modules/).
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+
+class MainApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@MainApplication)
+            modules(appModule)
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Register the class in `AndroidManifest.xml` with `android:name=".MainApplication"` on the `<application>` tag, or Android never runs it.
+
+`androidContext()` adds the `Application` instance to Koin, bound to both `Application` and `Context`. Call it before any option that needs a `Context`, such as `androidFileProperties()` or `workManagerFactory()`.
+
+:::note[Starting Koin from another class]
+You can call `startKoin` elsewhere, as long as it runs once per process and before the first injection. Pass `context.applicationContext` to `androidContext()`, not an Activity. A library or SDK that ships its own Koin setup should not call `startKoin`, which registers a global instance that conflicts with the host app. It should use an isolated context: see [Context isolation](/docs/concepts/context-isolation/).
+:::
+
+## Android Context in definitions
+
+A class that needs a `Context` declares it in its constructor. No qualifier is needed: Koin resolves `Context` to the instance passed to `androidContext()`.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class PreferencesStore(private val context: Context)
+class NotificationHelper(private val application: Application)
+
+val androidModule = module {
+    single<PreferencesStore>()
+    single<NotificationHelper>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.Singleton
+
+@Singleton
+class PreferencesStore(private val context: Context)
+
+@Singleton
+class NotificationHelper(private val application: Application)
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+
+val androidModule = module {
+    singleOf(::PreferencesStore)
+    singleOf(::NotificationHelper)
+}
+```
+
+</TabItem>
+</Tabs>
+
+In a lambda definition, read them with `androidContext()` and `androidApplication()`: `single { PreferencesStore(androidContext()) }`.
+
+| Function | Returns | Fails when |
+|----------|---------|------------|
+| `androidContext()` | The closest `Context`: the `Application`, or the Activity in an Activity scope | No `androidContext()` was given at start (`MissingAndroidContextException`) |
+| `androidApplication()` | Always the `Application` instance | No `Application` was given to `androidContext()` |
+
+Both functions are shortcuts for `get<Context>()` and `get<Application>()`, from `org.koin.android.ext.koin`.
+
+### Which Context you get
+
+In a `single`, or any definition resolved from the root scope, `Context` is the `Application`. This is safe for objects that live as long as the app. Inside an Activity scope, `Context` resolves to the Activity instead: see [Android scopes](/docs/platforms/android/scopes/#context-in-an-activity-scope).
+
+### Activity context
+
+Don't declare an `Activity` as a dependency of a `single`: the singleton keeps the Activity alive after it is destroyed, and the Activity leaks. When a class needs the Activity (screen metrics, a dialog), create it in the Activity, pass the Activity as an [injected parameter](/docs/concepts/parameters/), or declare it in an Activity scope:
+
+```kotlin
+class ScreenMetrics(private val activity: Activity) {
+    fun screenWidth(): Int = activity.resources.displayMetrics.widthPixels
+}
+
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val metrics = ScreenMetrics(this)
+    }
+}
+```
+
+### Several instances of the same Android type
+
+When two definitions share a type, such as two `SharedPreferences` files, tell them apart with a [qualifier](/docs/concepts/qualifiers/):
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+
+val preferencesModule = module {
+    single(named("settings")) {
+        androidContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
+    }
+    single(named("session")) {
+        androidContext().getSharedPreferences("session", Context.MODE_PRIVATE)
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Singleton
+
+@Module
+class PreferencesModule {
+
+    @Singleton
+    @Named("settings")
+    fun settings(context: Context): SharedPreferences =
+        context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+
+    @Singleton
+    @Named("session")
+    fun session(context: Context): SharedPreferences =
+        context.getSharedPreferences("session", Context.MODE_PRIVATE)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Logging
+
+`androidLogger()` sends Koin logs to Logcat. The default level is `Level.INFO`:
+
+```kotlin
+startKoin {
+    androidLogger(Level.DEBUG)
+    androidContext(this@MainApplication)
+    modules(appModule)
+}
+```
+
+`Level.DEBUG` logs every resolution and its duration, which helps when you debug a missing definition. It also slows resolution down, so keep it for debug builds: `androidLogger(if (BuildConfig.DEBUG) Level.DEBUG else Level.ERROR)`. Other loggers are listed in [Starting Koin](/docs/concepts/starting-koin/).
+
+## Next steps
+
+- [Tutorial: your first Android app](/docs/platforms/android/tutorial/): build a Jetpack Compose app with a ViewModel.
+- [Inject into Android components](/docs/platforms/android/components/): Activity, Fragment, Service and other entry points.
+- [Startup options](/docs/platforms/android/startup-options/): properties from assets, loading modules later, lazy modules and App Startup.
+- [Android scopes](/docs/platforms/android/scopes/): bind instances to an Activity or Fragment lifecycle.
+- [R8 and ProGuard](/docs/platforms/android/r8-proguard/): what Koin keeps and what you keep.

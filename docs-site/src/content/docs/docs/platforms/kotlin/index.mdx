@@ -1,0 +1,151 @@
+---
+title: "Kotlin: install and start"
+description: "Add Koin to a Kotlin/JVM application and start it from main()."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+This page adds Koin to a plain Kotlin/JVM application (a console app, a desktop app or a backend that does not use Ktor) and starts the container from `main()`. For Android, Ktor and Kotlin Multiplatform, use the guide of your platform in [Install Koin](/docs/get-started/install/).
+
+## Prerequisites
+
+- A Kotlin JVM project built with Gradle, on JDK 17 or later.
+- Kotlin <Version of="kotlinMin" /> or later, which the Koin Compiler Plugin requires.
+
+## Install
+
+The Compiler Plugin is the recommended setup in both styles. It reads your constructors and checks the graph at build time (see [Compile-time safety](/docs/tooling/compile-time-safety/)).
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+<Install artifacts={['koin-core']} plugin bom />
+
+</TabItem>
+<TabItem label="Annotations">
+
+<Install artifacts={['koin-core', 'koin-annotations']} plugin bom />
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+<Install artifacts={['koin-core']} bom />
+
+This form needs no plugin, and has no build-time check of the graph.
+
+</TabItem>
+</Tabs>
+
+The Compiler Plugin is not part of the BOM, so it carries its own version. Every artifact is listed in [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+## Start Koin in main()
+
+Declare your definitions in a module, then call `startKoin` once, at the top of `main()`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
+class Greeter
+class App(private val greeter: Greeter)
+
+val appModule = module {
+    single<Greeter>()
+    single<App>()
+}
+
+fun main() {
+    startKoin {
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+import org.koin.plugin.module.dsl.startKoin
+
+@Singleton
+class Greeter
+
+@Singleton
+class App(private val greeter: Greeter)
+
+@Module
+@ComponentScan
+@Configuration
+class AppModule
+
+@KoinApplication
+object MyApp
+
+fun main() {
+    startKoin<MyApp>()
+}
+```
+
+`startKoin<MyApp>()` loads every `@Configuration` module, so you do not call `modules()`.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+
+class Greeter
+class App(private val greeter: Greeter)
+
+val appModule = module {
+    singleOf(::Greeter)
+    singleOf(::App)
+}
+
+fun main() {
+    startKoin {
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Then get an instance from the container. In `main()` there is no framework to inject into, so ask Koin for the entry point of your program:
+
+```kotlin
+import org.koin.mp.KoinPlatform
+
+fun main() {
+    startKoin { modules(appModule) }
+
+    val app = KoinPlatform.getKoin().get<App>()
+}
+```
+
+From there, everything is constructor injection. Classes that cannot receive their dependencies through a constructor implement `KoinComponent` (see [Injection](/docs/concepts/injection/)).
+
+:::caution
+Call `startKoin` once per process. A second call throws `KoinApplicationAlreadyStartedException`, also on iOS and wasmJs. To add modules after start, use `loadKoinModules`. Options, logging and properties are in [Starting Koin](/docs/concepts/starting-koin/).
+:::
+
+## Next steps
+
+- [Tutorial: your first Kotlin app](/docs/platforms/kotlin/tutorial/): build a small app step by step.
+- [How Koin works](/docs/get-started/how-koin-works/): definition, module, container, lifetime and injection.
+- [Starting Koin](/docs/concepts/starting-koin/): start options, loggers and typed startup.
+- [Your first test](/docs/testing/first-test/): test a module with JUnit.

@@ -1,0 +1,188 @@
+---
+title: "ViewModel on Android"
+description: "Retrieve ViewModels in Activities and Fragments with by viewModel(), activityViewModel(), navigation graph ViewModels and the Java API."
+---
+
+import Install from '~/components/Install.astro';
+
+This page covers the Android APIs to retrieve a ViewModel in an Activity or a Fragment: `by viewModel()`, `activityViewModel()`, navigation graph ViewModels and the Java API. How to declare a ViewModel, pass it parameters and use `SavedStateHandle` is the same on every platform: see [ViewModel definitions](/docs/concepts/viewmodels/). For Compose, see [ViewModel in Compose](/docs/platforms/compose/viewmodel/).
+
+The retrieval code below is the same whichever style you use to declare the ViewModel (`viewModel<UserViewModel>()`, `@KoinViewModel` or `viewModelOf(::UserViewModel)`).
+
+## In an Activity
+
+```kotlin
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class UserActivity : AppCompatActivity() {
+
+    private val viewModel: UserViewModel by viewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.loadUser()
+
+        // eager alternative, inside a function
+        val sameViewModel: UserViewModel = getViewModel()
+    }
+}
+```
+
+`by viewModel()` is lazy: the ViewModel is created or retrieved on first access. Both functions go through the Activity `ViewModelStore`, so after a rotation you get the same instance back. Never retrieve a ViewModel with `by inject()` or `get()`: you would get a new, unmanaged instance each time.
+
+These functions run on the main thread (`@MainThread`). Read the property in or after `onCreate()`.
+
+## In a Fragment
+
+```kotlin
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+class UserDetailFragment : Fragment() {
+
+    // owned by this Fragment
+    private val detailViewModel: UserDetailViewModel by viewModel()
+
+    // owned by the host Activity, shared with it and its other Fragments
+    private val userViewModel: UserViewModel by activityViewModel()
+}
+```
+
+| Function | Owner of the ViewModel | Eager version |
+|----------|------------------------|---------------|
+| `by viewModel()` | The Fragment | `getViewModel()` |
+| `by activityViewModel()` | The host Activity | `getActivityViewModel()` |
+
+### Sharing between Fragments
+
+Fragments that use `activityViewModel()` for the same class get the same instance, and so does the Activity with `by viewModel()`:
+
+```kotlin
+class WeatherActivity : AppCompatActivity() {
+    private val weatherViewModel: WeatherViewModel by viewModel()
+}
+
+class WeatherHeaderFragment : Fragment() {
+    private val weatherViewModel: WeatherViewModel by activityViewModel()
+}
+
+class WeatherListFragment : Fragment() {
+    private val weatherViewModel: WeatherViewModel by activityViewModel()
+}
+```
+
+### Another owner
+
+`viewModel()` takes an `ownerProducer`. Use it to share a ViewModel between child Fragments of the same parent:
+
+```kotlin
+class ChildFragment : Fragment() {
+    private val parentViewModel: ParentViewModel by viewModel(ownerProducer = { requireParentFragment() })
+}
+```
+
+## Parameters and qualifiers
+
+Pass values to the ViewModel with a `parametersOf` lambda, and pick a definition with a qualifier:
+
+```kotlin
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
+
+class ItemActivity : AppCompatActivity() {
+
+    private val itemId: String by lazy { intent.getStringExtra("ITEM_ID").orEmpty() }
+
+    private val viewModel: ItemViewModel by viewModel { parametersOf(itemId) }
+    private val draftViewModel: EditorViewModel by viewModel(qualifier = named("draft"))
+}
+```
+
+How to declare the parameter on the ViewModel side (`@InjectedParam`, `params.get()`) is in [ViewModel definitions](/docs/concepts/viewmodels/). Parameters are used only when the ViewModel is first created: after a rotation, the ViewModel is retrieved from the store and the new parameters are ignored.
+
+With a qualifier, Koin stores the ViewModel under its own key. Two qualifiers on the same class give two separate instances in the same owner.
+
+## SavedStateHandle
+
+Add a `SavedStateHandle` parameter to the ViewModel constructor and Koin provides it. Declaration is covered in [ViewModel definitions](/docs/concepts/viewmodels/). On Android, the handle is built from the owner `CreationExtras`: it contains the Activity intent extras or the Fragment arguments. Pass `extrasProducer` to `viewModel()` if you need other extras.
+
+The `stateViewModel()` functions from older Koin versions are removed. Use `viewModel()`.
+
+## Navigation graph ViewModel
+
+`by koinNavGraphViewModel(R.id.checkout_graph)` scopes a ViewModel to a Navigation component graph, so every Fragment of the graph shares it and it is cleared when the graph is popped. It needs the `koin-androidx-navigation` artifact: see [Navigation component](/docs/platforms/android/navigation/). For Navigation Compose, see [ViewModel in Compose](/docs/platforms/compose/viewmodel/).
+
+## ViewModels and Android scopes
+
+When an Activity or Fragment has a Koin scope (`ScopeActivity`, `AndroidScopeComponent`), `by viewModel()` looks up the ViewModel definition from that scope. This does not make Activity-scoped dependencies safe in a ViewModel.
+
+:::caution
+Don't inject Activity-scoped or Fragment-scoped instances into a ViewModel. The ViewModel survives a rotation, the Activity scope does not: the ViewModel keeps a reference to closed objects and leaks the old Activity. For instances that live as long as the ViewModel, use the ViewModel scope (see [Android scopes](/docs/platforms/android/scopes/#viewmodel-scope)).
+:::
+
+## Lower-level API
+
+`viewModelForClass()` takes a `KClass` instead of a reified type. Use it when the class is only known at runtime:
+
+```kotlin
+val viewModel: UserViewModel by viewModelForClass(
+    clazz = UserViewModel::class,
+    owner = this,
+    key = "user_42",
+    parameters = { parametersOf("42") },
+)
+```
+
+`key` lets you keep several instances of the same class in one owner. Unlike `viewModel()`, it starts from empty `CreationExtras`: pass a `state` argument if the ViewModel needs a `SavedStateHandle`.
+
+## Java
+
+The `koin-android-compat` artifact exposes static functions for Java callers. It depends on `koin-android`, so it is the only Koin dependency you add.
+
+<Install artifacts={['koin-android-compat']} bom />
+
+The three entry points are static methods of Java-friendly `object`s:
+
+| Class | Use it to |
+|-------|-----------|
+| `ViewModelCompat` | Get a ViewModel owned by a `ViewModelStoreOwner` (an Activity or a Fragment) |
+| `SharedViewModelCompat` | Get, from a Fragment, the ViewModel owned by its host Activity |
+| `ScopeCompat` | Get a ViewModel from a given Koin `Scope` |
+
+Each class has a lazy `viewModel()` or `sharedViewModel()` that returns a `kotlin.Lazy`, and an eager `getViewModel()` or `getSharedViewModel()`:
+
+```java
+import kotlin.Lazy;
+import org.koin.android.compat.SharedViewModelCompat;
+import org.koin.android.compat.ViewModelCompat;
+
+public class UserJavaActivity extends AppCompatActivity {
+
+    private final Lazy<UserViewModel> viewModel =
+        ViewModelCompat.viewModel(this, UserViewModel.class);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        UserViewModel vm = ViewModelCompat.getViewModel(this, UserViewModel.class);
+    }
+}
+
+public class UserJavaFragment extends Fragment {
+
+    private final Lazy<UserViewModel> sharedViewModel =
+        SharedViewModelCompat.sharedViewModel(this, UserViewModel.class);
+}
+```
+
+Each method also takes an optional qualifier and a parameters lambda. `ViewModelCompat` and `SharedViewModelCompat` always resolve from the root scope, never from an Activity scope. Use `ScopeCompat.viewModel(scope, owner, clazz)` to resolve from another scope.
+
+## Next steps
+
+- [ViewModel definitions](/docs/concepts/viewmodels/): declare ViewModels, parameters and `SavedStateHandle` on every platform.
+- [Android scopes](/docs/platforms/android/scopes/): Activity, Fragment and ViewModel scopes.
+- [Inject into Android components](/docs/platforms/android/components/): inject other dependencies in Activities and Fragments.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): `koinViewModel()` in Composables.
+- [Unit tests](/docs/testing/): test ViewModels with Koin.

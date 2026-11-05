@@ -1,0 +1,26 @@
+---
+title: "Which migration guide do I need?"
+description: "Pick the right guide to move from Hilt, Dagger or the KSP processor to Koin, or to upgrade a Koin version."
+---
+
+Find your starting point in the table, then follow the guide.
+
+| You are on | You want | Read |
+|---|---|---|
+| Hilt | To decide whether Koin fits | [Koin vs Hilt](/docs/migration/koin-vs-hilt/) |
+| Hilt | To move to Koin, in one go or one module at a time | [Migrate from Hilt](/docs/migration/from-hilt/) |
+| Dagger, with or without Hilt | To move to Koin, or keep both for a while | [Migrate from Dagger](/docs/migration/from-dagger/) |
+| JSR-330 annotations (`@Inject`, `@Singleton`) | To keep them on existing classes | [JSR-330 annotations](/docs/migration/jsr330/) |
+| Koin Annotations with the KSP processor (`koin-ksp-compiler`) | To move to the Koin Compiler Plugin | [Migrate from KSP to the Compiler Plugin](/docs/migration/from-ksp/) |
+| Koin Annotations with the KSP processor | To stay on KSP for now | [KSP processor setup (deprecated)](/docs/migration/ksp-setup/) |
+| Koin 4.0 or 4.1 | To move to Koin 4.2 | [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/) |
+| Koin 3.x | To move to 4.x | [Upgrade from Koin 3.x](/docs/migration/upgrade-from-3/) |
+
+:::tip
+The official Koin skills include a `di-migration` skill that walks an agent through Hilt, Dagger, KSP and Koin 3.x migrations. See [AI agents and Koin skills](/docs/tooling/ai-agents/).
+:::
+
+## Next steps
+
+- [Release notes](/docs/support/releases/) for the changes in each version.
+- [Troubleshooting](/docs/support/troubleshooting/) if a build or a start fails after a migration.

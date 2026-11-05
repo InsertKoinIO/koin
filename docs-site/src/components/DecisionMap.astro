@@ -1,0 +1,232 @@
+---
+// Homepage decision map: one question at a time, ending on a few precise links.
+// Links rendered here are not seen by starlight-links-validator, so every slug is
+// resolved against the docs collection and a missing page fails the build.
+import { LinkCard } from '@astrojs/starlight/components';
+import { getEntry } from 'astro:content';
+import { diNote, results, steps } from '~/data/decision-map';
+
+const resolve = async (slug: string) => {
+  const entry = await getEntry('docs', slug);
+  if (!entry) throw new Error(`DecisionMap: no docs page for "${slug}"`);
+  return entry;
+};
+
+const noteHref = `/${diNote.slug}/`;
+await resolve(diNote.slug);
+
+const resolved = await Promise.all(
+  results.map(async (result) => ({
+    ...result,
+    cards: await Promise.all(
+      result.links.map(async ({ slug, title }) => {
+        const entry = await resolve(slug);
+        return { href: `/${slug}/`, title: title ?? entry.data.title, description: entry.data.description };
+      }),
+    ),
+  })),
+);
+
+// A typo in the tree would otherwise leave a button that does nothing.
+const targets = new Set([...steps.map((step) => step.id), ...results.map((result) => result.id)]);
+for (const answer of steps.flatMap((step) => step.answers)) {
+  if (!targets.has(answer.next)) throw new Error(`DecisionMap: unknown target "${answer.next}"`);
+}
+---
+<!-- Hidden routes repeat other pages, so they stay out of the site search. -->
+<div class="decision-map" data-decision-map data-pagefind-ignore>
+  <noscript>
+    <style is:inline>.decision-map-interactive { display: none; }</style>
+    <ul class="routes">
+      {resolved.map((result) => (
+        <li>
+          <strong>{result.route}:</strong>{' '}
+          {result.cards.map((card, index) => (
+            <>{index > 0 && ', '}<a href={card.href}>{card.title}</a></>
+          ))}
+        </li>
+      ))}
+    </ul>
+    <p class="note">{diNote.text} <a href={noteHref}>{diNote.label}</a>.</p>
+  </noscript>
+
+  <div class="decision-map-interactive">
+    {steps.map((step, index) => (
+      <section class="step" data-id={step.id} hidden={index > 0}>
+        <h3 id={`dm-${step.id}`} tabindex="-1">{step.question}</h3>
+        <div class="answers" role="group" aria-labelledby={`dm-${step.id}`}>
+          {step.answers.map((answer) => (
+            <button type="button" data-next={answer.next} aria-pressed="false">
+              <span class="label">{answer.label}</span>
+              {answer.hint && <span class="hint">{answer.hint}</span>}
+            </button>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    {resolved.map((result) => (
+      <section class="step result" data-id={result.id} hidden>
+        <h3 tabindex="-1">Start here</h3>
+        <div class="cards">
+          {result.cards.map((card) => <LinkCard {...card} />)}
+        </div>
+        {result.showDiNote && <p class="note">{diNote.text} <a href={noteHref}>{diNote.label}</a>.</p>}
+        <button type="button" class="reset">Start over</button>
+      </section>
+    ))}
+  </div>
+</div>
+
+<style>
+  .decision-map { margin-top: 1.5rem; }
+  .decision-map-interactive { counter-reset: step; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; margin: 0; }
+  .step {
+    position: relative;
+    margin: 0;
+    padding-inline-start: 2.75rem;
+    counter-increment: step;
+    /* Starlight already keeps scrolled content clear of the fixed header. */
+    scroll-margin-bottom: 1rem;
+  }
+  .step[hidden] { display: none; }
+
+  /* Step marker: filled while it waits for the reader, muted once answered. */
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: var(--koin-on-brand);
+    background: var(--koin-brand);
+    border-radius: 50%;
+  }
+  .step:has([aria-pressed='true'])::before { color: var(--sl-color-text-accent); background: var(--sl-color-accent-low); }
+  .result::before { content: '→' / ''; }
+  /* The line that links a step to the next one on screen. */
+  .step:has(~ .step:not([hidden]))::after {
+    content: '';
+    position: absolute;
+    inset-block: 2rem -1.5rem;
+    inset-inline-start: calc(0.875rem - 1px);
+    width: 2px;
+    background: var(--sl-color-hairline-light);
+  }
+
+  h3 { margin: 0; font-size: var(--sl-text-h4); line-height: 1.75rem; }
+  h3:focus { outline: none; }
+  :is(h3, button):focus-visible { outline: 2px solid var(--sl-color-accent); outline-offset: 2px; }
+
+  .answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+  .answers button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.125rem;
+    margin: 0;
+    padding: 0.625rem 2rem 0.625rem 1rem;
+    font: inherit;
+    text-align: start;
+    color: var(--sl-color-white);
+    background: var(--home-control);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--koin-radius);
+    cursor: pointer;
+  }
+  .answers button:hover { border-color: var(--sl-color-accent); }
+  .answers button[aria-pressed='true'] { background: var(--sl-color-accent-low); border-color: var(--sl-color-accent); }
+  /* The check mark shows the selection without relying on color. */
+  .answers button[aria-pressed='true']::after {
+    content: '✓' / '';
+    position: absolute;
+    top: 0.5rem;
+    inset-inline-end: 0.625rem;
+    font-weight: 700;
+    color: var(--sl-color-text-accent);
+  }
+  .label { margin: 0; font-weight: 600; }
+  .hint { margin: 0; font-size: var(--sl-text-sm); color: var(--sl-color-gray-2); }
+
+  /* On phones, the content takes the full width and the marker sits beside the question. */
+  @media (max-width: 36rem) {
+    .step { padding-inline-start: 0; }
+    .step::after { display: none; }
+    h3 { padding-inline-start: 2.25rem; }
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1rem; margin-top: 0.75rem; }
+  .cards > :global(*) { margin: 0; background: var(--home-control); }
+  .note { margin: 0.75rem 0 0; font-size: var(--sl-text-sm); color: var(--sl-color-gray-2); }
+
+  .reset {
+    display: block;
+    margin: 1rem 0 0;
+    padding: 0;
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+    text-decoration: underline;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  /* Motion stays opt-in, and only moves opacity and transform so nothing reflows. */
+  @media (prefers-reduced-motion: no-preference) {
+    .answers button { transition: background-color 150ms, border-color 150ms, transform 100ms; }
+    .answers button:active { transform: scale(0.98); }
+    /* An animation restarts each time a section leaves display: none, so no script is involved. */
+    .step:not(:first-child) { animation: reveal 220ms ease-out; }
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(0.5rem); }
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-decision-map]');
+
+  if (root) {
+    const sections = new Map(
+      [...root.querySelectorAll<HTMLElement>('[data-id]')].map((section) => [section.dataset.id!, section]),
+    );
+    const [first] = sections.keys();
+
+    // Ids of the sections on screen, in reading order. Kept in the history entry,
+    // so coming back from a result restores the route.
+    let path: string[] = history.state?.decisionMap;
+    if (!path?.every((id) => sections.has(id))) path = [first];
+
+    const render = () => {
+      sections.forEach((section, id) => (section.hidden = !path.includes(id)));
+      // The map is a tree: each section is the target of a single answer.
+      for (const answer of root.querySelectorAll<HTMLElement>('[data-next]')) {
+        answer.setAttribute('aria-pressed', String(path.includes(answer.dataset.next!)));
+      }
+    };
+    render();
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('button');
+      if (!button) return;
+
+      const { next } = button.dataset;
+      // Changing an earlier answer discards everything that followed it.
+      const kept = path.slice(0, path.indexOf(button.closest<HTMLElement>('[data-id]')!.dataset.id!) + 1);
+      path = next ? [...kept, next] : [first];
+
+      render();
+      history.replaceState({ ...history.state, decisionMap: path }, '');
+      const current = sections.get(path.at(-1)!)!;
+      current.querySelector('h3')!.focus({ preventScroll: true });
+      current.scrollIntoView({ block: 'nearest' });
+    });
+  }
+</script>

@@ -1,0 +1,131 @@
+/* Koin theme, taken from the insert-koin.io brand: Raleway, #f8b133 and the dark
+   surfaces below. This file is unlayered, so a token set on :root also beats
+   Starlight's light theme: every overridden token needs a value in both blocks. */
+:root {
+  --koin-brand: #f8b133;
+  --koin-on-brand: #282c34;
+  --koin-deepdark: #20232a;
+  --koin-radius: 0.4rem;
+
+  --sl-font: 'Raleway Variable';
+  --sl-text-body: 1.0625rem;
+
+  --sl-color-accent-low: #3d2a06;
+  --sl-color-accent: #f8b133;
+  --sl-color-accent-high: #fcdca3;
+
+  --sl-color-black: #1b1b1d;
+  --sl-color-gray-5: #373940;
+  --sl-color-gray-6: #20232a;
+}
+/* Links stay a darker shade here: the brand orange on white is only about 1.9:1.
+   The orange itself is kept for fills and bars. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #fdecc8;
+  --sl-color-accent: #8f5c00;
+  --sl-color-accent-high: #5f3d00;
+
+  --sl-color-white: #1a1a1a;
+  --sl-color-black: #fff;
+  --sl-color-gray-5: hsl(224, 6%, 77%);
+  --sl-color-gray-6: #ececec;
+  --sl-color-gray-7: #f7f7f7;
+}
+
+/* Raleway defaults to old-style figures, which make versions like 4.2.2 look uneven. */
+html { font-variant-numeric: lining-nums; }
+
+/* The dark surfaces stay dark in both themes, so they carry their own tokens. The
+   search dialog lives in the header too and must keep following the chosen theme,
+   which is why these are not set on the whole header. */
+.header > .header > *:not(:has(site-search)),
+site-search > button,
+[data-has-hero] .hero {
+  --sl-color-white: #fff;
+  --sl-color-black: #1b1b1d;
+  --sl-color-gray-1: hsl(224, 20%, 94%);
+  --sl-color-gray-2: hsl(224, 6%, 77%);
+  --sl-color-gray-3: hsl(224, 6%, 56%);
+  --sl-color-gray-5: #373940;
+  --sl-color-gray-6: #20232a;
+  --sl-color-bg-nav: #20232a;
+  --sl-color-text-accent: var(--koin-brand);
+}
+
+/* Top bar. */
+header.header { background-color: var(--koin-deepdark); border-bottom-color: #373940; }
+site-search > button:is(*, :hover) { border-radius: var(--koin-radius); }
+
+/* Homepage hero: a dark band across the full width of the page. The shadow paints
+   the sides without adding scrollable overflow, and the clip keeps it in the band. */
+[data-has-hero] .hero {
+  margin-block-start: -1.5rem;
+  padding-block: 2rem;
+  background: var(--koin-deepdark);
+  box-shadow: 0 0 0 100vmax var(--koin-deepdark);
+  clip-path: inset(0 -100vmax);
+}
+[data-has-hero] .hero h1 { font-weight: 500; color: var(--koin-brand); }
+[data-has-hero] .hero .sl-link-button.minimal { color: var(--koin-brand); }
+[data-has-hero] .hero > img { width: 11rem; }
+@media (min-width: 50rem) {
+  [data-has-hero] .hero { padding-block: 4.5rem 3rem; }
+  [data-has-hero] .hero > img { width: min(100%, 20rem); }
+  [data-has-hero] .hero .copy > * { max-width: none; }
+  [data-has-hero] .hero h1 { font-size: clamp(var(--sl-text-5xl), 4vw, 3.5rem); }
+}
+
+/* Buttons. */
+.sl-link-button { border-radius: var(--koin-radius); }
+.sl-link-button.primary {
+  color: var(--koin-on-brand);
+  background: var(--koin-brand);
+  border-color: var(--koin-brand);
+}
+.sl-link-button.primary:hover { color: var(--koin-on-brand); background: #fcc45c; border-color: #fcc45c; }
+
+/* Current page and current section: a brand bar rather than a filled block. */
+.sidebar-content a[aria-current='page']:is(*, :hover, :focus) {
+  color: var(--sl-color-white);
+  background-color: var(--sl-color-accent-low);
+  box-shadow: inset 3px 0 0 var(--koin-brand);
+}
+starlight-toc a[aria-current='true'] { color: var(--sl-color-white); box-shadow: inset 3px 0 0 var(--koin-brand); }
+
+/* Cards use one brand color for their icons and share the site radius. */
+.card:is(*, :nth-child(n)) {
+  --sl-card-border: var(--koin-brand);
+  --sl-card-bg: var(--sl-color-accent-low);
+  border-radius: var(--koin-radius);
+}
+.sl-link-card { border-radius: var(--koin-radius); }
+
+/* Tables: a tinted header row, with padding so its text clears the tint. */
+.sl-markdown-content th:not(:where(.not-content *)) { background: var(--sl-color-gray-6); }
+.sl-markdown-content :is(th, td):first-child:not(:where(.not-content *)) { padding-inline-start: 0.75rem; }
+.sl-markdown-content :is(th, td):last-child:not(:where(.not-content *)) { padding-inline-end: 0.75rem; }
+
+/* The card that holds the decision map section, lifted off the page. */
+.home-surface {
+  --home-control: var(--sl-color-bg);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-hairline-light);
+  border-radius: var(--koin-radius);
+  box-shadow: var(--sl-shadow-lg);
+}
+.home-surface > :first-child { margin-top: 0; }
+
+/* Sits on white, because the logo artwork is black on a white background. */
+.koin-by-kotzilla { padding: 0.75rem 1rem; background: #fff; border: 1px solid var(--sl-color-gray-5); border-radius: var(--koin-radius); }
+
+/* Homepage motion. Opt-in, and limited to opacity and transform so nothing reflows. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-has-hero] { scroll-behavior: smooth; }
+  [data-has-hero] .hero > img { animation: koin-logo-in 500ms ease-out; }
+  [data-has-hero] :is(.sl-link-button svg, .sl-link-card .icon) { transition: transform 150ms ease-out; }
+  [data-has-hero] :is(.sl-link-button:hover svg, .sl-link-card:hover .icon) { transform: translateX(3px); }
+}
+@keyframes koin-logo-in {
+  from { opacity: 0; transform: scale(0.94); }
+}

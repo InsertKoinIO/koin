@@ -1,0 +1,42 @@
+---
+title: "Install Koin"
+description: "Add Koin and the Koin Compiler Plugin to a Gradle project, with the artifacts each platform needs."
+---
+
+import Install from '~/components/Install.astro';
+import Version from '~/components/Version.astro';
+
+The setup has the same shape on every platform: import the BOM, declare artifacts without versions, and apply the Koin Compiler Plugin. Here it is for a Kotlin/JVM project:
+
+<Install artifacts={['koin-core']} plugin bom />
+
+The Compiler Plugin needs Kotlin <Version of="kotlinMin" /> or later. It is not part of the BOM and has its own version. See the [versions it supports](/docs/tooling/compiler-plugin/).
+
+:::caution[Apply the plugin in every Gradle module that declares definitions]
+`single<T>()` compiles without the plugin, then fails when the code runs with a `NotImplementedError` that says "The Koin Compiler plugin is missing".
+:::
+
+If you can't use the Compiler Plugin, leave it out and write your modules with the [Constructor or Classic DSL](/docs/get-started/dsl-or-annotations/).
+
+## Artifacts for your platform
+
+Replace `koin-core` with the artifacts of your platform. Each guide shows its complete setup.
+
+| Platform | Artifacts | Guide |
+|----------|-----------|-------|
+| Kotlin/JVM | `koin-core` | [Kotlin](/docs/platforms/kotlin/) |
+| Android | `koin-android` | [Android](/docs/platforms/android/) |
+| Android with Jetpack Compose | `koin-android`, `koin-compose`, `koin-compose-viewmodel` | [Compose](/docs/platforms/compose/) |
+| Kotlin Multiplatform | `koin-core` in `commonMain` | [Kotlin Multiplatform](/docs/platforms/kmp/install/) |
+| Compose Multiplatform | `koin-compose`, `koin-compose-viewmodel` | [Compose Multiplatform](/docs/platforms/kmp/compose-multiplatform/) |
+| Ktor server | `koin-ktor`, `koin-logger-slf4j` | [Ktor](/docs/platforms/ktor/) |
+
+For Koin Annotations, also add `koin-annotations`. For tests, add `koin-test` and see [Testing](/docs/testing/).
+
+To check that an artifact supports a target such as tvOS or wasmJs, see [Gradle artifacts and BOM](/docs/reference/artifacts/).
+
+## Next steps
+
+- [Koin DSL or annotations?](/docs/get-started/dsl-or-annotations/): how you want to write your modules.
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): options, and what the plugin validates.
+- [Upgrade to Koin 4.2](/docs/migration/upgrade-4-2/): if you are on 4.0 or 4.1.

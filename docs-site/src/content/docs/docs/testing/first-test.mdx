@@ -1,0 +1,207 @@
+---
+title: "Tutorial: your first test"
+description: "Test a module with JUnit 4: start Koin in a test, replace a dependency with a mock, and check the graph on the Compiler Plugin path or with verify()."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+## What you will do
+
+You write JUnit 4 tests for the app from the [Kotlin tutorial](/docs/platforms/kotlin/tutorial/). You start Koin for each test with `KoinTestRule`, replace a dependency with a Mockito mock, and check your configuration. It takes about 10 minutes.
+
+## Prerequisites
+
+- The app from the [Kotlin tutorial](/docs/platforms/kotlin/tutorial/), or its sample.
+- Koin set up in your project, either with the Koin Compiler Plugin or without it.
+
+The code matches the `kotlin` and `kotlin-annotations` samples of [koin-getting-started](https://github.com/InsertKoinIO/koin-getting-started), under `app/src/test`. Clone the repository and run the tests from the sample folder:
+
+```bash
+./gradlew test
+```
+
+All testing APIs are described in [Unit tests](/docs/testing/).
+
+## Add the test dependencies
+
+<Install test={['koin-test', 'koin-test-junit4']} bom />
+
+`koin-test` does not depend on a mocking library, so add the one you use. This tutorial uses Mockito, as the sample does:
+
+```kotlin
+dependencies {
+    testImplementation("org.mockito:mockito-inline:<MOCKITO_VERSION>")
+}
+```
+
+For JUnit 5, use `koin-test-junit5` instead of `koin-test-junit4` (see [Unit tests](/docs/testing/)).
+
+## The code under test
+
+The tests load the setup from the Kotlin tutorial. The classes are the same in every style, only the registration differs:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+val appModule = module {
+    single<UserApplication>()
+    single<UserRepositoryImpl>() bind UserRepository::class
+    single<UserServiceImpl>() bind UserService::class
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+@KoinApplication
+object KoinUserApplication
+```
+
+This is the entry point from the Kotlin Annotations tutorial. The annotated classes are registered through it.
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    singleOf(::UserApplication)
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserServiceImpl) bind UserService::class
+}
+```
+
+</TabItem>
+</Tabs>
+
+Each test starts Koin with this configuration, so it runs against the same graph as the app.
+
+## Start Koin in a test
+
+Implement `KoinTest` and add a `KoinTestRule`. The rule starts Koin before each test and stops it after. `KoinTest` gives the test class `get()` and `by inject()`, for example `val userService: UserService by inject()`.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
+
+class HelloMockTest : KoinTest {
+
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        modules(appModule)
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+The sample starts the `@KoinApplication` class with the typed API, and stops Koin after each test:
+
+```kotlin
+import org.koin.core.context.stopKoin
+import org.koin.plugin.module.dsl.startKoin
+import org.koin.test.KoinTest
+
+class HelloMockTest : KoinTest {
+
+    @Before
+    fun before() {
+        startKoin<KoinUserApplication>()
+    }
+
+    @After
+    fun after() {
+        stopKoin()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Starting a fresh container per test keeps instances from leaking between tests.
+
+## Mock a dependency
+
+Add a `MockProviderRule` to tell Koin how to build mocks, then replace `UserRepository` with `declareMock`. This part is the same in every style:
+
+```kotlin
+import org.koin.test.mock.MockProviderRule
+import org.koin.test.mock.declareMock
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito
+import org.mockito.Mockito.times
+
+// add this to the HelloMockTest class of the previous step
+@get:Rule
+val mockProvider = MockProviderRule.create { clazz -> Mockito.mock(clazz.java) }
+
+@Test
+fun `mock test`() {
+    val service = declareMock<UserRepository> {
+        given(findUserOrNull(anyString())).willReturn(User("Mock", "mock@example.com"))
+    }
+
+    getKoin().get<UserApplication>().sayHello("Mock")
+    Mockito.verify(service, times(1)).findUserOrNull(anyString())
+}
+```
+
+`declareMock` replaces the `UserRepository` definition for this test only. `UserApplication` and `UserService` are real, so the test checks that the call goes through `UserService` down to the repository once.
+
+## Check your configuration
+
+How you check that every dependency is declared depends on whether the Compiler Plugin is applied.
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+You write no test for this. The Compiler Plugin checks the dependency graph on every build, and a missing definition fails the build with a `KOIN-D001` error. The `mock test` above is the only test you need here.
+
+To see it work, remove the `UserRepository` definition and build: the build fails instead of the app crashing at runtime. See [Compile-time safety](/docs/tooling/compile-time-safety/).
+
+</TabItem>
+<TabItem label="Annotations">
+
+You write no test for this. The Compiler Plugin checks the dependency graph on every build, and a missing definition fails the build with a `KOIN-D001` error. See [Compile-time safety](/docs/tooling/compile-time-safety/).
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+Without the Compiler Plugin, nothing checks the graph before runtime. Add a `verify()` test. It checks that every constructor parameter in the module has a definition, without creating any instance:
+
+```kotlin
+import org.koin.test.AutoCloseKoinTest
+import org.koin.test.verify.verify
+
+class ModuleVerificationTest : AutoCloseKoinTest() {
+
+    @Test
+    fun verifyModules() {
+        appModule.verify()
+    }
+}
+```
+
+The test fails on a missing or invalid definition. You can also apply the Compiler Plugin instead and delete this test: see [Koin Compiler Plugin](/docs/tooling/compiler-plugin/).
+
+</TabItem>
+</Tabs>
+
+To decide whether you need `verify()` next to the plugin, see [Verifying your configuration](/docs/testing/verify/).
+
+## Next steps
+
+- [Unit tests](/docs/testing/): every testing API, JUnit 5 and overriding definitions.
+- [Verifying your configuration](/docs/testing/verify/): when `verify()` is still useful.
+- [Android instrumented tests](/docs/testing/android-instrumented/): test Android apps that use Koin.
+- [Ktor tests](/docs/testing/ktor/): test Ktor routes with Koin.

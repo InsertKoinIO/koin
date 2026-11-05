@@ -1,0 +1,127 @@
+---
+title: "Navigation component"
+description: "Share a Koin ViewModel between the Fragments of a Navigation component graph with koinNavGraphViewModel()."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import Install from '~/components/Install.astro';
+
+The `koin-androidx-navigation` artifact adds one function to the AndroidX Navigation component: `koinNavGraphViewModel()`. It gives a Fragment a ViewModel owned by a navigation graph, so every Fragment of that graph shares it, and it is cleared when the graph leaves the back stack. This is the usual way to share state across a multi-step flow such as a checkout or a sign-up.
+
+This page is for Views and Fragments. For Navigation Compose, see [ViewModel in Compose](/docs/platforms/compose/viewmodel/), and for Navigation 3, see [Navigation 3](/docs/platforms/compose/navigation3/).
+
+## Prerequisites
+
+- Koin started in your `Application` (see [Android: install and start](/docs/platforms/android/)).
+- A Navigation component graph with Fragment destinations.
+
+## Install
+
+<Install artifacts={['koin-androidx-navigation']} plugin bom />
+
+The artifact exposes `koin-android` and the AndroidX Navigation Fragment library as `api` dependencies, so you do not need to add them again for Koin. Omit the `plugin` line if you use the Classic or Constructor DSL without the Compiler Plugin. With Annotations, also add `koin-annotations`.
+
+## Declare the ViewModel
+
+A navigation graph ViewModel is a normal ViewModel definition, in any style:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.viewModel
+
+class CheckoutViewModel(private val cart: CartRepository) : ViewModel()
+
+val checkoutModule = module {
+    viewModel<CheckoutViewModel>()
+}
+```
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.core.annotation.KoinViewModel
+
+@KoinViewModel
+class CheckoutViewModel(private val cart: CartRepository) : ViewModel()
+```
+
+</TabItem>
+<TabItem label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+val checkoutModule = module {
+    viewModelOf(::CheckoutViewModel)
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Retrieve it in a Fragment
+
+Pass the id of the graph to `koinNavGraphViewModel()`. The id is the `android:id` of the `<navigation>` element that contains the Fragments:
+
+```xml
+<navigation
+    android:id="@+id/checkout_graph"
+    app:startDestination="@id/cartFragment">
+
+    <fragment android:id="@+id/cartFragment" android:name="com.app.CartFragment" />
+    <fragment android:id="@+id/paymentFragment" android:name="com.app.PaymentFragment" />
+</navigation>
+```
+
+```kotlin
+import org.koin.androidx.navigation.koinNavGraphViewModel
+
+class CartFragment : Fragment() {
+    private val checkoutViewModel: CheckoutViewModel by koinNavGraphViewModel(R.id.checkout_graph)
+}
+
+class PaymentFragment : Fragment() {
+    private val checkoutViewModel: CheckoutViewModel by koinNavGraphViewModel(R.id.checkout_graph)
+}
+```
+
+Both Fragments get the same `CheckoutViewModel` instance. The ViewModel is:
+
+- Created: the first time a Fragment of the graph reads the property.
+- Shared: every Fragment that asks for it with the same graph id gets the same instance.
+- Cleared: when the graph is popped from the back stack.
+
+## How it works
+
+`koinNavGraphViewModel()` is an extension of `Fragment`. Reading the property calls `findNavController().getBackStackEntry(navGraphId)` and then `viewModel()` with that back stack entry as the owner. Two consequences:
+
+- The property is lazy. Read it in or after `onViewCreated()`, once the Fragment is attached to its `NavController`. The graph must be on the back stack, or the Navigation component fails to find the entry.
+- The owner is the `NavBackStackEntry`, not the Fragment or the Activity. A plain `by viewModel()` in the same Fragment gives a different ViewModel, owned by the Fragment.
+
+## Arguments, qualifiers and parameters
+
+`koinNavGraphViewModel()` takes the same optional arguments as `viewModel()` (see [ViewModel on Android](/docs/platforms/android/viewmodel/)):
+
+| Argument | Default | Use it to |
+|----------|---------|-----------|
+| `qualifier` | none | Pick one of several definitions of the same ViewModel class |
+| `ownerProducer` | the back stack entry of the graph | Use another `ViewModelStoreOwner` |
+| `extrasProducer` | `defaultViewModelCreationExtras` of the back stack entry | Provide other `CreationExtras` |
+| `parameters` | none | Pass [injected parameters](/docs/concepts/parameters/), used only when the ViewModel is first created |
+
+A `SavedStateHandle` parameter in the ViewModel constructor is built from the `CreationExtras` of the back stack entry.
+
+:::caution
+A navigation graph outlives each of its Fragments. Don't inject Fragment-scoped or Activity-scoped instances into the ViewModel (see [Android scopes](/docs/platforms/android/scopes/)).
+:::
+
+## Next steps
+
+- [ViewModel on Android](/docs/platforms/android/viewmodel/): every ViewModel retrieval function.
+- [Android scopes](/docs/platforms/android/scopes/): scopes for Activities, Fragments and ViewModels.
+- [ViewModel in Compose](/docs/platforms/compose/viewmodel/): shared ViewModels in Navigation Compose.

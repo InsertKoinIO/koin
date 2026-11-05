@@ -1,0 +1,147 @@
+---
+title: "Startup options"
+description: "Load properties from assets, load modules after start, use lazy modules, and start Koin with AndroidX App Startup."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page covers what you can add to a basic Android start: properties from assets, modules loaded after start, lazy modules and AndroidX App Startup. It assumes Koin starts as in [Android: install and start](/docs/platforms/android/).
+
+## Properties from assets
+
+`androidFileProperties()` loads Koin properties from a file in `src/main/assets`. The default file name is `koin.properties`:
+
+```kotlin
+startKoin {
+    androidContext(this@MainApplication)
+    androidFileProperties()                  // assets/koin.properties
+    // androidFileProperties("app.properties")
+    modules(appModule)
+}
+```
+
+It reads the file through the `Context`, so call it after `androidContext()`. If the file is missing, Koin logs it and continues. To read a property in a definition, see [Starting Koin](/docs/concepts/starting-koin/).
+
+## Loading modules after start
+
+`loadKoinModules()` and `unloadKoinModules()` add or remove modules while the app runs. On Android, this fits a feature that is only used from a few screens:
+
+```kotlin
+import org.koin.core.context.loadKoinModules
+
+private val premiumModules = lazy { loadKoinModules(premiumModule) }
+
+class PremiumActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        premiumModules.value
+        super.onCreate(savedInstanceState)
+    }
+}
+```
+
+- Load before `super.onCreate()`: Fragments restored by the system then find their dependencies.
+- Load once per process: loading the same module again re-registers its definitions and logs an override warning. `allowOverride(false)` does not catch this, because it only applies to the modules loaded at start.
+- Unload with care: `unloadKoinModules(premiumModule)` drops the module definitions and their instances. Unload only when the feature is no longer needed, never on a configuration change, and track the loaded state yourself if you load it again later.
+
+## Lazy modules
+
+On large apps, loading every module in `Application.onCreate()` adds to startup time on the main thread. `lazyModules()` loads the modules you mark with `lazyModule { }` on a background thread, while the modules needed for the first screen load with `modules()`. Setup, waiting for completion and limits are in [Lazy modules](/docs/concepts/lazy-modules/).
+
+## Start with AndroidX App Startup
+
+[AndroidX App Startup](https://developer.android.com/topic/libraries/app-startup) runs initializers from one ContentProvider, before `Application.onCreate()`. The `io.insert-koin:koin-androidx-startup` artifact starts Koin as one of those initializers. Implement `KoinStartup` in your `Application` and return the configuration from `onKoinStartup()`:
+
+<Tabs syncKey="koin-style">
+<TabItem label="Compiler Plugin DSL">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.androix.startup.KoinStartup
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.dsl.koinConfiguration
+
+@OptIn(KoinExperimentalAPI::class)
+class MainApplication : Application(), KoinStartup {
+
+    override fun onKoinStartup() = koinConfiguration {
+        androidContext(this@MainApplication)
+        modules(appModule)
+    }
+}
+```
+
+Same code with the Constructor / Classic DSL.
+
+</TabItem>
+<TabItem label="Annotations">
+
+```kotlin
+import org.koin.android.ext.koin.androidContext
+import org.koin.androix.startup.KoinStartup
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.plugin.module.dsl.koinConfiguration
+
+@KoinApplication
+@OptIn(KoinExperimentalAPI::class)
+class MainApplication : Application(), KoinStartup {
+
+    override fun onKoinStartup() = koinConfiguration<MainApplication> {
+        androidContext(this@MainApplication)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`KoinStartup` replaces the `startKoin` call in `onCreate()`: don't call both. The package name is `org.koin.androix.startup` (with this spelling), and the API is marked `@KoinExperimentalAPI`.
+
+If another initializer needs Koin, make it depend on `KoinInitializer`. App Startup creates initializers itself, so an initializer is an entry point: it implements `KoinComponent` to retrieve its dependencies.
+
+```kotlin
+import android.content.Context
+import androidx.startup.Initializer
+import org.koin.androix.startup.KoinInitializer
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+@OptIn(KoinExperimentalAPI::class)
+class CrashTrackerInitializer : Initializer<Unit>, KoinComponent {
+
+    private val crashTracker: CrashTracker by inject()
+
+    override fun create(context: Context) {
+        crashTracker.configure(context)
+    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>> =
+        listOf(KoinInitializer::class.java)
+}
+```
+
+Register your initializer in `AndroidManifest.xml`, or App Startup never runs it. The library already registers `KoinInitializer`:
+
+```xml
+<provider
+    android:name="androidx.startup.InitializationProvider"
+    android:authorities="${applicationId}.androidx-startup"
+    android:exported="false"
+    tools:node="merge">
+    <meta-data
+        android:name="com.example.CrashTrackerInitializer"
+        android:value="androidx.startup" />
+</provider>
+```
+
+:::caution
+`KoinStartup` still runs on the main thread, during app startup. It does not make Koin start faster. Use it only to order Koin with other App Startup initializers. To move module loading off the main thread, use [Lazy modules](/docs/concepts/lazy-modules/).
+:::
+
+## Next steps
+
+- [Android: install and start](/docs/platforms/android/): the `Application` class and the Android `Context`.
+- [Lazy modules](/docs/concepts/lazy-modules/): load modules in the background.
+- [Multi-module apps](/docs/platforms/android/multi-module/): dynamic feature modules and `loadKoinModules()`.

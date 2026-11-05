@@ -1,0 +1,38 @@
+---
+title: "Overview"
+description: "Which Koin tool covers each stage of a project: build time, development, tests and production."
+---
+
+This page maps each stage of a Koin project to the tool that covers it. Koin itself covers build time, development and tests. For production, Kotzilla (the company that builds Koin) offers an optional monitoring platform.
+
+Koin works without any of the tools on this page. Pick what matches your need.
+
+## Which tool for which need
+
+| Stage | Need | Tool | Ships with Koin |
+|-------|------|------|-----------------|
+| Build time | Fail the build on a missing dependency or a wrong qualifier | [Compile-time safety](/docs/tooling/compile-time-safety/) with the Koin Compiler Plugin | Yes |
+| Development | See what Koin creates and resolves | [Logging](/docs/concepts/logging/) with `printLogger()` or a platform logger | Yes |
+| Development | Navigate between definitions and injection points, see issues in the editor | [IDE plugin](/docs/tooling/ide-plugin/) for Android Studio and IntelliJ IDEA | No, free plugin by Kotzilla |
+| Development | Let your AI coding agent set up, write, migrate and diagnose Koin code | [Koin Skills](/docs/tooling/ai-agents/) for Claude Code, Cursor, Codex, Copilot | No, free skills by the Koin team |
+| Tests | Check a configuration in a test, when the Compiler Plugin does not cover it | [Verifying your configuration](/docs/testing/verify/) with `verify()` | Yes |
+| Tests | Replace definitions with fakes or mocks | [Unit tests](/docs/testing/) with `KoinTest` | Yes |
+| Production | Trace the execution time of chosen functions | [@Monitor](/docs/tooling/monitor/), with the Kotzilla SDK | Annotation yes, tracing needs the SDK |
+| Production | See startup, main thread and background performance issues and crashes from real user sessions | [Production monitoring](/docs/tooling/production-monitoring/) with the Kotzilla platform | No, Kotzilla service |
+
+## Before you reach production
+
+The Compiler Plugin is the first line of defense: a missing definition, a missing qualifier or an unknown scope fails the build with a `KOIN-Dxxx` diagnostic instead of crashing at runtime. During development, the Koin logger prints module loading and instance creation as raw text to the console or Logcat, so it is a debugging aid, not a monitoring tool. If you use the Compiler Plugin, you do not need a `verify()` test by default: see [Verifying your configuration](/docs/testing/verify/).
+
+## Production
+
+Compile-time safety and tests catch configuration errors. They don't tell you how the graph behaves on real devices: how long resolutions take at startup, which dependency blocks the main thread, which crash comes from a Koin resolution.
+
+Koin has no production monitoring of its own. The Kotzilla platform covers this need, through the Kotzilla SDK that plugs into the Koin container. See [Production monitoring](/docs/tooling/production-monitoring/). The [@Monitor](/docs/tooling/monitor/) annotation extends it to your own functions.
+
+## Next steps
+
+- [Koin Compiler Plugin](/docs/tooling/compiler-plugin/): install it and see what it does.
+- [Compile-time safety](/docs/tooling/compile-time-safety/): what the plugin checks at build time.
+- [IDE plugin](/docs/tooling/ide-plugin/): navigation and checks in Android Studio and IntelliJ IDEA.
+- [Production monitoring](/docs/tooling/production-monitoring/): the Kotzilla platform for Koin apps.
