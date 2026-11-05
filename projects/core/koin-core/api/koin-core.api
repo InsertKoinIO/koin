@@ -8,10 +8,10 @@ public abstract interface annotation class org/koin/compiler/hints/KoinConfigura
 	public abstract fun moduleClass ()Ljava/lang/String;
 }
 
-public final class org/koin/core/Koin {
+public final class org/koin/core/Koin : java/lang/AutoCloseable {
 	public fun <init> ()V
 	public final fun addResolutionExtension (Lorg/koin/core/resolution/ResolutionExtension;)V
-	public final fun close ()V
+	public fun close ()V
 	public final fun createEagerInstances ()V
 	public final fun createScope (Ljava/lang/String;Lorg/koin/core/qualifier/Qualifier;Ljava/lang/Object;Lorg/koin/core/qualifier/TypeQualifier;)Lorg/koin/core/scope/Scope;
 	public final fun createScope (Lorg/koin/core/component/KoinScopeComponent;)Lorg/koin/core/scope/Scope;
@@ -41,7 +41,7 @@ public final class org/koin/core/Koin {
 	public final fun unloadModules (Ljava/util/List;)V
 }
 
-public class org/koin/core/KoinApplication {
+public class org/koin/core/KoinApplication : java/lang/AutoCloseable {
 	public static final field Companion Lorg/koin/core/KoinApplication$Companion;
 	protected fun <init> ()V
 	public final fun allowOverride (Z)V
