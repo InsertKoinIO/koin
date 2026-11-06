@@ -67,7 +67,7 @@ Before opening (or approving) any PR, both guards must pass:
 The PR template (`../.github/pull_request_template.md`) carries both guards as a checklist — fill it, don't delete it.
 
 ### Guardrails enforced by `.claude/settings.json` (repo root and `projects/`)
-Claude Code reads shared settings only from the launch directory, so both files carry the deny/ask rules below — keep them in sync. Differences: only the root file denies edits to `docs/`, only `projects/` pre-allows the test scripts and `apiCheck`.
+Claude Code reads shared settings only from the launch directory, so both files carry the deny/ask rules below — keep them in sync. Difference: only `projects/` pre-allows the test scripts and `apiCheck`.
 - **Denied:** `release.sh` / Central Portal publishing (releases are cut by the `release.yml` workflow, never by an agent), force-push, edits to the dead root `.api` dumps.
 - **Asks first:** `git push`, `gh pr create|merge`, any Gradle run with `-x` exclusions.
 
@@ -78,7 +78,7 @@ Claude Code reads shared settings only from the launch directory, so both files 
 - **Commit style:** GitHub issue → `Fix #NNNN - description` (e.g. `Fix #2387 - CoreResolverV2 lost stacked-params lookup on linked scopes`); otherwise a plain description. No internal tracker IDs in commits, code or docs.
 - **Public API changes:** run `./compare_apis.sh`; avoid breaking binary compatibility in patch releases.
 - **Resolution-semantics changes** (anything in `core/resolution/`): describe the behavioral delta (old vs new resolution order/matching) in the PR description — resolver behavior changes have historically caused regressions.
-- **User-visible changes need a docs touch** on https://insert-koin.io/docs — say so in the PR description. `../docs/` is a legacy, unmaintained copy: never edit it.
+- **User-visible changes update `../docs/` in the same PR.** It is the public documentation source, published on https://insert-koin.io/docs.
 
 ### KMP test traps (hard rules)
 

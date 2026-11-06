@@ -7,7 +7,6 @@
       "Bash(git push *--force*)",
       "Bash(git push *-f)",
       "Bash(git push *-f *)",
-      "Edit(/docs/**)",
       "Edit(/projects/core/koin-core-viewmodel/api/koin-core-viewmodel.api)",
       "Edit(/projects/compose/koin-compose/api/koin-compose.api)",
       "Edit(/projects/compose/koin-compose-viewmodel/api/koin-compose-viewmodel.api)",

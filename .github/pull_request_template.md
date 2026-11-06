@@ -24,4 +24,4 @@
 
 ## Docs
 
-- [ ] No user-visible change — **or** insert-koin.io docs update needed (describe it; don't edit the legacy `docs/` folder)
+- [ ] No user-visible change — **or** `docs/` updated in this PR

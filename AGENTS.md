@@ -13,7 +13,7 @@ Building an app **with** Koin rather than changing Koin itself? Read "Using Koin
 | `projects/compose/` | `koin-compose`, `koin-compose-viewmodel`, `koin-compose-navigation3`, `koin-compose-viewmodel-navigation`, `koin-androidx-compose(-navigation)` |
 | `projects/ktor/` | `koin-ktor`, `koin-logger-slf4j` |
 | `projects/plugins/`, `projects/bom/` | `koin-gradle-plugin`, `koin-bom` |
-| `docs/` | Legacy copy of the docs, not maintained. The documentation is https://insert-koin.io/docs (agent index: https://insert-koin.io/llms.txt) |
+| `docs/` | Public documentation source, published on https://insert-koin.io/docs (agent index: https://insert-koin.io/llms.txt) |
 | `examples/` | Sample apps |
 
 The Koin Compiler Plugin lives in its own repository: https://github.com/InsertKoinIO/koin-compiler-plugin
@@ -41,7 +41,7 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 - **Every bug fix ships a regression test** that fails before the fix, in `commonTest` when the code is common.
 - **KMP discipline** — a `commonMain` change is verified beyond the JVM (`allTests`, or at least one native target and `wasmJs`). `./gradlew test` silently skips native, JS and Wasm tests.
 - In `commonTest`: prefer snake_case test names (style), and `runTest { }` in block-body form. `macosArm64Test` can report FAILED from a Gradle reporting bug while every test passes: check the XML results (see `projects/CLAUDE.md`).
-- Commit style: `Fix #NNNN - description` for a GitHub issue, a plain description otherwise. User-visible changes need a docs update on https://insert-koin.io/docs: mention it in the PR, never edit `docs/`.
+- Commit style: `Fix #NNNN - description` for a GitHub issue, a plain description otherwise. User-visible changes update `docs/` in the same PR.
 - Fill the PR template (`.github/pull_request_template.md`): API impact, behavior delta, tests, off-JVM verification.
 
 ## Branches
@@ -54,7 +54,7 @@ JDK 17. Run every command from `projects/`. Version: `koinVersion` in `projects/
 
 - Run `projects/release.sh` or any Maven Central publishing task — releases go through the `release.yml` workflow.
 - Force-push, or push before tests and `apiCheck` are green.
-- Edit `docs/` (legacy) or the dead root-level `.api` dumps listed in `projects/CLAUDE.md`.
+- Edit the dead root-level `.api` dumps listed in `projects/CLAUDE.md`.
 - Add `-x` exclusions to make a test run green — fix the root cause.
 
 The committed `.claude/settings.json` files (repo root and `projects/`) deny publishing, force-push and edits to the dead `.api` dumps, and ask before `git push` and Gradle `-x` runs. Green-before-push stays your responsibility. CI runs only on pull requests, and the tag workflow runs no tests.
