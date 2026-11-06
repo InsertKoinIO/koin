@@ -185,7 +185,9 @@ fun parameterSetOf(vararg parameters: Any?) = ParametersHolder(parameters.toMuta
 /**
  *
  */
-fun emptyParametersHolder() = ParametersHolder()
+private val EMPTY_PARAMETERS_HOLDER = ParametersHolder()
+
+fun emptyParametersHolder(): ParametersHolder = EMPTY_PARAMETERS_HOLDER
 
 /**
  * Help define a DefinitionParameters
