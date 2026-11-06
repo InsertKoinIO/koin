@@ -1,47 +1,84 @@
 ---
 title: Android
+description: Build an Android app with Koin and the Compiler Plugin DSL, inject a presenter in an Activity with by inject(), and start Koin in Application.
 ---
 
-> This tutorial lets you write an Android application and use Koin dependency injection to retrieve your components.
-> You need around __10 min__ to do the tutorial.
+In this tutorial you build an Android app that greets a user picked from a list. You learn how to declare a Koin module, inject a presenter in an Activity, and start Koin from your `Application` class. It takes about 10 minutes and needs Android Studio.
 
-:::note
-update - 2024-10-21
-:::
+This tutorial uses the Compiler Plugin DSL. For the same app with annotations, see [Android & Annotations](/docs/quickstart/android-annotations). To compare the styles, see [Choosing your style](/docs/intro/choosing-your-style). The [Android ViewModel](/docs/quickstart/android-viewmodel) tutorial builds the same app with a ViewModel instead of a presenter.
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/android)
-:::
+The full sample is in [koin-getting-started/android](https://github.com/InsertKoinIO/koin-getting-started/tree/main/android). Clone the repository and open the `android` folder in Android Studio.
 
-## Gradle Setup
+## Gradle setup
 
-Add the Koin Android dependency like below:
+The sample applies the Koin Compiler Plugin and adds `koin-android`. Versions live in a version catalog:
 
-```groovy
+```toml
+# gradle/libs.versions.toml
+[versions]
+# Kotlin, Android Gradle Plugin and AndroidX entries omitted
+koin = "<KOIN_VERSION>"
+koin-plugin = "<KOIN_PLUGIN_VERSION>"
+
+[libraries]
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
+
+[plugins]
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+```
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.koin.compiler)
+}
+
 dependencies {
+    implementation(libs.android.appcompat)
+    implementation(libs.koin.android)
 
-    // Koin for Android
-    implementation("io.insert-koin:koin-android:$koin_version")
+    testImplementation(libs.koin.test.junit4)
+    testImplementation(libs.koin.android.test)
 }
 ```
 
-## Application Overview
+The Compiler Plugin needs Kotlin 2.3.20 or later. For current versions and the BOM, see [Gradle setup](/docs/setup/gradle). For plugin options, see [Compiler Plugin setup](/docs/setup/compiler-plugin).
 
-The idea of the application is to manage a list of users, and display it in our `MainActivity` class with a Presenter or a ViewModel:
+## The application
 
-> Users -> UserRepository -> UserService -> (Presenter or ViewModel) -> MainActivity
+The Activity asks a presenter for a greeting. The presenter uses `UserService`, which reads from `UserRepository`:
 
-## The "User" Data
+```
+User -> UserRepository -> UserService -> UserPresenter -> MainActivity
+```
 
-We will manage a collection of Users. Here is the data class:
+## Let's write the user data
+
+Start with the data class and a default list of users:
 
 ```kotlin
 data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
 ```
 
-We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
+These users are the data that the repository stores.
+
+## Let's write the repository
+
+The repository keeps users in memory and finds one by name:
 
 ```kotlin
 interface UserRepository {
@@ -63,13 +100,15 @@ class UserRepositoryImpl : UserRepository {
 }
 ```
 
-## The UserService Component
+`UserRepositoryImpl` has no dependency, so Koin can create it with no extra information.
 
-Let's write a service component to manage user operations:
+## Let's write the service
+
+`UserService` loads the users when it is created and prepares the greeting:
 
 ```kotlin
 interface UserService {
-    fun getUserOrNull(name: String): User?
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
     fun loadUsers()
     fun prepareHelloMessage(user: User?): String
 }
@@ -78,51 +117,49 @@ class UserServiceImpl(
     private val userRepository: UserRepository
 ) : UserService {
 
+    init {
+        loadUsers()
+    }
+
     override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
 
     override fun loadUsers() {
-        userRepository.addUsers(listOf(
-            User("Alice", "alice@example.com"),
-            User("Bob", "bob@example.com"),
-            User("Charlie", "charlie@example.com")
-        ))
+        userRepository.addUsers(DEFAULT_USERS)
     }
 
     override fun prepareHelloMessage(user: User?): String {
-        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
     }
 }
 ```
 
-## The Koin module
+`UserServiceImpl` depends on `UserRepository`. Koin passes it through the constructor.
 
-Use the `module` function to declare a Koin module. A Koin module is the place where we define all our components to be injected.
+## Let's declare the Koin module
 
-```kotlin
-val appModule = module {
-
-}
-```
-
-Let's declare our components. We want singletons of `UserRepository` and `UserService`:
+A module is where you declare the components Koin creates (see [Core Concepts](/docs/intro/core-concepts)). Declare both components as singletons, bound to their interfaces:
 
 ```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
 val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
     single<UserServiceImpl>() bind UserService::class
 }
 ```
 
-:::info
-This tutorial uses the **Koin Compiler Plugin DSL** (`single<T>()`, `factory<T>()`) which provides auto-wiring at compile time. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
-:::
+Any component that asks for `UserService` now gets the same `UserServiceImpl` instance. `single` and `bind` are described in [Definitions](/docs/reference/koin-core/definitions).
 
-## Displaying User with Presenter
+## Let's write the presenter
 
-Let's write a presenter component to display a user:
+The presenter turns a name into a greeting:
 
 ```kotlin
-class UserPresenter(private val userService: UserService) {
+class UserPresenter(
+    private val userService: UserService
+) {
 
     fun sayHello(name: String): String {
         val user = userService.getUserOrNull(name)
@@ -132,11 +169,11 @@ class UserPresenter(private val userService: UserService) {
 }
 ```
 
-> UserService is referenced in UserPresenter's constructor
-
-We declare `UserPresenter` in our Koin module. We declare it as a `factory` definition, to not keep any instance in memory (avoid any leak with Android lifecycle):
+Declare it with `factory`, so each request creates a new instance and Koin keeps no reference to it:
 
 ```kotlin
+import org.koin.plugin.module.dsl.factory
+
 val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
     single<UserServiceImpl>() bind UserService::class
@@ -144,40 +181,54 @@ val appModule = module {
 }
 ```
 
-## Injecting Dependencies in Android
+A `factory` presenter cannot outlive the Activity that uses it, which avoids leaking the Activity.
 
-The `UserPresenter` component will be created, resolving the `UserService` instance with it. To get it into our Activity, let's inject it with the `by inject()` delegate function: 
+## Let's inject the presenter in the Activity
+
+Use the `by inject()` delegate to get the presenter in `MainActivity`:
 
 ```kotlin
+import org.koin.android.ext.android.inject
+
 class MainActivity : AppCompatActivity() {
 
     private val presenter: UserPresenter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        //...
+        setContentView(R.layout.activity_simple)
+
+        val nameInput = findViewById<EditText>(R.id.nameInput)
+        val sayHelloButton = findViewById<Button>(R.id.sayHelloButton)
+        val textField = findViewById<TextView>(R.id.text)
+
+        sayHelloButton.setOnClickListener {
+            val userName = nameInput.text.toString().trim().ifEmpty { "Alice" }
+            textField.text = presenter.sayHello(userName)
+        }
     }
 }
 ```
 
-That's it, your app is ready.
+`by inject()` resolves the presenter lazily, the first time you use it. The other Android components that support it are listed in [Android Entry Points](/docs/reference/koin-android/entry-points).
 
-:::info
-The `by inject()` function allows us to retrieve Koin instances, in Android components runtime (Activity, fragment, Service...)
-:::
+## Let's start Koin
 
-## Start Koin
-
-We need to start Koin with our Android application. Just call the `startKoin()` function in the application's main entry point, our `MainApplication` class:
+Start Koin in your `Application` class, and register that class in `AndroidManifest.xml`:
 
 ```kotlin
-class MainApplication : Application(){
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+
+class MainApplication : Application() {
+
     override fun onCreate() {
         super.onCreate()
-        
-        startKoin{
-            androidLogger()
+
+        startKoin {
+            androidLogger(Level.DEBUG)
             androidContext(this@MainApplication)
             modules(appModule)
         }
@@ -185,33 +236,12 @@ class MainApplication : Application(){
 }
 ```
 
-:::info
-The `modules()` function in `startKoin` load the given list of modules
-:::
+`androidContext()` makes the Android `Context` available to your definitions, and `androidLogger()` sends Koin logs to Logcat. Run the app, type a name and tap the button to see the greeting. See [Starting Koin on Android](/docs/reference/koin-android/start) for the other options.
 
-## Koin module: DSL comparison
+## Next steps
 
-Here is the Koin module declaration using **Classic DSL** (manual wiring):
-
-```kotlin
-val appModule = module {
-    single<UserRepository> { UserRepositoryImpl() }
-    single<UserService> { UserServiceImpl(get()) }
-    factory { UserPresenter(get()) }
-}
-```
-
-With **Compiler Plugin DSL** (auto-wiring at compile time):
-
-```kotlin
-val appModule = module {
-    single<UserRepositoryImpl>() bind UserRepository::class
-    single<UserServiceImpl>() bind UserService::class
-    factory<UserPresenter>()
-}
-```
-
-:::tip
-The Compiler Plugin DSL requires the [Koin Compiler Plugin](/docs/setup/compiler-plugin). It provides compile-time dependency resolution and cleaner syntax.
-:::
-
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind modules, definitions and injection.
+- [Android ViewModel](/docs/quickstart/android-viewmodel): the same app with a ViewModel.
+- [Android Entry Points](/docs/reference/koin-android/entry-points): inject in Fragments, Services, receivers and more.
+- [Instrumented testing](/docs/reference/koin-android/instrumented-testing): test your Android app with Koin.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

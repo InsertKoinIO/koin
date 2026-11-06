@@ -1,52 +1,92 @@
 ---
 title: Ktor
+description: Build a Ktor web app with Koin and the Compiler Plugin DSL, install the Koin plugin and inject a service in your routes.
 ---
 
-> Ktor is a framework for building asynchronous servers and clients in connected systems using the powerful Kotlin programming language. We will use Ktor here, to build a simple web application.
+In this tutorial you build a Ktor web app with a `/hello` endpoint that greets a user picked from a list. You learn how to declare a Koin module, install Koin as a Ktor plugin, and inject a service in your application. It takes about 10 minutes and needs a JDK 17 and Gradle.
 
-Let's go 🚀
-
-:::note
-update - 2024-10-21
-:::
-
-:::tip
-Looking for the **annotations version** of this tutorial? Check out [Ktor & Annotations](./ktor-annotations.md) which uses Koin Annotations with Jakarta `@Singleton` for compile-time verification.
-:::
+This tutorial uses the Compiler Plugin DSL. For the same app with annotations, see [Ktor & Annotations](/docs/quickstart/ktor-annotations). To compare the styles, see [Choosing your style](/docs/intro/choosing-your-style).
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/ktor)
-:::
+The full sample is in [koin-getting-started/ktor](https://github.com/InsertKoinIO/koin-getting-started/tree/main/ktor). Clone the repository and run it from the `ktor` folder:
 
-## Gradle Setup
+```bash
+./gradlew run
+```
 
-First, add the Koin dependency like below:
+## Gradle setup
+
+The sample applies the Koin Compiler Plugin and adds `koin-ktor` and `koin-logger-slf4j`. Versions live in a version catalog:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+# Kotlin, Ktor and Logback entries omitted
+koin = "<KOIN_VERSION>"
+koin-plugin = "<KOIN_PLUGIN_VERSION>"
+
+[libraries]
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+
+[plugins]
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+```
 
 ```kotlin
+// app/build.gradle.kts
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.koin.compiler)
+    application
+}
+
 dependencies {
-    // Koin for Kotlin apps
-    implementation("io.insert-koin:koin-ktor:$koin_version")
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    implementation(libs.ktor.server)
+    implementation(libs.logback)
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j)
+
+    testImplementation(libs.ktor.test)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
 }
 ```
 
-## Application Overview
+The Compiler Plugin needs Kotlin 2.3.20 or later. For current versions and the BOM, see [Gradle setup](/docs/setup/gradle). For plugin options, see [Compiler Plugin setup](/docs/setup/compiler-plugin).
 
-The idea of the application is to manage a list of users, and display it in our `UserApplication` class:
+## The application
 
-> Users -> UserRepository -> UserService -> UserApplication
+The `/hello` route asks `UserService` for a user, and `UserService` reads from `UserRepository`:
 
-## The "User" Data
+```
+User -> UserRepository -> UserService -> /hello route
+```
 
-We will manage a collection of Users. Here is the data class:
+## Let's write the user data
+
+Start with the data class and a default list of users:
 
 ```kotlin
 data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
 ```
 
-We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
+These users are the data that the repository stores.
+
+## Let's write the repository
+
+The repository keeps users in memory and finds one by name:
 
 ```kotlin
 interface UserRepository {
@@ -68,35 +108,15 @@ class UserRepositoryImpl : UserRepository {
 }
 ```
 
-## The Koin module
+`UserRepositoryImpl` has no dependency, so Koin can create it with no extra information.
 
-Use the `module` function to declare a Koin module. A Koin module is the place where we define all our components to be injected.
+## Let's write the service
 
-```kotlin
-val appModule = module {
-
-}
-```
-
-Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`
-
-```kotlin
-val appModule = module {
-    single<UserRepositoryImpl>() bind UserRepository::class
-}
-```
-
-:::info
-This tutorial uses the **Koin Compiler Plugin DSL** (`single<T>()`) which provides auto-wiring at compile time. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
-:::
-
-## The UserService Component
-
-Let's write the UserService component to manage user operations:
+`UserService` loads the users and prepares the greeting:
 
 ```kotlin
 interface UserService {
-    fun getUserOrNull(name: String): User?
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
     fun loadUsers()
     fun prepareHelloMessage(user: User?): String
 }
@@ -108,86 +128,50 @@ class UserServiceImpl(
     override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
 
     override fun loadUsers() {
-        userRepository.addUsers(listOf(
-            User("Alice", "alice@example.com"),
-            User("Bob", "bob@example.com"),
-            User("Charlie", "charlie@example.com")
-        ))
+        userRepository.addUsers(DEFAULT_USERS)
     }
 
     override fun prepareHelloMessage(user: User?): String {
-        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
     }
 }
 ```
 
-> UserRepository is referenced in UserServiceImpl's constructor
+`UserServiceImpl` depends on `UserRepository`. Koin passes it through the constructor.
 
-We declare `UserService` in our Koin module. We declare it as a `single` definition:
+## Let's declare the Koin module
+
+A module is where you declare the components Koin creates (see [Core Concepts](/docs/intro/core-concepts)). Declare both components as singletons, bound to their interfaces:
 
 ```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
 val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
     single<UserServiceImpl>() bind UserService::class
 }
 ```
 
-## HTTP Controller
+Any component that asks for `UserService` now gets the same `UserServiceImpl` instance. `single` and `bind` are described in [Definitions](/docs/reference/koin-core/definitions).
 
-Finally, we need an HTTP Controller to create the HTTP Route. In Ktor it will be expressed through a Ktor extension function:
+## Let's install Koin and write the route
+
+Install the `Koin` plugin in your Ktor application with your module, then inject `UserService` and use it in the `/hello` route:
 
 ```kotlin
+import org.koin.ktor.ext.inject
+import org.koin.ktor.plugin.Koin
+
 fun Application.main() {
-
-    // Lazy inject UserService
-    val service by inject<UserService>()
-    service.loadUsers()
-
-    // Routing section
-    routing {
-        get("/hello") {
-            val userName = call.queryParameters["name"] ?: "Alice"
-            val user = service.getUserOrNull(userName)
-            val message = service.prepareHelloMessage(user)
-            call.respondText(message)
-        }
-    }
-}
-```
-
-The `/hello` endpoint accepts an optional `name` query parameter. If not provided, it defaults to "Alice".
-
-Example requests:
-- `http://localhost:8080/hello` - Greets Alice (default)
-- `http://localhost:8080/hello?name=Bob` - Greets Bob
-
-## Declare your dependencies
-
-Let's assemble our components with a Koin module:
-
-```kotlin
-val appModule = module {
-    single<UserRepositoryImpl>() bind UserRepository::class
-    single<UserServiceImpl>() bind UserService::class
-}
-```
-
-## Start and Inject
-
-Finally, let's start Koin from Ktor:
-
-```kotlin
-fun Application.main() {
-    // Install Koin
     install(Koin) {
         modules(appModule)
     }
 
-    // Lazy inject UserService
     val service by inject<UserService>()
     service.loadUsers()
 
-    // Routing section
     routing {
         get("/hello") {
             val userName = call.queryParameters["name"] ?: "Alice"
@@ -199,7 +183,11 @@ fun Application.main() {
 }
 ```
 
-Let's start Ktor:
+`install(Koin)` starts Koin with the Ktor application, and `inject()` is available on `Application`, `Route` and `ApplicationCall`. To send Koin logs to SLF4J, add `slf4jLogger()` inside `install(Koin)`. See [Koin for Ktor](/docs/reference/koin-ktor/ktor) for the Ktor-specific APIs.
+
+## Let's start the server
+
+Start an embedded Netty server that runs your application module:
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -209,6 +197,15 @@ fun main(args: Array<String>) {
 }
 ```
 
-That's it! You're ready to go. Check these URLs:
-- `http://localhost:8080/hello` - Greets Alice (default user)
-- `http://localhost:8080/hello?name=Bob` - Greets Bob
+Run `./gradlew run`, then open these URLs:
+
+- `http://localhost:8080/hello`: greets Alice, the default user.
+- `http://localhost:8080/hello?name=Bob`: greets Bob.
+
+## Next steps
+
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind modules, definitions and injection.
+- [Koin for Ktor](/docs/reference/koin-ktor/ktor): install options, injection in routes and Ktor events.
+- [Request Scopes](/docs/reference/koin-ktor/ktor-scopes): instances that live for one HTTP request.
+- [Ktor testing](/docs/reference/koin-ktor/ktor-testing): test your routes with `testApplication` and Koin.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

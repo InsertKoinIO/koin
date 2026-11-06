@@ -56,6 +56,11 @@ class BeanDefinition<T>(
     // Mutable backing for [secondaryTypes] so DSL functions like `bind()` / `binds()` can
     // append in O(1) instead of allocating a fresh List per call. Initialized from the
     // constructor parameter; assignment via the public setter clears + refills in place.
+    //
+    // Not lazily allocated, even though most definitions declare no secondary type: the getter
+    // must return the same instance across addSecondaryType(), which
+    // BeanDefinitionSecondaryTypesTest.getter_is_stable_across_binds pins as a 4.2.2 contract.
+    // Handing back a shared emptyList() until the first bind() would break that identity.
     private val _secondaryTypes: MutableList<KClass<*>> = secondaryTypes.toMutableList()
 
     var secondaryTypes: List<KClass<*>>
@@ -73,7 +78,7 @@ class BeanDefinition<T>(
         _secondaryTypes.add(clazz)
     }
 
-    var callbacks: Callbacks<T> = Callbacks()
+    var callbacks: Callbacks<T> = emptyCallbacks()
 
     @PublishedApi
     internal var _createdAtStart = false
@@ -130,11 +135,23 @@ class BeanDefinition<T>(
     }
 }
 
+// Callbacks is an immutable data class whose only field defaults to null, so one instance can
+// back every definition that declares no onClose. One allocation per definition otherwise.
+private val EMPTY_CALLBACKS = Callbacks<Any?>()
+
+@Suppress("UNCHECKED_CAST")
+private fun <T> emptyCallbacks(): Callbacks<T> = EMPTY_CALLBACKS as Callbacks<T>
+
 inline fun indexKey(clazz: KClass<*>, typeQualifier: Qualifier?, scopeQualifier: Qualifier): String {
-    return buildString {
-        append(clazz.getFullName())
+    val className = clazz.getFullName()
+    val qualifierValue = typeQualifier?.value ?: ""
+    // Presized: keys run 80-120 chars, and the default 16-char StringBuilder grows and copies
+    // three times before it fits. scopeQualifier is still appended as an object so a custom
+    // Qualifier whose toString() differs from its value keeps producing the same key as before.
+    return buildString(className.length + qualifierValue.length + scopeQualifier.value.length + 2) {
+        append(className)
         append(':')
-        append(typeQualifier?.value ?: "")
+        append(qualifierValue)
         append(':')
         append(scopeQualifier)
     }

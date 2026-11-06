@@ -35,7 +35,11 @@ class ResolutionContext(
     val qualifier: Qualifier? = null,
     val parameters: ParametersHolder? = null,
 ){
-    val debugTag = "t:'${clazz.getFullName()}' - q:'$qualifier'"
+    // Computed, not stored: this is built on every resolution and read only by log sites that
+    // are gated on DEBUG. Storing it cost a String + a getFullName() lookup per get() even when
+    // logging is off, which is the default (EmptyLogger, Level.NONE). Kept as a property so the
+    // public getDebugTag() signature is unchanged.
+    val debugTag: String get() = "t:'${clazz.getFullName()}' - q:'$qualifier'"
     var scopeArchetype : TypeQualifier? = null
 
     fun newContextForScope(s : Scope) : ResolutionContext{

@@ -18,6 +18,7 @@ package org.koin.core.instance
 
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
+import org.koin.core.logger.Level
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.parameter.emptyParametersHolder
 import org.koin.core.scope.Scope
@@ -43,7 +44,7 @@ abstract class InstanceFactory<T>(val beanDefinition: BeanDefinition<T>) : Locka
      * @return T
      */
     open fun create(context: ResolutionContext): T {
-        context.logger.debug("| (+) '$beanDefinition'")
+        context.logger.log(Level.DEBUG) { "| (+) '$beanDefinition'" }
         try {
             val parameters: ParametersHolder = context.parameters ?: emptyParametersHolder()
             return beanDefinition.definition.invoke(

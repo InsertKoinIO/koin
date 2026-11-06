@@ -23,6 +23,7 @@ import org.koin.core.component.getScopeName
 import org.koin.core.error.ScopeNotCreatedException
 import org.koin.core.extension.ExtensionManager
 import org.koin.core.logger.EmptyLogger
+import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.module.Module
 import org.koin.core.module.flatten
@@ -354,6 +355,6 @@ class Koin {
         val duration = measureTime {
             instanceRegistry.createAllEagerInstances()
         }
-        logger.debug("Created eager instances in ${duration.inMs} ms")
+        logger.log(Level.DEBUG) { "Created eager instances in ${duration.inMs} ms" }
     }
 }

@@ -1,23 +1,29 @@
 ---
 title: WorkManager
+description: Use constructor injection in WorkManager Workers with the Koin WorkerFactory and the worker definition.
 ---
 
-Koin integrates with [Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) to enable constructor injection in Workers.
+Koin plugs a `WorkerFactory` into [Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager), so your Workers get their dependencies through the constructor. This page covers the setup, how to declare a Worker and how to pass input data. It assumes Koin is started in your `Application` (see [Starting Koin on Android](/docs/reference/koin-android/start)).
 
 ## Setup
 
-### Add Dependencies
-
-```groovy
-implementation "io.insert-koin:koin-android:$koin_version"
-implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
-```
-
-### Configure WorkManager
-
-Set up the Koin WorkManager factory in your Application:
+Add the WorkManager artifact next to `koin-android`:
 
 ```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("io.insert-koin:koin-android")
+    implementation("io.insert-koin:koin-androidx-workmanager")
+}
+```
+
+Versions come from the Koin BOM (see [Gradle Setup](/docs/setup/gradle)).
+
+Call `workManagerFactory()` in `startKoin`, after `androidContext()`:
+
+```kotlin
+import org.koin.androidx.workmanager.koin.workManagerFactory
+
 class MainApplication : Application() {
 
     override fun onCreate() {
@@ -32,9 +38,7 @@ class MainApplication : Application() {
 }
 ```
 
-### Disable Default Initializer
-
-Add to your `AndroidManifest.xml` to disable the default WorkManager initializer:
+`workManagerFactory()` initializes WorkManager with a configuration that uses the Koin `WorkerFactory`. It does nothing if WorkManager is already initialized, which is the case when the default AndroidX initializer runs first. Remove that initializer in `AndroidManifest.xml`:
 
 ```xml
 <provider
@@ -49,84 +53,100 @@ Add to your `AndroidManifest.xml` to disable the default WorkManager initializer
 </provider>
 ```
 
-## Declaring Workers
+:::warning
+If you keep the default initializer, WorkManager starts without the Koin factory. Workers then fail at runtime because WorkManager can't create a class with extra constructor parameters.
+:::
 
-### Compiler Plugin DSL
+## Declaring a Worker
+
+A Worker takes `Context` and `WorkerParameters` from WorkManager, then any dependency from Koin:
 
 ```kotlin
-class MyWorker(
+class SyncWorker(
     context: Context,
-    workerParams: WorkerParameters,
-    private val myService: MyService
-) : CoroutineWorker(context, workerParams) {
+    params: WorkerParameters,
+    private val repository: SyncRepository,
+) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        myService.performTask()
+        repository.sync()
         return Result.success()
     }
 }
+```
 
-val appModule = module {
-    single<MyService>()
-    worker<MyWorker>()
+Declare it as a worker:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+import org.koin.plugin.module.dsl.worker
+
+val workModule = module {
+    single<SyncRepository>()
+    worker<SyncWorker>()
 }
 ```
 
-### Annotations
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-@KoinWorker
-class MyWorker(
-    context: Context,
-    workerParams: WorkerParameters,
-    private val myService: MyService
-) : CoroutineWorker(context, workerParams) {
+import org.koin.android.annotation.KoinWorker
 
-    override suspend fun doWork(): Result {
-        myService.performTask()
-        return Result.success()
-    }
-}
-
-@Singleton
-class MyService
-```
-
-### Classic DSL
-
-```kotlin
-val appModule = module {
-    single { MyService() }
-    worker { params ->
-        MyWorker(
-            context = params.get(),
-            workerParams = params.get(),
-            myService = get()
-        )
-    }
-}
-```
-
-## Enqueuing Work
-
-Use WorkManager normally to enqueue your worker:
-
-```kotlin
-val workRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
-WorkManager.getInstance(context).enqueue(workRequest)
-```
-
-## Worker with Parameters
-
-Pass parameters via WorkManager's input data:
-
-```kotlin
 @KoinWorker
 class SyncWorker(
     context: Context,
-    workerParams: WorkerParameters,
-    private val repository: DataRepository
-) : CoroutineWorker(context, workerParams) {
+    params: WorkerParameters,
+    private val repository: SyncRepository,
+) : CoroutineWorker(context, params) {
+    ...
+}
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.androidx.workmanager.dsl.worker
+import org.koin.androidx.workmanager.dsl.workerOf
+
+val workModule = module {
+    singleOf(::SyncRepository)
+    workerOf(::SyncWorker)
+
+    // or write the constructor call
+    worker { params -> SyncWorker(androidContext(), params.get(), get()) }
+}
+```
+
+`WorkerParameters` is the only injected parameter: read it with `params.get()` or `get()`, and the `Context` with `androidContext()`.
+
+</TabItem>
+</Tabs>
+
+A worker definition is a `factory` named after the Worker class and bound to `ListenableWorker`. When WorkManager asks for a Worker class, the Koin factory looks up that name. If no definition matches, Koin returns `null` and WorkManager falls back to its default factory.
+
+## Enqueuing work
+
+Nothing changes on the WorkManager side:
+
+```kotlin
+val request = OneTimeWorkRequestBuilder<SyncWorker>().build()
+WorkManager.getInstance(context).enqueue(request)
+```
+
+## Input data
+
+Values that change per run go through WorkManager input data, not through Koin:
+
+```kotlin
+class UserSyncWorker(
+    context: Context,
+    params: WorkerParameters,
+    private val repository: UserRepository,
+) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
         val userId = inputData.getString("USER_ID") ?: return Result.failure()
@@ -136,31 +156,19 @@ class SyncWorker(
 }
 ```
 
-Enqueue with data:
-
 ```kotlin
-val workRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+val request = OneTimeWorkRequestBuilder<UserSyncWorker>()
     .setInputData(workDataOf("USER_ID" to "123"))
     .build()
 
-WorkManager.getInstance(context).enqueue(workRequest)
+WorkManager.getInstance(context).enqueue(request)
 ```
 
-## Quick Reference
+Input data is stored by WorkManager and survives process death, which Koin parameters do not.
 
-| Approach | Declaration |
-|----------|-------------|
-| Compiler Plugin DSL | `worker<MyWorker>()` |
-| Annotations | `@KoinWorker` |
-| Classic DSL | `worker { params -> MyWorker(params.get(), params.get(), get()) }` |
+## Related
 
-| Setup | Code |
-|-------|------|
-| Enable factory | `workManagerFactory()` in startKoin |
-| Disable default | Remove `WorkManagerInitializer` in manifest |
-
-## Next Steps
-
-- **[Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)** - Official WorkManager documentation
-- **[Scopes](/docs/reference/koin-android/scope)** - Android scopes
-- **[ViewModel](/docs/reference/koin-android/viewmodel)** - ViewModel injection
+- [Starting Koin on Android](/docs/reference/koin-android/start): `startKoin` and `androidContext()`.
+- [Definitions](/docs/reference/koin-core/definitions): definition types, including `worker`.
+- [Android Entry Points](/docs/reference/koin-android/entry-points): hand work from a BroadcastReceiver to WorkManager.
+- [Android WorkManager guide](https://developer.android.com/topic/libraries/architecture/workmanager): the WorkManager API.

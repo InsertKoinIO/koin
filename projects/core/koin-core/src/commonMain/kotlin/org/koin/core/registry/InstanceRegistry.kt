@@ -28,16 +28,24 @@ import org.koin.core.instance.InstanceFactory
 import org.koin.core.instance.NoClass
 import org.koin.core.instance.ScopedInstanceFactory
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.module.throwOverrideError
 import org.koin.core.parameter.ParametersHolder
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeID
+import org.koin.ext.getFullName
+import org.koin.mp.KoinPlatformTools
 import org.koin.mp.KoinPlatformTools.safeHashMap
 import kotlin.collections.set
 import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
+import org.koin.mp.Lockable
+import kotlin.concurrent.Volatile
+
+// Cached (scope, qualifier) variants per class; further variants stay on the String map.
+private const val MAX_TYPED_CHAIN = 8
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(KoinInternalApi::class)
@@ -46,6 +54,40 @@ class InstanceRegistry(val _koin: Koin) {
     private val _instances = safeHashMap<IndexKey, InstanceFactory<*>>()
     val instances: Map<IndexKey, InstanceFactory<*>>
         get() = _instances
+
+    // Lazily populated, allocation-free lookup cache in front of _instances.
+    //
+    // The String IndexKey is "<class full name>:<type qualifier value>:<scope qualifier>", and
+    // building it was ~160 of the ~200 bytes a warm get() still allocated. Entries here hold the
+    // same three components already split, so a repeat lookup is one map get plus a short chain
+    // walk with no allocation. Populated only from a String-path hit, never at registration:
+    // in a startup run every definition is resolved once, so an eagerly maintained mirror
+    // measured as pure cost there (+74% on registration).
+    //
+    // _instances stays the single source of truth. Chains are keyed by the class name that opens
+    // every IndexKey, so a write or removal drops the chains of its key's candidate class prefixes
+    // (see forget), whatever the factory's current types are. A populate re-checks the String map under the same lock, and a
+    // miss always falls through to the String map.
+    //
+    // Writes skip the lock until the first populate: typedIndexInUse is set before that populate's
+    // re-check, so a writer that still reads false has its _instances write seen by that re-check.
+    // This relies on _instances ordering its writes and reads with that volatile flag: volatile node
+    // fields on the JVM (a lone-bin removal is release/acquire, ordered by hardware fences on HotSpot
+    // and ART, not by the JMM alone; TypedIndexRaceTest exercises HotSpot only), a locked map on
+    // native, a single thread on JS and wasmJs.
+    // (An emptiness check instead of the flag let a populate store a factory just replaced.)
+    private val typedIndex = safeHashMap<String, TypedEntry>()
+    private val typedIndexLock = Lockable()
+
+    @Volatile
+    private var typedIndexInUse = false
+
+    private class TypedEntry(
+        val scopeKey: String,
+        val qualifierKey: String,
+        val factory: InstanceFactory<*>,
+        val next: TypedEntry?,
+    )
 
     private val eagerInstances = safeHashMap<Int, SingleInstanceFactory<*>>()
 
@@ -88,7 +130,7 @@ class InstanceRegistry(val _koin: Koin) {
             if (!allowOverride) {
                 throwOverrideError(factory, mapping)
             } else if (logWarning) {
-                _koin.logger.warn("(+) override index '$mapping' -> '${factory.beanDefinition}'")
+                _koin.logger.log(Level.WARNING) { "(+) override index '$mapping' -> '${factory.beanDefinition}'" }
                 // remove previous eager isntance too
                 val existingFactory = eagerInstances.values.firstOrNull { it.beanDefinition == factory.beanDefinition }
                 if (existingFactory != null) {
@@ -96,8 +138,42 @@ class InstanceRegistry(val _koin: Koin) {
                 }
             }
         }
-        _koin.logger.debug("(+) index '$mapping' -> '${factory.beanDefinition}'")
+        _koin.logger.log(Level.DEBUG) { "(+) index '$mapping' -> '${factory.beanDefinition}'" }
         _instances[mapping] = factory
+        forget(mapping)
+    }
+
+    private fun remember(className: String, scopeKey: String, qualifierKey: String, key: IndexKey, factory: InstanceFactory<*>) {
+        KoinPlatformTools.synchronized(typedIndexLock) {
+            typedIndexInUse = true
+            // A writer may have replaced the key between our String-path read and this lock.
+            if (_instances[key] !== factory) return@synchronized
+            val head = typedIndex[className]
+            var length = 0
+            var entry = head
+            while (entry != null) {
+                if (entry.scopeKey == scopeKey && entry.qualifierKey == qualifierKey) return@synchronized
+                length++
+                entry = entry.next
+            }
+            // Past MAX_TYPED_CHAIN cached variants, further variants of the class stay on the String
+            // map rather than turning every lookup into a long chain walk.
+            if (length >= MAX_TYPED_CHAIN) return@synchronized
+            typedIndex[className] = TypedEntry(scopeKey, qualifierKey, factory, head)
+        }
+    }
+
+    // Called after every write to _instances. A class name can itself hold ':' (Kotlin/JS escaped names,
+    // generated JVM classes), so every prefix ending before a ':' is a candidate chain.
+    private fun forget(mapping: IndexKey) {
+        if (!typedIndexInUse) return
+        KoinPlatformTools.synchronized(typedIndexLock) {
+            var separator = mapping.indexOf(':')
+            while (separator >= 0) {
+                typedIndex.remove(mapping.substring(0, separator))
+                separator = mapping.indexOf(':', separator + 1)
+            }
+        }
     }
 
     private fun createEagerInstances(instances: Collection<SingleInstanceFactory<*>>) {
@@ -110,8 +186,23 @@ class InstanceRegistry(val _koin: Koin) {
         qualifier: Qualifier?,
         scopeQualifier: Qualifier,
     ): InstanceFactory<*>? {
-        val indexKey = indexKey(clazz, qualifier, scopeQualifier)
-        return _instances[indexKey]
+        val className = clazz.getFullName()
+        val scopeKey = scopeQualifier.toString()
+        val qualifierKey = qualifier?.value ?: ""
+
+        var entry = typedIndex[className]
+        var chainLength = 0
+        while (entry != null) {
+            if (entry.scopeKey == scopeKey && entry.qualifierKey == qualifierKey) return entry.factory
+            chainLength++
+            entry = entry.next
+        }
+
+        val key = indexKey(clazz, qualifier, scopeQualifier)
+        val factory = _instances[key] ?: return null
+        // A full chain would refuse the entry anyway: skip the populate lock.
+        if (chainLength < MAX_TYPED_CHAIN) remember(className, scopeKey, qualifierKey, key, factory)
+        return factory
     }
 
     @KoinExperimentalAPI
@@ -196,19 +287,38 @@ class InstanceRegistry(val _koin: Koin) {
         val factories = _instances.values.toTypedArray()
         factories.forEach { factory -> factory.dropAll() }
         _instances.clear()
+        KoinPlatformTools.synchronized(typedIndexLock) { typedIndex.clear() }
     }
 
     internal fun <T> getAll(clazz: KClass<*>, instanceContext: ResolutionContext): List<T> {
-        val factories = _instances.values
-            .filter { factory ->
-                (factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeQualifier ||
-                    factory.beanDefinition.scopeQualifier == instanceContext.scope.scopeArchetype
-                ) &&
-                (factory.beanDefinition.primaryType == clazz || factory.beanDefinition.secondaryTypes.contains(clazz))
+        val scopeQualifier = instanceContext.scope.scopeQualifier
+        val scopeArchetype = instanceContext.scope.scopeArchetype
+
+        // Single pass instead of filter + distinct: same predicate, same iteration order over
+        // _instances.values, same identity-based dedup (InstanceFactory does not override
+        // equals, so distinct() was already identity). A factory appears under several index
+        // keys when it declares secondary types, hence the dedup.
+        val matched = ArrayList<InstanceFactory<*>>()
+        val seen = mutableSetOf<InstanceFactory<*>>()
+        for (factory in _instances.values) {
+            val definition = factory.beanDefinition
+            if (definition.scopeQualifier != scopeQualifier && definition.scopeQualifier != scopeArchetype) continue
+            if (definition.primaryType != clazz && !definition.secondaryTypes.contains(clazz)) continue
+            if (seen.add(factory)) matched.add(factory)
+        }
+
+        // Resolution stays a second phase on purpose: a definition can call declare() while it
+        // is being created, and mutating _instances under an in-flight iteration is not safe on
+        // every platform.
+        val instances = ArrayList<T>(matched.size)
+        for (factory in matched) {
+            val instance = factory.get(instanceContext)
+            if (instance != null) {
+                @Suppress("UNCHECKED_CAST")
+                instances.add(instance as T)
             }
-            .distinct()
-//            .sortedWith(compareBy({ it.beanDefinition.toString() }))
-        return factories.mapNotNull { it.get(instanceContext) as? T }
+        }
+        return instances
     }
 
     internal fun unloadModules(modules: Set<Module>) {
@@ -217,8 +327,10 @@ class InstanceRegistry(val _koin: Koin) {
 
     private fun unloadModule(module: Module) {
         module.mappings.keys.forEach { mapping ->
-            _instances[mapping]?.dropAll()
+            val factory = _instances[mapping]
+            factory?.dropAll()
             _instances.remove(mapping)
+            forget(mapping)
         }
     }
 

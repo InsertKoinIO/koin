@@ -1,256 +1,129 @@
 ---
 title: Android Best Practices
+description: Avoid Activity and Context leaks, close scopes, debug Koin on Android and keep secrets out of your modules.
 ---
 
-This guide covers Android-specific best practices for memory management, security, and migration from Hilt.
+This page lists the Android-specific mistakes that cause leaks, crashes or exposed secrets with Koin, and how to avoid them. It assumes you know [Android Scopes](/docs/reference/koin-android/scope) and [Starting Koin on Android](/docs/reference/koin-android/start). General module organization is in [Modules](/docs/reference/koin-core/modules), and error messages are explained in [Troubleshooting](/docs/reference/koin-core/troubleshooting).
 
-:::info
-For general module concepts, see **[Modules](/docs/reference/koin-core/modules)**. For scoping, see **[Scopes](/docs/reference/koin-core/scopes)** and **[Android Scopes](/docs/reference/koin-android/scope)**.
-:::
+## Memory and Context leaks
 
-## Memory Management
+An instance leaks when something that lives longer keeps a reference to it. On Android, the usual victim is an Activity: a `single` lives as long as the process, an Activity only until the next rotation.
 
-### Avoid Activity/Fragment Leaks
+### Activity passed into a single
 
 ```kotlin
-// ❌ Bad - Activity leak
-module {
-    single { SomeService(get<Activity>()) }  // Activity reference in singleton!
+// leaks: the single keeps the first Activity forever
+class UserActivity : AppCompatActivity() {
+    private val tracker: ScreenTracker by inject { parametersOf(this) }
 }
 
-// ✅ Good - Use Application context
-module {
-    single { SomeService(androidContext()) }  // Application context, safe
-}
-
-// ✅ Good - Use activity scope
-module {
-    activityScope {
-        scoped { SomeService(/* activity-scoped dependencies */) }
-    }
+val appModule = module {
+    single { params -> ScreenTracker(params.get<Activity>()) }
 }
 ```
 
-### Close Scopes Properly
+A `single` is created once, with the parameters of the first call. Later calls get the same instance, still holding the first Activity. Use one of these instead:
+
+- Application context: when the class only needs resources or system services, declare it as a `single` with `Context`. In a `single`, `Context` is the `Application`.
+- Activity scope: when the class needs the Activity, declare it in `activityScope { }` or with `@ActivityScope`. It is created per Activity and released with it.
+- Factory with parameters: when the caller passes the Activity, use a `factory` and don't keep the result beyond the Activity lifetime.
+
+The Compiler Plugin treats `Context`, `Activity`, `Application`, `Fragment` and `SavedStateHandle` as types provided by the platform, so it doesn't report them as missing. It also can't tell whether an `Activity` parameter is safe in a given definition: check this in review.
+
+### Listeners held by singletons
 
 ```kotlin
-// ✅ Good - Automatic scope management
-class MyActivity : ScopeActivity() {
-    override val scope: Scope by activityScope()
-    // Scope automatically closed in onDestroy
-}
-
-// ❌ Bad - Manual scope without cleanup
-class MyActivity : AppCompatActivity() {
-    private val myScope = createScope<MyActivity>()
-    // Scope never closed - memory leak!
-}
-
-// ✅ Good - Manual scope with cleanup
-class MyActivity : AppCompatActivity() {
-    private lateinit var myScope: Scope
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        myScope = createScope<MyActivity>()
-    }
-
-    override fun onDestroy() {
-        myScope.close()
-        super.onDestroy()
-    }
-}
-```
-
-### Clear References in Long-Lived Objects
-
-```kotlin
-// ❌ Bad - Holding references to UI
 class UserRepository {
-    private val listeners = mutableListOf<UserUpdateListener>()  // Might hold Activity refs
+    private val listeners = mutableListOf<UserListener>()
 
-    fun addListener(listener: UserUpdateListener) {
-        listeners.add(listener)
-    }
-}
-
-// ✅ Good - Weak references or manual cleanup
-class UserRepository {
-    private val listeners = mutableListOf<WeakReference<UserUpdateListener>>()
-
-    fun addListener(listener: UserUpdateListener) {
-        listeners.add(WeakReference(listener))
-    }
-
-    fun removeListener(listener: UserUpdateListener) {
-        listeners.removeAll { it.get() == listener || it.get() == null }
-    }
+    fun addListener(listener: UserListener) { listeners += listener }
+    fun removeListener(listener: UserListener) { listeners -= listener }
 }
 ```
 
-## Android Debugging
+A repository is a `single`. If an Activity or Fragment registers itself as a listener and never removes it, the repository keeps the screen alive. Remove listeners in the matching lifecycle callback (`onStop()` for `onStart()`, `onDestroyView()` for `onViewCreated()`), or expose a `Flow` and collect it with `repeatOnLifecycle`, which cancels collection for you.
 
-### Enable Android Logger
+### Scoped instances that outlive their owner
+
+- Retained scope: `activityRetainedScope` survives rotation. Its instances must not reference the Activity, a View or a Fragment.
+- Fragment scope: it closes in `onDestroy()`, after `onDestroyView()`. Don't keep Views or bindings in Fragment-scoped instances.
+- ViewModel: never inject Activity-scoped or Fragment-scoped instances into a ViewModel. The ViewModel survives rotation, the Activity scope does not.
+
+These rules are explained in [Android Scopes](/docs/reference/koin-android/scope).
+
+### Scopes you create yourself
+
+`activityScope()`, `fragmentScope()`, `ScopeActivity`, `ScopeFragment` and `ScopeService` close their scope with the lifecycle. A scope created with `getKoin().createScope()` has no lifecycle: close it yourself, or every instance in it stays in memory.
+
+```kotlin
+// on login
+val sessionScope = getKoin().createScope<UserSession>(userId)
+
+// on logout
+sessionScope.close()
+```
+
+## Debugging on Android
+
+Turn on the Logcat logger with the debug level while you investigate:
 
 ```kotlin
 startKoin {
-    androidLogger(Level.DEBUG)  // See all Koin operations
-    androidContext(this@MyApplication)
-    modules(appModules)
+    androidLogger(Level.DEBUG)
+    androidContext(this@MainApplication)
+    modules(appModule)
 }
 ```
 
-### Verify Modules in Debug Builds
+Filter Logcat on the `[Koin]` tag. At debug level, Koin logs each module load, each resolution and its duration, and each scope that opens or closes. Use `Level.ERROR` or `Level.NONE` in release builds.
 
-```kotlin
-class MyApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
+Errors you only see on Android:
 
-        startKoin {
-            androidContext(this@MyApplication)
-            modules(allModules)
-        }
+| Error | Usual cause |
+|-------|-------------|
+| `MissingAndroidContextException` | `androidContext()` is missing from `startKoin` |
+| `KoinApplication has not been started` | The `Application` class is not declared in the manifest, or a ContentProvider injects in its `onCreate()` (see [Android Entry Points](/docs/reference/koin-android/entry-points#contentprovider)) |
+| `NoDefinitionFoundException` for a scoped type | The Activity or Fragment has no scope (`ScopeActivity`, `AndroidScopeComponent`) |
+| `ClosedScopeException` | Code resolves a scoped instance in or after `onDestroy()`, when the scope is already closed. Do that cleanup in `onCloseScope()` |
+| Workers fail with "Could not instantiate" | The default WorkManager initializer is still in the manifest (see [WorkManager](/docs/reference/koin-android/workmanager)) |
 
-        // Use the Koin Compiler Plugin for compile-time validation
-        // or verify() in unit tests: appModule.verify()
-    }
-}
-```
+With the Compiler Plugin, missing definitions are reported at build time instead (see [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety)).
 
-### Scope Callbacks for Debugging
-
-```kotlin
-class DebugActivity : ScopeActivity() {
-    override val scope: Scope by activityScope()
-
-    init {
-        scope.registerCallback(object : ScopeCallback {
-            override fun onScopeClose(scope: Scope) {
-                Log.d("Koin", "Scope ${scope.id} closing")
-            }
-        })
-    }
-}
-```
-
-## Security Best Practices
-
-### Don't Store Secrets in Modules
-
-```kotlin
-// ❌ Bad - Hardcoded secrets
-module {
-    single {
-        Retrofit.Builder()
-            .addInterceptor { chain ->
-                chain.proceed(
-                    chain.request().newBuilder()
-                        .header("API-Key", "super-secret-key")  // NO!
-                        .build()
-                )
-            }
-            .build()
-    }
-}
-
-// ✅ Good - Secrets from secure storage
-module {
-    single {
-        val securePrefs = get<SecurePreferences>()
-        Retrofit.Builder()
-            .addInterceptor(AuthInterceptor(securePrefs))
-            .build()
-    }
-}
-```
-
-## Migration from Dagger/Hilt
-
-:::info
-Koin supports JSR-330 annotations (`@Singleton`, `@Inject`, `@Named`) from `jakarta.inject`. You can keep using familiar annotations. See [JSR-330 Compatibility](/docs/reference/koin-android/jsr330).
+:::tip
+To see resolution times, scope lifetimes and Koin errors from real user sessions, see [Production Monitoring](/docs/tooling/production-monitoring).
 :::
 
-### Annotation Mapping
+## Secrets
 
-| Hilt | Koin Annotations |
-|------|------------------|
-| `@Singleton` | `@Singleton` (JSR-330 compatible) |
-| `@Provides` | `@Factory` |
-| `@Binds` | `@Singleton ... bind Interface::class` |
-| `@Inject` | `@Inject` (JSR-330 compatible) |
-| `@HiltViewModel` | `@KoinViewModel` |
-| `@InstallIn(SingletonComponent)` | `@Module` + `@ComponentScan` |
-| `@InstallIn(ActivityComponent)` | `@Scope(ActivityScope::class)` |
+An APK can be unpacked. Anything compiled into it or stored in `assets/` can be read:
 
-### Example Migration
+- Hardcoded keys: don't write API keys as string literals in a module.
+- Koin properties: `androidFileProperties()` reads `assets/koin.properties`, which ships inside the APK. Use it for configuration, never for secrets.
+- `BuildConfig` fields: they are compiled into the APK too. They hide a value from source control, not from the APK.
+
+Fetch secrets at runtime from your backend, or keep tokens in encrypted storage, and inject the storage instead of the value:
 
 ```kotlin
-// Before (Hilt)
-@HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val repository: UserRepository
-) : ViewModel()
-
-@Singleton
-class UserRepositoryImpl @Inject constructor(
-    private val api: ApiService
-) : UserRepository
-
-// After (Koin) - minimal changes!
-@KoinViewModel
-class HomeViewModel(
-    private val repository: UserRepository
-) : ViewModel()
-
-@Singleton  // Keep using JSR-330
-class UserRepositoryImpl(
-    private val api: ApiService
-) : UserRepository
-```
-
-### Module Migration
-
-```kotlin
-// Before (Hilt)
-@InstallIn(SingletonComponent::class)
-@Module
-object NetworkModule {
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit = Retrofit.Builder().build()
-}
-
-// After (Koin Annotations)
-@Module
-class NetworkModule {
-    @Singleton
-    fun provideRetrofit(): Retrofit = Retrofit.Builder().build()
+class AuthInterceptor(private val tokens: TokenStore) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response =
+        chain.proceed(
+            chain.request().newBuilder()
+                .header("Authorization", "Bearer ${tokens.currentToken()}")
+                .build()
+        )
 }
 ```
 
-### Gradual Migration
+`TokenStore` is a `single` backed by your encrypted storage, and `AuthInterceptor` is added to the `OkHttpClient` definition (see [Android Library Integration](/docs/reference/koin-android/binding-patterns)).
 
-```kotlin
-// Step 1: Add Koin alongside Hilt for new features
-@KoinViewModel
-class NewFeatureViewModel(
-    private val repository: NewFeatureRepository
-) : ViewModel()
+## Migrating from Hilt or Dagger
 
-@Singleton
-class NewFeatureRepository(private val api: ApiService)
+Annotation mapping, module migration and gradual migration are covered in [Migrating from Hilt](/docs/reference/koin-android/hilt-migration). To keep `@Inject` and `jakarta.inject` annotations, see [JSR-330 Annotations](/docs/reference/koin-android/jsr330).
 
-// Step 2: Migrate existing features one by one
-@Singleton
-class MigratedRepository(private val api: ApiService) : UserRepository
+## Related
 
-// Step 3: Remove Hilt when migration complete
-```
-
-## See Also
-
-- **[Scopes](/docs/reference/koin-core/scopes)** - Core scoping concepts
-- **[Android Scopes](/docs/reference/koin-android/scope)** - Android lifecycle scopes
-- **[Testing](/docs/reference/koin-android/instrumented-testing)** - Android testing guide
-- **[Multi-Module Apps](/docs/reference/koin-android/multi-module)** - Organizing Android modules
+- [Android Scopes](/docs/reference/koin-android/scope): lifetimes of Activity, Fragment, retained and ViewModel scopes.
+- [Starting Koin on Android](/docs/reference/koin-android/start): `androidContext()`, logging and properties.
+- [Troubleshooting](/docs/reference/koin-core/troubleshooting): resolution errors and circular dependencies.
+- [Lazy Modules](/docs/reference/koin-core/lazy-modules): reduce Koin work at app startup.
+- [Migrating from Hilt](/docs/reference/koin-android/hilt-migration): move an existing Hilt app to Koin.

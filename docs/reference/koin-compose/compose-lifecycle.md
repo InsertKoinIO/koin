@@ -1,282 +1,87 @@
 ---
-title: Lifecycle & State
+title: Lifecycle and State
+description: How Koin's Compose APIs behave across recomposition, what each one releases when a Composable leaves the composition, and where to inject.
 ---
 
-# Lifecycle & State in Compose
+This page explains how objects injected with Koin behave in the Compose lifecycle: what happens on recomposition, what each Koin API releases when a Composable leaves the composition, and where to place injection calls. It assumes you know `koinInject()` and `koinViewModel()` (see [Koin for Compose](/docs/reference/koin-compose/compose)) and the [Compose lifecycle](https://developer.android.com/develop/ui/compose/lifecycle).
 
-This guide covers how Koin integrates with Compose's lifecycle and state management. Understanding these concepts helps you write efficient, bug-free Compose applications.
+## Recomposition
 
-:::info
-This guide aligns with [Android's official Compose lifecycle documentation](https://developer.android.com/develop/ui/compose/lifecycle).
-:::
-
-## Compose Lifecycle Overview
-
-A Composable has three lifecycle events:
-
-1. **Enter Composition** - Composable is first called
-2. **Recomposition** - Composable re-executes when state changes (0 or more times)
-3. **Leave Composition** - Composable is removed from the tree
-
-Koin's Compose APIs are designed to work efficiently with this lifecycle.
-
-## Injection and Recomposition
-
-### How koinInject() Works
-
-`koinInject()` retrieves instances from Koin and **remembers** them across recompositions:
+`koinInject()` resolves the dependency once and keeps it with `remember`, keyed on the qualifier, the scope and the parameters:
 
 ```kotlin
 @Composable
-fun MyScreen() {
-    // Resolved once, remembered across recompositions
-    val repository = koinInject<UserRepository>()
-
-    // Safe - uses the same instance
-    val users by repository.users.collectAsState()
+fun UserScreen(userId: String) {
+    val repository = koinInject<UserRepository>() // resolved once
+    val presenter = koinInject<UserPresenter> { parametersOf(userId) } // resolved again when userId changes
 }
 ```
 
-### Injection Timing
+On a recomposition with the same keys, you get the same object. When a key changes (a new `userId`), Koin resolves again. For a `single`, that returns the same instance. For a `factory`, that creates a new one.
 
-Inject dependencies at the **Composable function level**, not inside callbacks:
+`koinViewModel()` does not use `remember`: the ViewModel is stored in the `ViewModelStoreOwner` and survives recomposition and Android configuration changes. Its parameters are used only at creation (see [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel)).
+
+Both are Composable functions, so they can't be called inside `remember { }`, `LaunchedEffect` or an `onClick` lambda. Call them in the Composable body and use the result inside the lambda:
 
 ```kotlin
 @Composable
-fun MyScreen() {
-    // Correct - resolved at composition time
+fun SaveButton() {
     val repository = koinInject<UserRepository>()
-    val viewModel = koinViewModel<MyViewModel>()
 
-    Button(onClick = {
-        // Wrong - don't inject in callbacks
-        val service = koinInject<Service>() // Avoid!
-
-        // Correct - use already-injected instance
-        repository.save()
-    }) {
+    Button(onClick = { repository.save() }) {
         Text("Save")
     }
 }
 ```
 
-### Performance with Parameters
+## What is released, and when
 
-When using parameters with `koinInject`, prefer the explicit parameter form:
+| API | On recomposition | When the Composable leaves the composition |
+|-----|------------------|--------------------------------------------|
+| `koinInject()` | Same object if keys are unchanged | Reference dropped. Koin keeps a `single` or `scoped` instance |
+| `koinViewModel()` | Same ViewModel | Nothing. The ViewModel is cleared with its `ViewModelStoreOwner` |
+| `KoinApplication` | Same Koin instance | Koin keeps running. Stopped only if the composition is abandoned |
+| `KoinScope`, `rememberKoinScope` | Same scope | Scope closed |
+| `KoinNavigationScope` | Same scope | Scope kept. Closed only if the composition is abandoned |
+| `UnboundKoinScope` | Same scope | Nothing. You close the scope |
+| `rememberKoinModules` | Modules loaded once | Modules unloaded only if you set `unloadOnForgotten` |
+
+Details: [Scopes in Compose](/docs/reference/koin-compose/compose-scopes), [Dynamic Modules](/docs/reference/koin-compose/compose-modules).
+
+## Where to inject
+
+Inject at the screen level and pass plain data and lambdas down. Child Composables then don't depend on Koin, and previews and tests don't need a Koin instance:
 
 ```kotlin
 @Composable
-fun MyScreen(userId: String) {
-    // More efficient - parameters evaluated once
-    val presenter = koinInject<UserPresenter>(
-        parameters = parametersOf(userId)
-    )
-
-    // Less efficient - lambda re-evaluated on recomposition
-    val presenter = koinInject<UserPresenter> {
-        parametersOf(userId)
-    }
-}
-```
-
-## State Management with Koin
-
-### StateFlow and collectAsState
-
-The standard pattern for reactive UI with Koin:
-
-```kotlin
-@KoinViewModel
-class UserViewModel(
-    private val repository: UserRepository
-) : ViewModel() {
-    private val _state = MutableStateFlow<UiState>(UiState.Loading)
-    val state: StateFlow<UiState> = _state.asStateFlow()
-
-    init {
-        loadUsers()
-    }
-
-    private fun loadUsers() {
-        viewModelScope.launch {
-            _state.value = UiState.Success(repository.getUsers())
-        }
-    }
+fun UserListScreen(viewModel: UserListViewModel = koinViewModel()) {
+    val users by viewModel.users.collectAsState()
+    UserList(users = users, onDelete = viewModel::delete)
 }
 
 @Composable
-fun UserScreen(
-    viewModel: UserViewModel = koinViewModel()
-) {
-    val state by viewModel.state.collectAsState()
-
-    when (val s = state) {
-        is UiState.Loading -> LoadingIndicator()
-        is UiState.Success -> UserList(s.users)
-        is UiState.Error -> ErrorMessage(s.message)
-    }
-}
-```
-
-### Direct Repository Injection
-
-For simpler cases, inject repositories directly:
-
-```kotlin
-@Singleton
-class UserRepository {
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users.asStateFlow()
-}
-
-@Composable
-fun UserListScreen() {
-    val repository = koinInject<UserRepository>()
-    val users by repository.users.collectAsState()
-
+fun UserList(users: List<User>, onDelete: (User) -> Unit) {
     LazyColumn {
-        items(users) { user ->
-            UserCard(user)
-        }
+        items(users) { user -> UserCard(user, onDelete) }
     }
 }
 ```
 
-### remember() vs koinInject()
+Avoid `koinInject()` inside `LazyColumn` items: each item runs its own resolution and `remember`. Inject once in the parent and pass the object or a lambda.
 
-Use the right tool for each job:
+### Pass as a parameter or inject?
 
-```kotlin
-@Composable
-fun MyScreen() {
-    // Koin-managed dependencies
-    val viewModel = koinViewModel<MyViewModel>()
-    val repository = koinInject<Repository>()
-
-    // Compose-managed state
-    val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
-    var text by remember { mutableStateOf("") }
-
-    // Don't wrap koinInject in remember (unnecessary)
-    val service = remember { koinInject<Service>() } // Redundant!
-}
-```
-
-## Side Effects with Koin
-
-### LaunchedEffect
-
-Execute suspending code when composition enters or keys change:
+| Pass as a parameter | Inject with Koin |
+|---------------------|------------------|
+| Values that change: ids, search query, selection | Long-lived services: repositories, use cases |
+| Navigation arguments | Infrastructure: database, HTTP client |
+| Data the parent already has | ViewModels |
 
 ```kotlin
-@Composable
-fun UserDetailScreen(userId: String) {
-    val repository = koinInject<UserRepository>()
-    var user by remember { mutableStateOf<User?>(null) }
-
-    // Runs when userId changes
-    LaunchedEffect(userId) {
-        user = repository.getUser(userId)
-    }
-
-    user?.let { UserContent(it) }
-}
-```
-
-### DisposableEffect
-
-Clean up resources when leaving composition:
-
-```kotlin
-@Composable
-fun EventScreen() {
-    val eventBus = koinInject<EventBus>()
-
-    DisposableEffect(Unit) {
-        val listener = eventBus.subscribe { event ->
-            // Handle event
-        }
-
-        onDispose {
-            eventBus.unsubscribe(listener)
-        }
-    }
-}
-```
-
-### SideEffect
-
-Execute non-suspending side effects after every successful recomposition:
-
-```kotlin
-@Composable
-fun AnalyticsScreen(screenName: String) {
-    val analytics = koinInject<Analytics>()
-
-    SideEffect {
-        analytics.logScreenView(screenName)
-    }
-}
-```
-
-## Stability and Skipping
-
-### Understanding Stable Types
-
-Compose can skip recomposition when inputs haven't changed. For this to work, parameter types must be **stable**:
-
-```kotlin
-// Stable - Compose can skip
-@Composable
-fun UserCard(
-    name: String,                    // Primitive - stable
-    onClick: () -> Unit,             // Lambda - stable
-    viewModel: UserViewModel = koinViewModel()  // Treated as stable
-)
-
-// Potentially unstable - may not skip
-@Composable
-fun UserCard(
-    user: User  // Data class - stable if all properties stable
-)
-```
-
-### Koin Injections and Stability
-
-Koin injections are treated as stable because they return the same instance (for singletons) or are remembered:
-
-```kotlin
-@Composable
-fun MyScreen() {
-    // Stable - singleton returns same instance
-    val repository = koinInject<UserRepository>()
-
-    // Stable - ViewModel is remembered
-    val viewModel = koinViewModel<MyViewModel>()
-}
-```
-
-## Passing Parameters vs Injection
-
-### Decision Guide
-
-| Pass as Parameter | Inject with Koin |
-|-------------------|------------------|
-| Changes frequently (userId, query) | Stable dependencies (repositories, services) |
-| UI state (selected item) | Infrastructure (database, network) |
-| Navigation arguments | Business logic (use cases) |
-| Parent-provided data | ViewModels |
-
-### Example Pattern
-
-```kotlin
-// userId changes - pass as parameter
-// repository is stable - inject
 @Composable
 fun UserProfile(
-    userId: String,
-    repository: UserRepository = koinInject()
+    userId: String,                              // changes: pass it
+    repository: UserRepository = koinInject()   // service: inject it
 ) {
     var user by remember { mutableStateOf<User?>(null) }
 
@@ -286,92 +91,32 @@ fun UserProfile(
 
     user?.let { ProfileContent(it) }
 }
+```
 
-// Pure composable - no injection needed
+## Injected objects and stability
+
+Koin does not change how Compose sees a type. A Composable parameter of type `UserRepository` or `UserViewModel` is stable or unstable according to the Compose compiler rules, like any other class. If skipping matters for a Composable, pass it stable values (state, primitives, lambdas) instead of the injected object.
+
+## Side effects
+
+Injected objects are regular Kotlin objects: use them in `LaunchedEffect`, `DisposableEffect` or `SideEffect` like any other value. Resolve them in the Composable body first:
+
+```kotlin
 @Composable
-fun ProfileContent(user: User) {
-    Column {
-        Text(user.name)
-        Text(user.email)
+fun EventScreen() {
+    val eventBus = koinInject<EventBus>()
+
+    DisposableEffect(eventBus) {
+        val listener = eventBus.subscribe { event -> /* ... */ }
+        onDispose { eventBus.unsubscribe(listener) }
     }
 }
 ```
 
-## Best Practices
+## Related
 
-### 1. Inject at the Top Level
-
-```kotlin
-@Composable
-fun FeatureScreen() {
-    // Inject here
-    val viewModel = koinViewModel<FeatureViewModel>()
-    val repository = koinInject<FeatureRepository>()
-
-    // Pass down to children
-    FeatureContent(
-        state = viewModel.state,
-        onAction = viewModel::handleAction
-    )
-}
-```
-
-### 2. Keep Child Composables Pure
-
-```kotlin
-// Pure - receives all data as parameters
-@Composable
-fun UserCard(
-    user: User,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
-) {
-    // No injection here
-}
-```
-
-### 3. Use ViewModel for Complex State
-
-```kotlin
-// Complex state management in ViewModel
-@KoinViewModel
-class SearchViewModel(
-    private val searchRepository: SearchRepository
-) : ViewModel() {
-    var query by mutableStateOf("")
-        private set
-
-    private val _results = MutableStateFlow<List<Result>>(emptyList())
-    val results = _results.asStateFlow()
-
-    fun updateQuery(newQuery: String) {
-        query = newQuery
-        viewModelScope.launch {
-            _results.value = searchRepository.search(newQuery)
-        }
-    }
-}
-```
-
-### 4. Avoid Injection in Loops
-
-```kotlin
-@Composable
-fun UserList(userIds: List<String>) {
-    // Inject once outside the loop
-    val repository = koinInject<UserRepository>()
-
-    LazyColumn {
-        items(userIds) { userId ->
-            // Don't inject inside items!
-            UserCard(userId, repository)
-        }
-    }
-}
-```
-
-## Next Steps
-
-- **[ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel)** - ViewModel APIs
-- **[Dynamic Modules](/docs/reference/koin-compose/compose-modules)** - Module loading/unloading
-- **[Testing](/docs/reference/koin-compose/compose-testing)** - Testing Composables
+- [Koin for Compose](/docs/reference/koin-compose/compose): `koinInject()` and starting Koin.
+- [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel): ViewModel owners and parameters.
+- [Scopes in Compose](/docs/reference/koin-compose/compose-scopes): scopes bound to the UI tree.
+- [Dynamic Modules](/docs/reference/koin-compose/compose-modules): load and unload modules with a Composable.
+- [Compose Testing](/docs/reference/koin-compose/compose-testing): previews and UI tests.

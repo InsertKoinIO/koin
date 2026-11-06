@@ -1,56 +1,46 @@
 ---
-title: DI Bridge
+title: Ktor DI Bridge
+description: Let Koin resolve dependencies declared in Ktor's built-in DI, and let Ktor's dependencies delegate resolve Koin definitions.
 ---
 
-# Ktor DI Bridge
+Ktor 3.4 ships its own dependency injection plugin (`dependencies { provide<T> { } }` and `by dependencies`). This page shows how to connect it to Koin with the `bridge { }` option of the Koin plugin, in one or both directions. You need the Koin plugin installed as in [Koin for Ktor](/docs/reference/koin-ktor/ktor).
 
-Koin 4.2+ provides seamless integration with **Ktor 3.4+** built-in dependency injection system through a configurable bridge.
+The bridge is available since Koin 4.2. Its functions are marked `@KoinExperimentalAPI`.
 
-:::info Experimental Feature
-The Ktor DI Bridge is an experimental feature that enables bidirectional dependency resolution between Koin and Ktor DI.
-:::
-
-## Bridge Configuration
-
-Use the `bridge { }` DSL to enable bidirectional dependency resolution:
+## Configuring the bridge
 
 ```kotlin
 fun Application.module() {
     install(Koin) {
         slf4jLogger()
-
         bridge {
-            ktorToKoin()  // Ktor DI can resolve Koin dependencies
-            koinToKtor()  // Koin can resolve Ktor DI dependencies
+            ktorToKoin()
+            koinToKtor()
         }
-
         modules(appModule)
     }
 
-    // Ktor DI dependencies
     dependencies {
         provide<KtorSpecificService> { KtorSpecificServiceImpl() }
     }
 }
 ```
 
-## Bridge Options
+| Option | Effect |
+|--------|--------|
+| `ktorToKoin()` | Ktor's `by dependencies` can resolve Koin definitions |
+| `koinToKtor()` | Koin's `get()`, `inject()` and constructor injection can resolve Ktor DI dependencies |
 
-| Option | Description |
-|--------|-------------|
-| `ktorToKoin()` | Allows Ktor's `by dependencies` delegate to resolve from Koin |
-| `koinToKtor()` | Allows Koin's `inject()` and `get()` to resolve from Ktor DI |
+Enable only the direction you use.
 
-## Using ktorToKoin()
+## Ktor resolving from Koin
 
-Resolve Koin dependencies using Ktor's `by dependencies` delegate:
+With `ktorToKoin()`, the plugin installs Ktor's `DI` plugin with a dependency map backed by Koin:
 
 ```kotlin
 fun Application.module() {
     install(Koin) {
-        bridge {
-            ktorToKoin()
-        }
+        bridge { ktorToKoin() }
         modules(module {
             single<HelloService> { HelloServiceImpl() }
         })
@@ -58,150 +48,77 @@ fun Application.module() {
 
     routing {
         get("/hello") {
-            // Resolve Koin dependency using Ktor's delegate
-            val helloService: HelloService by dependencies
+            val helloService: HelloService by dependencies // declared in Koin
             call.respondText(helloService.sayHello())
         }
     }
 }
 ```
 
-## Using koinToKtor()
+A Ktor dependency key with a name maps to a Koin `named()` qualifier with the same value.
 
-Resolve Ktor DI dependencies using Koin's `inject()`:
+## Koin resolving from Ktor DI
+
+With `koinToKtor()`, Koin adds a resolution extension: when a type has no Koin definition, Koin asks Ktor DI for it.
 
 ```kotlin
 fun Application.module() {
     install(Koin) {
-        bridge {
-            koinToKtor()
-        }
+        bridge { koinToKtor() }
         modules(appModule)
     }
 
-    // Declare in Ktor DI
     dependencies {
         provide<DatabaseConnection> { DatabaseConnectionImpl() }
     }
 
     routing {
         get("/data") {
-            // Resolve Ktor DI dependency using Koin
-            val database: DatabaseConnection by inject()
+            val database: DatabaseConnection by inject() // declared in Ktor DI
             call.respondText(database.query())
         }
     }
 }
 ```
 
-## Full Bidirectional Example
+Koin definitions can also take Ktor DI types as constructor parameters. A Koin qualifier is passed to Ktor as the dependency name. If Ktor DI has no such dependency either, Koin logs a warning and the resolution fails as for any missing definition.
 
-Enable both directions for maximum flexibility:
+## Splitting infrastructure and application code
 
-```kotlin
-fun Application.module() {
-    install(Koin) {
-        slf4jLogger()
-
-        bridge {
-            ktorToKoin()
-            koinToKtor()
-        }
-
-        modules(module {
-            single<HelloService> { HelloServiceImpl() }
-        })
-    }
-
-    dependencies {
-        provide<KtorSpecificService> { KtorSpecificServiceImpl() }
-    }
-
-    routing {
-        // Using Koin's inject() for both
-        get("/mixed-koin") {
-            val helloService: HelloService by inject()        // From Koin
-            val ktorService: KtorSpecificService by inject()  // From Ktor DI
-            call.respondText("${helloService.sayHello()} - ${ktorService.process()}")
-        }
-
-        // Using Ktor's dependencies delegate for both
-        get("/mixed-ktor") {
-            val helloService: HelloService by dependencies        // From Koin
-            val ktorService: KtorSpecificService by dependencies  // From Ktor DI
-            call.respondText("${helloService.sayHello()} - ${ktorService.process()}")
-        }
-    }
-}
-```
-
-## Architecture Pattern
-
-Separate infrastructure from application logic:
-
-- **Ktor DI** - Framework-level dependencies (Database, Configuration, Infrastructure)
-- **Koin** - Application-level dependencies (Repositories, Services, Use Cases)
+A common split keeps framework-level objects in Ktor DI and application classes in Koin, with `koinToKtor()` only:
 
 ```kotlin
 fun Application.module() {
-    // Ktor DI - Infrastructure layer
-    val config = environment.config
-    val database = Database(config)
+    // Ktor DI: infrastructure
+    val database = Database(environment.config)
     dependencies {
         provide<Database> { database }
-        provide<ApplicationConfig> { config }
+        provide<ApplicationConfig> { environment.config }
     }
 
-    // Koin - Application layer
+    // Koin: application classes
     install(Koin) {
         slf4jLogger()
-
-        bridge {
-            koinToKtor()  // Koin can resolve infrastructure deps
-        }
-
+        bridge { koinToKtor() }
         modules(appModule)
     }
 }
 
 val appModule = module {
-    // These can inject Database from Ktor DI via bridge
-    singleOf(::CustomerRepository)
-    singleOf(::OrderRepository)
+    singleOf(::CustomerRepository) // receives Database from Ktor DI
     singleOf(::CustomerService)
 }
 ```
 
-## Best Practices
+## Limits
 
-1. **Infrastructure in Ktor DI** - Database connections, configuration, external clients
-2. **Business logic in Koin** - Repositories, services, use cases
-3. **Enable only needed direction** - Use `koinToKtor()` only, not both, unless necessary
-4. **Document the boundary** - Make it clear which system owns which dependencies
+- **Compile-time checks**: the Koin Compiler Plugin does not see Ktor DI declarations. If compile-time safety reports a Ktor DI type as missing, mark it `@Provided`, as described in [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+- **KoinIsolated**: in Koin 4.2, the `KoinIsolated` plugin accepts the `bridge { }` block but does not apply it. Use `install(Koin)` when you need the bridge.
+- **Experimental**: the bridge API may change in a future release.
 
-## With Isolated Context
+## Related
 
-The bridge also works with `KoinIsolated`:
-
-```kotlin
-fun Application.module() {
-    dependencies {
-        provide<Database> { Database(environment.config) }
-    }
-
-    install(KoinIsolated) {
-        slf4jLogger()
-
-        bridge {
-            koinToKtor()
-        }
-
-        modules(appModule)
-    }
-}
-```
-
-## See Also
-
-- **[Koin for Ktor](/docs/reference/koin-ktor/ktor)** - Main Ktor documentation
-- **[Isolated Context](/docs/reference/koin-ktor/ktor-isolated)** - Isolated Koin instances
+- [Koin for Ktor](/docs/reference/koin-ktor/ktor): install the plugin and inject in routes.
+- [Isolated Context in Ktor](/docs/reference/koin-ktor/ktor-isolated): Koin outside the global context.
+- [Request Scopes](/docs/reference/koin-ktor/ktor-scopes): per-call instances.
+- [Ktor dependency injection](https://ktor.io/docs/server-dependency-injection.html): Ktor's own DI plugin.

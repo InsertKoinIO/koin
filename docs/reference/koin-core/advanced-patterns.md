@@ -1,77 +1,79 @@
 ---
 title: Advanced Patterns
+description: Inject every implementation of an interface, declare generic types, create objects at runtime with a provider, and stack decorators with Koin.
 ---
 
-# Advanced Patterns
+This page covers patterns beyond one class per definition: collections of implementations, generic types, providers for runtime objects, and decorators. It assumes you know [definitions](/docs/reference/koin-core/definitions) and [qualifiers](/docs/reference/koin-core/qualifiers). For classes from libraries (Retrofit, Room, OkHttp), see [Classes you don't own](/docs/reference/koin-core/definitions#classes-you-dont-own).
 
-This guide covers advanced dependency injection patterns for complex scenarios.
+## Collections of dependencies
 
-## External Library Binding
+To inject every implementation of an interface, bind each one to the interface and ask for a `List`:
 
-For third-party libraries where you can't add annotations, use builder functions with `create()`:
-
-```kotlin
-// Builder functions - Koin resolves parameters automatically
-fun createOkHttpClient(): OkHttpClient =
-    OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .build()
-
-fun createRetrofit(client: OkHttpClient): Retrofit =
-    Retrofit.Builder()
-        .baseUrl("https://api.example.com/")
-        .client(client)
-        .build()
-
-fun createApiService(retrofit: Retrofit): ApiService =
-    retrofit.create(ApiService::class.java)
-
-val networkModule = module {
-    single { create(::createOkHttpClient) }
-    single { create(::createRetrofit) }
-    single { create(::createApiService) }
-}
-```
-
-Or with Annotations using `@Module` functions:
-
-```kotlin
-@Module
-class NetworkModule {
-    @Single
-    fun provideOkHttpClient(): OkHttpClient =
-        OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).build()
-
-    @Single
-    fun provideRetrofit(client: OkHttpClient): Retrofit =
-        Retrofit.Builder().baseUrl("https://api.example.com/").client(client).build()
-
-    @Single
-    fun provideApiService(retrofit: Retrofit): ApiService =
-        retrofit.create(ApiService::class.java)
-}
-```
-
-## Collections of Dependencies
-
-### Multiple Implementations
-
-Aggregate multiple implementations of an interface using qualifiers:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
 interface PaymentProcessor {
     fun process(amount: Double): Boolean
-    fun getName(): String
 }
 
 class CreditCardProcessor : PaymentProcessor { ... }
 class PayPalProcessor : PaymentProcessor { ... }
-class CryptoProcessor : PaymentProcessor { ... }
+
+class PaymentManager(private val processors: List<PaymentProcessor>)
+
+val paymentModule = module {
+    single<CreditCardProcessor>() bind PaymentProcessor::class
+    single<PayPalProcessor>() bind PaymentProcessor::class
+    single<PaymentManager>()
+}
 ```
 
-#### Compiler Plugin DSL
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
-Use `@Named` qualifier annotations on classes:
+```kotlin
+interface PaymentProcessor {
+    fun process(amount: Double): Boolean
+}
+
+// bound to PaymentProcessor automatically
+@Singleton
+class CreditCardProcessor : PaymentProcessor { ... }
+
+@Singleton
+class PayPalProcessor : PaymentProcessor { ... }
+
+@Singleton
+class PaymentManager(private val processors: List<PaymentProcessor>)
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val paymentModule = module {
+    singleOf(::CreditCardProcessor) bind PaymentProcessor::class
+    singleOf(::PayPalProcessor) bind PaymentProcessor::class
+    single { PaymentManager(getAll()) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+A `List<T>` parameter resolves with `getAll<T>()`: every definition whose type, or one of its bound types, is `T`, with or without a qualifier. Outside a constructor, call `getAll<PaymentProcessor>()` on a `Scope` or on `getKoin()`.
+
+Behavior to know:
+
+- **Empty list**: if nothing is bound to `T`, the list is empty. No error, and the Compiler Plugin does not report a missing dependency for a `List<T>` parameter.
+- **No order**: do not rely on the order of the list. If order matters, sort it, for example by a `priority` property on the interface.
+- **Current scope only**: from a scope instance, `getAll` returns the definitions of that scope and of its linked scopes, including the root.
+- **Single lookup**: `get<PaymentProcessor>()` still returns only one of the bound definitions (the last one loaded). To pick one, give each a [qualifier](/docs/reference/koin-core/qualifiers).
+
+- **Strict override**: with `allowOverride(false)`, binding the same interface without a qualifier in two different modules fails at start with `DefinitionOverrideException`. Give each binding a qualifier.
+
+When you need both the list and a specific implementation, combine binding and qualifiers. With the Compiler Plugin DSL and annotations, put `@Named` on the class:
 
 ```kotlin
 @Named("creditCard")
@@ -80,189 +82,188 @@ class CreditCardProcessor : PaymentProcessor { ... }
 @Named("paypal")
 class PayPalProcessor : PaymentProcessor { ... }
 
-@Named("crypto")
-class CryptoProcessor : PaymentProcessor { ... }
-
-class PaymentManager(
-    @Named("creditCard") creditCard: PaymentProcessor,
-    @Named("paypal") paypal: PaymentProcessor,
-    @Named("crypto") crypto: PaymentProcessor
-) {
-    private val processors = listOf(creditCard, paypal, crypto)
-}
-```
-
-```kotlin
 val paymentModule = module {
-    single<CreditCardProcessor>()
-    single<PayPalProcessor>()
-    single<CryptoProcessor>()
-    single<PaymentManager>()
-}
-```
-
-#### Annotations
-
-```kotlin
-@Module
-class PaymentModule {
-    @Single
-    @Named("creditCard")
-    fun provideCreditCard(): PaymentProcessor = CreditCardProcessor()
-
-    @Single
-    @Named("paypal")
-    fun providePayPal(): PaymentProcessor = PayPalProcessor()
-
-    @Single
-    @Named("crypto")
-    fun provideCrypto(): PaymentProcessor = CryptoProcessor()
-
-    @Single
-    fun providePaymentManager(
-        @Named("creditCard") creditCard: PaymentProcessor,
-        @Named("paypal") paypal: PaymentProcessor,
-        @Named("crypto") crypto: PaymentProcessor
-    ): PaymentManager = PaymentManager(listOf(creditCard, paypal, crypto))
-}
-```
-
-#### Classic DSL
-
-```kotlin
-val paymentModule = module {
-    single(named("creditCard")) { CreditCardProcessor() }
-    single(named("paypal")) { PayPalProcessor() }
-    single(named("crypto")) { CryptoProcessor() }
-
-    single {
-        PaymentManager(
-            listOf(
-                get(named("creditCard")),
-                get(named("paypal")),
-                get(named("crypto"))
-            )
-        )
-    }
-}
-```
-
-## Generic Types
-
-Koin preserves generic type information:
-
-```kotlin
-interface Repository<T> {
-    suspend fun get(id: String): T
-    suspend fun save(item: T)
+    single<CreditCardProcessor>() bind PaymentProcessor::class
+    single<PayPalProcessor>() bind PaymentProcessor::class
 }
 
-@Singleton
-class UserRepository : Repository<User> { ... }
-
-@Singleton
-class ProductRepository : Repository<Product> { ... }
+class CheckoutService(
+    @Named("creditCard") private val defaultProcessor: PaymentProcessor,
+    private val allProcessors: List<PaymentProcessor>,
+)
 ```
 
+## Generic types
+
+Koin identifies a definition by its class and qualifier. Type arguments are erased: `Repository<User>` and `Repository<Product>` are the same key, `Repository`. Two definitions of the same generic class override each other, and the Compiler Plugin validates them as one.
+
 ```kotlin
-// DSL
+// Does not work: the second definition overrides the first
 val repositoryModule = module {
     single<Repository<User>> { UserRepository() }
     single<Repository<Product>> { ProductRepository() }
 }
-
-// Injection - types are distinct
-val userRepo: Repository<User> = get()
-val productRepo: Repository<Product> = get()
 ```
 
-## Provider Pattern
+Use one of these instead:
 
-Create factories for runtime instances when you need to create objects with runtime parameters:
+- **Concrete types**: inject `UserRepository` and `ProductRepository` directly. Each class is its own key.
+- **Qualifiers**: keep the generic interface and tell the definitions apart with a qualifier.
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-@Factory
-class DialogFactory(private val context: Context) {
-    fun createConfirmDialog(title: String, onConfirm: () -> Unit): AlertDialog =
+@Qualifier(User::class)
+class UserRepository : Repository<User> { ... }
+
+@Qualifier(Product::class)
+class ProductRepository : Repository<Product> { ... }
+
+val repositoryModule = module {
+    single<UserRepository>() bind Repository::class
+    single<ProductRepository>() bind Repository::class
+}
+
+class UserService(@Qualifier(User::class) private val repository: Repository<User>)
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+@Singleton
+@Qualifier(User::class)
+class UserRepository : Repository<User> { ... }
+
+@Singleton
+@Qualifier(Product::class)
+class ProductRepository : Repository<Product> { ... }
+
+@Singleton
+class UserService(@Qualifier(User::class) private val repository: Repository<User>)
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val repositoryModule = module {
+    single<Repository<User>>(named<User>()) { UserRepository() }
+    single<Repository<Product>>(named<Product>()) { ProductRepository() }
+    single { UserService(get(named<User>())) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`named<User>()` is a type qualifier built from the class `User`. `@Qualifier(User::class)` is its annotation form.
+
+## Provider pattern
+
+Some objects need values that exist only at runtime: a title, a callback, a user choice. Instead of resolving them from Koin each time, inject a provider class that creates them:
+
+```kotlin
+class DialogProvider(private val context: Context) {
+
+    fun confirmDialog(title: String, onConfirm: () -> Unit): AlertDialog =
         AlertDialog.Builder(context)
             .setTitle(title)
             .setPositiveButton("OK") { _, _ -> onConfirm() }
             .create()
-
-    fun createErrorDialog(message: String): AlertDialog =
-        AlertDialog.Builder(context)
-            .setTitle("Error")
-            .setMessage(message)
-            .create()
 }
 
-// Usage
-class MyScreen(private val dialogFactory: DialogFactory) {
-    fun showConfirmation() {
-        dialogFactory.createConfirmDialog("Confirm") { /* action */ }.show()
+class SettingsScreen(private val dialogs: DialogProvider) {
+    fun askReset() {
+        dialogs.confirmDialog("Reset settings?") { reset() }.show()
     }
 }
 ```
 
-## Decorator Pattern
+Declare `DialogProvider` like any class (`factory<DialogProvider>()`, `@Factory`, or `factoryOf(::DialogProvider)`). The provider gets its dependencies from Koin, the created objects get their runtime values from the caller.
 
-Stack behaviors using delegation:
+For a value known at the call site and needed in the constructor, [injected parameters](/docs/reference/koin-core/injection-parameters) are the simpler option. For an instance that is costly and not always needed, inject `Lazy<T>`: see [Constructor parameters](/docs/reference/koin-core/definitions#constructor-parameters).
+
+## Decorator pattern
+
+A decorator wraps an implementation to add behavior (logging, caching, rate limiting) and exposes the same interface. Koin has no decorator keyword: register the inner implementation under its own type, and bind the interface to the outer decorator.
 
 ```kotlin
 interface NotificationService {
     fun send(message: String)
 }
 
-@Singleton
-class BasicNotificationService : NotificationService {
-    override fun send(message: String) { /* send */ }
-}
+class PushNotificationService : NotificationService { ... }
 
-class LoggingNotificationDecorator(
+class LoggingNotificationService(
     private val delegate: NotificationService,
-    private val logger: Logger
+    private val logger: Logger,
 ) : NotificationService {
     override fun send(message: String) {
         logger.log("Sending: $message")
         delegate.send(message)
     }
 }
-
-class RateLimitedNotificationDecorator(
-    private val delegate: NotificationService,
-    private val rateLimiter: RateLimiter
-) : NotificationService {
-    override fun send(message: String) {
-        if (rateLimiter.tryAcquire()) delegate.send(message)
-    }
-}
 ```
 
-Stack decorators in module:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-fun createLogger(): Logger = ConsoleLogger()
-fun createRateLimiter(): RateLimiter = TokenBucketRateLimiter()
+import org.koin.plugin.module.dsl.create
+
+fun loggingNotifications(
+    push: PushNotificationService,
+    logger: Logger,
+): NotificationService = LoggingNotificationService(push, logger)
 
 val notificationModule = module {
-    single { BasicNotificationService() }
-    single { create(::createLogger) }
-    single { create(::createRateLimiter) }
+    single<Logger>()
+    single<PushNotificationService>()
+    single { create(::loggingNotifications) }
+}
+```
 
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+@Module
+class NotificationModule {
+
+    @Singleton
+    fun notifications(push: PushNotificationService, logger: Logger): NotificationService =
+        LoggingNotificationService(push, logger)
+}
+```
+
+Declare `PushNotificationService` with `@Singleton(binds = [])`, so it is not bound to `NotificationService` as well.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val notificationModule = module {
+    singleOf(::Logger)
+    singleOf(::PushNotificationService)
     single<NotificationService> {
-        RateLimitedNotificationDecorator(
-            delegate = LoggingNotificationDecorator(
-                delegate = get<BasicNotificationService>(),
-                logger = get()
-            ),
-            rateLimiter = get()
-        )
+        LoggingNotificationService(delegate = get<PushNotificationService>(), logger = get())
     }
 }
 ```
 
-## Next Steps
+</TabItem>
+</Tabs>
 
-- **[Definitions](/docs/reference/koin-core/definitions)** - Basic definition types
-- **[Qualifiers](/docs/reference/koin-core/qualifiers)** - Named and typed qualifiers
-- **[Troubleshooting](/docs/reference/koin-core/troubleshooting)** - Debug and fix issues
+Consumers ask for `NotificationService` and get the decorated instance. To stack several decorators, nest them in the same function: `RateLimitedNotificationService(LoggingNotificationService(push, logger), limiter)`.
+
+The inner implementation must not be bound to the interface too. Otherwise two definitions answer for `NotificationService` and one overrides the other.
+
+## Related
+
+- [Definitions](/docs/reference/koin-core/definitions): definition types, binding, classes you don't own.
+- [Qualifiers](/docs/reference/koin-core/qualifiers): `named()`, type qualifiers and `@Named`.
+- [Injected Parameters](/docs/reference/koin-core/injection-parameters): runtime values passed at resolution.
+- [Injection](/docs/reference/koin-core/injection): `get()`, `getAll()`, `inject()` outside constructors.
+- [Troubleshooting](/docs/reference/koin-core/troubleshooting): override and missing definition errors.

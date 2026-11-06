@@ -1,172 +1,191 @@
 ---
 title: Scopes in Compose
+description: Bind a Koin scope to a Composable, a navigation destination, an Activity or a Fragment, and resolve scoped dependencies with koinInject.
 ---
 
-# Scopes in Compose
+This page covers the Compose functions that open a Koin scope for a part of the UI tree: `KoinScope`, `KoinNavigationScope`, `UnboundKoinScope`, and the Android `KoinActivityScope` and `KoinFragmentScope`. Inside such a block, `koinInject()` and `koinViewModel()` resolve from that scope. How scopes work and how to declare them is explained in [Scopes](/docs/reference/koin-core/scopes).
 
-Koin provides several APIs to manage scopes within Compose applications, from simple composable-bound scopes to navigation-integrated scopes.
+Most functions on this page are marked `@KoinExperimentalAPI`. Opt in with `@OptIn(KoinExperimentalAPI::class)`.
 
 ## KoinScope
 
-Create a Koin scope tied to a Composable's lifecycle:
+`KoinScope` gets or creates a scope, provides it to its children, and closes it when the Composable leaves the composition.
+
+Declare the scope:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
+class FeatureScope
+
 val featureModule = module {
     scope<FeatureScope> {
         scoped<FeatureCache>()
         scoped<FeatureRepository>()
     }
 }
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+class FeatureScope
+
+@Scope(FeatureScope::class)
+class FeatureCache
+
+@Scope(FeatureScope::class)
+class FeatureRepository(private val cache: FeatureCache)
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+class FeatureScope
+
+val featureModule = module {
+    scope<FeatureScope> {
+        scopedOf(::FeatureCache)
+        scopedOf(::FeatureRepository)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Open it in Compose:
+
+```kotlin
+import org.koin.compose.scope.KoinScope
 
 @Composable
 fun FeatureScreen() {
-    KoinScope(scopeOf<FeatureScope>()) {
-        // All children can access scoped dependencies
+    KoinScope<FeatureScope>(scopeID = "feature") {
         FeatureContent()
     }
 }
 
 @Composable
 fun FeatureContent() {
-    // Resolves from parent KoinScope
-    val cache = koinInject<FeatureCache>()
+    val repository = koinInject<FeatureRepository>() // resolved from the FeatureScope
 }
 ```
 
-The scope is automatically closed when the Composable leaves composition (on `onForgotten` or `onAbandoned`).
+`KoinScope` has three forms:
 
-## KoinNavigationScope
+| Form | Scope |
+|------|-------|
+| `KoinScope<T>(scopeID) { }` | Gets or creates the scope with that id, qualified by type `T` |
+| `KoinScope(scopeID, scopeQualifier) { }` | Gets or creates the scope with that id and qualifier |
+| `KoinScope(scopeDefinition = { createScope(...) }) { }` | The scope returned by the lambda, which runs on the `Koin` instance |
 
-Create a scope tied to a navigation back stack entry:
+The scope is closed when the Composable is forgotten (it leaves the composition) or abandoned. A root scope is never closed.
+
+### Multi-screen flows
+
+Put `KoinScope` above a `NavHost` to share scoped objects between the screens of a flow, such as a checkout:
 
 ```kotlin
-val appModule = module {
-    // Define navigation-scoped dependencies
-    navigationScope {
-        scoped<ScreenRepository>()
-        scoped<ScreenCache>()
-        viewModel<ScreenViewModel>()
-    }
-}
-
-// In your NavHost
-NavHost(navController, startDestination = "home") {
-    composable("detail/{id}") { backStackEntry ->
-        KoinNavigationScope(backStackEntry) {
-            DetailScreen()
+@Composable
+fun CheckoutFlow() {
+    KoinScope<CheckoutFlowScope>(scopeID = "checkout") {
+        NavHost(navController, startDestination = CartRoute) {
+            composable<CartRoute> { CartScreen() }
+            composable<PaymentRoute> { PaymentScreen() }
         }
     }
 }
 
 @Composable
-fun DetailScreen() {
-    // Dependencies scoped to this navigation destination
-    val repository = koinInject<ScreenRepository>()
-    val viewModel = koinViewModel<ScreenViewModel>()
+fun PaymentScreen() {
+    val state = koinInject<CheckoutState>() // same CheckoutState as in CartScreen
 }
 ```
 
-**Key characteristics:**
-- Scope ID derived from `NavBackStackEntry.id`
-- Scope closed only when navigation is abandoned (not on recomposition)
-- Perfect for per-screen dependencies
+The scope closes when `CheckoutFlow` leaves the composition.
 
-:::info
-Requires `koin-compose-viewmodel-navigation` package.
+:::note
+A `viewModel` declared in the scope is still stored in the current `ViewModelStoreOwner`. Inside a `NavHost`, each destination gets its own ViewModel instance. Share state between screens through a `scoped` object such as `CheckoutState`, or use `sharedKoinViewModel()` (see [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel)).
 :::
 
-### navigationScope DSL
+## rememberKoinScope
 
-Define navigation-scoped dependencies in your modules:
+`rememberKoinScope(scope)` binds a scope you created to the composition, without providing it to children. The scope is closed when the Composable leaves the composition:
 
 ```kotlin
+@Composable
+fun FeatureScreen() {
+    val koin = getKoin()
+    val scope = rememberKoinScope(remember { koin.createScope<FeatureScope>("feature") })
+    val repository = koinInject<FeatureRepository>(scope = scope)
+}
+```
+
+## KoinNavigationScope
+
+`KoinNavigationScope` opens one scope per Navigation Compose destination. It is in `io.insert-koin:koin-compose-viewmodel-navigation`.
+
+Declare the definitions with `navigationScope { }`. It creates a scope qualified by `NavBackStackEntry`:
+
+```kotlin
+import org.koin.module.dsl.navigationScope
+
 val appModule = module {
-    // Dependencies scoped to navigation destinations
     navigationScope {
-        scoped<ScreenRepository>()
         scoped<ScreenStateHolder>()
         viewModel<ScreenViewModel>()
     }
 }
 ```
 
-This creates a scope qualified by `NavBackStackEntry` for use with `KoinNavigationScope()`.
+With annotations or the Constructor DSL, use the same `navigationScope { }` block in a DSL module (with `scopedOf(::ScreenStateHolder)` in the Constructor DSL). There is no annotation for this scope.
 
-## UnboundKoinScope
-
-Provide an externally-managed scope without lifecycle binding:
+Wrap each destination:
 
 ```kotlin
-@Composable
-fun MyFeature(externalScope: Scope) {
-    UnboundKoinScope(scope = externalScope) {
-        // Children can access the scope
-        val service = koinInject<MyService>()
-        FeatureContent()
+NavHost(navController, startDestination = ListRoute) {
+    composable<ListRoute> { entry ->
+        KoinNavigationScope(entry) {
+            ListScreen() // its own ScreenStateHolder
+        }
     }
-}
-```
-
-:::warning
-**Delicate API** - The scope is NOT automatically closed. You must manage the scope lifecycle manually to prevent memory leaks.
-:::
-
-**Use cases:**
-- Scopes managed by external systems
-- Scopes shared across multiple composable trees
-- When scope lifecycle doesn't match Composable lifecycle
-
-```kotlin
-@Composable
-fun MyFeature(externalScope: Scope, onClose: () -> Unit) {
-    UnboundKoinScope(scope = externalScope) {
-        FeatureContent()
-
-        // Manual cleanup when needed
-        DisposableEffect(Unit) {
-            onDispose { onClose() }
+    composable<DetailRoute> { entry ->
+        KoinNavigationScope(entry) {
+            DetailScreen() // another ScreenStateHolder
         }
     }
 }
 ```
 
-## currentKoinScope
+The scope id is `NavBackStackEntry.id`. The scope is not closed when the destination leaves the composition, so it survives while the entry stays on the back stack. It is closed only if the composition is abandoned.
 
-Get the current Koin scope from composition:
+:::warning
+`KoinNavigationScope` creates its scope in the global Koin instance (`KoinPlatform.getKoin()`), not in the Koin of the composition. It does not work inside `KoinIsolatedContext`.
+:::
+
+## UnboundKoinScope
+
+`UnboundKoinScope` provides a scope you manage yourself. Koin never closes it:
 
 ```kotlin
+@OptIn(KoinDelicateAPI::class, KoinExperimentalAPI::class)
 @Composable
-fun MyScreen() {
-    val scope = currentKoinScope()
-
-    // Use scope directly
-    val service = scope.get<MyService>()
+fun SessionArea(sessionScope: Scope) {
+    UnboundKoinScope(scope = sessionScope) {
+        SessionContent()
+    }
 }
 ```
 
-This retrieves the scope from `LocalKoinScopeContext`. It's the default scope used by `koinInject()`.
+Use it when the scope lifetime does not follow the UI tree: a user session opened at login, a scope shared by several composition roots. It is marked `@KoinDelicateAPI`: you must call `scope.close()` yourself, or the scope and its instances stay in memory.
 
-## rememberKoinScope
+## Android scopes
 
-Remember a Koin scope across recompositions with automatic lifecycle management:
-
-```kotlin
-@Composable
-fun FeatureScreen() {
-    val scope = rememberKoinScope(scopeOf<FeatureScope>())
-
-    // Use scope for injection
-    val repository = scope.get<FeatureRepository>()
-
-    // When FeatureScreen leaves composition, scope is closed
-}
-```
-
-## Android-Specific Scopes
-
-### KoinActivityScope
-
-Provide Activity scope to composable hierarchy:
+These functions are in `io.insert-koin:koin-androidx-compose` (`KoinActivityScope`, `KoinFragmentScope`) and in the Android target of `koin-compose` (`koinActivityInject`). The Activity or Fragment must implement `AndroidScopeComponent`. Declaring Activity and Fragment scopes is covered in [Android Scopes](/docs/reference/koin-android/scope).
 
 ```kotlin
 class MainActivity : ComponentActivity(), AndroidScopeComponent {
@@ -176,7 +195,6 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
         super.onCreate(savedInstanceState)
         setContent {
             KoinActivityScope {
-                // All children access Activity's scope
                 MainScreen()
             }
         }
@@ -185,168 +203,38 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
 
 @Composable
 fun MainScreen() {
-    // Resolves from Activity's scope
-    val presenter = koinInject<ActivityPresenter>()
+    val presenter = koinInject<MainPresenter>() // resolved from the Activity scope
 }
 ```
 
-### KoinFragmentScope
+`KoinFragmentScope { }` does the same in a `ComposeView` hosted by a Fragment.
 
-Provide Fragment scope to composable hierarchy:
-
-```kotlin
-class MyFragment : Fragment(), AndroidScopeComponent {
-    override val scope: Scope by fragmentScope()
-
-    override fun onCreateView(...): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                KoinFragmentScope {
-                    FragmentScreen()
-                }
-            }
-        }
-    }
-}
-```
-
-### koinActivityInject
-
-Inject from Activity scope within any Composable:
+`koinActivityInject()` resolves from the Activity scope at any depth, without a wrapping block:
 
 ```kotlin
-val appModule = module {
-    scope<MainActivity> {
-        scoped<SessionManager>()
-    }
-}
-
 @Composable
 fun DeepNestedScreen() {
-    // Resolves from Activity's scope anywhere in the tree
-    val sessionManager: SessionManager = koinActivityInject()
+    val session: SessionManager = koinActivityInject()
 }
 ```
 
-## Scope Comparison
+It fails if `LocalActivity` does not implement `AndroidScopeComponent`.
 
-| API | Lifecycle | Use Case |
-|-----|-----------|----------|
-| `KoinScope` | Composable | Custom scoped composables |
-| `KoinNavigationScope` | NavBackStackEntry | Per-destination scopes |
-| `UnboundKoinScope` | Manual | External scope providers |
-| `KoinActivityScope` | Activity | Activity-wide dependencies |
-| `KoinFragmentScope` | Fragment | Fragment-wide dependencies |
+## Comparison
 
-## Use Cases
+| API | Scope lifetime | Closed by |
+|-----|----------------|-----------|
+| `KoinScope` | The Composable | Koin, when the Composable leaves the composition |
+| `rememberKoinScope` | The Composable | Koin, when the Composable leaves the composition |
+| `KoinNavigationScope` | The back stack entry | Koin, only if the composition is abandoned |
+| `UnboundKoinScope` | Yours | You |
+| `KoinActivityScope` | The Activity | The Activity scope (`activityScope()`) |
+| `KoinFragmentScope` | The Fragment | The Fragment scope (`fragmentScope()`) |
 
-### Per-Screen Navigation Scopes
+## Related
 
-Each screen gets its own scope:
-
-```kotlin
-val appModule = module {
-    navigationScope {
-        scoped<ScreenStateHolder>()
-        viewModel<ScreenViewModel>()
-    }
-}
-
-NavHost(navController, startDestination = "list") {
-    composable("list") { entry ->
-        KoinNavigationScope(entry) {
-            ListScreen() // Has its own ScreenStateHolder
-        }
-    }
-    composable("detail/{id}") { entry ->
-        KoinNavigationScope(entry) {
-            DetailScreen() // Has its own ScreenStateHolder
-        }
-    }
-}
-```
-
-### Session-Scoped Data
-
-Share data across screens within a session:
-
-```kotlin
-val sessionModule = module {
-    scope<UserSession> {
-        scoped { ShoppingCart() }
-        scoped { UserPreferences() }
-    }
-}
-
-@Composable
-fun ShopApp() {
-    KoinScope(scopeOf<UserSession>()) {
-        NavHost(/*...*/) {
-            composable("catalog") { CatalogScreen() }
-            composable("cart") { CartScreen() }
-        }
-    }
-}
-
-@Composable
-fun CartScreen() {
-    // Same cart instance across all screens in session
-    val cart = koinInject<ShoppingCart>()
-}
-```
-
-### Shared ViewModel Scope
-
-Share a ViewModel and its dependencies across related screens:
-
-```kotlin
-val appModule = module {
-    scope<CheckoutFlow> {
-        scoped<CheckoutState>()
-        viewModel<CheckoutViewModel>()
-    }
-}
-
-@Composable
-fun CheckoutFlow() {
-    KoinScope(scopeOf<CheckoutFlow>()) {
-        NavHost(/*...*/) {
-            composable("cart") { CartScreen() }
-            composable("shipping") { ShippingScreen() }
-            composable("payment") { PaymentScreen() }
-            composable("confirmation") { ConfirmationScreen() }
-        }
-    }
-}
-
-// All screens share the same CheckoutViewModel instance
-@Composable
-fun CartScreen() {
-    val viewModel = koinViewModel<CheckoutViewModel>()
-}
-```
-
-## Best Practices
-
-1. **Use `KoinNavigationScope` for per-screen dependencies** - automatic lifecycle with navigation
-
-2. **Prefer managed scopes over `UnboundKoinScope`** - avoid manual cleanup
-
-3. **Define navigation scopes in modules** - cleaner than inline scope creation
-   ```kotlin
-   module {
-       navigationScope {
-           scoped<MyRepository>()
-       }
-   }
-   ```
-
-4. **Use `KoinScope` for multi-screen flows** - checkout, onboarding, wizards
-
-5. **Combine with ViewModel for complex state** - scope holds shared state, ViewModel handles UI logic
-
-## Next Steps
-
-- **[Dynamic Modules](/docs/reference/koin-compose/compose-modules)** - Load modules dynamically
-- **[Compose Overview](/docs/reference/koin-compose/compose)** - Setup and basic injection
-- **[Core Scopes](/docs/reference/koin-core/scopes)** - Scope concepts
+- [Scopes](/docs/reference/koin-core/scopes): declare scopes, link them, close them.
+- [Android Scopes](/docs/reference/koin-android/scope): Activity, Fragment and ViewModel scopes.
+- [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel): share a ViewModel across a navigation graph.
+- [Lifecycle and State](/docs/reference/koin-compose/compose-lifecycle): what each Compose API releases and when.
+- [Dynamic Modules](/docs/reference/koin-compose/compose-modules): load modules with a Composable.

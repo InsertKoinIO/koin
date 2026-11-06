@@ -1,16 +1,15 @@
 ---
 title: What is Dependency Injection?
+description: Learn what dependency injection is, the ways to provide dependencies, manual versus automated DI, and how it differs from a service locator.
 ---
 
-# What is Dependency Injection?
+Dependency injection (DI) is a design pattern where an object receives the objects it needs from outside instead of creating them itself. This page explains the pattern without assuming any framework, then shows where a DI container such as Koin fits. If you already know DI, go to [Core Concepts](/docs/intro/core-concepts).
 
-Dependency Injection (DI) is a design pattern where objects receive their dependencies from external sources rather than creating them internally. This promotes loose coupling, better testability, and cleaner code architecture.
+## What is a dependency?
 
-## What is a Dependency?
+A dependency is an object that another object needs to do its work. A `Car` needs an `Engine` to drive.
 
-A dependency is any object that another object needs to function. For example, a `Car` depends on an `Engine` to drive.
-
-### Without Dependency Injection
+### Without dependency injection
 
 ```kotlin
 class Engine {
@@ -20,7 +19,7 @@ class Engine {
 }
 
 class Car {
-    private val engine = Engine()  // Car creates its own engine
+    private val engine = Engine() // Car creates its own engine
 
     fun drive() {
         engine.start()
@@ -29,151 +28,99 @@ class Car {
 }
 ```
 
-**Problems with this approach:**
-- `Car` is tightly coupled to a specific `Engine` implementation
-- Difficult to test `Car` independently
-- Hard to swap engine types (electric, diesel, etc.)
-- `Car` controls the lifecycle of `Engine`
+This works, but it has costs:
 
-### With Dependency Injection
+- **Tight coupling**: `Car` is tied to one `Engine` implementation.
+- **Hard to test**: you can't test `Car` with a fake engine.
+- **Hard to change**: switching to an electric engine means editing `Car`.
+- **Lifecycle in the wrong place**: `Car` decides when an `Engine` is created and how many exist.
+
+### With dependency injection
 
 ```kotlin
-class Car(private val engine: Engine) {  // Engine is injected
+class Car(private val engine: Engine) {
     fun drive() {
         engine.start()
         println("Car is driving")
     }
 }
 
-// Now we can easily provide different engines
 val gasolineCar = Car(GasEngine())
 val electricCar = Car(ElectricEngine())
 ```
 
-**Benefits:**
-- `Car` doesn't know how `Engine` is created
-- Easy to test with mock engines
-- Flexible - can swap implementations
-- Clear dependencies visible in constructor
+`Car` no longer knows how an `Engine` is built. You can pass any implementation, including a fake in tests, and the constructor shows exactly what `Car` needs.
 
-## Three Ways to Provide Dependencies
+## Ways to provide dependencies
 
-### 1. Constructor Injection (Recommended)
+### Constructor injection
 
-Dependencies are passed through the constructor:
+Dependencies are constructor parameters:
 
 ```kotlin
 class UserRepository(
     private val database: Database,
-    private val apiClient: ApiClient
+    private val apiClient: ApiClient,
 ) {
-    fun getUser(id: String): User {
-        return database.query(id) ?: apiClient.fetchUser(id)
-    }
+    fun getUser(id: String): User =
+        database.query(id) ?: apiClient.fetchUser(id)
 }
 ```
 
-**Advantages:**
-- Dependencies are explicit and required
-- Immutable (using `val`)
-- Easy to test
-- Clear dependency graph
+Dependencies are explicit, required, and can be immutable (`val`). The class can be created and tested without any framework. This is the approach to use by default.
 
-**With Koin:**
+### Field injection
 
-```kotlin
-val appModule = module {
-    single<Database>()
-    single<ApiClient>()
-    single<UserRepository>()  // Koin auto-wires dependencies
-}
-```
-
-:::info
-Constructor injection is the **preferred approach** in Koin. It makes your code testable without requiring Koin in unit tests.
-:::
-
-### 2. Field Injection
-
-Dependencies are injected into class properties:
+Dependencies are assigned to properties after the object is created. This is needed when a framework creates the object and you don't control its constructor, as with an Android `Activity`:
 
 ```kotlin
 class UserActivity : AppCompatActivity() {
-    // Lazy injection - instance created when first accessed
-    private val viewModel: UserViewModel by viewModel()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.loadUser()  // ViewModel instance created here
-    }
+    private val viewModel: UserViewModel by viewModel() // filled by Koin on first access
 }
 ```
 
-**When to use:**
-- Android framework classes (Activity, Fragment, Service) where you don't control construction
-- When constructor injection isn't possible
+Use it only at these framework entry points. Below them, use constructor injection.
 
-**With Koin:**
+### Method injection
 
-```kotlin
-// Lazy injection
-val presenter: Presenter by inject()
-
-// Eager injection
-val presenter: Presenter = get()
-```
-
-### 3. Method Injection
-
-Dependencies are passed through methods (less common):
+A dependency is passed to the method that needs it:
 
 ```kotlin
 class ReportGenerator {
     fun generateReport(data: DataSource) {
-        // Use data to generate report
+        ...
     }
 }
 ```
 
-**When to use:**
-- Optional dependencies
-- Dependencies that change during object lifetime
-- Callback patterns
+This fits a dependency that changes on every call, or one that only one method uses.
 
-## Manual vs Automated Dependency Injection
+## Manual and automated dependency injection
 
-### The Problem with Manual DI
+### Wiring by hand
 
-As applications grow, managing dependencies manually becomes complex:
+You can apply DI without any library, by building the object graph yourself:
 
 ```kotlin
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Manually creating the entire dependency graph
         val database = Database()
         val apiClient = ApiClient()
         val userRepository = UserRepository(database, apiClient)
         val authRepository = AuthRepository(database, apiClient)
         val userService = UserService(userRepository, authRepository)
         val viewModel = UserViewModel(userService)
-
-        // Finally can use viewModel...
     }
 }
 ```
 
-**Problems:**
-- Repetitive code across Activities/Fragments
-- Easy to make mistakes in dependency order
-- Hard to maintain as the app grows
-- Difficult to manage lifecycles (singletons, scoped objects)
-- No centralized configuration
+As the app grows, this code is repeated in many places, must be updated whenever a constructor changes, and gives no control over how long each object lives.
 
-### The Container Pattern (Manual Approach)
+### A container written by hand
 
-Developers often create a container to centralize object creation:
+A common next step is a container object that centralizes creation:
 
 ```kotlin
 object AppContainer {
@@ -188,24 +135,21 @@ object AppContainer {
     )
 }
 
-// Usage
 class MainActivity : AppCompatActivity() {
     private val viewModel = AppContainer.createUserViewModel()
 }
 ```
 
-**Still has issues:**
-- Manual wiring of dependencies
-- No automatic lifecycle management
-- Global state (singleton container)
-- Still repetitive for complex graphs
+This removes the repetition, but you still write and maintain every constructor call, and lifecycles beyond "one instance" or "a new instance" (an instance per screen, per session) need more hand-written code.
 
-### How Koin Solves This
+### A DI container
 
-Koin provides automated dependency resolution with your choice of **DSL or Annotations**:
+A DI library automates the container. You declare which classes exist and how long they live, and the library builds the graph. With Koin:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-// Define dependencies once
 val appModule = module {
     single<Database>()
     single<ApiClient>()
@@ -214,210 +158,170 @@ val appModule = module {
     single<UserService>()
     viewModel<UserViewModel>()
 }
+```
 
-// Start Koin once
-class MyApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        startKoin {
-            modules(appModule)
-        }
-    }
-}
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
-// Use anywhere - Koin handles the entire dependency graph
-class MainActivity : AppCompatActivity() {
-    private val viewModel: UserViewModel by viewModel()
-    // That's it! Koin creates UserViewModel and all its dependencies
+```kotlin
+@Singleton
+class UserRepository(private val database: Database, private val apiClient: ApiClient)
+
+@Singleton
+class UserService(private val userRepository: UserRepository, private val authRepository: AuthRepository)
+
+@KoinViewModel
+class UserViewModel(private val userService: UserService) : ViewModel()
+
+// Database, ApiClient and AuthRepository are annotated the same way
+
+@Module
+@ComponentScan("com.example.app")
+class AppModule
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    singleOf(::Database)
+    singleOf(::ApiClient)
+    singleOf(::UserRepository)
+    singleOf(::AuthRepository)
+    singleOf(::UserService)
+    viewModelOf(::UserViewModel)
 }
 ```
 
-**Koin advantages:**
-- Declarative dependency configuration
-- Automatic dependency resolution
-- Lifecycle management (singleton, factory, scoped)
-- Type-safe injection
-- Easy testing and module replacement
+</TabItem>
+</Tabs>
 
-## Automated DI Solutions
+The Activity then asks for the top of the graph:
 
-There are different approaches to automated dependency injection:
+```kotlin
+class MainActivity : AppCompatActivity() {
+    private val viewModel: UserViewModel by viewModel()
+}
+```
 
-| Approach | Examples | How it works |
-|----------|----------|--------------|
-| **Reflection-based** | (older frameworks) | Uses reflection at runtime |
-| **Code generation** | Dagger, Hilt | Generates code at compile time (annotation processing) |
-| **Compiler plugins** | Koin Compiler Plugin | Native compiler integration for DSL & Annotations |
-| **DSL-based** | Koin (classic) | Runtime DSL configuration |
+The container creates `UserViewModel` and everything below it, keeps one `Database` for the whole app, and gives a new `UserViewModel` to each screen. [Core Concepts](/docs/intro/core-concepts) explains these pieces.
 
-**Koin's approach - DSL & Annotations, both equally powerful:**
-- **DSL style:** Clean Kotlin DSL configuration (`single<MyService>()`, `viewModel<MyVM>()`)
-- **Annotation style:** Familiar annotations (`@Singleton`, `@KoinViewModel`)
-- Both powered by the same Compiler Plugin for compile-time safety
-- No reflection, lightweight
-- Choose the style that fits your team
+## How DI libraries build the graph
 
-## Service Locator vs Dependency Injection
+DI libraries differ in when and how they build the graph:
 
-It's important to understand the difference:
+| Approach | How it works | Examples |
+|----------|--------------|----------|
+| Reflection | Reads constructors at runtime and calls them by reflection | Guice, Spring |
+| Annotation processing | Generates factory source code at build time | Dagger, Hilt |
+| Compiler plugin | Rewrites code inside the compiler and checks the graph at build time | Koin Compiler Plugin |
+| Runtime DSL | You write the factories as Kotlin lambdas, the container runs them at runtime | Koin Classic DSL |
 
-### Service Locator Pattern
+Koin keeps a runtime container in all cases. The Compiler Plugin adds the wiring and the build-time checks on top. See [What is Koin?](/docs/intro/what-is-koin) for what this means in practice.
 
-Components actively request dependencies from a registry:
+## Service locator and dependency injection
+
+The two patterns are often confused.
+
+With a **service locator**, a class asks a registry for its dependencies:
 
 ```kotlin
 class UserService : KoinComponent {
-    private val repository: UserRepository by inject()  // "Pulling" dependency
+    private val repository: UserRepository by inject() // pulled from the container
 }
 ```
 
-### Dependency Injection Pattern
-
-Dependencies are provided from outside:
+With **dependency injection**, the dependencies are given to the class:
 
 ```kotlin
 class UserService(
-    private val repository: UserRepository  // "Pushed" into component
+    private val repository: UserRepository // pushed in from outside
 )
 ```
 
-### Comparison
+| Aspect | Service locator | Dependency injection |
+|--------|-----------------|----------------------|
+| Visibility of dependencies | Hidden inside the class | Visible in the constructor |
+| Testing | Needs the container, or a test version of it | Pass fakes to the constructor |
+| Coupling | The class depends on the container | The class depends only on its parameters |
+| In Koin | `get()`, `by inject()`, `KoinComponent` | Constructor parameters resolved by a module |
+| Good fit | Framework classes you don't construct | Business logic, repositories, services |
 
-| Aspect | Service Locator | Dependency Injection |
-|--------|----------------|---------------------|
-| Dependency visibility | Hidden inside class | Explicit in constructor |
-| Testing | Requires framework | Easy - pass test doubles |
-| Coupling | Depends on container | Depends on interfaces |
-| Usage in Koin | `get()`, `by inject()` | Constructor with Koin module |
-| Best for | Android framework classes | Business logic, services |
-
-### Best Practices with Koin
-
-1. **Prefer Constructor Injection** for business logic:
+Koin supports both. Use dependency injection for your own classes, and the service locator style only where a framework creates the object (an `Activity`, a `Fragment`, a Ktor route):
 
 ```kotlin
-// Good - testable without Koin
-class UserViewModel(private val userService: UserService) : ViewModel()
-
-val appModule = module {
-    viewModel<UserViewModel>()  // Koin resolves dependencies
-}
-```
-
-2. **Use Service Locator** only when necessary:
-
-```kotlin
-// Acceptable - Activity construction controlled by Android
-class UserActivity : AppCompatActivity() {
-    private val viewModel: UserViewModel by viewModel()
-}
-```
-
-3. **Avoid `KoinComponent` in business logic:**
-
-```kotlin
-// Bad - hard to test
+// avoid: hidden dependency, needs Koin in tests
 class UserService : KoinComponent {
     private val repository: UserRepository = get()
 }
 
-// Good - explicit dependencies
+// prefer: explicit dependency
 class UserService(private val repository: UserRepository)
 ```
 
-## Benefits of Dependency Injection
+## What you gain
 
-### 1. Testability
-
-Without DI, testing is difficult:
-
-```kotlin
-class UserService {
-    private val repository = UserRepository()  // Can't mock!
-}
-```
-
-With DI, testing is straightforward:
+### Testability
 
 ```kotlin
 class UserService(private val repository: UserRepository)
 
 @Test
-fun testGetUser() {
-    val mockRepository = mockk<UserRepository>()
-    val service = UserService(mockRepository)  // Full control
+fun getUser() {
+    val repository = mockk<UserRepository>()
+    every { repository.findUser("123") } returns testUser
 
-    every { mockRepository.findUser("123") } returns testUser
+    val service = UserService(repository)
+
     assertEquals(testUser, service.getUser("123"))
 }
 ```
 
-### 2. Flexibility
+A class that receives its dependencies can be tested by calling its constructor. No container is needed.
 
-Easily swap implementations:
+### Swappable implementations
 
 ```kotlin
 val appModule = module {
-    single<EmailService> { GmailService() }  // Production
+    single<EmailService> { SmtpEmailService() }
 }
 
 val testModule = module {
-    single<EmailService> { MockEmailService() }  // Testing
+    single<EmailService> { FakeEmailService() }
 }
 ```
 
-### 3. Code Organization
+Consumers depend on `EmailService`. Which implementation they get is decided in one place, the module.
 
-Centralized dependency configuration:
+### Central configuration
 
 ```kotlin
-val dataModule = module {
-    single<Database>()
-    single<ApiClient>()
-}
-
-val domainModule = module {
-    single<UserRepository>()
-    single<AuthRepository>()
-}
-
-val presentationModule = module {
-    viewModel<UserViewModel>()
-}
-
 startKoin {
     modules(dataModule, domainModule, presentationModule)
 }
 ```
 
-### 4. Lifecycle Management
+The whole object graph is described by a few modules, usually one per layer or feature, instead of being spread across the code.
 
-Koin handles object lifecycles:
+### Lifecycle management
 
 ```kotlin
 val appModule = module {
-    single<Database>()       // One instance for entire app
-    factory<Presenter>()     // New instance each time
-    scoped<SessionData>()    // Instance per scope
+    single<Database>()     // one instance for the app
+    factory<Presenter>()   // a new instance on every request
+
+    scope<UserSession> {
+        scoped<CartRepository>() // one instance per session
+    }
 }
 ```
 
-## Summary
+The container decides how long each object lives, so classes don't manage the lifetime of their dependencies. See [Scopes](/docs/reference/koin-core/scopes).
 
-Dependency Injection is a powerful pattern that:
-- **Decouples** components from their dependencies
-- **Improves testability** by allowing dependency replacement
-- **Simplifies maintenance** with centralized configuration
-- **Scales better** than manual dependency management
+## Related
 
-Koin makes DI in Kotlin simple by:
-- Offering **two equally powerful styles**: DSL or Annotations - your choice
-- Supporting both **constructor injection** (recommended) and **field injection** (when needed)
-- Providing **compile-time safety** with the Compiler Plugin
-- Requiring **zero reflection** - pure Kotlin
-
-## Next Steps
-
-- **[What is Koin?](/docs/intro/what-is-koin)** - Learn about Koin's approach
-- **[Koin Compiler Plugin](/docs/intro/koin-compiler-plugin)** - The recommended, safer approach
-- **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
+- [What is Koin?](/docs/intro/what-is-koin): how Koin implements a DI container.
+- [Core Concepts](/docs/intro/core-concepts): definitions, modules, injection and scopes in Koin.
+- [Retrieving Dependencies](/docs/reference/koin-core/injection): `get()` and `inject()` in detail.
+- [Injecting in Tests](/docs/reference/koin-test/testing): test code that uses Koin.

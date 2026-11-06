@@ -1,125 +1,191 @@
 ---
-title: Passing Parameters - Injected Parameters
+title: Injected Parameters
+description: Pass values at resolution time with parametersOf, and read them in a definition with @InjectedParam, params.get() or destructuring.
 ---
 
-In any definition, you can use injection parameters: parameters that will be injected and used by your definition.
+Some objects need a value that only the caller knows, such as a user ID or the current screen. Injected parameters let the caller pass these values when it asks Koin for an instance. This page covers how to declare a parameter in a definition, how to pass it, and how Koin matches values to parameters. It assumes you know how to declare a definition (see [Definitions](/docs/reference/koin-core/definitions)).
 
-## Passing values to inject
+## Declare and pass a parameter
 
-Given a definition, you can pass parameters to that definition:
+Mark which constructor parameters come from the caller. The other parameters are resolved from the container as usual:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-class Presenter(val a : A, val b : B)
+import org.koin.core.annotation.InjectedParam
 
-val myModule = module {
-    single { params -> Presenter(a = params.get(), b = params.get()) }
+class UserPresenter(
+    @InjectedParam val userId: String,
+    val repository: UserRepository,
+)
+
+val appModule = module {
+    single<UserRepository>()
+    factory<UserPresenter>()
 }
 ```
 
-Parameters are sent to your definition with the `parametersOf()` function (each value separated by comma):
+`@InjectedParam` comes from the `koin-annotations` artifact. It tells the Compiler Plugin that `userId` is not a definition, so the build-time check doesn't report it as missing.
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-class MyComponent : View, KoinComponent {
+@Factory
+class UserPresenter(
+    @InjectedParam val userId: String,
+    val repository: UserRepository,
+)
+```
 
-    val a : A ...
-    val b : B ... 
+`@InjectedParam` works on provider function parameters too.
 
-    // inject this as View value
-    val presenter : Presenter by inject { parametersOf(a, b) }
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+The definition lambda receives the parameters as `params`:
+
+```kotlin
+val appModule = module {
+    singleOf(::UserRepository)
+    factory { params -> UserPresenter(userId = params.get(), repository = get()) }
 }
 ```
 
-## Defining an "injected parameter"
+</TabItem>
+</Tabs>
 
-Below is an example of injection parameters. We established that we need a `view` parameter to build of `Presenter` class. We use the `params` function argument  to help retrieve our injected parameters:
+The caller passes the values with `parametersOf()`, in the same order as the parameters:
 
 ```kotlin
-class Presenter(val view : View)
+import org.koin.core.parameter.parametersOf
 
-val myModule = module {
-    single { params -> Presenter(view = params.get()) }
+val presenter: UserPresenter = get { parametersOf("user-42") }
+
+// or lazily
+val presenter: UserPresenter by inject { parametersOf("user-42") }
+```
+
+The parameter block is a lambda, so the values are read when the instance is created. With `by inject()`, this is on first access.
+
+Injected parameters are meant for `factory` definitions. A `single` is created once: the values passed the first time are used, and later values are ignored.
+
+Each platform API takes the same block: `koinInject { parametersOf(userId) }` in Compose (see [Koin for Compose](/docs/reference/koin-compose/compose)), and `by viewModel { parametersOf(userId) }` or `koinViewModel { parametersOf(userId) }` for a ViewModel (see [ViewModel](/docs/reference/koin-core/viewmodel)).
+
+## Several parameters
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+class OrderPresenter(
+    @InjectedParam val userId: String,
+    @InjectedParam val orderId: Long,
+    val repository: OrderRepository,
+)
+
+val appModule = module {
+    factory<OrderPresenter>()
 }
 ```
 
-You can also write your injected parameters directly with the parameters object, as destructured declaration:
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-class Presenter(val view : View)
+@Factory
+class OrderPresenter(
+    @InjectedParam val userId: String,
+    @InjectedParam val orderId: Long,
+    val repository: OrderRepository,
+)
+```
 
-val myModule = module {
-    single { (view : View) -> Presenter(view) }
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+Destructure the parameters in the lambda:
+
+```kotlin
+val appModule = module {
+    factory { (userId: String, orderId: Long) ->
+        OrderPresenter(userId, orderId, get())
+    }
 }
 ```
 
-:::caution
- Even if the "destructured" declaration is more convenient and readable, it's not type safe. Kotlin won't detect that passed type are in good orders if you have several values
+Or read them by index, with `params[i]` or `params.get<T>(i)`:
+
+```kotlin
+val appModule = module {
+    factory { params -> OrderPresenter(params[0], params[1], get()) }
+}
+```
+
+Destructuring is limited to five values, and the declared types are not checked against what the caller passes. If the order is wrong, the cast fails at runtime.
+
+</TabItem>
+</Tabs>
+
+```kotlin
+val presenter: OrderPresenter = get { parametersOf("user-42", 1001L) }
+```
+
+## How Koin matches values
+
+`params.get<T>()` and the generated code look up each value with these rules:
+
+- Koin first looks at the value at the current position. If it has the requested type, Koin returns it and moves to the next position.
+- Otherwise, Koin returns the first value of the requested type, wherever it is.
+- `params.getOrNull<T>()` returns `null` when no value of that type was passed. `get<T>()` throws `DefinitionParameterException`.
+
+In practice, pass the values in constructor order: `parametersOf("user-42", 1001L)` fills `userId` then `orderId`, and two `String` parameters receive two `String` values in order.
+
+If you need one behavior only, build the parameters with another function:
+
+| Function | Matching |
+|----------|----------|
+| `parametersOf(...)` | Position first, then type (default, rules above) |
+| `parameterArrayOf(...)` | Position only. The value at the current position must have the requested type |
+| `parameterSetOf(...)` | Type only. Every `get<T>()` returns the first value of that type |
+
+```kotlin
+val byIndex = parameterArrayOf(1, 2, 3)
+byIndex.get<Int>() // 1
+byIndex.get<Int>() // 2
+
+val byType = parameterSetOf("a_string", 42)
+byType.get<Int>()    // 42
+byType.get<Int>()    // 42
+```
+
+## Values resolved from parameters
+
+When Koin creates an instance with parameters, a plain `get()` inside the definition checks the passed values before the container. A parameter that is not marked can still receive a passed value:
+
+```kotlin
+val appModule = module {
+    factory { UserPresenter(userId = get(), repository = get()) }
+}
+
+get<UserPresenter> { parametersOf("user-42") } // userId = "user-42"
+```
+
+This also works for dependencies further down: if `UserPresenter` needs a `Tracker` that needs the screen name, a value passed for the presenter can reach the `Tracker` definition.
+
+Prefer `@InjectedParam` or `params.get()` anyway: they say where the value comes from, and the Compiler Plugin can check the rest of the graph.
+
+:::warning
+If a passed value has the same type as the requested definition, Koin returns that value directly and never runs the definition. `get<String> { parametersOf("x") }` returns `"x"`. Wrap such parameters in their own type (a value class, for example) when they would collide with the definition's type.
 :::
 
-## Resolving injected parameters in order
+A qualified request, such as `get(named("local"))`, never takes a value from the parameters. Parameters carry no qualifier.
 
-Instead of using `get()` to resolve a parameter, if you have several parameters of the same type you can use the index as follows `get(index)` (also same as `[ ]` operator):
+## Related
 
-```kotlin
-class Presenter(val view : View)
-
-val myModule = module {
-    
-    single { p -> Presenter(p[0],p[1]) }
-}
-```
-
-## Resolving injected parameters from graph
-
-Koin graph resolution (main tree of resolution of all definitions) also let you find your injected parameter. Just use the usual `get()` function:
-
-```kotlin
-class Presenter(val view : View)
-
-val myModule = module {
-    single { Presenter(get()) }
-}
-```
-
-
-## Injected parameters: indexed values or set (`3.4.3`)
-
-In addition to `parametersOf`, the following API are accessible:
-
-- `parameterArrayOf`: to use an array of value, and data will be uses by its index
-
-```kotlin
-val params = parameterArrayOf(1,2,3)
-params.get<Int>() == 1
-params.get<Int>() == 2
-params.get<Int>() == 3
-params.get<Int>() == 3
-```
-
-- `parameterSetOf`: to use a set of values, with different kinds. Doesn't use index to scroll values.
-
-```kotlin
-val params = parameterSetOf("a_string", 42)
-params.get<Int>() == 42
-params.get<String>() == "a_string"
-params.get<Int>() == 42
-params.get<String>() == "a_string"
-```
-
-The default function `parametersOf` is working with both index & set of values:
-
-```kotlin
-val params = parametersOf(1,2,"a_string")
-params.get<String>() == "a_string"
-params.get<Int>() == 1
-params.get<Int>() == 2
-params.get<Int>() == 2
-params.get<String>() == "a_string"
-```
-
-:::note
-  You can "cascade" parameter injection with `parametersOf` or `parameterArrayOf`, to consume value based on index. Or use `parametersOf` or `parameterSetOf` to cascading based on type to resolve. 
-:::
-
-:::caution
-If a value passed via `parametersOf` has the same type as the requested definition, Koin returns that value directly and skips the factory block. Use a wrapper type (e.g. a value class) for the parameter when it would otherwise collide with the definition's return type.
-:::
+- [Injection](/docs/reference/koin-core/injection): `get()` and `inject()`, where you pass the parameters.
+- [Definitions](/docs/reference/koin-core/definitions#constructor-parameters): how the other constructor parameters are resolved.
+- [ViewModel](/docs/reference/koin-core/viewmodel): parameters and `SavedStateHandle` for ViewModels.
+- [Qualifiers](/docs/reference/koin-core/qualifiers): choose between definitions instead of passing values.
+- [Annotations Reference](/docs/reference/koin-annotations/annotations-inventory): `@InjectedParam` and other parameter annotations.
