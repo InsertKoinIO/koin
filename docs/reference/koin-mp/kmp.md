@@ -1,460 +1,131 @@
 ---
-title: KMP Advanced Patterns
+title: KMP Platform Integration
+description: Use the Android Context from shared code, call Koin from Swift, and start Koin on desktop and web targets of a Kotlin Multiplatform app.
 ---
 
-# KMP Advanced Patterns
+This page covers the platform details of a Kotlin Multiplatform app with Koin: using the Android `Context` from shared code, calling Koin from Swift, and the desktop and web targets. It assumes your project follows [KMP Setup](/docs/reference/koin-core/kmp-setup) and [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules).
 
-This guide covers advanced patterns for Koin in Kotlin Multiplatform projects.
+Complete projects: the [Compose Multiplatform sample](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose) (Compiler Plugin DSL) and the [annotations sample](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose-annotations).
 
-:::info
-For basic setup, see [KMP Setup](/docs/reference/koin-core/kmp-setup). For module organization, see [Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules). For ViewModel, see [ViewModel](/docs/reference/koin-core/viewmodel).
-:::
+## Android Context in shared code
 
-## Source Project
+Shared code can't use `android.content.Context`, but some shared classes need it on Android (to open files, read preferences). Wrap it in a platform type that common code can depend on:
 
-:::info
-You can find the Kotlin Multiplatform project here: https://github.com/InsertKoinIO/hello-kmp
-:::
-
-## Advanced expect/actual Patterns
-
-Beyond the basic `expect val platformModule: Module` pattern, here are advanced approaches for platform-specific code.
-
-### Pattern 1: expect/actual Classes
-
-Use when you need platform-specific APIs (Android Context, iOS UIDevice, etc.):
-
-```kotlin
-// commonMain - Declaration
-expect class PlatformContext
-
-expect fun createPlatformModule(): Module
-
-// androidMain - Android Implementation
-actual class PlatformContext(val context: Context)
-
-actual fun createPlatformModule() = module {
-    single<PlatformContext>()  // Compiler Plugin DSL
-}
-
-// iosMain - iOS Implementation
-actual class PlatformContext
-
-actual fun createPlatformModule() = module {
-    single<PlatformContext>()
-}
-```
-
-### Pattern 2: Interface + Platform Implementations
-
-Use when you want to inject different implementations per platform:
-
-```kotlin
-// commonMain - Interface
-interface Logger {
-    fun log(message: String)
-}
-
-// androidMain
-class AndroidLogger : Logger {
-    override fun log(message: String) {
-        android.util.Log.d("App", message)
-    }
-}
-
-val androidModule = module {
-    single<AndroidLogger>() bind Logger::class
-}
-
-// iosMain
-class IOSLogger : Logger {
-    override fun log(message: String) {
-        println("iOS: $message")
-    }
-}
-
-val iosModule = module {
-    single<IOSLogger>() bind Logger::class
-}
-```
-
-### Pattern 3: expect Module with Annotations
-
-Combine expect/actual with annotations for cleaner code:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
 // commonMain
-expect val platformModule: Module
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
 
+class FileStore(private val ctx: ContextWrapper)
+
+val storageModule = module {
+    single<FileStore>()
+}
+```
+
+```kotlin
 // androidMain
-@Module
-@ComponentScan("com.myapp.android")
-class AndroidPlatformModule
+class AndroidContextWrapper(val context: Context) : ContextWrapper {
+    override fun getContextInfo() = "Android: ${context.packageName}"
+}
 
-actual val platformModule = AndroidPlatformModule().module
+actual fun platformModule(): Module = module {
+    single<AndroidContextWrapper>() bind ContextWrapper::class
+}
+```
 
+```kotlin
 // iosMain
-@Module
-@ComponentScan("com.myapp.ios")
-class IosPlatformModule
-
-actual val platformModule = IosPlatformModule().module
-```
-
-:::info
-**When to use which pattern:**
-- **expect/actual classes**: Platform APIs (Context, UIDevice), simple platform differences
-- **Interfaces**: Business logic that varies by platform, testable code
-- **expect modules**: Complex platform-specific dependency graphs
-:::
-
-## Android Context in Shared Code
-
-A common need is accessing Android `Context` in shared code. Here's the recommended pattern:
-
-### ContextWrapper Pattern
-
-```kotlin
-// commonMain - Wrapper interface
-interface AppContext
-
-// androidMain - Android implementation
-class AndroidAppContext(val context: Context) : AppContext
-
-val androidContextModule = module {
-    single<AndroidAppContext>() bind AppContext::class
+class IOSContextWrapper : ContextWrapper {
+    override fun getContextInfo() = "iOS"
 }
 
-// iosMain - Empty implementation
-class IOSAppContext : AppContext
-
-val iosContextModule = module {
-    single<IOSAppContext>() bind AppContext::class
+actual fun platformModule(): Module = module {
+    single<IOSContextWrapper>() bind ContextWrapper::class
 }
 ```
 
-Usage in shared code:
-
-```kotlin
-// commonMain - Repository uses platform context
-class FileRepository(private val appContext: AppContext) {
-    fun saveFile(data: String) {
-        when (appContext) {
-            is AndroidAppContext -> {
-                val file = File(appContext.context.filesDir, "data.txt")
-                file.writeText(data)
-            }
-            is IOSAppContext -> {
-                // iOS-specific file operations
-            }
-        }
-    }
-}
-
-val sharedModule = module {
-    single<FileRepository>()
-}
-```
-
-:::note
-For pure shared logic, prefer abstracting platform operations into interfaces rather than using `when` statements.
-:::
-
-## Architecture Patterns
-
-### Repository Pattern with Ktor
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 // commonMain
-interface UserRepository {
-    suspend fun getUser(id: String): User
-    suspend fun saveUser(user: User)
+interface ContextWrapper {
+    fun getContextInfo(): String
 }
 
 @Singleton
-class UserRepositoryImpl(
-    private val api: UserApi,
-    private val database: UserDatabase
-) : UserRepository {
-    override suspend fun getUser(id: String): User {
-        return try {
-            api.fetchUser(id).also { database.saveUser(it) }
-        } catch (e: Exception) {
-            database.getUser(id)
-        }
-    }
-
-    override suspend fun saveUser(user: User) {
-        database.saveUser(user)
-        api.updateUser(user)
-    }
-}
-
-val dataModule = module {
-    single<UserRepositoryImpl>() bind UserRepository::class
-}
+class FileStore(private val ctx: ContextWrapper)
 ```
 
-### Network Layer (Ktor + Koin)
-
 ```kotlin
-// commonMain
-@Singleton
-class ApiClient(private val client: HttpClient) {
-    suspend fun fetchUser(id: String): User {
-        return client.get("https://api.example.com/users/$id").body()
-    }
-}
-
-val networkModule = module {
-    single {
-        HttpClient {
-            install(ContentNegotiation) {
-                json()
-            }
-        }
-    }
-    single<ApiClient>()
-}
-```
-
-### Database Layer (SqlDelight)
-
-```kotlin
-// commonMain
-expect class DriverFactory {
-    fun createDriver(): SqlDriver
-}
-
-val databaseModule = module {
-    single { DriverFactory().createDriver() }
-    single { AppDatabase(get()) }
-    single { get<AppDatabase>().userQueries }
-}
-
 // androidMain
-actual class DriverFactory(private val context: Context) {
-    actual fun createDriver(): SqlDriver {
-        return AndroidSqliteDriver(AppDatabase.Schema, context, "app.db")
-    }
+@Singleton
+class AndroidContextWrapper(val context: Context) : ContextWrapper {
+    override fun getContextInfo() = "Android: ${context.packageName}"
+}
+```
+
+```kotlin
+// iosMain
+@Singleton
+class IOSContextWrapper : ContextWrapper {
+    override fun getContextInfo() = "iOS"
+}
+```
+
+The platform classes are found by the `actual` platform module with `@ComponentScan` (see [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules)).
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+// commonMain
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
+
+class FileStore(private val ctx: ContextWrapper)
+
+val storageModule = module {
+    singleOf(::FileStore)
+}
+```
+
+```kotlin
+// androidMain
+actual fun platformModule(): Module = module {
+    singleOf(::AndroidContextWrapper) bind ContextWrapper::class
 }
 
 // iosMain
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver {
-        return NativeSqliteDriver(AppDatabase.Schema, "app.db")
-    }
+actual fun platformModule(): Module = module {
+    singleOf(::IOSContextWrapper) bind ContextWrapper::class
 }
 ```
 
-## Testing KMP Modules
+</TabItem>
+</Tabs>
 
-### Unit Testing Shared Modules
+`FileStore` is compiled once in `commonMain` and receives the platform wrapper. Only one Android definition touches `Context`, and it resolves once `androidContext()` is set at start. Put the Android-specific operations behind methods of `ContextWrapper` rather than checking the platform type in common code.
 
-```kotlin
-// commonTest
-class UserRepositoryTest : KoinTest {
+## iOS and Swift
 
-    @Test
-    fun testGetUser() = runTest {
-        startKoin {
-            modules(module {
-                single<UserApi> { FakeUserApi() }
-                single<UserDatabase> { FakeUserDatabase() }
-                single<UserRepositoryImpl>() bind UserRepository::class
-            })
-        }
+### Retrieving dependencies from Swift
 
-        val repository: UserRepository = get()
-        val user = repository.getUser("123")
-
-        assertEquals("John", user.name)
-
-        stopKoin()
-    }
-}
-```
-
-### Testing with Platform-Specific Dependencies
+Swift can't call Koin's reified functions such as `get<T>()`. At the Swift boundary, write a small Kotlin helper in `iosMain` that implements `KoinComponent`, and use it from Swift. This is an interop entry point: your shared classes keep receiving their dependencies through their constructors.
 
 ```kotlin
-// commonTest
-expect fun createTestPlatformModule(): Module
-
-// androidTest
-actual fun createTestPlatformModule() = module {
-    single<PlatformContext> { TestAndroidContext() }
-}
-
-// iosTest
-actual fun createTestPlatformModule() = module {
-    single<PlatformContext> { TestIOSContext() }
-}
-
-// commonTest - Test using platform module
-class PlatformDependentTest : KoinTest {
-    @Test
-    fun testWithPlatformContext() {
-        startKoin {
-            modules(
-                createTestPlatformModule(),
-                module {
-                    single<MyService>()
-                }
-            )
-        }
-
-        val service: MyService = get()
-        // Test service
-
-        stopKoin()
-    }
-}
-```
-
-## Common Pitfalls
-
-### DO: Use interfaces for testable shared code
-
-```kotlin
-// Good - Testable
-interface Logger {
-    fun log(message: String)
-}
-
-val sharedModule = module {
-    single<UserService>()  // Depends on Logger interface
-}
-```
-
-### DON'T: Use expect classes for business logic
-
-```kotlin
-// Bad - Hard to test, tight platform coupling
-expect class Logger {
-    fun log(message: String)
-}
-```
-
-### DO: Keep platform modules separate
-
-```kotlin
-// Good - Clear separation
-fun initKoin() {
-    startKoin {
-        modules(commonModules() + platformModule)
-    }
-}
-```
-
-### DON'T: Mix platform-specific code in shared modules
-
-```kotlin
-// Bad - Platform-specific code in commonMain
-val sharedModule = module {
-    single {
-        if (Platform.isAndroid) { /* ... */ } // Don't do this!
-    }
-}
-```
-
-### DO: Use lazy modules for large apps
-
-```kotlin
-// Good - Optimize startup
-val lazyFeatureModule = lazyModule {
-    single<HeavyService>()
-}
-
-startKoin {
-    modules(coreModules)
-    lazyModules(lazyFeatureModule)
-}
-```
-
-### DON'T: Forget to close scopes
-
-```kotlin
-// Bad - Memory leak
-class FeatureScreen : KoinComponent {
-    val scope = getKoin().createScope<FeatureScreen>()
-    // Forgot to close scope!
-}
-
-// Good - Proper cleanup
-class FeatureScreen : KoinComponent {
-    val scope = getKoin().createScope<FeatureScreen>()
-
-    fun onDestroy() {
-        scope.close()
-    }
-}
-```
-
-## Desktop Platform Integration
-
-For JVM Desktop apps (Compose Desktop):
-
-```kotlin
-// desktopMain
-fun main() = application {
-    startKoin {
-        modules(
-            sharedModule,
-            desktopModule
-        )
-    }
-
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-    }
-}
-
-val desktopModule = module {
-    single<DesktopLogger>() bind Logger::class
-    single<DesktopFileManager>()
-}
-```
-
-## Web Platform Integration (Experimental)
-
-For Kotlin/JS and Kotlin/WASM:
-
-```kotlin
-// jsMain or wasmJsMain
-fun main() {
-    startKoin {
-        modules(
-            sharedModule,
-            webModule
-        )
-    }
-    // Your web app initialization
-}
-
-val webModule = module {
-    single<ConsoleLogger>() bind Logger::class
-    single<BrowserStorage>()
-}
-```
-
-:::warning
-WASM support is experimental. Some features may not work as expected.
-:::
-
-## iOS Swift Interop
-
-### KoinComponent for Swift
-
-```kotlin
-// shared/src/iosMain/kotlin/Helper.kt
+// iosMain
 class GreetingHelper : KoinComponent {
     private val greeting: Greeting by inject()
     fun greet(): String = greeting.greeting()
 }
 ```
-
-In Swift:
 
 ```swift
 struct ContentView: View {
@@ -466,14 +137,14 @@ struct ContentView: View {
 }
 ```
 
-### Declaring Dependencies from Swift
+Koin must be started before the helper is used: see the iOS entry point in [KMP Setup](/docs/reference/koin-core/kmp-setup). `KoinComponent` is described in [KoinComponent](/docs/reference/koin-core/koin-component).
 
-In some cases, you may need to declare a dependency directly from Swift — for example, when a Swift-only class needs to be registered into Koin. You can use the `declare` function combined with Kotlin/Native interop to resolve Objective-C types to Kotlin `KClass`.
+### Declaring a Swift instance in Koin
 
-Add this helper in `iosMain`:
+Sometimes a Swift class implements a Kotlin interface, and Kotlin code needs it from Koin. Register the instance at runtime with `Koin.declare()`. Swift passes the type as an Objective-C class or protocol, which this `iosMain` helper converts to a Kotlin `KClass`:
 
 ```kotlin
-// shared/src/iosMain/kotlin/KoinSwiftHelper.kt
+// iosMain
 @OptIn(BetaInteropApi::class)
 fun Koin.declareFromSwift(
     instance: Any,
@@ -496,39 +167,69 @@ fun Koin.declareFromSwift(
 }
 ```
 
-Then in Swift, call it with a class or protocol reference:
-
 ```swift
 koin.declareFromSwift(
-    instance: MyService(),
-    bindTo: MyServiceProtocol.self,
+    instance: SwiftAnalytics(),
+    bindTo: Analytics.self,
     qualifier: nil,
     allowOverride: true
 )
 ```
 
-:::note
-This uses `getOriginalKotlinClass()` from `kotlin.native` to map Objective-C types back to their Kotlin `KClass`. The `bindTo` parameter accepts either an `ObjCClass` (`.self` on a class) or an `ObjCProtocol` (`.self` on a protocol).
+`getOriginalKotlinClass()` comes from `kotlin.native` and maps a class (`.self` on a class) or a protocol (`.self` on a protocol) back to its Kotlin type. Declared instances are not checked at compile time: a Kotlin consumer fails at runtime if Swift has not declared the instance yet. The helper is based on a [proposal by @SarahDelCastillo](https://github.com/InsertKoinIO/koin/issues/1108#issuecomment-3645990426).
 
-Original proposal by [@SarahDelCastillo](https://github.com/InsertKoinIO/koin/issues/1108#issuecomment-3645990426).
-:::
+### Threading
 
-### Threading Considerations
+Koin runs on the current Kotlin/Native memory model (the default since Kotlin 1.7.20). You can resolve dependencies and use scopes from any thread, with no freezing or `@SharedImmutable` annotation.
 
-On iOS and other Native targets, Koin instances work seamlessly with the new memory model:
+## Desktop (JVM)
 
-- Koin definitions are thread-safe
-- Scopes can be created and used across threads
-- Use `@SharedImmutable` for global Koin instances if needed
+Start Koin in `main()`, before the first window:
 
-:::note
-The new Kotlin/Native memory model (default in Kotlin 1.7.20+) makes Koin usage much simpler.
-:::
+```kotlin
+// jvmMain
+fun main() = application {
+    initKoin {
+        printLogger()
+        modules(desktopModule)
+    }
 
-## Next Steps
+    Window(onCloseRequest = ::exitApplication) {
+        App()
+    }
+}
 
-- **[KMP Setup](/docs/reference/koin-core/kmp-setup)** - Basic KMP configuration
-- **[Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules)** - Module organization
-- **[ViewModel](/docs/reference/koin-core/viewmodel)** - Multiplatform ViewModel
-- **[Koin for Compose](/docs/reference/koin-compose/compose)** - Compose integration
-- **[Annotations KMP](/docs/reference/koin-annotations/kmp)** - Annotation-based DI in KMP
+val desktopModule = module {
+    single<DesktopFileManager>()
+}
+```
+
+The `config` parameter of the shared `initKoin` adds desktop-only modules and the logger. Desktop is a JVM target, so JVM-only features such as `fileProperties()` are available (see [Starting Koin](/docs/reference/koin-core/starting-koin)).
+
+## Web (JS and Wasm)
+
+Start Koin in the `main()` of the `js` or `wasmJs` source set:
+
+```kotlin
+// jsMain or wasmJsMain
+fun main() {
+    initKoin {
+        modules(webModule)
+    }
+    // start your UI
+}
+
+val webModule = module {
+    single<BrowserStorage>()
+}
+```
+
+With Compose Multiplatform for web, you can start Koin from the root Composable with `KoinApplication` instead (see [Koin for Compose](/docs/reference/koin-compose/compose)).
+
+## Related
+
+- [KMP Setup](/docs/reference/koin-core/kmp-setup): dependencies, `initKoin`, entry points.
+- [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules): platform modules and `expect`/`actual` definitions.
+- [KoinComponent](/docs/reference/koin-core/koin-component): retrieve dependencies from classes Koin does not create.
+- [Koin for Compose](/docs/reference/koin-compose/compose): Compose Multiplatform integration.
+- [Testing](/docs/reference/koin-test/testing): test shared modules in `commonTest`.

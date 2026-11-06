@@ -1,254 +1,128 @@
 ---
 title: Request Scopes
+description: Declare Ktor request-scoped definitions with requestScope, resolve them with call.scope, and inject the current ApplicationCall.
 ---
 
-# Request Scopes in Ktor
+This page covers the request scope of the Koin Ktor plugin: a Koin scope opened for each HTTP call and closed when the response is sent. Use it for objects that hold per-request state, such as a request logger or the current user. How scopes work in general is explained in [Scopes](/docs/reference/koin-core/scopes). You need the plugin installed as in [Koin for Ktor](/docs/reference/koin-ktor/ktor).
 
-Request scopes create instances that live for the duration of a single HTTP request, perfect for request-specific data and processing.
+## Declaring request-scoped definitions
 
-## Declaring Request-Scoped Components
-
-Use `requestScope` to declare components bound to the request lifecycle:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-val appModule = module {
-    // Singleton - shared across all requests
-    single { UserRepository() }
+import org.koin.module.requestScope
 
-    // Request scope - new instance per request
+val appModule = module {
+    single<UserRepository>() // shared by all requests
+
+    requestScope {
+        scoped<RequestLogger>()
+        scoped<UserSessionHandler>()
+    }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+import org.koin.ktor.plugin.RequestScope
+
+@Scope(RequestScope::class)
+class RequestLogger(private val call: ApplicationCall)
+
+@Scope(RequestScope::class)
+class UserSessionHandler(private val call: ApplicationCall)
+```
+
+`requestScope { }` is a scope qualified by the `RequestScope` type, so `@Scope(RequestScope::class)` targets the same scope.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.module.requestScope
+
+val appModule = module {
+    singleOf(::UserRepository) // shared by all requests
+
     requestScope {
         scopedOf(::RequestLogger)
-        scopedOf(::RequestMetrics)
         scopedOf(::UserSessionHandler)
     }
 }
 ```
 
-## Accessing Request-Scoped Components
+</TabItem>
+</Tabs>
 
-Use `call.scope.get()` to resolve request-scoped dependencies:
+## Resolving in a handler
+
+`call.scope` is the request scope of the current call:
 
 ```kotlin
 routing {
     get("/users/{id}") {
-        val requestLogger = call.scope.get<RequestLogger>()
-        val metrics = call.scope.get<RequestMetrics>()
+        val logger = call.scope.get<RequestLogger>()
+        val userService = call.get<UserService>()
 
-        metrics.start()
-        requestLogger.log("Processing user request")
-
-        val userId = call.parameters["id"]!!
-        val userService = get<UserService>()
-        val user = userService.getUser(userId)
-
-        requestLogger.log("Request completed")
-        metrics.end()
-
-        call.respond(user)
+        logger.log("Fetching user")
+        call.respond(userService.getUser(call.parameters["id"]!!))
     }
 }
 ```
 
-## Injecting ApplicationCall
+Within one call, every `call.scope.get<RequestLogger>()` returns the same instance. The next call gets a new one. A request-scoped definition can depend on singletons, since the request scope falls back to the root scope.
 
-Request-scoped components can automatically inject `ApplicationCall`:
+`call.scope` throws "Koin Request Scope is not ready" if the call has no scope, for example when neither `Koin` nor `KoinIsolated` is installed.
+
+## Injecting the ApplicationCall
+
+The call is the source of its request scope, so request-scoped classes can take `ApplicationCall` as a constructor parameter without declaring it:
 
 ```kotlin
 class RequestLogger(private val call: ApplicationCall) {
     fun log(message: String) {
-        val requestPath = call.request.path()
-        val method = call.request.httpMethod.value
-        println("[$method $requestPath] $message")
+        println("[${call.request.httpMethod.value} ${call.request.path()}] $message")
     }
 }
 
 class UserSessionHandler(private val call: ApplicationCall) {
-    fun getUserId(): String? {
-        return call.request.headers["X-User-ID"]
-    }
-
-    fun isAuthenticated(): Boolean {
-        return call.request.headers["Authorization"] != null
-    }
+    fun userId(): String? = call.request.headers["X-User-ID"]
 }
 ```
 
-## Scope Lifecycle Callbacks
+The scope source is described in [Scopes](/docs/reference/koin-core/scopes). `ApplicationCall` is available in the request scope only: a `single` can't receive it.
 
-Attach an `onClose` callback to a scoped definition to run cleanup when the request scope is closed. `onClose` is an infix function on the definition (not a block inside `requestScope { }`), and the instance parameter is nullable (`T?`):
+## Lifecycle
+
+| Step | When |
+|------|------|
+| Scope created | Ktor `CallSetup`, before routing |
+| Scope id | `request_` followed by a unique counter |
+| Scope closed | Ktor `ResponseSent`, after the response is sent |
+
+Closing the scope drops all its instances. To run cleanup code, add `onClose` to the definition:
 
 ```kotlin
 requestScope {
-    scoped { RequestContext() } onClose { context ->
-        val duration = System.currentTimeMillis() - (context?.startTime ?: 0L)
-        println("Request completed in ${duration}ms")
+    scoped { RequestMetrics() } onClose { metrics ->
+        metrics?.recordDuration()
     }
 }
 ```
 
-You can also use `withOptions { onClose { ... } }`:
+`onClose` receives the instance as a nullable value. There is no `onCreate` callback: run initialization in the constructor or the definition lambda. See [Definitions](/docs/reference/koin-core/definitions) for callbacks.
 
-```kotlin
-requestScope {
-    scoped { RequestContext() } withOptions {
-        onClose { context ->
-            context?.cleanup()
-        }
-    }
-}
-```
+## Pitfalls
 
-:::note
-Koin's scope DSL exposes `onClose` per definition; there is no `onCreate` callback. Initialization should happen in the `scoped { }` constructor block.
-:::
+- **Request object in a singleton**: don't inject a request-scoped class into a `single`. The singleton is created once and would keep the instance of the first request. Resolve request-scoped objects from `call.scope` in the handler, or pass them as arguments.
+- **Background work**: a coroutine launched from a handler that outlives the call must not use `call.scope` after the response is sent: the scope is closed by then.
 
-:::note
-Request scopes are **created and destroyed for each HTTP request**. Instances are not shared between requests, ensuring thread safety and preventing state leakage.
-:::
+## Related
 
-## Declaring Modules in Ktor
-
-Koin provides convenient functions to declare modules directly within your Ktor application.
-
-### Using koinModule
-
-Declare modules inline:
-
-```kotlin
-fun Application.configureRouting() {
-    koinModule {
-        singleOf(::CustomerRepository)
-        singleOf(::CustomerService)
-    }
-
-    routing {
-        customerRoutes()
-    }
-}
-```
-
-### Using koinModules
-
-Load multiple existing modules:
-
-```kotlin
-fun Application.configureCustomerFeature() {
-    koinModules(
-        customerRepositoryModule,
-        customerServiceModule,
-        customerRoutesModule
-    )
-
-    routing {
-        customerRoutes()
-    }
-}
-```
-
-## Modular Application Structure
-
-Organize your Ktor app by feature:
-
-```kotlin
-// Feature 1: Customer Management
-fun Application.customerModule() {
-    koinModule {
-        singleOf(::CustomerRepository)
-        singleOf(::CustomerService)
-    }
-
-    routing {
-        route("/api/customers") {
-            customerRoutes()
-        }
-    }
-}
-
-// Feature 2: Order Management
-fun Application.orderModule() {
-    koinModule {
-        singleOf(::OrderRepository)
-        singleOf(::OrderService)
-    }
-
-    routing {
-        route("/api/orders") {
-            orderRoutes()
-        }
-    }
-}
-
-// Main application
-fun Application.module() {
-    install(Koin) {
-        slf4jLogger()
-        modules(coreModule)
-    }
-
-    customerModule()
-    orderModule()
-}
-```
-
-## Request Scope with Annotations
-
-Use annotations for request-scoped components:
-
-```kotlin
-@Scope(RequestScope::class)
-class RequestLogger(private val call: ApplicationCall) {
-    fun log(message: String) {
-        println("[${call.request.path()}] $message")
-    }
-}
-```
-
-## Complete Example
-
-```kotlin
-val appModule = module {
-    singleOf(::UserRepositoryImpl) bind UserRepository::class
-    singleOf(::UserService)
-
-    requestScope {
-        scopedOf(::RequestLogger)
-        scopedOf(::RequestMetrics) onClose { metrics ->
-            metrics?.recordDuration()
-        }
-    }
-}
-
-fun Application.module() {
-    install(Koin) {
-        slf4jLogger()
-        modules(appModule)
-    }
-
-    routing {
-        get("/api/users/{id}") {
-            val logger = call.scope.get<RequestLogger>()
-            val userService = get<UserService>()
-
-            logger.log("Fetching user")
-            val user = userService.getUser(call.parameters["id"]!!)
-
-            call.respond(user)
-        }
-    }
-}
-```
-
-## API Reference
-
-| Function | Description |
-|----------|-------------|
-| `requestScope { }` | Declare request-scoped components |
-| `call.scope.get<T>()` | Get request-scoped instance |
-| `scoped { } onClose { }` | Per-definition cleanup callback (instance is nullable) |
-| `koinModule { }` | Declare inline module |
-| `koinModules(...)` | Load existing modules |
-
-## See Also
-
-- **[Koin for Ktor](/docs/reference/koin-ktor/ktor)** - Main Ktor documentation
-- **[Scopes](/docs/reference/koin-core/scopes)** - Core scope concepts
+- [Scopes](/docs/reference/koin-core/scopes): scope concepts, scope source, linking.
+- [Koin for Ktor](/docs/reference/koin-ktor/ktor): install the plugin and inject in routes.
+- [Definitions](/docs/reference/koin-core/definitions): `onClose` and other definition options.
+- [Ktor Testing](/docs/reference/koin-ktor/ktor-testing): test routes that use request scopes.

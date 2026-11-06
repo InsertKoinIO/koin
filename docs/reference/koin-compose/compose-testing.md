@@ -1,83 +1,44 @@
 ---
 title: Testing Composables
+description: Give Compose previews their own Koin instance with KoinApplicationPreview, and run Compose UI tests with test modules, fakes and mocks.
 ---
 
-# Testing Composables with Koin
+This page covers what is specific to Compose when you test with Koin: previews with `KoinApplicationPreview`, UI tests with a `ComposeTestRule`, and multiplatform UI tests. It assumes you know how to inject in Composables with `koinInject()` and `koinViewModel()` (see [Koin for Compose](/docs/reference/koin-compose/compose)). Test setup, overrides and `declareMock` are explained in [Unit Testing](/docs/reference/koin-test/testing).
 
-This guide covers testing strategies for Compose applications using Koin, from Android Studio previews to comprehensive unit tests.
+## Previews with KoinApplicationPreview
 
-## KoinApplicationPreview
-
-Use `KoinApplicationPreview` for Android Studio previews with Koin dependencies:
+Previews do not run your `Application` class, so no Koin container exists. `KoinApplicationPreview` creates one for the preview:
 
 ```kotlin
+import org.koin.compose.KoinApplicationPreview
+
+val previewModule = module {
+    single<UserRepository> { FakeUserRepository(sampleUsers) }
+    viewModel { UserViewModel(get()) }
+}
+
 @Preview
 @Composable
 fun UserScreenPreview() {
-    KoinApplicationPreview(application = {
-        modules(module {
-            viewModel { UserViewModel(FakeUserRepository()) }
-        })
-    }) {
+    KoinApplicationPreview(application = { modules(previewModule) }) {
         UserScreen()
     }
 }
 ```
 
-### Multiple Previews
+`KoinApplicationPreview` creates a local container with `koinApplication`, not the global one started by `startKoin`. Each preview gets its own instance, so Android Studio can render several previews in parallel.
+
+A lambda definition like `single<UserRepository> { FakeUserRepository(sampleUsers) }` works in every style. The `application` lambda accepts anything you write in `startKoin { }`, so you can also load production modules and override only what the preview needs.
+
+To preview several states, give each preview a module with a different fake:
 
 ```kotlin
-@Preview(name = "Light Mode")
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "Large Font", fontScale = 1.5f)
-@Composable
-fun UserCardPreviews() {
-    KoinApplicationPreview(application = {
-        modules(previewModule)
-    }) {
-        UserCard(user = sampleUser)
-    }
-}
-
-val previewModule = module {
-    single<UserRepository> { FakeUserRepository() }
-    viewModel { UserViewModel(get()) }
-}
-```
-
-### Preview with Different States
-
-```kotlin
-@Preview(name = "Loading")
-@Composable
-fun LoadingPreview() {
-    KoinApplicationPreview(application = {
-        modules(module {
-            viewModel { UserViewModel(LoadingRepository()) }
-        })
-    }) {
-        UserScreen()
-    }
-}
-
 @Preview(name = "Error")
 @Composable
-fun ErrorPreview() {
+fun UserScreenErrorPreview() {
     KoinApplicationPreview(application = {
-        modules(module {
-            viewModel { UserViewModel(ErrorRepository()) }
-        })
-    }) {
-        UserScreen()
-    }
-}
-
-@Preview(name = "Success")
-@Composable
-fun SuccessPreview() {
-    KoinApplicationPreview(application = {
-        modules(module {
-            viewModel { UserViewModel(SuccessRepository(sampleUsers)) }
+        modules(previewModule, module {
+            single<UserRepository> { FailingUserRepository() }
         })
     }) {
         UserScreen()
@@ -85,22 +46,24 @@ fun SuccessPreview() {
 }
 ```
 
-## Unit Testing with ComposeTestRule
+Several `@Preview` annotations on the same function (light and dark mode, font scale) share the same module.
 
-### Basic Setup
+## UI tests with ComposeTestRule
+
+`koinInject()` and `koinViewModel()` resolve from the global context when no Koin instance is provided by the composition. Start Koin with `KoinTestRule` and set the content:
 
 ```kotlin
 class UserScreenTest : KoinTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
     val koinTestRule = KoinTestRule.create {
         modules(module {
-            single<UserRepository> { FakeUserRepository() }
+            single<UserRepository> { FakeUserRepository(sampleUsers) }
             viewModel { UserViewModel(get()) }
         })
     }
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
 
     @Test
@@ -110,183 +73,26 @@ class UserScreenTest : KoinTest {
         }
 
         composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Bob").assertIsDisplayed()
     }
 }
 ```
 
-### Testing User Interactions
+If the Composable you test contains `KoinApplication(configuration = ...)`, it attaches to the container started by the rule and ignores its own configuration. Your test modules are used.
+
+`KoinContext { }` is deprecated and not needed: do not wrap test content with it.
+
+On Android, these tests run as instrumented tests (or with Robolectric). If the graph needs a `Context`, add `androidContext(...)` in the rule, as shown in [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing#restart-koin-with-a-test-rule).
+
+### Fakes and mocks
+
+Use a fake to drive the screen into each state:
 
 ```kotlin
-@Test
-fun clickingUserShowsDetails() {
-    composeTestRule.setContent {
-        UserScreen()
-    }
-
-    // Click on a user
-    composeTestRule.onNodeWithText("Alice").performClick()
-
-    // Verify navigation or state change
-    composeTestRule.onNodeWithText("alice@example.com").assertIsDisplayed()
-}
-
-@Test
-fun searchFiltersUsers() {
-    composeTestRule.setContent {
-        UserScreen()
-    }
-
-    // Enter search query
-    composeTestRule.onNodeWithTag("searchField").performTextInput("Ali")
-
-    // Verify filtered results
-    composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
-    composeTestRule.onNodeWithText("Bob").assertDoesNotExist()
-}
-```
-
-### Testing with ViewModel States
-
-```kotlin
-@Test
-fun showsLoadingIndicator() {
-    val loadingRepository = object : UserRepository {
-        override suspend fun getUsers(): List<User> {
-            delay(Long.MAX_VALUE) // Never completes
-            return emptyList()
-        }
-    }
-
-    startKoin {
-        modules(module {
-            single<UserRepository> { loadingRepository }
-            viewModel { UserViewModel(get()) }
-        })
-    }
-
-    composeTestRule.setContent {
-        UserScreen()
-    }
-
-    composeTestRule.onNodeWithTag("loadingIndicator").assertIsDisplayed()
-
-    stopKoin()
-}
-
-@Test
-fun showsErrorMessage() {
-    val errorRepository = object : UserRepository {
-        override suspend fun getUsers(): List<User> {
-            throw IOException("Network error")
-        }
-    }
-
-    startKoin {
-        modules(module {
-            single<UserRepository> { errorRepository }
-            viewModel { UserViewModel(get()) }
-        })
-    }
-
-    composeTestRule.setContent {
-        UserScreen()
-    }
-
-    composeTestRule.waitUntil(5000) {
-        composeTestRule
-            .onAllNodesWithText("Network error")
-            .fetchSemanticsNodes()
-            .isNotEmpty()
-    }
-
-    stopKoin()
-}
-```
-
-## Mocking Dependencies
-
-### Using MockK
-
-```kotlin
-class UserScreenMockTest : KoinTest {
-
-    private val mockRepository = mockk<UserRepository>()
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(module {
-            single { mockRepository }
-            viewModel { UserViewModel(get()) }
-        })
-    }
-
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    @Test
-    fun loadsUsersOnStart() = runTest {
-        coEvery { mockRepository.getUsers() } returns listOf(
-            User("Test User", "test@example.com")
-        )
-
-        composeTestRule.setContent {
-            UserScreen()
-        }
-
-        composeTestRule.waitUntil(5000) {
-            composeTestRule
-                .onAllNodesWithText("Test User")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
-        }
-
-        coVerify { mockRepository.getUsers() }
-    }
-
-    @Test
-    fun refreshCallsRepository() = runTest {
-        coEvery { mockRepository.getUsers() } returns emptyList()
-
-        composeTestRule.setContent {
-            UserScreen()
-        }
-
-        // Trigger refresh
-        composeTestRule.onNodeWithTag("refreshButton").performClick()
-
-        coVerify(exactly = 2) { mockRepository.getUsers() }
-    }
-}
-```
-
-### Using Fake Implementations
-
-```kotlin
-class FakeUserRepository : UserRepository {
-    private val users = mutableListOf<User>()
-    var shouldFail = false
-
-    override suspend fun getUsers(): List<User> {
-        if (shouldFail) throw IOException("Fake error")
-        return users.toList()
-    }
-
-    override suspend fun addUser(user: User) {
-        users.add(user)
-    }
-
-    fun setUsers(vararg newUsers: User) {
-        users.clear()
-        users.addAll(newUsers)
-    }
-}
-
-class UserScreenFakeTest : KoinTest {
+class UserScreenStatesTest : KoinTest {
 
     private val fakeRepository = FakeUserRepository()
 
-    @get:Rule
+    @get:Rule(order = 0)
     val koinTestRule = KoinTestRule.create {
         modules(module {
             single<UserRepository> { fakeRepository }
@@ -294,191 +100,96 @@ class UserScreenFakeTest : KoinTest {
         })
     }
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
 
-    @Before
-    fun setup() {
-        fakeRepository.setUsers(
-            User("Alice", "alice@example.com"),
-            User("Bob", "bob@example.com")
-        )
-    }
-
     @Test
-    fun displaysUsers() {
-        composeTestRule.setContent {
-            UserScreen()
-        }
-
-        composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Bob").assertIsDisplayed()
-    }
-
-    @Test
-    fun handlesError() {
+    fun showsErrorMessage() {
         fakeRepository.shouldFail = true
 
-        composeTestRule.setContent {
-            UserScreen()
-        }
+        composeTestRule.setContent { UserScreen() }
 
-        composeTestRule.waitUntil(5000) {
-            composeTestRule
-                .onAllNodesWithText("Error")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithText("Network error")
+                .fetchSemanticsNodes().isNotEmpty()
         }
     }
 }
 ```
 
-## Testing Navigation
+Change the fake before `setContent`: the ViewModel is created on first composition and loads its data from there.
+
+To use a mocking library instead, call `declareMock<UserRepository> { ... }` before `setContent` (see [Mocking with declareMock](/docs/reference/koin-test/testing#mocking-with-declaremock)).
+
+### Screens using an isolated context
+
+If the screen gets its Koin instance from `KoinIsolatedContext` (see [Isolated Context](/docs/reference/koin-compose/isolated-context)), the test doesn't need the global context. Build a test container and provide it the same way:
 
 ```kotlin
-class NavigationTest : KoinTest {
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(testModule)
+@Test
+fun sdkScreenUsesTestContainer() {
+    val testKoin = koinApplication {
+        modules(module { single<SdkApi> { FakeSdkApi() } })
     }
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    @Test
-    fun navigatesToDetail() {
-        lateinit var navController: NavHostController
-
-        composeTestRule.setContent {
-            navController = rememberNavController()
-            AppNavigation(navController)
+    composeTestRule.setContent {
+        KoinIsolatedContext(context = testKoin) {
+            SdkScreen()
         }
-
-        // Navigate to detail
-        composeTestRule.onNodeWithText("View Details").performClick()
-
-        // Verify navigation
-        assertEquals("detail/123", navController.currentDestination?.route)
     }
 
-    @Test
-    fun backNavigationWorks() {
-        lateinit var navController: NavHostController
-
-        composeTestRule.setContent {
-            navController = rememberNavController()
-            AppNavigation(navController)
-        }
-
-        // Navigate forward
-        composeTestRule.onNodeWithText("View Details").performClick()
-
-        // Navigate back
-        composeTestRule.onNodeWithContentDescription("Back").performClick()
-
-        // Verify back at home
-        assertEquals("home", navController.currentDestination?.route)
-    }
+    composeTestRule.onNodeWithText("Connected").assertIsDisplayed()
+    testKoin.close()
 }
 ```
 
-## Testing with Coroutines
+No global state is involved, so these tests can run in parallel.
 
-```kotlin
-class CoroutineTest : KoinTest {
+## Multiplatform UI tests
 
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(module {
-            single<UserRepository> { FakeUserRepository() }
-            viewModel { UserViewModel(get()) }
-        })
-    }
-
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    @Test
-    fun asyncOperationCompletes() = runTest {
-        composeTestRule.setContent {
-            UserScreen()
-        }
-
-        // Wait for async operation
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule
-                .onAllNodesWithTag("userList")
-                .fetchSemanticsNodes()
-                .isNotEmpty()
-        }
-
-        // Verify result
-        composeTestRule.onNodeWithText("Alice").assertIsDisplayed()
-    }
-}
-```
-
-## Multiplatform Testing
-
-For Compose Multiplatform, create expect/actual test helpers:
+In `commonTest`, JUnit rules are not available. Use `runComposeUiTest` from the Compose Multiplatform test library, and start and stop Koin with `kotlin.test` annotations:
 
 ```kotlin
 // commonTest
-expect fun createTestComposeRule(): ComposeTestRule
+@OptIn(ExperimentalTestApi::class)
+class UserScreenCommonTest : KoinTest {
 
-// androidTest
-actual fun createTestComposeRule(): ComposeTestRule = createComposeRule()
+    @BeforeTest
+    fun before() {
+        startKoin {
+            modules(module {
+                single<UserRepository> { FakeUserRepository(sampleUsers) }
+                viewModel { UserViewModel(get()) }
+            })
+        }
+    }
 
-// Common test
-class CommonUserScreenTest : KoinTest {
-
-    @get:Rule
-    val composeTestRule = createTestComposeRule()
+    @AfterTest
+    fun after() {
+        stopKoin()
+    }
 
     @Test
-    fun displaysContent() {
-        startKoin {
-            modules(testModule)
-        }
+    fun displaysUserList() = runComposeUiTest {
+        setContent { UserScreen() }
 
-        composeTestRule.setContent {
-            UserScreen()
-        }
-
-        // Assertions...
-
-        stopKoin()
+        onNodeWithText("Alice").assertIsDisplayed()
     }
 }
 ```
 
-## Best Practices
+`KoinTest`, `startKoin` and `declareMock` are multiplatform. `KoinTestRule` and `MockProviderRule` are JVM only. Set up the test dependencies as described in the [Compose Multiplatform testing guide](https://kotlinlang.org/docs/multiplatform/compose-test.html), and add `io.insert-koin:koin-test` to `commonTest`.
 
-1. **Use KoinTestRule** - handles setup/teardown automatically
-   ```kotlin
-   @get:Rule
-   val koinTestRule = KoinTestRule.create { modules(testModule) }
-   ```
+## Pitfalls
 
-2. **Prefer Fakes over Mocks** - more predictable, easier to understand
+- Rule order: Koin must start before the content is set. With `createAndroidComposeRule<MainActivity>()`, the Activity is launched by the rule, so give `KoinTestRule` the lower `order`.
+- ViewModel already created: a ViewModel created in an earlier composition keeps its dependencies. Change fakes or mocks before `setContent`.
+- Preview containers are local: code that reads the global context (`KoinPlatform.getKoin()`, a `KoinComponent` outside Compose) does not see the `KoinApplicationPreview` container.
 
-3. **Test one behavior at a time** - focused tests are easier to maintain
+## Related
 
-4. **Use semantic test tags** - make tests resilient to UI changes
-   ```kotlin
-   Modifier.testTag("submitButton")
-   ```
-
-5. **Wait for async operations** - use `waitUntil` for async state
-   ```kotlin
-   composeTestRule.waitUntil(5000) { condition }
-   ```
-
-6. **Clean up Koin** - if not using rules, call `stopKoin()` in `@After`
-
-## Next Steps
-
-- **[Compose Overview](/docs/reference/koin-compose/compose)** - Setup and basic injection
-- **[Testing Reference](/docs/reference/koin-test/testing)** - General Koin testing
-- **[Module Verification](/docs/reference/koin-test/verify)** - Verify module configuration
+- [Unit Testing](/docs/reference/koin-test/testing): `KoinTestRule`, overrides and `declareMock`.
+- [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing): test Application, rule order with Activities.
+- [Koin for Compose](/docs/reference/koin-compose/compose): `koinInject()` and `KoinApplication`.
+- [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel): how `koinViewModel()` creates and keeps ViewModels.
+- [Isolated Context](/docs/reference/koin-compose/isolated-context): `KoinIsolatedContext` for SDKs and libraries.

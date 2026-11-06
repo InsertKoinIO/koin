@@ -1,60 +1,95 @@
 ---
-title: Compose Multiplatform & Annotations - Shared UI
+title: Compose Multiplatform & Annotations
+description: Build a Compose Multiplatform app for Android and iOS with Koin Annotations, a separate data module, platform modules and KoinApplication.
 ---
 
-> This tutorial demonstrates a Compose Multiplatform application that displays museum art from The Metropolitan Museum of Art Collection API. It uses Koin Annotations for dependency injection across Android and iOS platforms with shared UI.
-> You need around __20 min__ to complete the tutorial.
+In this tutorial you build a Compose Multiplatform app for Android and iOS that lists art objects from The Metropolitan Museum of Art and shows their details. You learn how to annotate classes across two Gradle modules, provide platform-specific definitions, inject ViewModels in composables, and start Koin from your root composable. It takes about 20 minutes and needs Android Studio, plus Xcode for iOS.
 
-:::note
-update - 2024-11-12
-:::
+This tutorial uses annotations. For the same app with the Compiler Plugin DSL, see [Compose Multiplatform](/docs/quickstart/cmp). To compare the styles, see [Choosing your style](/docs/intro/choosing-your-style).
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose-annotations)
-:::
+The full sample is in [koin-getting-started/compose-annotations](https://github.com/InsertKoinIO/koin-getting-started/tree/main/compose-annotations). Clone the repository and open the `compose-annotations` folder in Android Studio. It has two Gradle modules: `data` for the data layer and `composeApp` for the UI. The iOS app is in `iosApp`.
 
-## Gradle Setup
+## Gradle setup
 
-First, add the Koin annotations dependencies:
+Both Gradle modules apply the Koin Compiler Plugin. Versions live in a version catalog:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+# Kotlin, Compose Multiplatform, Ktor, navigation and Coil entries omitted
+koin = "<KOIN_VERSION>"
+koin-plugin = "<KOIN_PLUGIN_VERSION>"
+
+[libraries]
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+
+[plugins]
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+```
 
 ```kotlin
+// data/build.gradle.kts
 plugins {
-    id("com.google.devtools.ksp") version kspVersion
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-dependencies {
-    // Koin for Compose Multiplatform
-    implementation("io.insert-koin:koin-core:$koin_version")
-    implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
-
-    // Koin Annotations
-    implementation("io.insert-koin:koin-annotations:$koin_annotations_version")
-    ksp("io.insert-koin:koin-ksp-compiler:$koin_annotations_version")
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.koin.core)
+            api(libs.koin.annotations)
+            ...
+        }
+    }
 }
 ```
 
-## Application Overview
+```kotlin
+// composeApp/build.gradle.kts
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+}
 
-The application fetches museum art objects from a remote API and displays them in a list. Users can tap on an item to see detailed information:
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(project(":data"))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.annotations)
+            ...
+        }
+    }
+}
+```
 
-`MuseumAPI -> MuseumStorage -> MuseumRepository -> ViewModels -> Compose UI`
+The Compiler Plugin processes the annotations on every target, with no per-target setup. It needs Kotlin 2.3.20 or later, and `koin-annotations` shares the Koin version. For details, see [Gradle setup](/docs/setup/gradle) and [Compiler Plugin setup](/docs/setup/compiler-plugin).
 
-**Technologies used:**
-- Compose Multiplatform for shared UI (Android & iOS)
-- Ktor for HTTP networking
-- Koin Annotations for dependency injection
-- Kotlin Coroutines & Flow for async operations
-- Navigation Compose for routing
+## The application
 
-## The Data Layer
+The app fetches art objects from a remote API, caches them in memory, and shows them on a list screen and a detail screen:
 
-> All the common/shared code is located in `composeApp` Gradle project
+```
+MuseumApi -> MuseumStorage -> MuseumRepository -> ListViewModel / DetailViewModel -> Compose UI
+```
 
-### MuseumObject Model
+It uses Ktor for HTTP, Kotlin Flow for data streams and Navigation Compose for routing. Code is in `commonMain` unless the heading or a comment says otherwise.
 
-The museum art object data class:
+## Let's write the data layer
+
+This code is in the `data` Gradle module. The `MuseumObject` data class maps the API response:
 
 ```kotlin
 @Serializable
@@ -74,17 +109,22 @@ data class MuseumObject(
 )
 ```
 
-### MuseumApi - Network Layer
-
-We create an API interface to fetch data:
+`KtorMuseumApi` fetches the list with a Ktor `HttpClient`. Annotate it with `@Singleton`:
 
 ```kotlin
+import org.koin.core.annotation.Singleton
+
 interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
 }
 
-@Single
+@Singleton
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
+    companion object {
+        private const val API_URL =
+            "https://raw.githubusercontent.com/Kotlin/KMP-App-Template/main/list.json"
+    }
+
     override suspend fun getData(): List<MuseumObject> {
         return try {
             client.get(API_URL).body()
@@ -97,7 +137,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
 }
 ```
 
-### MuseumStorage - Local Caching
+`InMemoryMuseumStorage` caches the objects in a `MutableStateFlow`:
 
 ```kotlin
 interface MuseumStorage {
@@ -106,7 +146,7 @@ interface MuseumStorage {
     fun getObjects(): Flow<List<MuseumObject>>
 }
 
-@Single
+@Singleton
 class InMemoryMuseumStorage : MuseumStorage {
     private val storedObjects = MutableStateFlow(emptyList<MuseumObject>())
 
@@ -124,12 +164,10 @@ class InMemoryMuseumStorage : MuseumStorage {
 }
 ```
 
-### MuseumRepository
-
-The repository coordinates between the API and storage:
+`MuseumRepository` refreshes the storage from the API when it is created:
 
 ```kotlin
-@Single(createdAtStart = true)
+@Singleton
 class MuseumRepository(
     private val museumApi: MuseumApi,
     private val museumStorage: MuseumStorage,
@@ -156,22 +194,24 @@ class MuseumRepository(
 }
 ```
 
-:::note
-The `@Single(createdAtStart = true)` annotation ensures the repository is created when Koin starts, triggering the data fetch immediately.
-:::
+Koin binds each class to its supertypes, so `KtorMuseumApi` answers requests for `MuseumApi`. See [Definitions](/docs/reference/koin-core/definitions).
 
-## The Koin Modules
+## Let's declare the data module
 
-We organize our dependencies into separate modules:
-
-### Data Module
+`HttpClient` is a class you don't own, so provide it from a function in the module class:
 
 ```kotlin
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
+
 @Module
-@ComponentScan
+@Configuration
+@ComponentScan("com.jetbrains.kmpapp.data")
 class DataModule {
 
-    @Single
+    @Singleton
     fun providesHttpClient(): HttpClient {
         val json = Json { ignoreUnknownKeys = true }
         return HttpClient {
@@ -183,14 +223,15 @@ class DataModule {
 }
 ```
 
-The `@ComponentScan` annotation automatically discovers all `@Single` annotated classes in this package (MuseumApi, MuseumStorage, MuseumRepository).
+`@ComponentScan` registers the annotated classes of the data package. `@Configuration` makes `DataModule` discoverable by the app entry point, even though it lives in another Gradle module. See [Modules](/docs/reference/koin-core/modules).
 
-### ViewModel Module
+## Let's write the ViewModels
 
-Let's create ViewModels for our two screens:
+This code and the rest of the tutorial are in the `composeApp` Gradle module. Annotate each ViewModel with `@KoinViewModel`:
 
 ```kotlin
-// List screen ViewModel
+import org.koin.core.annotation.KoinViewModel
+
 @KoinViewModel
 class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
     val objects: StateFlow<List<MuseumObject>> =
@@ -198,17 +239,14 @@ class ListViewModel(museumRepository: MuseumRepository) : ViewModel() {
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }
 
-// Detail screen ViewModel
 @KoinViewModel
 class DetailViewModel(private val museumRepository: MuseumRepository) : ViewModel() {
-    fun getObject(objectId: Int): StateFlow<MuseumObject?> {
-        return museumRepository.getObjectById(objectId)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-    }
+    fun getObject(objectId: Int): Flow<MuseumObject?> =
+        museumRepository.getObjectById(objectId)
 }
 ```
 
-Declare them in a module:
+Scan them with a module class in the `screens` package:
 
 ```kotlin
 @ComponentScan
@@ -216,79 +254,161 @@ Declare them in a module:
 class ViewModelModule
 ```
 
-The `@KoinViewModel` annotation automatically registers these as ViewModel definitions, and `@ComponentScan` discovers them.
+`@ComponentScan` with no argument scans the package of the module class and its subpackages. See [ViewModel](/docs/reference/koin-core/viewmodel).
 
-### Platform-Specific Module
+## Let's add platform-specific definitions
 
-For platform-specific components (Android vs iOS):
+The sample shows two ways to provide a different implementation per platform. The first is an annotated `expect` class, scanned by a shared module:
 
 ```kotlin
-@ComponentScan
+// commonMain
+@Singleton
+expect class NativeComponent() {
+    fun getInfo(): String
+}
+
 @Module
-class PlatformComponentModule
+@ComponentScan
+class NativeComponentModule
 ```
 
-### Main App Module
-
-Combine all modules:
-
 ```kotlin
-@Configuration
-@Module(includes = [DataModule::class, ViewModelModule::class, PlatformComponentModule::class])
-class AppModule
-```
-
-* `@Configuration` - Enables automatic module discovery with `@KoinApplication`
-* `@Module(includes = [...])` - Declares which modules to include
-
-## Koin Application Object
-
-Create a `@KoinApplication` object:
-
-```kotlin
-@KoinApplication
-object KoinApp
-
-fun initKoin(configuration: KoinAppDeclaration? = null) {
-    KoinApp.startKoin {
-        includes(configuration)
-    }
-
-    val platformInfo = KoinPlatform.getKoin().get<PlatformComponent>().getInfo()
-    println("Running on: $platformInfo")
+// androidMain
+@Singleton
+actual class NativeComponent actual constructor() {
+    actual fun getInfo(): String = "Android NativeComponent"
 }
 ```
 
-The `@KoinApplication` annotation generates a `startKoin()` extension function that automatically loads all modules.
+```kotlin
+// nativeMain
+@Singleton
+actual class NativeComponent actual constructor() {
+    actual fun getInfo(): String = "iOS NativeComponent"
+}
+```
 
-## Injecting ViewModels in Compose
-
-> All the common Compose app is located in `commonMain` from `composeApp` Gradle module
-
-The ViewModels are injected using `koinViewModel()` in Compose:
+The second is an `expect` module class. Each platform's `actual` module scans its own implementation of a shared interface:
 
 ```kotlin
+// commonMain
+interface PlatformComponent {
+    fun getInfo(): String
+}
+
+@Module
+expect class PlatformComponentModule
+```
+
+```kotlin
+// androidMain
+@Module
+@ComponentScan
+actual class PlatformComponentModule
+
+@Singleton
+class AndroidPlatformComponent : PlatformComponent {
+    override fun getInfo(): String = "Android PlatformComponent"
+}
+```
+
+```kotlin
+// iosMain
+@Module
+@ComponentScan
+actual class PlatformComponentModule
+
+@Singleton
+class IOSPlatformComponent : PlatformComponent {
+    override fun getInfo(): String = "iOS PlatformComponent"
+}
+```
+
+Platform classes can also take platform dependencies. On Android, `AndroidContextWrapper` receives the Android `Context` from Koin:
+
+```kotlin
+// commonMain
+interface ContextWrapper {
+    fun getContextInfo(): String
+}
+
+@Singleton
+class NativeContextComponent(val ctx: ContextWrapper) {
+    fun getInfo(): String = "NativeContextComponent with ctx: ${ctx.getContextInfo()}"
+}
+```
+
+```kotlin
+// androidMain
+@Singleton
+class AndroidContextWrapper(val context: Context) : ContextWrapper {
+    override fun getContextInfo(): String = "Android Context: $context"
+}
+```
+
+```kotlin
+// nativeMain
+@Singleton
+class IOSContextWrapper : ContextWrapper {
+    override fun getContextInfo(): String = "iOS Context"
+}
+```
+
+Shared code asks for the interface and gets the right implementation on each platform. These patterns are covered in [KMP shared modules](/docs/reference/koin-core/kmp-shared-modules).
+
+## Let's assemble the modules
+
+Declare the app module with its includes, and a `@KoinApplication` object as the entry point:
+
+```kotlin
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.KoinApplication
+import org.koin.core.annotation.Module
+
+@Module(includes = [ViewModelModule::class, NativeComponentModule::class, PlatformComponentModule::class])
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinApp
+```
+
+`KoinApp` collects every `@Configuration` module: `AppModule` with its includes, and `DataModule` from the `data` Gradle module. The Compiler Plugin validates the full graph at build time.
+
+## Let's start Koin and inject the ViewModels
+
+Start Koin from the root composable with `KoinApplication` and `koinConfiguration<KoinApp>()`:
+
+```kotlin
+import org.koin.compose.KoinApplication
+import org.koin.plugin.module.dsl.koinConfiguration
+
+@Serializable
+object ListDestination
+
+@Serializable
+data class DetailDestination(val objectId: Int)
+
 @Composable
 fun App() {
-    MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    ) {
-        Surface {
-            val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = ListDestination) {
-                composable<ListDestination> {
-                    val vm = koinViewModel<ListViewModel>()
-                    ListScreen(viewModel = vm, navigateToDetails = { objectId ->
-                        navController.navigate(DetailDestination(objectId))
-                    })
-                }
-                composable<DetailDestination> { backStackEntry ->
-                    val vm = koinViewModel<DetailViewModel>()
-                    DetailScreen(
-                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
-                        viewModel = vm,
-                        navigateBack = { navController.popBackStack() }
-                    )
+    KoinApplication(configuration = koinConfiguration<KoinApp>()) {
+        MaterialTheme(
+            colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        ) {
+            Surface {
+                val navController: NavHostController = rememberNavController()
+                NavHost(navController = navController, startDestination = ListDestination) {
+                    composable<ListDestination> {
+                        ListScreen(navigateToDetails = { objectId ->
+                            navController.navigate(DetailDestination(objectId))
+                        })
+                    }
+                    composable<DetailDestination> { backStackEntry ->
+                        DetailScreen(
+                            objectId = backStackEntry.toRoute<DetailDestination>().objectId,
+                            navigateBack = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
         }
@@ -296,86 +416,39 @@ fun App() {
 }
 ```
 
-:::info
-The `koinViewModel()` function retrieves ViewModel instances automatically registered via `@KoinViewModel`.
-:::
-
-## Starting Koin
-
-### Android Setup
-
-In Android, Koin is initialized from the main entry point:
+Each screen gets its ViewModel with `koinViewModel()`:
 
 ```kotlin
-// Call from Android entry point
-initKoin()
-```
+import org.koin.compose.viewmodel.koinViewModel
 
-### iOS Setup
+@Composable
+fun ListScreen(navigateToDetails: (objectId: Int) -> Unit) {
+    val viewModel = koinViewModel<ListViewModel>()
+    val objects by viewModel.objects.collectAsStateWithLifecycle()
+    ...
+}
 
-> All the iOS app is located in `iosApp` folder
-
-In iOS, initialize Koin from the SwiftUI App entry point:
-
-```swift
-@main
-struct iOSApp: App {
-    init() {
-        KoinKt.doInitKoin()
-    }
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+@Composable
+fun DetailScreen(objectId: Int, navigateBack: () -> Unit) {
+    val viewModel = koinViewModel<DetailViewModel>()
+    val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
+    ...
 }
 ```
 
-The Compose UI is started with:
+`KoinApplication` starts Koin once for the whole app. On Android it also sets the Android context and logger, which is how `AndroidContextWrapper` gets its `Context`. Both platforms host the same `App` composable, so there is no separate start code in `Application` or in the iOS app:
 
 ```kotlin
+// iosMain
 fun MainViewController() = ComposeUIViewController { App() }
 ```
 
-## Annotations vs Compiler Plugin DSL
+Run the Android app from Android Studio, or the iOS app from Xcode, and the list of art objects appears. Outside Compose, use `startKoin<KoinApp>()` from `org.koin.plugin.module.dsl` instead. See [Koin for Compose](/docs/reference/koin-compose/compose) and [Compose ViewModel](/docs/reference/koin-compose/compose-viewmodel).
 
-Here's how the annotations approach compares to the Compiler Plugin DSL:
+## Next steps
 
-**With Annotations (compose-annotations/):**
-```kotlin
-@Configuration
-@Module(includes = [DataModule::class, ViewModelModule::class])
-class AppModule
-
-@Single
-class MuseumRepository(api: MuseumApi, storage: MuseumStorage)
-
-@KoinViewModel
-class ListViewModel(repository: MuseumRepository) : ViewModel()
-
-// Start Koin
-KoinApp.startKoin()
-```
-
-**Compiler Plugin DSL (compose/):**
-```kotlin
-val appModule = module {
-    includes(dataModule, viewModelModule)
-}
-
-val dataModule = module {
-    single<MuseumRepository>() withOptions { createdAtStart() }
-}
-
-val viewModelModule = module {
-    viewModel<ListViewModel>()
-}
-
-// Start Koin
-startKoin { modules(appModule) }
-```
-
-Both approaches achieve the same result:
-- **Annotations**: Compile-time verification via KSP, automatic module discovery
-- **Compiler Plugin DSL**: Auto-wiring at compile time, cleaner `single<T>()` syntax
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind modules, definitions and injection.
+- [KMP shared modules](/docs/reference/koin-core/kmp-shared-modules): share and split Koin modules across platforms.
+- [Annotations Reference](/docs/reference/koin-annotations/annotations-inventory): every annotation and its parameters.
+- [Compose testing](/docs/reference/koin-compose/compose-testing): test composables that use Koin.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

@@ -1,208 +1,139 @@
 ---
 title: Extension Manager
+description: Add features to a Koin container with KoinExtension, and provide instances from outside Koin during resolution with ResolutionExtension.
 ---
 
-# Extension Manager
-
-Koin provides an extension system that allows you to add new features to the framework. This is useful for integrating Koin with external systems or adding custom functionality.
+Koin has two extension points for library and framework authors. A `KoinExtension` attaches a feature to a Koin container, with a hook at registration and at close. A `ResolutionExtension` gives Koin another source of instances when no definition matches. Most applications never need either: use [definitions](/docs/reference/koin-core/definitions) first.
 
 ## KoinExtension
 
-A Koin extension is a class implementing the `KoinExtension` interface:
+A `KoinExtension` is an object registered in the container under an id:
 
 ```kotlin
 interface KoinExtension {
-    /**
-     * Called when the extension is registered
-     */
     fun onRegister(koin: Koin)
-
-    /**
-     * Called when Koin is closing
-     */
     fun onClose()
 }
 ```
 
-### Creating an Extension
+Koin calls `onRegister` when you register the extension, and `onClose` when the container closes (`stopKoin()` or `koinApplication.close()`).
+
+Koin uses this mechanism itself: the coroutines engine behind [lazy modules](/docs/reference/koin-core/lazy-modules) is the `KoinCoroutinesEngine` extension.
+
+### Writing an extension
 
 ```kotlin
-class MyCustomExtension : KoinExtension {
+class AuditExtension : KoinExtension {
     private lateinit var koin: Koin
 
     override fun onRegister(koin: Koin) {
         this.koin = koin
-        // Initialize your extension
     }
 
     override fun onClose() {
-        // Cleanup resources
+        // release resources
     }
 
-    fun doSomething() {
-        // Your extension logic
-    }
+    fun record(event: String) { ... }
 }
 ```
 
-### Registering an Extension
+### Registering and reading it
 
-Use the `ExtensionManager` to register extensions:
+Expose a function on `KoinApplication` to register the extension, and a property on `Koin` to read it back:
 
 ```kotlin
-fun KoinApplication.myExtension() {
+private const val AUDIT_EXTENSION = "audit"
+
+fun KoinApplication.audit() {
     with(koin.extensionManager) {
-        if (getExtensionOrNull<MyCustomExtension>(EXTENSION_ID) == null) {
-            registerExtension(EXTENSION_ID, MyCustomExtension())
+        if (getExtensionOrNull<AuditExtension>(AUDIT_EXTENSION) == null) {
+            registerExtension(AUDIT_EXTENSION, AuditExtension())
         }
     }
 }
 
-private const val EXTENSION_ID = "my-extension"
+val Koin.audit: AuditExtension
+    get() = extensionManager.getExtension(AUDIT_EXTENSION)
 ```
-
-### Accessing an Extension
-
-```kotlin
-val Koin.myExtension: MyCustomExtension
-    get() = extensionManager.getExtension(EXTENSION_ID)
-
-// Usage
-val extension = getKoin().myExtension
-extension.doSomething()
-```
-
-### Using in Koin Setup
 
 ```kotlin
 startKoin {
-    myExtension()  // Register extension
+    audit()
     modules(appModule)
 }
+
+getKoin().audit.record("app_started")
 ```
 
-:::note
-The `ExtensionManager` is marked as `@KoinInternalApi`. This means the API may change between versions. Use with caution in production code.
+| Function | Behavior |
+|----------|----------|
+| `registerExtension(id, extension)` | Stores the extension and calls `onRegister`. An extension with the same id is replaced |
+| `getExtension<T>(id)` | Returns the extension. Fails with "Koin extension 'id' not found." if it is missing |
+| `getExtensionOrNull<T>(id)` | Returns the extension, or `null` |
+
+:::warning
+`ExtensionManager` is marked `@KoinInternalApi`: you need to opt in, and the API may change between versions without a deprecation cycle.
 :::
 
 ## ResolutionExtension
 
-For more advanced use cases, Koin provides `ResolutionExtension` to hook into the dependency resolution process. This allows you to provide instances from external sources.
+A `ResolutionExtension` is asked for an instance when nothing else matches: after the definitions of the current scope, the scope source and the linked scopes, including the root scope.
 
 ```kotlin
 interface ResolutionExtension {
-    /**
-     * Extension name for identification
-     */
     val name: String
-
-    /**
-     * Called during dependency resolution
-     * @param scope Current resolution scope
-     * @param instanceContext Resolution context with type info
-     * @return Instance if found, null otherwise
-     */
     fun resolve(scope: Scope, instanceContext: ResolutionContext): Any?
 }
 ```
 
-### Use Cases
+Return the instance for `instanceContext.clazz` (and `instanceContext.qualifier` if you use qualifiers), or `null` to let Koin continue and fail with `NoDefinitionFoundException`.
 
-- Integrating with external DI containers
-- Providing instances from a cache or pool
-- Dynamic instance resolution based on runtime conditions
-- Testing with mock providers
+Koin uses this to read instances from Ktor's dependency injection in the [Ktor DI bridge](/docs/reference/koin-ktor/ktor-bridge).
 
-### Example: External Instance Provider
+### Example: instances from another container
 
 ```kotlin
-class ExternalInstanceProvider : ResolutionExtension {
-    private val externalInstances = mutableMapOf<KClass<*>, Any>()
+class LegacyContainerResolution(
+    private val legacy: Map<KClass<*>, Any>,
+) : ResolutionExtension {
 
-    override val name: String = "external-provider"
+    override val name: String = "legacy-container"
 
-    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? {
-        return externalInstances[instanceContext.clazz]
-    }
-
-    fun <T : Any> registerInstance(clazz: KClass<T>, instance: T) {
-        externalInstances[clazz] = instance
-    }
+    override fun resolve(scope: Scope, instanceContext: ResolutionContext): Any? =
+        legacy[instanceContext.clazz]
 }
 ```
 
-### Registering a ResolutionExtension
-
-```kotlin
-val externalProvider = ExternalInstanceProvider()
-externalProvider.registerInstance(MyService::class, MyServiceImpl())
-
-startKoin {
-    // Register the resolution extension
-    koin.addResolutionExtension(externalProvider)
-
-    modules(module {
-        // This can now resolve MyService from the external provider
-        single<MyComponent>()  // MyComponent depends on MyService
-    })
-}
-```
-
-:::warning Experimental API
-The `ResolutionExtension` API is marked as `@KoinExperimentalAPI`. The API may change in future versions.
-:::
-
-### Complete Example
+Register it with `addResolutionExtension`, on the `koin` of the application:
 
 ```kotlin
 @OptIn(KoinExperimentalAPI::class)
-fun resolutionExtensionExample() {
-    val resolutionExtension = object : ResolutionExtension {
-        val instanceMap = mapOf<KClass<*>, Any>(
-            ComponentA::class to ComponentA()
-        )
-
-        override val name: String = "custom-resolver"
-
-        override fun resolve(
-            scope: Scope,
-            instanceContext: ResolutionContext
-        ): Any? {
-            return instanceMap[instanceContext.clazz]
-        }
+fun startApp(legacy: Map<KClass<*>, Any>) {
+    startKoin {
+        koin.addResolutionExtension(LegacyContainerResolution(legacy))
+        modules(appModule)
     }
-
-    val koin = koinApplication {
-        printLogger(Level.DEBUG)
-        koin.addResolutionExtension(resolutionExtension)
-        modules(module {
-            // ComponentB depends on ComponentA
-            // ComponentA will be resolved from the extension
-            single { ComponentB(get()) }
-        })
-    }.koin
-
-    val componentB = koin.get<ComponentB>()
-    // componentB.a is the instance from resolutionExtension
 }
 ```
 
-## When to Use Extensions
+A definition in `appModule` that needs a type found only in the legacy map now gets it from the extension.
 
-| Extension Type | Use Case |
-|---------------|----------|
-| `KoinExtension` | Adding features to Koin (logging, monitoring, custom scopes) |
-| `ResolutionExtension` | Providing instances from external sources during resolution |
+With the Compiler Plugin, a type that only an extension provides is unknown at build time, so compile-time safety reports it as missing. Mark it as provided: see [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
 
-## Best Practices
+`addResolutionExtension` is marked `@KoinExperimentalAPI`.
 
-1. **Use sparingly** - Extensions add complexity; prefer standard Koin definitions when possible
-2. **Document your extensions** - Make it clear what the extension does and how to use it
-3. **Handle cleanup** - Always implement `onClose()` to avoid resource leaks
-4. **Consider thread safety** - Extensions may be called from multiple threads
+## Limits
 
-## Next Steps
+- **Internal and experimental APIs**: both extension points can change between Koin versions.
+- **No lifecycle for resolution extensions**: Koin does not cache the instances a `ResolutionExtension` returns. Cache them yourself if needed.
+- **Last in line**: a resolution extension is never asked when a definition matches. It cannot override a definition.
+- **Thread safety**: `resolve` can be called from several threads at once.
 
-- **[Scopes](/docs/reference/koin-core/scopes)** - Custom scope management
-- **[Modules](/docs/reference/koin-core/modules)** - Module organization
-- **[Advanced Patterns](/docs/reference/koin-core/advanced-patterns)** - More advanced patterns
+## Related
+
+- [Lazy Modules](/docs/reference/koin-core/lazy-modules): the feature built on the coroutines engine extension.
+- [Ktor DI Bridge](/docs/reference/koin-ktor/ktor-bridge): a resolution extension in practice.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): declaring dependencies provided outside Koin.
+- [Starting Koin](/docs/reference/koin-core/starting-koin): the application DSL where extensions are registered.
+- [Scopes](/docs/reference/koin-core/scopes): resolution order inside a scope.

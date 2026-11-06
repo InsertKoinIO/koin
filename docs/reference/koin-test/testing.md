@@ -1,256 +1,334 @@
 ---
-title: Injecting in Tests
+title: Unit Testing
+description: Start Koin in JVM unit tests with KoinTest, KoinTestRule or KoinTestExtension, override definitions, and replace dependencies with declareMock.
 ---
 
-## Making your test a KoinComponent with KoinTest
+This guide shows how to write JVM unit tests with Koin: start and stop a container per test, retrieve instances, override definitions and replace dependencies with mocks. It is the reference for every testing technique; the platform pages ([Android instrumented](/docs/reference/koin-android/instrumented-testing), [Compose](/docs/reference/koin-compose/compose-testing), [Ktor](/docs/reference/koin-ktor/ktor-testing)) only cover what is specific to them. You should know how to [start Koin](/docs/reference/koin-core/starting-koin) and declare [definitions](/docs/reference/koin-core/definitions).
 
-*Warning*: This does not apply to Android Instrumented tests. For Instrumented testing with Koin, please see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing)
+## Dependencies
 
-By tagging your class `KoinTest`, your class become a `KoinComponent` and bring you:
-
-* `by inject()` & `get()` - function to retrieve your instances from Koin
-* `verify()` - help you verify your module configuration
-* `declareMock` & `declare` - to declare a mock or a new definition in the current context
+Add `koin-test` and the artifact for your JUnit version to your test dependencies:
 
 ```kotlin
-class ComponentA
-class ComponentB(val a: ComponentA)
+dependencies {
+    testImplementation("io.insert-koin:koin-test")
+    // pick one
+    testImplementation("io.insert-koin:koin-test-junit4")
+    testImplementation("io.insert-koin:koin-test-junit5")
+}
+```
 
-class MyTest : KoinTest {
+Versions come from the Koin BOM, see [Gradle Setup](/docs/setup/gradle). `koin-test` has no dependency on a mocking library: you plug in Mockito, MockK or any other one (see [Mocking with declareMock](#mocking-with-declaremock)).
 
-    // Lazy inject property
-    val componentB : ComponentB by inject()
+## KoinTest
+
+Implement `KoinTest` in your test class. It makes the class a [KoinComponent](/docs/reference/koin-core/koin-component), so `get()` and `by inject()` work directly in the test:
+
+```kotlin
+import org.koin.test.KoinTest
+import org.koin.test.get
+import org.koin.test.inject
+
+class UserServiceTest : KoinTest {
+
+    // resolved on first access
+    private val userService: UserService by inject()
 
     @Test
-    fun `should inject my components`() {
-        startKoin {
-            modules(
-                module {
-                    single { ComponentA() }
-                    single { ComponentB(get()) }
-                })
-        }
+    fun `finds a known user`() {
+        startKoin { modules(appModule) }
 
-        // directly request an instance
-        val componentA = get<ComponentA>()
+        val repository = get<UserRepository>()
 
-        assertNotNull(a)
-        assertEquals(componentA, componentB.a)
+        assertNotNull(userService.findUser("alice"))
+        assertSame(repository, userService.repository)
+
+        stopKoin()
     }
+}
 ```
 
-:::note
- Don't hesitate to overload Koin modules configuration to help you partly build your app.
-:::
+`KoinTest` works with the global Koin context, the one created by `startKoin`. It does not apply to Android instrumented tests, where the `Application` class starts Koin: see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing).
 
-## JUnit Rules
+## Start and stop Koin for each test
 
-### Create a Koin context for your test
+Each test should start its own container and stop it at the end. A container left running makes the next `startKoin` fail with `KoinApplicationAlreadyStartedException`, and leaks instances between tests.
 
-You can easily create and hold a Koin context for each of your test with the following rule:
+Load the same configuration as your app:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
+class UserServiceTest : KoinTest {
+
+    @Before
+    fun before() {
+        startKoin { modules(appModule) }
+    }
+
+    @After
+    fun after() {
+        stopKoin()
+    }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+Start the `@KoinApplication` class of your app with the typed API:
+
+```kotlin
+import org.koin.plugin.module.dsl.startKoin
+
+class UserServiceTest : KoinTest {
+
+    @Before
+    fun before() {
+        startKoin<MyApp>()
+    }
+
+    @After
+    fun after() {
+        stopKoin()
+    }
+}
+```
+
+To load only some modules, use `module<DataModule>()` or `modules(DataModule::class, CacheModule::class)` inside a plain `startKoin { }`.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+class UserServiceTest : KoinTest {
+
+    @Before
+    fun before() {
+        startKoin { modules(appModule) }
+    }
+
+    @After
+    fun after() {
+        stopKoin()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+To stop Koin without writing `@After`, extend `AutoCloseKoinTest` or implement `ClosingKoinTest`. Both call `stopKoin()` after each test. The JUnit 5 versions live in `org.koin.test.junit5`.
+
+The JUnit rule and extension below do the start and stop for you, and are the shorter option.
+
+## JUnit 4: KoinTestRule
+
+`KoinTestRule` (from `koin-test-junit4`) starts Koin before each test and stops it after:
+
+```kotlin
+import org.koin.test.KoinTestRule
+
+class UserServiceTest : KoinTest {
+
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        printLogger()
+        modules(appModule)
+    }
+
+    private val userService: UserService by inject()
+
+    @Test
+    fun `finds a known user`() {
+        assertNotNull(userService.findUser("alice"))
+    }
+}
+```
+
+The lambda is a regular `KoinApplication` declaration: everything you write in `startKoin { }` works here. With annotations, load your app with `withConfiguration<MyApp>()`:
+
+```kotlin
+import org.koin.plugin.module.dsl.withConfiguration
+
 @get:Rule
 val koinTestRule = KoinTestRule.create {
-    // Your KoinApplication instance here
-    modules(myModule)
+    withConfiguration<MyApp>()
 }
 ```
 
-### Specify your Mock Provider
+If a Koin container is already running when the test starts, the rule closes it first. The started instance is available as `koinTestRule.koin`.
 
-To let you use the `declareMock` API, you need to specify a rule to let Koin know how you build your Mock instance. This let you choose the right mocking framework for your need. 
+## JUnit 5: KoinTestExtension
 
-Create mocks using Mockito: 
+`KoinTestExtension` (from `koin-test-junit5`) does the same for JUnit 5. Register it with `@JvmField` and `@RegisterExtension`:
 
 ```kotlin
+import org.koin.test.junit5.KoinTestExtension
+
+class UserServiceTest : KoinTest {
+
+    @JvmField
+    @RegisterExtension
+    val koinTestExtension = KoinTestExtension.create {
+        modules(appModule)
+    }
+
+    private val userService: UserService by inject()
+
+    @Test
+    fun `finds a known user`() {
+        assertNotNull(userService.findUser("alice"))
+    }
+}
+```
+
+The extension can also pass the `Koin` instance as a test function parameter:
+
+```kotlin
+@Test
+fun `resolves from the test container`(koin: Koin) {
+    assertNotNull(koin.get<UserRepository>())
+}
+```
+
+## Override definitions for a test
+
+To replace a production definition, load a test module after the production modules. The module loaded last wins:
+
+```kotlin
+val testModule = module {
+    single<ApiService> { FakeApiService() }
+}
+
+@get:Rule
+val koinTestRule = KoinTestRule.create {
+    modules(appModule, testModule)
+}
+```
+
+A lambda definition like `single<ApiService> { FakeApiService() }` works in every style, so you can write test modules this way even if your app uses the Compiler Plugin DSL or annotations.
+
+If your app starts Koin with `allowOverride(false)`, mark each test definition with `.override()`. Override rules are explained in [Definitions](/docs/reference/koin-core/definitions#overriding-a-definition).
+
+## Mocking with declareMock
+
+`declareMock<T>()` creates a mock of `T`, registers it in the running container in place of the existing definition, and returns it. Every definition that depends on `T` then receives the mock.
+
+Koin does not create mocks itself. Register a mock provider first:
+
+```kotlin
+// JUnit 4, Mockito
 @get:Rule
 val mockProvider = MockProviderRule.create { clazz ->
-    // Your way to build a Mock here
     Mockito.mock(clazz.java)
 }
-```
 
-Create mocks using MockK: 
-
-```kotlin
+// JUnit 4, MockK
 @get:Rule
 val mockProvider = MockProviderRule.create { clazz ->
-    // Your way to build a Mock here
+    mockkClass(clazz)
+}
+
+// JUnit 5
+@JvmField
+@RegisterExtension
+val mockProvider = MockProviderExtension.create { clazz ->
     mockkClass(clazz)
 }
 ```
 
-!> koin-test project is not tied anymore to mockito
-
-## Mocking out of the box
-
-Instead of making a new module each time you need a mock, you can declare a mock on the fly with `declareMock`:
+Then declare the mock in the test, with an optional stubbing block:
 
 ```kotlin
-class ComponentA
-class ComponentB(val a: ComponentA)
+import org.koin.test.mock.declareMock
 
-class MyTest : KoinTest {
+class UserServiceTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
-        modules(
-            module {
-                single { ComponentA() }
-                single { ComponentB(get()) }
-            })
+        modules(appModule)
     }
 
     @get:Rule
-    val mockProvider = MockProviderRule.create { clazz ->
-        Mockito.mock(clazz.java)
-    }
-    
+    val mockProvider = MockProviderRule.create { clazz -> mockkClass(clazz) }
+
+    private val userService: UserService by inject()
+
     @Test
-    fun `should inject my components`() {
-    
-    }
-        // Replace current definition by a Mock
-        val mock = declareMock<ComponentA>()
-
-        // retrieve mock, same as variable above 
-        assertNotNull(get<ComponentA>())
-
-        // is built with mocked ComponentA
-        assertNotNull(get<ComponentB>())
-    }
-```
-
-:::note
- declareMock can specify if you want a single or factory, and if you want to have it in a module path.
-:::
-
-## Declaring a component on the fly
-
-When a mock is not enough and don't want to create a module just for this, you can use `declare`:
-
-```kotlin
-    @Test
-    fun `successful declare an expression mock`() {
-        startKoin { }
-
-        declare {
-            factory { ComponentA("Test Params") }
+    fun `returns the user from the repository`() {
+        val repository = declareMock<UserRepository> {
+            every { findUser("alice") } returns User("alice")
         }
 
-        Assert.assertNotEquals(get<ComponentA>(), get<ComponentA>())
+        assertEquals("alice", userService.findUser("alice")?.name)
+        verify { repository.findUser("alice") }
     }
+}
 ```
 
-## Checking your Koin modules
+`declareMock` takes the same options as a definition:
 
-Koin offers a way to test if your Koin modules are good: `verify()` - walk through your definition tree and check if each definition is bound.
+- `qualifier`: replace a [qualified](/docs/reference/koin-core/qualifiers) definition, for example `declareMock<Database>(named("local"))`.
+- `secondaryTypes`: also bind the mock to other types, for example `declareMock<UserRepositoryImpl>(secondaryTypes = listOf(UserRepository::class))`.
+
+The mock is held as a single instance in the root scope. To mock a definition inside a scope, call `declareMock` on that scope: `scope.declareMock<CartState>()`.
+
+:::warning
+Declare the mock before the first resolution of the classes that use it. A `single` that was already created keeps the dependency it received.
+:::
+
+## Declare an instance with declare
+
+When you need a real or hand-written instance instead of a mock, `declare` registers it in the running container:
+
+```kotlin
+import org.koin.test.mock.declare
+
+@Test
+fun `uses a fixed clock`() {
+    declare<Clock> { FixedClock(at = "2026-01-01T00:00:00Z") }
+
+    assertEquals(2026, get<ReportService>().currentYear())
+}
+```
+
+`declare` overrides any existing definition for the type, accepts a `qualifier`, and returns the declared instance. It uses the global context, so call it after Koin has started.
+
+## Test scoped definitions
+
+Create the scope yourself, resolve from it, then close it:
 
 ```kotlin
 @Test
-fun checkKoinModules() {
-    myModule.verify()
+fun `cart state lives in its scope`() {
+    val scope = getKoin().createScope<CheckoutSession>("checkout-1")
+
+    val state = scope.get<CartState>()
+    assertSame(state, scope.get<CartState>())
+
+    scope.close()
 }
 ```
 
-:::tip
-The `checkModules()` API is deprecated. The Koin Compiler Plugin now provides compile-time dependency validation, replacing the need for both `verify()` and `checkModules()`. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
-:::
+For the scope APIs, see [Scopes](/docs/reference/koin-core/scopes). On Android, scopes bound to an Activity or Fragment are tested with the component itself: see [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing#scopes).
 
-## Starting & stopping Koin for your tests
+## Check your configuration
 
-Take attention to stop your koin instance (if you use `startKoin` in your tests) between every test. Else be sure to use `koinApplication`, for local koin instances or `stopKoin()` to stop the current global instance.
+Unit tests exercise behavior. To check that every dependency of every definition is declared, use the [Koin Compiler Plugin](/docs/reference/koin-compiler/compile-safety) at build time, or the `verify()` test API: see [Verifying your Configuration](/docs/reference/koin-test/verify).
 
-## Testing with JUnit5
-JUnit 5 support provides [Extensions](https://junit.org/junit5/docs/current/user-guide/#extensions) that will handle the starting and stopping of Koin context. This means that if you are using the extension you don't need to use the `AutoCloseKoinTest`.
+## Limits
 
-### Dependency
-For testing with JUnit5 you need to use `koin-test-junit5` dependency.
+- Global context: `startKoin`, `KoinTestRule` and `KoinTestExtension` all use the single global context. Tests that start Koin can't run in parallel in the same JVM. For parallel tests, use an [isolated context](/docs/reference/koin-core/context-isolation). `KoinTest`'s `get()` and `inject()` read the global context unless you override `getKoin()`.
+- Mock provider: `declareMock` fails if no `MockProviderRule` or `MockProviderExtension` is registered.
+- Overrides stay for the whole test: a definition replaced with a test module, `declareMock` or `declare` is only reset when Koin stops.
 
-### Writing tests
-You need to Register the `KoinTestExtension` and provide your module configuration. After this is done
- you can either get or inject your components to the test. Remember to use `@JvmField` with the `@RegisterExtension`.
+## Related
 
-```kotlin
-class ExtensionTests: KoinTest {
-
-    private val componentB by inject<Simple.ComponentB>()
-
-    @JvmField
-    @RegisterExtension
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-                module {
-            single { Simple.ComponentA() }
-            single { Simple.ComponentB(get()) }
-        })
-    }
-
-    @Test
-    fun contextIsCreatedForTheTest() {
-        Assertions.assertNotNull(get<Simple.ComponentA>())
-        Assertions.assertNotNull(componentB)
-    }
-}
-
-```
-
-### Mocking with JUnit5
-This works the same way as in JUnit4 except you need to use `@RegisterExtension`.
-
-```kotlin
-class MockExtensionTests: KoinTest {
-
-    val mock: Simple.UUIDComponent by inject()
-
-    @JvmField
-    @RegisterExtension
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-                module {
-                    single { Simple.UUIDComponent() }
-                })
-    }
-
-    @JvmField
-    @RegisterExtension
-    val mockProvider = MockProviderExtension.create { clazz ->
-        Mockito.mock(clazz.java)
-    }
-
-    @Test
-    fun mockProviderTest() {
-        val uuidValue = "UUID"
-        declareMock<Simple.UUIDComponent> {
-            BDDMockito.given(getUUID()).will { uuidValue }
-        }
-
-        Assertions.assertEquals(uuidValue, mock.getUUID())
-    }
-}
-```
-
-### Getting the created Koin instances 
-You can also get the created koin context as a function parameter. This can be achieved by adding
- a function parameter to the test function.
-
-```kotlin
-class ExtensionTests: KoinTest {
-    
-    @RegisterExtension
-    @JvmField
-    val koinTestExtension = KoinTestExtension.create {
-        modules(
-                module {
-                    single { Simple.ComponentA() }
-                })
-    }
-
-    @Test
-    fun contextIsCreatedForTheTest(koin: Koin) {
-        // get<SimpleComponentA>() == koin.get<Simple.ComponentA>()
-        Assertions.assertNotNull(koin.get<Simple.ComponentA>())
-    }
-}
-```
+- [Verifying your Configuration](/docs/reference/koin-test/verify): `verify()` and its relationship with compile-time safety.
+- [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing): tests where the `Application` starts Koin.
+- [Testing Composables](/docs/reference/koin-compose/compose-testing): Compose UI tests and previews.
+- [Ktor Testing](/docs/reference/koin-ktor/ktor-testing): `testApplication` with Koin.
+- [Context Isolation](/docs/reference/koin-core/context-isolation): a private Koin container for libraries and parallel tests.
+- [JUnit Test Quickstart](/docs/quickstart/junit-test): a full sample project.

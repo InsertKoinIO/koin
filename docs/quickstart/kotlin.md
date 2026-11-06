@@ -1,51 +1,88 @@
 ---
 title: Kotlin
+description: Build a small Kotlin console app with Koin and the Compiler Plugin DSL, from module declaration to starting Koin.
 ---
 
-> This tutorial lets you write a Kotlin application and use Koin dependency injection to retrieve your components.
-> You need around __10 min__ to do the tutorial.
+In this tutorial you build a Kotlin console app that loads a list of users and prints a greeting. You learn how to declare a Koin module, bind implementations to interfaces, and start Koin. It takes about 10 minutes and needs a JDK 17 and Gradle.
 
-:::note
-update - 2024-10-21
-:::
-
-:::tip
-Looking for the **annotations version** of this tutorial? Check out [Kotlin & Annotations](./kotlin-annotations.md) which uses Koin Annotations for compile-time verification and automatic module discovery.
-:::
+This tutorial uses the Compiler Plugin DSL. For the same app with annotations, see [Kotlin & Annotations](/docs/quickstart/kotlin-annotations). To compare the styles, see [Choosing your style](/docs/intro/choosing-your-style).
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin)
-:::
+The full sample is in [koin-getting-started/kotlin](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin). Clone the repository and run it from the `kotlin` folder:
 
-## Setup
+```bash
+./gradlew run
+```
 
-First, check that the `koin-core` dependency is added like below:
+## Gradle setup
 
-```groovy
+The sample applies the Koin Compiler Plugin and adds `koin-core`. Versions live in a version catalog:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+kotlin = "<KOTLIN_VERSION>"
+koin = "<KOIN_VERSION>"
+koin-plugin = "<KOIN_PLUGIN_VERSION>"
+
+[libraries]
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+```
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.koin.compiler)
+    application
+}
+
 dependencies {
-    
-    // Koin for Kotlin apps
-    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation(libs.koin.core)
+
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
 }
 ```
 
-## Application Overview
+The Compiler Plugin needs Kotlin 2.3.20 or later. For current versions and the BOM, see [Gradle setup](/docs/setup/gradle). For plugin options, see [Compiler Plugin setup](/docs/setup/compiler-plugin).
 
-The idea of the application is to manage a list of users, and display it in our `UserApplication` class:
+## The application
 
-> Users -> UserRepository -> UserService -> UserApplication
+The app chains three components. `UserApplication` asks `UserService` for a user, and `UserService` reads from `UserRepository`:
 
-## The "User" Data
+```
+User -> UserRepository -> UserService -> UserApplication
+```
 
-We will manage a collection of Users. Here is the data class:
+## Let's write the user data
+
+Start with the data class and a default list of users:
 
 ```kotlin
 data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
 ```
 
-We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
+These users are the data that the repository stores.
+
+## Let's write the repository
+
+The repository keeps users in memory and finds one by name:
 
 ```kotlin
 interface UserRepository {
@@ -67,35 +104,31 @@ class UserRepositoryImpl : UserRepository {
 }
 ```
 
-## The Koin module
+`UserRepositoryImpl` has no dependency, so Koin can create it with no extra information.
 
-Use the `module` function to declare a Koin module. A Koin module is the place where we define all our components to be injected.
+## Let's declare the Koin module
 
-```kotlin
-val appModule = module {
-
-}
-```
-
-Let's declare our first component. We want a singleton of `UserRepository`, by creating an instance of `UserRepositoryImpl`
+A module is where you declare the components Koin creates (see [Core Concepts](/docs/intro/core-concepts)). Declare `UserRepositoryImpl` as a singleton, available as `UserRepository`:
 
 ```kotlin
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.single
+
 val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
 }
 ```
 
-:::info
-This tutorial uses the **Koin Compiler Plugin DSL** (`single<T>()`) which provides auto-wiring at compile time. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for configuration.
-:::
+Any component that asks for a `UserRepository` now gets the same `UserRepositoryImpl` instance. `single` and `bind` are described in [Definitions](/docs/reference/koin-core/definitions).
 
-## The UserService Component
+## Let's write the service
 
-Let's write the UserService component to manage user operations:
+`UserService` loads the users and prepares the greeting:
 
 ```kotlin
 interface UserService {
-    fun getUserOrNull(name: String): User?
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
     fun loadUsers()
     fun prepareHelloMessage(user: User?): String
 }
@@ -107,22 +140,16 @@ class UserServiceImpl(
     override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
 
     override fun loadUsers() {
-        userRepository.addUsers(listOf(
-            User("Alice", "alice@example.com"),
-            User("Bob", "bob@example.com"),
-            User("Charlie", "charlie@example.com")
-        ))
+        userRepository.addUsers(DEFAULT_USERS)
     }
 
     override fun prepareHelloMessage(user: User?): String {
-        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
     }
 }
 ```
 
-> UserRepository is referenced in UserServiceImpl's constructor
-
-We declare `UserService` in our Koin module. We declare it as a `single` definition:
+Add it to the module:
 
 ```kotlin
 val appModule = module {
@@ -131,9 +158,11 @@ val appModule = module {
 }
 ```
 
-## Injecting Dependencies in UserApplication
+`UserServiceImpl` takes a `UserRepository` in its constructor. The Compiler Plugin reads that constructor and passes the `UserRepositoryImpl` instance for you.
 
-The `UserApplication` class will help bootstrap instances out of Koin. It will resolve the `UserService` through constructor injection:
+## Let's write the application class
+
+`UserApplication` receives `UserService` through its constructor, loads the users and prints the greeting:
 
 ```kotlin
 class UserApplication(
@@ -144,7 +173,6 @@ class UserApplication(
         userService.loadUsers()
     }
 
-    // display our data
     fun sayHello(name: String) {
         val user = userService.getUserOrNull(name)
         val message = userService.prepareHelloMessage(user)
@@ -153,16 +181,7 @@ class UserApplication(
 }
 ```
 
-That's it, your app is ready.
-
-:::info
-Constructor injection is the preferred way to inject dependencies in Kotlin applications. Koin will automatically resolve and inject the `UserService` when creating `UserApplication`.
-:::
-
-
-## Start Koin
-
-We need to start Koin with our application and add `UserApplication` to our module. Just call the `startKoin()` function in the application's main entry point, our `main` function:
+Declare it in the module too:
 
 ```kotlin
 val appModule = module {
@@ -170,6 +189,17 @@ val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
     single<UserServiceImpl>() bind UserService::class
 }
+```
+
+All three components are now in the module. The plugin checks at build time that each constructor parameter has a definition.
+
+## Let's start Koin
+
+Start Koin in `main()` with your module, then get `UserApplication` from the container:
+
+```kotlin
+import org.koin.core.context.startKoin
+import org.koin.mp.KoinPlatform
 
 fun main() {
     startKoin {
@@ -181,32 +211,12 @@ fun main() {
 }
 ```
 
-:::info
-The `modules()` function in `startKoin` loads the given list of modules. We retrieve the `UserApplication` instance from Koin using `KoinPlatform.getKoin().get<UserApplication>()`.
-:::
+Run `./gradlew run` and the app prints `Hello 'Alice' (alice@example.com)!`. `startKoin` and its options are covered in [Starting Koin](/docs/reference/koin-core/starting-koin).
 
-## Koin module: DSL comparison
+## Next steps
 
-Here is the Koin module declaration using **Classic DSL** (manual wiring):
-
-```kotlin
-val appModule = module {
-    single { UserApplication(get()) }
-    single<UserRepository> { UserRepositoryImpl() }
-    single<UserService> { UserServiceImpl(get()) }
-}
-```
-
-With **Compiler Plugin DSL** (auto-wiring at compile time):
-
-```kotlin
-val appModule = module {
-    single<UserApplication>()
-    single<UserRepositoryImpl>() bind UserRepository::class
-    single<UserServiceImpl>() bind UserService::class
-}
-```
-
-:::tip
-The Compiler Plugin DSL requires the [Koin Compiler Plugin](/docs/setup/compiler-plugin). It provides compile-time dependency resolution and cleaner syntax.
-:::
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind modules, definitions and injection.
+- [Definitions](/docs/reference/koin-core/definitions): every definition type and binding option.
+- [JUnit Tests](/docs/quickstart/junit-test): test this same app with Koin Test.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): what the Compiler Plugin checks in your graph.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

@@ -1,113 +1,11 @@
 ---
 title: Compiler Plugin Options
+description: Every option of the koinCompiler Gradle block, with defaults, effects and when to change them.
 ---
 
-The Koin Compiler Plugin supports configuration options to customize its behavior.
+This page lists every option of the Koin Compiler Plugin, set in the `koinCompiler { }` block of your `build.gradle.kts`. It assumes the plugin is installed (see [Compiler Plugin Setup](/docs/setup/compiler-plugin)). The options apply to the Compiler Plugin DSL and to annotations alike.
 
-## Configuration
-
-Configure the compiler plugin in your `build.gradle.kts`:
-
-```kotlin
-koinCompiler {
-    userLogs = true
-    debugLogs = false
-    compileSafety = true
-    strictSafety = true       // auto-detected by default
-    skipDefaultValues = true
-    unsafeDslChecks = true
-}
-```
-
-## Available Options
-
-### userLogs
-
-- **Type**: Boolean
-- **Default**: `false`
-- **Description**: Enables logs for component detection and DSL/annotation processing. Shows which components are discovered and processed by the plugin.
-- **Usage**: Enable during development to debug component discovery issues.
-
-```kotlin
-koinCompiler {
-    userLogs = true
-}
-```
-
-### debugLogs
-
-- **Type**: Boolean
-- **Default**: `false`
-- **Description**: Enables verbose debug logs for internal plugin processing (FIR/IR phases, module discovery).
-- **Usage**: Enable when troubleshooting plugin issues or reporting bugs.
-
-```kotlin
-koinCompiler {
-    debugLogs = true
-}
-```
-
-### compileSafety
-
-- **Type**: Boolean
-- **Default**: `true`
-- **Description**: Enables compile-time dependency validation. When enabled, the plugin validates that all dependencies can be resolved at build time — catching missing definitions, qualifier mismatches, and broken call sites before runtime.
-- **Usage**: Enabled by default. Disable temporarily if you need to bypass validation during migration.
-
-```kotlin
-koinCompiler {
-    compileSafety = true
-}
-```
-
-See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) for full details on what gets validated.
-
-### strictSafety
-
-- **Type**: Boolean
-- **Default**: auto-detected (enabled on aggregator modules — those containing `startKoin`, `koinApplication`, or `@KoinApplication`)
-- **Description**: Forces the full-graph safety pass (A3) to re-run on every build, bypassing Kotlin's incremental compilation cache on the aggregator module. Library and feature modules stay fully incremental.
-- **Usage**: Leave at default. Set explicitly to `true` if auto-detection misses your aggregator, or to `false` to opt out (e.g. when a test fixture only references `startKoin` in a comment and trips the detector).
-
-```kotlin
-koinCompiler {
-    strictSafety = true   // force-enable
-    // or
-    strictSafety = false  // opt out of auto-detection
-}
-```
-
-**Why it exists**: K2's incremental compilation today (via the Build Tools API used by AGP) doesn't track two things the DI graph relies on — DSL definitions inside `module { … }` lambda bodies (not part of any declaration's ABI), and `@ComponentScan` package-scope discovery (no source-level edge from the scanner to newly-added classes). The aggregator's `compileKotlin` task can be marked UP-TO-DATE even when the graph changed. `strictSafety` is the smallest correct workaround on top of what K2 IC currently surfaces; it has bounded cost since only the aggregator re-runs each build.
-
-Has no effect when `compileSafety = false`. See [koin-compiler-plugin issue #32](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/32) for background.
-
-### skipDefaultValues
-
-- **Type**: Boolean
-- **Default**: `true`
-- **Description**: When enabled, parameters with Kotlin default values will use the default instead of being resolved from the DI container. Nullable parameters and annotated parameters (`@Named`, `@InjectedParam`, etc.) are still resolved normally.
-- **Usage**: Enabled by default. Disable to always inject all parameters from the DI container.
-
-```kotlin
-koinCompiler {
-    skipDefaultValues = true
-}
-```
-
-### unsafeDslChecks
-
-- **Type**: Boolean
-- **Default**: `true`
-- **Description**: Validates that DSL function calls (like `create()`) inside lambdas are the only instruction. Helps prevent common mistakes.
-- **Usage**: Disable temporarily during migration from classic DSL if needed.
-
-```kotlin
-koinCompiler {
-    unsafeDslChecks = false  // Disable during migration
-}
-```
-
-## Complete Example
+## All options
 
 ```kotlin
 // build.gradle.kts
@@ -116,26 +14,139 @@ plugins {
 }
 
 koinCompiler {
-    userLogs = true           // Log component detection
-    debugLogs = false         // Verbose logs (off by default)
-    compileSafety = true      // Compile-time dependency validation
-    strictSafety = true       // Force aggregator to re-run safety pass (auto-detected by default)
-    skipDefaultValues = true  // Use Kotlin defaults instead of DI resolution
-    unsafeDslChecks = true    // Validate DSL usage
+    compileSafety = true
+    skipDefaultValues = true
+    unsafeDslChecks = true
+    userLogs = false
+    debugLogs = false
 }
 ```
 
-## Best Practices
+| Option | Type | Default | Effect |
+|--------|------|---------|--------|
+| `compileSafety` | Boolean | `true` | Validates the dependency graph at build time |
+| `strictSafety` | Boolean | Auto-detected | Re-runs the full-graph check on every build of the aggregator module |
+| `strictSafetyForceOff` | Boolean | `false` | Confirms a wrong `strictSafety` auto-detection and turns it off |
+| `skipDefaultValues` | Boolean | `true` | Uses Kotlin default values instead of resolving those parameters |
+| `unsafeDslChecks` | Boolean | `true` | Requires `create()` to be the only instruction in its lambda |
+| `userLogs` | Boolean | `false` | Logs the components the plugin detects |
+| `debugLogs` | Boolean | `false` | Logs the plugin internals |
+| `logSeverity` | String | `"warning"` | Severity of the plugin's informational output |
+| `versionCheckSeverity` | String | `"warning"` | Severity of the Kotlin version compatibility warning |
+| `aiAssist` | Boolean | `true` | Adds one help line at the end of a build that has Koin diagnostics |
 
-- **Keep `compileSafety` enabled** (default) for compile-time dependency validation
-- **Leave `strictSafety` at auto-detect** — only override if the detector misses your aggregator or trips on a non-aggregator file
-- **Keep `skipDefaultValues` enabled** (default) to respect Kotlin default values
-- **Enable `userLogs`** during development to see which components are detected
-- **Keep `unsafeDslChecks` enabled** (default) for safer DSL usage
-- **Use `debugLogs`** only when troubleshooting plugin issues
+## compileSafety
 
-## See Also
+When enabled, the plugin checks at build time that every dependency in the graph can be resolved: missing definitions, qualifier mismatches, circular dependencies, and `get()` or `inject()` call sites with no matching definition. A problem fails the build instead of crashing at runtime.
 
-- **[Compile-Time Safety](/docs/reference/koin-compiler/compile-safety)** - What gets validated and how
-- **[Compiler Plugin Setup](/docs/setup/compiler-plugin)** - Complete setup guide
-- **[Starting with Annotations](/docs/reference/koin-annotations/start)** - Getting started
+```kotlin
+koinCompiler {
+    compileSafety = false
+}
+```
+
+Keep it enabled. Turning it off removes every compile-time check and makes `strictSafety` have no effect. What gets checked is described in [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+
+## strictSafety
+
+The full-graph check runs in the module that starts Koin (the aggregator: the Gradle module that contains `startKoin`, `koinApplication` or `@KoinApplication`). Kotlin incremental compilation can mark that module up to date when the graph changed elsewhere, for example after an edit inside a `module { }` lambda body. The check would then not run again, and the error would show up at runtime.
+
+`strictSafety` makes the aggregator's `compileKotlin` task re-run on every build, with no build cache and no up-to-date skip. Library and feature modules stay incremental.
+
+You don't need to set it. When the option is unset, the Gradle plugin scans the module sources for `startKoin`, `koinApplication` or `@KoinApplication` and turns it on for that module. A lifecycle log line announces the decision:
+
+```
+[Koin] Auto-enabling strictSafety on :app (detected startKoin / @KoinApplication / koinApplication).
+```
+
+Set `strictSafety = true` to force it on a module the detection misses:
+
+```kotlin
+koinCompiler {
+    strictSafety = true
+}
+```
+
+Setting `strictSafety = false` has no effect on a module where an entry point is detected (since Compiler Plugin 1.1.0). It only matters on modules without a detected entry point. The option has no effect when `compileSafety = false`.
+
+The cost is one full recompilation of the aggregator module per build. Background on the incremental compilation gap is in [koin-compiler-plugin issue #32](https://github.com/InsertKoinIO/koin-compiler-plugin/issues/32).
+
+## strictSafetyForceOff
+
+The detection is a text match. It also matches `startKoin` in a comment or a string literal, and then turns `strictSafety` on for a module that is not an aggregator. If you have checked that the match is wrong, set both options:
+
+```kotlin
+koinCompiler {
+    strictSafety = false
+    strictSafetyForceOff = true
+}
+```
+
+Both are needed: `strictSafetyForceOff` only applies together with `strictSafety = false`. Use it only on a confirmed misfire. On a real entry point it disables the re-run, and a graph error can then reach runtime after an incremental build.
+
+## skipDefaultValues
+
+When enabled, a non-nullable parameter with a Kotlin default value keeps its default and is not resolved from Koin:
+
+```kotlin
+@Singleton
+class ApiClient(
+    val repository: UserRepository,                         // resolved from Koin
+    val timeout: Int = 30_000,                              // Kotlin default
+    @Property("api_url") val url: String = "https://...",   // resolved, it is annotated
+    val logger: Logger? = null,                             // resolved with getOrNull()
+)
+```
+
+Nullable parameters are still resolved with `getOrNull()`. Parameters with `@Named`, `@Qualifier`, `@InjectedParam` or `@Property` are always resolved, whatever their default value. Set `skipDefaultValues = false` to resolve every parameter from Koin.
+
+## unsafeDslChecks
+
+When enabled, a `create(::T)` call must be the only instruction in its definition lambda. This keeps the lambda something the plugin can analyze and validate. A violation fails the build:
+
+```
+[Koin][KOIN-S001] create(::UserRepository) must be the only instruction in the lambda. Other statements are not allowed when using create(). To disable this check, set koinCompiler { unsafeDslChecks = false } in your build.gradle.kts
+```
+
+Set it to `false` while you migrate Classic DSL code that runs other statements inside a `create()` lambda, then turn it back on.
+
+## userLogs and debugLogs
+
+`userLogs = true` prints what the plugin detects and processes: DSL definitions it intercepts (`single<T>()`, `factory<T>()`), annotated classes (`@Singleton`, `@Module`) and the generated modules. Use it when a definition is not picked up.
+
+`debugLogs = true` prints the plugin internals (FIR and IR phases, module discovery). Use it when you report a plugin bug.
+
+Both print lines prefixed with `[Koin]` at the severity set by `logSeverity`.
+
+## logSeverity and versionCheckSeverity
+
+Both accept `"warning"` (default) or `"info"`.
+
+```kotlin
+koinCompiler {
+    logSeverity = "info"
+    versionCheckSeverity = "info"
+}
+```
+
+- **logSeverity**: severity of informational output (`userLogs`, `debugLogs`, the "no Koin entry point" notice, `@Monitor` summaries). Set it to `"info"` if your build uses `allWarningsAsErrors`, so this output does not fail the build.
+- **versionCheckSeverity**: severity of the warning shown when you build with a Kotlin version the plugin has not been verified against. It is separate so that muting log output does not also hide a compatibility risk. Set it to `"info"` only after you have checked that your Kotlin version works.
+
+Neither option changes real diagnostics (`KOIN-D001`, `KOIN-W003` and so on): they keep their own severity.
+
+## aiAssist
+
+When a build reports at least one Koin diagnostic, the plugin adds one line at the end of the compilation, pointing to the Kotzilla MCP Server, which an AI coding assistant can use to classify the error and propose a fix:
+
+```
+[Koin] → Fix with AI: set up Kotzilla MCP at https://kotzilla.io/koin-mcp
+```
+
+The line appears once per build, not per error. Set `aiAssist = false` to hide it.
+
+## Related
+
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): what `compileSafety` checks and the diagnostics it reports.
+- [Compiler Plugin Setup](/docs/setup/compiler-plugin): install the plugin and its dependencies.
+- [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin): what the plugin does and how it works.
+- [Troubleshooting](/docs/reference/koin-core/troubleshooting): runtime errors and debugging.

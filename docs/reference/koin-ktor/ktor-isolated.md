@@ -1,24 +1,21 @@
 ---
-title: Isolated Context
+title: Isolated Context in Ktor
+description: Run Koin inside a Ktor application without the global context using the KoinIsolated plugin, for tests and several servers in one JVM.
 ---
 
-# Isolated Context in Ktor
+This page covers the `KoinIsolated` plugin, which starts Koin for one Ktor application without registering it in the global context. Each application then has its own container. What an isolated context is, and when to use one, is explained in [Context Isolation](/docs/reference/koin-core/context-isolation). The regular `Koin` plugin is described in [Koin for Ktor](/docs/reference/koin-ktor/ktor).
 
-The `KoinIsolated` plugin runs Koin in an isolated context, separate from the global Koin instance. This is useful for testing, multi-tenant applications, and running multiple Koin instances.
+## Installing KoinIsolated
 
-## When to Use Isolated Context
+Install `KoinIsolated` instead of `Koin`. The configuration block is the same:
 
-- **Testing** - Each test gets its own isolated Koin instance
-- **Multi-tenant applications** - Different tenants with different configurations
-- **Plugin/module systems** - Independent modules with their own dependencies
-- **Embedded Ktor servers** - Multiple Ktor instances in the same JVM
-
-## Basic Setup
-
-Install `KoinIsolated` instead of `Koin`:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-fun Application.main() {
+import org.koin.ktor.plugin.KoinIsolated
+
+fun Application.module() {
     install(KoinIsolated) {
         slf4jLogger()
         modules(appModule)
@@ -26,246 +23,107 @@ fun Application.main() {
 }
 ```
 
-## Global vs Isolated Context
-
-### Global Context (default)
-
-```kotlin
-// Uses GlobalContext - shared across the application
-install(Koin) {
-    modules(appModule)
-}
-
-// Can access Koin anywhere via GlobalContext
-val service = GlobalContext.get().get<UserService>()
-```
-
-### Isolated Context
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-// Uses isolated context - not accessible via GlobalContext
-install(KoinIsolated) {
-    modules(appModule)
-}
+import org.koin.ktor.plugin.KoinIsolated
+import org.koin.plugin.module.dsl.withConfiguration
 
-// GlobalContext.get() will NOT return this Koin instance
-// Only accessible within the Ktor application scope
-```
-
-:::warning
-When using `KoinIsolated`, you cannot access Koin via `GlobalContext`. All injection must happen within the Ktor application scope using `inject()` or `get()`.
-:::
-
-## Complete Example
-
-```kotlin
-val appModule = module {
-    singleOf(::UserRepository)
-    singleOf(::UserService)
-
-    requestScope {
-        scopedOf(::RequestLogger)
+fun Application.module() {
+    install(KoinIsolated) {
+        slf4jLogger()
+        withConfiguration<KoinUserApplication>()
     }
 }
+```
 
-fun Application.main() {
-    // Install Koin in isolated mode
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+import org.koin.ktor.plugin.KoinIsolated
+
+fun Application.module() {
     install(KoinIsolated) {
         slf4jLogger()
         modules(appModule)
     }
+}
+```
 
-    // Injection works within Application scope
+</TabItem>
+</Tabs>
+
+## What changes compared to Koin
+
+| | `install(Koin)` | `install(KoinIsolated)` |
+|---|---|---|
+| Registered in the global context | Yes | No |
+| `inject()` / `get()` on `Application`, `Route`, `Routing`, `ApplicationCall` | Yes | Yes, from the application's instance |
+| Request scope and `call.scope` | Yes | Yes |
+| Lifecycle events, close on `ApplicationStopping` | Yes | Yes |
+| `bridge { }` to Ktor DI | Yes | Not applied in Koin 4.2 |
+| `KoinComponent` classes, `KoinPlatform.getKoin()` | See this instance | Don't see this instance |
+
+The Ktor extensions read the Koin instance stored in the application attributes, so injection in routes works the same:
+
+```kotlin
+fun Application.module() {
+    install(KoinIsolated) {
+        modules(appModule)
+    }
+
     val userService by inject<UserService>()
+    val koin = getKoin() // this application's Koin instance
 
     routing {
         get("/users/{id}") {
             val logger = call.scope.get<RequestLogger>()
-            val id = call.parameters["id"]!!
-
-            logger.log("Fetching user $id")
-            val user = userService.getUser(id)
-
-            call.respond(user)
+            call.respond(userService.getUser(call.parameters["id"]!!))
         }
     }
 }
 ```
 
-## With DI Bridge
+:::warning
+Code outside Ktor's receivers can't reach the isolated instance. A class implementing `KoinComponent`, or a call to `KoinPlatform.getKoin()`, uses the global context and fails with "KoinApplication has not been started". Give your classes their dependencies through constructor parameters, declared in the isolated modules. For an interop entry point that must retrieve dependencies itself, override `getKoin()` as shown in [Context Isolation](/docs/reference/koin-core/context-isolation).
+:::
 
-The isolated context also supports the Ktor DI Bridge:
+## Several servers in one JVM
 
-```kotlin
-fun Application.main() {
-    // Ktor DI - Infrastructure
-    val database = Database(environment.config)
-    dependencies {
-        provide<Database> { database }
-    }
-
-    // Koin Isolated with bridge
-    install(KoinIsolated) {
-        slf4jLogger()
-
-        bridge {
-            koinToKtor()  // Allow Koin to resolve from Ktor DI
-        }
-
-        modules(appModule)
-    }
-
-    routing {
-        userRoutes()
-    }
-}
-
-val appModule = module {
-    // Can inject Database from Ktor DI via bridge
-    singleOf(::UserRepository)
-    singleOf(::UserService)
-}
-```
-
-## Testing with Isolated Context
-
-Isolated context is particularly useful for testing:
-
-```kotlin
-class UserServiceTest {
-    @Test
-    fun `test user endpoint`() = testApplication {
-        application {
-            // Each test gets its own isolated Koin instance
-            install(KoinIsolated) {
-                modules(testModule)
-            }
-            configureRouting()
-        }
-
-        client.get("/users/123").apply {
-            assertEquals(HttpStatusCode.OK, status)
-        }
-    }
-}
-
-val testModule = module {
-    single<UserRepository> { MockUserRepository() }
-    singleOf(::UserService)
-}
-```
-
-### Parallel Test Execution
-
-With isolated context, tests can run in parallel without interference:
-
-```kotlin
-class ParallelTests {
-    @Test
-    fun `test A`() = testApplication {
-        application {
-            install(KoinIsolated) {
-                modules(moduleA)  // Own isolated instance
-            }
-        }
-        // ...
-    }
-
-    @Test
-    fun `test B`() = testApplication {
-        application {
-            install(KoinIsolated) {
-                modules(moduleB)  // Different isolated instance
-            }
-        }
-        // ...
-    }
-}
-```
-
-## Multiple Ktor Servers
-
-Run multiple Ktor servers with independent Koin instances:
+Each embedded server gets its own container:
 
 ```kotlin
 fun main() {
-    // Server 1 - User Service
     val userServer = embeddedServer(Netty, port = 8080) {
-        install(KoinIsolated) {
-            modules(userServiceModule)
-        }
+        install(KoinIsolated) { modules(userServiceModule) }
         userRouting()
     }
 
-    // Server 2 - Order Service (different Koin instance)
     val orderServer = embeddedServer(Netty, port = 8081) {
-        install(KoinIsolated) {
-            modules(orderServiceModule)
-        }
+        install(KoinIsolated) { modules(orderServiceModule) }
         orderRouting()
     }
 
-    // Both servers have independent Koin containers
     userServer.start(wait = false)
     orderServer.start(wait = true)
 }
 ```
 
-## Lifecycle
+With `install(Koin)`, the second server would stop the global Koin of the first one, since the plugin stops a running global instance before it starts.
 
-The isolated Koin instance follows the Ktor application lifecycle:
+## Tests
 
-```kotlin
-fun Application.main() {
-    install(KoinIsolated) {
-        slf4jLogger()
-        modules(appModule)
-    }
+Each `testApplication` that installs `KoinIsolated` has its own container, so tests don't share state through the global context and can run in parallel. Test setup is covered in [Ktor Testing](/docs/reference/koin-ktor/ktor-testing).
 
-    // Monitor Koin lifecycle
-    environment.monitor.subscribe(KoinApplicationStarted) {
-        log.info("Isolated Koin started")
-    }
+## When to keep the global context
 
-    environment.monitor.subscribe(KoinApplicationStopped) {
-        log.info("Isolated Koin stopped")
-    }
-}
-```
+Stay with `install(Koin)` when one Ktor application runs in the process and other entry points of that process (a scheduled job started from `main()`, for example) must use the same container, or when you need the Ktor DI bridge.
 
-## Accessing the Isolated Koin Instance
+## Related
 
-Within the Ktor application, you can access the isolated Koin instance:
-
-```kotlin
-fun Application.main() {
-    install(KoinIsolated) {
-        modules(appModule)
-    }
-
-    // Access Koin instance from Application
-    val koin = getKoin()
-
-    // Or via plugin attribute
-    val koinApp = attributes[KoinPluginKey]
-}
-```
-
-## When NOT to Use Isolated Context
-
-- **Single Ktor application** - Global context is simpler
-- **Shared dependencies across modules** - Global context allows sharing
-- **Background jobs accessing Koin** - They need GlobalContext
-
-## Best Practices
-
-1. **Use for testing** - Isolated context prevents test interference
-2. **Use for multi-tenant** - Each tenant can have different configurations
-3. **Avoid for simple apps** - Global context is simpler for most use cases
-4. **Document the choice** - Make it clear why isolated context is used
-
-## See Also
-
-- **[Ktor Integration](/docs/reference/koin-ktor/ktor)** - Main Ktor documentation
-- **[Context Isolation](/docs/reference/koin-core/context-isolation)** - Core isolation concepts
-- **[Testing](/docs/reference/koin-test/testing)** - Testing with Koin
+- [Context Isolation](/docs/reference/koin-core/context-isolation): the isolated context concept and a custom `KoinComponent`.
+- [Koin for Ktor](/docs/reference/koin-ktor/ktor): the `Koin` plugin and injection in routes.
+- [Ktor Testing](/docs/reference/koin-ktor/ktor-testing): test Ktor applications with Koin.
+- [Ktor DI Bridge](/docs/reference/koin-ktor/ktor-bridge): share dependencies with Ktor DI.

@@ -1,56 +1,94 @@
 ---
 title: Kotlin & Annotations
+description: Build a small Kotlin console app with Koin Annotations, component scanning and a typed startKoin, checked by the Compiler Plugin.
 ---
 
-> This tutorial lets you write a Kotlin application and use Koin dependency injection with annotations to retrieve your components.
-> You need around __10 min__ to do the tutorial.
+In this tutorial you build a Kotlin console app that loads a list of users and prints a greeting. You learn how to annotate classes, scan them into a module, and start Koin from a `@KoinApplication` object. It takes about 10 minutes and needs a JDK 17 and Gradle.
 
-:::note
-update - 2024-11-12
-:::
+This tutorial uses annotations. For the same app with the Compiler Plugin DSL, see [Kotlin](/docs/quickstart/kotlin). To compare the styles, see [Choosing your style](/docs/intro/choosing-your-style).
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin-annotations)
-:::
+The full sample is in [koin-getting-started/kotlin-annotations](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin-annotations). Clone the repository and run it from the `kotlin-annotations` folder:
 
-## Setup
+```bash
+./gradlew run
+```
 
-First, check that the Koin annotations dependencies are added like below:
+## Gradle setup
 
-```groovy
+The sample applies the Koin Compiler Plugin and adds `koin-core` and `koin-annotations`. Versions live in a version catalog:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+kotlin = "<KOTLIN_VERSION>"
+koin = "<KOIN_VERSION>"
+koin-plugin = "<KOIN_PLUGIN_VERSION>"
+
+[libraries]
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+```
+
+```kotlin
+// app/build.gradle.kts
 plugins {
-    id("com.google.devtools.ksp") version kspVersion
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.koin.compiler)
+    application
 }
 
 dependencies {
-    // Koin for Kotlin apps
-    implementation("io.insert-koin:koin-core:$koin_version")
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
 
-    // Koin Annotations
-    implementation("io.insert-koin:koin-annotations:$koin_annotations_version")
-    ksp("io.insert-koin:koin-ksp-compiler:$koin_annotations_version")
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
 }
 ```
 
-## Application Overview
+The Compiler Plugin processes the annotations and needs Kotlin 2.3.20 or later. `koin-annotations` shares the Koin version. For details, see [Gradle setup](/docs/setup/gradle) and [Compiler Plugin setup](/docs/setup/compiler-plugin).
 
-The idea of the application is to manage a list of users, and display it in our `UserApplication` class:
+## The application
 
-> Users -> UserRepository -> UserService -> UserApplication
+The app chains three components. `UserApplication` asks `UserService` for a user, and `UserService` reads from `UserRepository`:
 
-## The "User" Data
+```
+User -> UserRepository -> UserService -> UserApplication
+```
 
-We will manage a collection of Users. Here is the data class:
+## Let's write the user data
+
+Start with the data class and a default list of users:
 
 ```kotlin
 data class User(val name: String, val email: String)
+
+val DEFAULT_USER = User("Alice", "alice@example.com")
+
+val DEFAULT_USERS = listOf(
+    DEFAULT_USER,
+    User("Bob", "bob@example.com"),
+    User("Charlie", "charlie@example.com")
+)
 ```
 
-We create a "Repository" component to manage the list of users (add users or find one by name). Here below, the `UserRepository` interface and its implementation:
+These users are the data that the repository stores.
+
+## Let's write the repository
+
+The repository keeps users in memory. Annotate the implementation with `@Singleton` to declare it as a singleton:
 
 ```kotlin
+import org.koin.core.annotation.Singleton
+
 interface UserRepository {
     fun findUserOrNull(name: String): User?
     fun addUsers(users: List<User>)
@@ -71,41 +109,15 @@ class UserRepositoryImpl : UserRepository {
 }
 ```
 
-:::note
-This project uses Koin's `@Singleton` annotation (from `org.koin.core.annotation`) to declare singleton components.
-:::
+Koin binds `UserRepositoryImpl` to its supertypes, so a request for `UserRepository` gets this instance. `@Singleton` comes from `org.koin.core.annotation` and is equivalent to `@Single` (see [Definitions](/docs/reference/koin-core/definitions)).
 
-## The Koin module
+## Let's write the service
 
-Use the `@Module` annotation to declare a Koin module:
-
-```kotlin
-@Module
-@ComponentScan("org.koin.sample")
-@Configuration
-class AppModule
-```
-
-* `@Module` - Declares this as a Koin module
-* `@ComponentScan("org.koin.sample")` - Scans and registers annotated classes from the package
-* `@Configuration` - Enables automatic module discovery with `@KoinApplication`
-
-Let's declare our components by adding the `@Singleton` annotation:
-
-```kotlin
-@Singleton
-class UserRepositoryImpl : UserRepository {
-    // ...
-}
-```
-
-## The UserService Component
-
-Let's write the UserService component to manage user operations:
+`UserService` loads the users and prepares the greeting. It is a `@Singleton` too:
 
 ```kotlin
 interface UserService {
-    fun getUserOrNull(name: String): User?
+    fun getUserOrNull(name: String = DEFAULT_USER.name): User?
     fun loadUsers()
     fun prepareHelloMessage(user: User?): String
 }
@@ -118,26 +130,20 @@ class UserServiceImpl(
     override fun getUserOrNull(name: String): User? = userRepository.findUserOrNull(name)
 
     override fun loadUsers() {
-        userRepository.addUsers(listOf(
-            User("Alice", "alice@example.com"),
-            User("Bob", "bob@example.com"),
-            User("Charlie", "charlie@example.com")
-        ))
+        userRepository.addUsers(DEFAULT_USERS)
     }
 
     override fun prepareHelloMessage(user: User?): String {
-        return user?.let { "Hello '${user.name}' (${user.email})! 👋" } ?: "❌ User not found"
+        return user?.let { "Hello '${user.name}' (${user.email})!" } ?: "User not found"
     }
 }
 ```
 
-> UserRepository is referenced in UserServiceImpl's constructor
+The Compiler Plugin reads the constructor and passes the `UserRepository` instance for you.
 
-We declare `UserService` with the `@Singleton` annotation.
+## Let's write the application class
 
-## The UserApplication
-
-The `UserApplication` class uses constructor injection to receive the `UserService`:
+`UserApplication` receives `UserService` through its constructor, loads the users and prints the greeting:
 
 ```kotlin
 @Singleton
@@ -157,73 +163,51 @@ class UserApplication(
 }
 ```
 
-:::info
-Constructor injection is the preferred way to inject dependencies. Koin will automatically resolve and inject the `UserService` when creating `UserApplication`.
-:::
+All three components are now annotated. Next, gather them in a module.
 
-## Koin Application Object
+## Let's declare the Koin module
 
-Create a `@KoinApplication` object to mark the entry point for Koin's annotation-based configuration:
+A module groups definitions (see [Core Concepts](/docs/intro/core-concepts)). Declare a module class that scans the sample package:
 
 ```kotlin
-@KoinApplication
-object KoinUserApplication
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan("org.koin.sample")
+@Configuration
+class AppModule
 ```
 
-The `@KoinApplication` annotation works with the KSP processor to generate a `startKoin()` extension function for this object.
+`@ComponentScan` registers every annotated class in `org.koin.sample` and its subpackages. `@Configuration` makes the module discoverable by a `@KoinApplication` entry point. Both are described in [Modules](/docs/reference/koin-core/modules).
 
-## Start Koin
+## Let's start Koin
 
-We need to start Koin with our application. Just call the generated `startKoin()` function in the application's main entry point:
+Declare a `@KoinApplication` object and start Koin with the typed `startKoin<T>()`:
 
 ```kotlin
+import org.koin.core.annotation.KoinApplication
+import org.koin.mp.KoinPlatform
+import org.koin.plugin.module.dsl.startKoin
+
+@KoinApplication
+object KoinUserApplication
+
 fun main() {
-    KoinUserApplication.startKoin()
+    startKoin<KoinUserApplication>()
 
     val userApplication = KoinPlatform.getKoin().get<UserApplication>()
     userApplication.sayHello("Alice")
 }
 ```
 
-**Key Points:**
-* `KoinUserApplication.startKoin()` - Generated function that automatically discovers and loads all modules
-* No need to manually call `modules()` - all annotated dependencies are discovered at compile time!
-* We retrieve the `UserApplication` instance from Koin using `KoinPlatform.getKoin().get<UserApplication>()`
+`startKoin<KoinUserApplication>()` loads every `@Configuration` module, so you don't call `modules()`. The plugin validates the full graph at build time, and `./gradlew run` prints `Hello 'Alice' (alice@example.com)!`. See [Starting Koin](/docs/reference/koin-core/starting-koin) for the other options.
 
-:::info
-The `@KoinApplication` annotation with `@Configuration` on the module automatically discovers and loads all annotated dependencies at compile time via KSP.
-:::
+## Next steps
 
-## Annotations vs Compiler Plugin DSL
-
-Here is how our annotations-based configuration compares to the Compiler Plugin DSL:
-
-**With Annotations:**
-```kotlin
-@Module
-@ComponentScan("org.koin.sample")
-@Configuration
-class AppModule
-
-@Singleton
-class UserApplication(private val userService: UserService)
-
-@Singleton
-class UserRepositoryImpl : UserRepository
-
-@Singleton
-class UserServiceImpl(private val userRepository: UserRepository) : UserService
-```
-
-**Compiler Plugin DSL (from kotlin.md):**
-```kotlin
-val appModule = module {
-    single<UserApplication>()
-    single<UserRepositoryImpl>() bind UserRepository::class
-    single<UserServiceImpl>() bind UserService::class
-}
-```
-
-Both approaches achieve the same result:
-- **Annotations**: Compile-time verification via KSP, automatic module discovery
-- **Compiler Plugin DSL**: Auto-wiring at compile time, cleaner `single<T>()` syntax
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind modules, definitions and injection.
+- [Modules](/docs/reference/koin-core/modules): `@Module`, `@ComponentScan`, `@Configuration` and module includes.
+- [Annotations Reference](/docs/reference/koin-annotations/annotations-inventory): every annotation and its parameters.
+- [Testing](/docs/reference/koin-test/testing): write tests with Koin Test.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

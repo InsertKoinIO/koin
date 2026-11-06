@@ -1,226 +1,114 @@
 ---
 title: What is Koin?
+description: What Koin is, how it works at runtime and at compile time, which platforms it supports, and what the project is made of.
 ---
 
-# What is Koin?
+Koin is a dependency injection framework for Kotlin. This page explains how it works, what it costs and what it gives you, and how the project is organized. If dependency injection is new to you, read [What is Dependency Injection?](/docs/intro/what-is-dependency-injection) first.
 
-### The Pragmatic Kotlin Dependency Injection Framework - Simple AND Powerful
+## How Koin works
 
-Koin is a lightweight dependency injection framework designed specifically for Kotlin. Unlike traditional DI frameworks that rely on code generation or reflection, Koin offers two equally powerful approaches: a clean **Kotlin DSL** and intuitive **Annotations**. Choose what fits your team - both are first-class citizens.
-
-## Koin's Core Values
-
-| Value | What it means |
-|-------|---------------|
-| **Productive** | Easy to learn, easy to write. Get DI working in minutes, not hours |
-| **Developer-Friendly** | DSL or Annotations - your choice. Clear errors, easy debugging, best DX |
-| **Scalable** | Powers large enterprise applications with complex dependency graphs |
-| **Safe** | Compile-time safety with Koin Compiler Plugin |
-| **Dynamic** | Runtime flexibility: load modules dynamically, lazy loading, feature flags |
-
-## Why Developers Love Koin
-
-- **Learn in minutes** - No complex concepts, intuitive DSL and simple annotations
-- **Write less code** - DSL or Annotations, Compiler Plugin auto-wires dependencies
-- **Choose your style** - DSL for Kotlin purists, Annotations for familiar patterns - both equally powerful
-- **Debug easily** - Clear error messages, no generated code to trace through
-- **Scale confidently** - Used in production by enterprises worldwide
-- **Stay safe** - Compile-time verification catches errors before runtime
-- **Stay flexible** - Runtime-based but performant. Dynamic modules, lazy loading, feature flags
-- **IDE support** - Official plugin for Android Studio & IntelliJ IDEA — navigate definitions, live safety checks, graph visualization
-
-## Two Styles, One Framework - Both Equally Powerful
-
-Koin supports two styles of defining dependencies. Both are first-class citizens with full feature parity. Choose what fits your team:
-
-### DSL Style
-
-Define dependencies using Kotlin DSL syntax:
+You describe your classes in modules, start Koin once, and ask for instances where you need them:
 
 ```kotlin
+class ApiService
+class UserRepository(private val api: ApiService)
+
 val appModule = module {
-    single<Database>()
-    single<ApiClient>()
+    single<ApiService>()
     single<UserRepository>()
-    viewModel<UserViewModel>()
+}
+
+fun main() {
+    startKoin {
+        modules(appModule)
+    }
 }
 ```
 
-### Annotation Style
+Two parts work together:
 
-Define dependencies using annotations:
+- **Runtime container**: `startKoin` loads your modules into a container. Each definition is a Kotlin function that builds one type. When something asks for a `UserRepository`, Koin runs that function, resolves its constructor parameters from the container, and keeps or discards the instance depending on the definition type (`single`, `factory`, `scoped`). Koin does not build objects by reflection.
+- **Compile-time checks (optional)**: the [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin) is a Kotlin compiler plugin. It reads your constructors to generate the wiring, then checks at build time that every dependency of the assembled graph is declared. A missing definition becomes a build error instead of a crash.
+
+[Core Concepts](/docs/intro/core-concepts) explains modules, definitions, scopes and injection with one running example.
+
+## What the runtime model costs and gives
+
+Because the graph lives in a runtime container, Koin can change it while the app runs:
+
+- **Dynamic modules**: load and unload modules after start with `loadKoinModules()` and `unloadKoinModules()`, for feature flags or on-demand features. See [Starting Koin](/docs/reference/koin-core/starting-koin).
+- **Lazy modules**: load part of the graph in the background to reduce startup work. See [Lazy Modules](/docs/reference/koin-core/lazy-modules).
+- **Scopes created at runtime**: open and close scopes for a session, a screen or a request. See [Scopes](/docs/reference/koin-core/scopes).
+- **No generated sources**: nothing to commit, nothing to configure per Kotlin Multiplatform target.
+
+The same model has costs you should know:
+
+- **Startup work**: modules are registered when Koin starts, and every lookup goes through the container. For most apps this is small, but eager definitions (`createdAtStart`) run on the thread that starts Koin.
+- **Runtime errors without the plugin**: with the Constructor or Classic DSL and no plugin, a missing definition is only found when the code runs. You can catch it in a unit test with [`verify()`](/docs/reference/koin-test/verify), or at build time with the Compiler Plugin.
+- **Limits of compile-time checks**: the plugin validates the graph assembled at a Koin entry point such as `startKoin`. Modules loaded later with `loadKoinModules()` can't be proven at build time, and a library module with no entry point is only checked when an app assembles it. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
+- **Kotlin version coupling**: the Compiler Plugin depends on compiler internals, so each plugin release is verified on a list of Kotlin versions. See [Compiler Plugin Setup](/docs/setup/compiler-plugin).
+
+## Constructor injection and service locator
+
+Your classes receive their dependencies through the constructor. Koin only retrieves an instance where it cannot create the object itself, at an entry point:
 
 ```kotlin
-@Singleton
-class Database
-
-@Singleton
-class ApiClient
-
-@Singleton
-class UserRepository(
-    private val database: Database,
-    private val apiClient: ApiClient
-)
-
-@KoinViewModel
+// Koin creates these: dependencies come through the constructor
+class UserRepository(private val api: UserApi)
 class UserViewModel(private val repository: UserRepository) : ViewModel()
-```
 
-Both styles are processed by the **Koin Compiler Plugin** for compile-time safety.
-
-## Koin's Annotations Are Simpler
-
-If you've used Hilt or Dagger, you'll notice Koin annotations require less ceremony:
-
-| Task | Koin | Hilt |
-|------|------|------|
-| **Singleton** | `@Singleton class MyService` | `@Singleton class MyService @Inject constructor(...)` |
-| **Interface binding** | Automatic (just implement the interface) | Requires `@Binds` in abstract module |
-| **Component scanning** | `@ComponentScan("package")` | Not available |
-| **Module discovery** | `@Configuration` - auto-discovered | Manual `@InstallIn` per module |
-
-**Example comparison:**
-
-```kotlin
-// KOIN - That's it!
-@Singleton
-class MyRepository(val api: ApiService)
-
-@Module
-@ComponentScan("com.app")
-class AppModule
-```
-
-```kotlin
-// HILT - More ceremony
-@Singleton
-class MyRepository @Inject constructor(val api: ApiService)
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class AppModule {
-    @Binds
-    abstract fun bindRepository(impl: MyRepository): Repository
+// Android creates the Activity: it retrieves its ViewModel from Koin
+class UserActivity : AppCompatActivity() {
+    private val viewModel: UserViewModel by viewModel()
 }
 ```
 
-## Powered by Koin Compiler Plugin
+The dependency is visible in the signature, and you can test `UserRepository` and `UserViewModel` without Koin. Retrieval functions such as `by inject()`, `by viewModel()` or `koinInject()` belong to entry points: an `Activity`, a `Fragment`, a root Composable, `main()`, a Ktor route, a test. [What is Dependency Injection?](/docs/intro/what-is-dependency-injection) compares the two patterns, and [Retrieving Dependencies](/docs/reference/koin-core/injection) covers `get()` and `inject()`.
 
-The **Koin Compiler Plugin** is the recommended way to use Koin for all new projects:
+## Two styles, one container
 
-- **Native Kotlin Compiler Plugin (K2)** - Not KSP, direct compiler integration
-- **Auto-detects constructor parameters** - Less manual wiring
-- **Compile-time safety** - Errors caught during build
-- **Works with both DSL and Annotations** - Your choice
-- **Simple setup** - One Gradle plugin
+| Style | Example | Needs |
+|-------|---------|-------|
+| Compiler Plugin DSL | `single<UserRepository>()` | Koin Compiler Plugin |
+| Annotations | `@Singleton class UserRepository(...)` | Koin Compiler Plugin, `koin-annotations` |
+| Constructor DSL | `singleOf(::UserRepository)` | Nothing extra (the plugin adds compile-time checks) |
+| Classic DSL | `single { UserRepository(get()) }` | Nothing extra (the plugin adds compile-time checks) |
 
-### Cleaner Syntax with Compiler Plugin
+Annotations are one style; the Compiler Plugin, Constructor and Classic DSL are the three forms of the other, the Koin DSL. All produce the same definitions in the same container. Pick one style per project. [Choosing your style](/docs/intro/choosing-your-style) compares them and gives a default.
 
-| Classic DSL | Compiler Plugin DSL |
-|-------------|---------------------|
-| `singleOf(::MyService)` | `single<MyService>()` |
-| `single { MyService(get(), get()) }` | `single<MyService>()` |
-| `factoryOf(::MyRepo)` | `factory<MyRepo>()` |
-| `viewModelOf(::MyVM)` | `viewModel<MyVM>()` |
+## Annotations status
 
-Learn more in [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin).
+The `koin-annotations` library (`@Singleton`, `@Factory`, `@KoinViewModel`, `@Module`, `@ComponentScan`) is part of the main Koin project: same repository, same version, same BOM. It is not deprecated. What is deprecated is `koin-ksp-compiler`, the KSP processor that used to read these annotations. The Koin Compiler Plugin replaces it, with the same annotations. See [Migrating from KSP to the Compiler Plugin](/docs/migration/from-ksp-to-compiler-plugin).
 
-## Classic DSL (Fully Supported)
+## Platforms
 
-The classic DSL remains fully supported for all Kotlin versions:
+Koin is a Kotlin Multiplatform library. The core runs on every Kotlin target, and integration libraries add platform APIs:
 
-```kotlin
-val appModule = module {
-    singleOf(::Database)
-    singleOf(::ApiClient)
-    singleOf(::UserRepository)
-    viewModelOf(::UserViewModel)
-}
-```
+| Platform | Main artifact | Start here |
+|----------|---------------|------------|
+| Kotlin/JVM | `koin-core` | [Kotlin tutorial](/docs/quickstart/kotlin) |
+| Android | `koin-android` | [Start Koin on Android](/docs/reference/koin-android/start) |
+| Jetpack Compose, Compose Multiplatform | `koin-compose`, `koin-compose-viewmodel` | [Koin for Compose](/docs/reference/koin-compose/compose) |
+| Kotlin Multiplatform (iOS, desktop, web, native) | `koin-core` | [Kotlin Multiplatform Setup](/docs/reference/koin-core/kmp-setup) |
+| Ktor server | `koin-ktor` | [Koin for Ktor](/docs/reference/koin-ktor/ktor) |
 
-Or with explicit wiring:
+The full artifact list is in [Gradle Setup](/docs/setup/gradle).
 
-```kotlin
-val appModule = module {
-    single { Database() }
-    single { ApiClient() }
-    single { UserRepository(get(), get()) }
-    viewModel { UserViewModel(get()) }
-}
-```
+## The Koin project
 
-:::info
-Classic DSL is not deprecated. Koin works perfectly with it. The Compiler Plugin adds compile-time analysis on top when you're ready to migrate.
-:::
+Koin is open source under the Apache 2.0 license. It is made of:
 
-## Koin Annotations is now part of the Koin project
+- **Koin libraries**: core, Android, Compose, Ktor, test and annotations, all released under one version. Source: [InsertKoinIO/koin](https://github.com/InsertKoinIO/koin).
+- **Koin Compiler Plugin**: the Kotlin compiler plugin and its Gradle plugin, with its own version. Source: [InsertKoinIO/koin-compiler-plugin](https://github.com/InsertKoinIO/koin-compiler-plugin).
+- **Koin IDE Plugin**: navigation and checks in Android Studio and IntelliJ IDEA. See [IDE Plugin](/docs/tooling/ide-plugin).
+- **Samples**: runnable apps for each tutorial in [InsertKoinIO/koin-getting-started](https://github.com/InsertKoinIO/koin-getting-started).
 
-The `koin-annotations` library — `@Singleton`, `@Factory`, `@KoinViewModel`, `@Module`, `@ComponentScan`, and the rest — ships under the main Koin version and is fully supported. It is **not** deprecated.
+If you know Hilt or Dagger, [Koin vs Hilt](/docs/intro/koin-vs-hilt) compares the two approaches.
 
-```kotlin
-dependencies {
-    implementation(platform("io.insert-koin:koin-bom:$koin_version"))
-    implementation("io.insert-koin:koin-core")
-    implementation("io.insert-koin:koin-annotations") // same Koin version
-}
-```
+## Related
 
-Your annotations are processed by the **Koin Compiler Plugin** — see [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin) and the [Annotations Reference](/docs/reference/koin-annotations/start).
-
-## Koin KSP Compiler is deprecated in favor of Koin Compiler Plugin
-
-:::info
-The legacy KSP processor `koin-ksp-compiler` is **deprecated** and will be removed in a future Koin version. The replacement is the **Koin Compiler Plugin** — native K2 compiler integration, no generated files, simpler KMP setup.
-:::
-
-If you're using Koin Annotations with `koin-ksp-compiler`, migrate to the Compiler Plugin:
-
-- **Same annotations** — No code changes needed
-- **Better processing** — Native compiler integration, no generated files
-- **Simpler setup** — No KSP configuration
-
-See [Migrating from KSP to Compiler Plugin](/docs/migration/from-ksp-to-compiler-plugin).
-
-## Runtime + Compile Safe = Best of Both Worlds
-
-Koin is **runtime-based but performant and compile-safe**. This unique combination enables:
-
-**Compile-time safety** (with Compiler Plugin):
-- Validates your dependency graph during build
-- Auto-detects constructor parameters
-- Catches missing dependencies before runtime
-
-**Runtime flexibility** (that compile-time-only frameworks can't offer):
-- Dynamic module loading/unloading
-- Lazy module loading (background)
-- Feature flag driven injection
-- Plugin architectures
-- A/B testing with different implementations
-
-```kotlin
-// Dynamic module loading - impossible with Hilt
-if (featureEnabled) {
-    loadKoinModules(premiumFeatureModule)
-}
-
-// Later, if feature disabled
-unloadKoinModules(premiumFeatureModule)
-```
-
-## Who is Koin For?
-
-Koin is ideal for:
-
-- **Teams who value productivity** - Less boilerplate, faster development
-- **Android developers** wanting cleaner DI than Hilt/Dagger
-- **Kotlin Multiplatform projects** - Android, iOS, Desktop, Web, Backend
-- **Enterprise projects** that need to scale
-- **Anyone who believes DI shouldn't be complicated**
-
-## Next Steps
-
-- **[What is Dependency Injection?](/docs/intro/what-is-dependency-injection)** - Learn DI fundamentals
-- **[Koin Compiler Plugin](/docs/intro/koin-compiler-plugin)** - The recommended approach
-- **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
-- **[Tutorials](/docs/tutorials/your-first-app)** - Build your first app with Koin
+- [Core Concepts](/docs/intro/core-concepts): the mental model, with one example built step by step.
+- [Choosing your style](/docs/intro/choosing-your-style): which declaration style to use.
+- [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin): what happens at build time.
+- [Setup](/docs/setup): add Koin to your project.
+- [Tutorials](/docs/quickstart/kotlin): build a first app.
