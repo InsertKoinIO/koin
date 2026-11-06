@@ -17,16 +17,24 @@ import org.koin.viewmodel.scope.ViewModelScopeArchetype
 /**
  * Build a ViewModel definition with explicit KClass.
  * Used by the compiler plugin for generated module definitions.
+ *
+ * Registers the concrete ViewModel type only - no secondary binding to the shared
+ * [ViewModel] supertype, mirroring the classic [org.koin.core.module.dsl.viewModel] DSL.
+ * A supertype binding would make every module re-index the same ViewModel key,
+ * breaking strictOverride() when ViewModels live in 2+ modules (#2474).
  */
 public fun <T : ViewModel> Module.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
-    return createDefinition(kclass, definition, qualifier = qualifier, factoryKind = Kind.Factory, module = this).bind(ViewModel::class) as KoinDefinition<T>
+    return createDefinition(kclass, definition, qualifier = qualifier, factoryKind = Kind.Factory, module = this)
 }
 
 
 /**
  * Build a ViewModel definition in a scope with explicit KClass.
  * Used by the compiler plugin for generated scope definitions.
+ *
+ * Registers the concrete ViewModel type only - no secondary binding, mirroring the
+ * classic [org.koin.core.module.dsl.viewModel] DSL (#2474).
  */
 public fun <T : ViewModel> ScopeDSL.buildViewModel(kclass: KClass<T>, qualifier: Qualifier? = null, definition: Definition<T>): KoinDefinition<T> {
-    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module).bind(ViewModel::class::class) as KoinDefinition<T>
+    return createDefinition(kclass, definition, qualifier = qualifier, scopeQualifier = scopeQualifier, factoryKind = Kind.Factory, module = module)
 }
