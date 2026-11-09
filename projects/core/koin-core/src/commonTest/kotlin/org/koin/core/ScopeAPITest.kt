@@ -167,6 +167,16 @@ class ScopeAPITest {
         assertTrue(closed)
     }
 
+    @Test
+    fun `scope close after use does not throw`() {
+        val scope = koin.createScope("myScope", scopeKey)
+
+        scope.use { }
+        scope.close()
+
+        assertTrue(scope.closed)
+    }
+
     class MyScopeComponent(private val _koin: Koin) : KoinScopeComponent {
         override fun getKoin(): Koin = _koin
         override val scope: Scope = createScope()
