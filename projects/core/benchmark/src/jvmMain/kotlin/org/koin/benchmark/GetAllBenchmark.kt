@@ -15,12 +15,13 @@ import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.annotations.State
 import org.openjdk.jmh.annotations.TearDown
+import org.openjdk.jmh.annotations.Threads
 import org.openjdk.jmh.annotations.Warmup
 import org.openjdk.jmh.runner.Defaults.WARMUP_ITERATIONS
 import java.util.concurrent.TimeUnit
 
 /**
- * Three-timer split for KTZ-4829 (Koin vs Metro startup gap).
+ * Three-timer split (Koin vs Metro startup gap).
  *
  * Reproduces the shape the Metro harness measures — register modules, then force realization of
  * every multibinding contributor through getAll — so the cost can be attributed instead of read
@@ -31,8 +32,10 @@ import java.util.concurrent.TimeUnit
  *  - t2 - t1               realization: ~count resolutions plus the getAll scan
  *  - t3                    the getAll scan alone, on an already-realized container
  *  - t4 / t4b              per-resolution overhead, warm
+ *  - t4c                   warm qualified lookup past the typed chain capacity, 8 threads (contention)
  *
- * Run with `-prof gc`: allocations per op is the metric being driven down, not just ms.
+ * Allocations per op is the metric being driven down, not just ms: `./gradlew :core:benchmark:allocProbe`, or
+ * JMH's `-prof gc` through `projects/benchmark-gc.sh` (the Gradle plugin cannot pass it).
  * t3 across counts answers whether getAll is O(k) or O(total definitions).
  */
 @State(Scope.Benchmark)
@@ -54,6 +57,11 @@ class GetAllBenchmark {
         // Realize everything, so t3 measures the scan and not the creation.
         warm.getAll<ScaleMarker>()
         warm.get<ScaleRoot>()
+        // Fill ScaleContributor's typed chain so t4c resolves a variant past it. The chain grows at its
+        // head, so c0 goes in last and t4b still finds it first, as before t4c existed.
+        require(count > TYPED_CHAIN_CAPACITY) { "t4c needs more than $TYPED_CHAIN_CAPACITY contributors" }
+        (1 until TYPED_CHAIN_CAPACITY).forEach { warm.get<ScaleContributor>(named("c$it")) }
+        warm.get<ScaleContributor>(named("c0"))
     }
 
     @TearDown(Level.Trial)
@@ -83,4 +91,12 @@ class GetAllBenchmark {
 
     @Benchmark
     fun t4b_get_warm_qualified(): Any = warm.get<ScaleContributor>(named("c0"))
+
+    // A variant the typed chain cannot hold must stay lock-free under contention.
+    @Benchmark
+    @Threads(8)
+    fun t4c_get_warm_qualified_overflow_8_threads(): Any = warm.get<ScaleContributor>(named("c$TYPED_CHAIN_CAPACITY"))
 }
+
+// Mirrors MAX_TYPED_CHAIN in koin-core's InstanceRegistry.
+private const val TYPED_CHAIN_CAPACITY = 8

@@ -1,179 +1,108 @@
 ---
 title: Dynamic Modules
+description: Load Koin modules when a Composable enters the composition with rememberKoinModules, and unload them when it leaves.
 ---
 
-# Dynamic Modules in Compose
+This page covers `rememberKoinModules`, which loads Koin modules when a Composable enters the composition and can unload them when it leaves. Use it to load the definitions of a feature only when its screen is shown. You should know how to declare [modules](/docs/reference/koin-core/modules).
 
-Koin provides APIs to dynamically load and unload modules tied to Composable lifecycle. This is useful for feature modules, lazy loading, and on-demand dependencies.
+`rememberKoinModules` is in `io.insert-koin:koin-compose` and is marked `@KoinExperimentalAPI`.
 
 ## rememberKoinModules
 
-Load Koin modules when a Composable enters composition:
-
 ```kotlin
-val featureModule = module {
-    factory<FeatureRepository>()
-    viewModel<FeatureViewModel>()
-}
+import org.koin.compose.module.rememberKoinModules
 
-@Composable
-fun FeatureScreen() {
-    // Load module when this Composable enters composition
-    rememberKoinModules(featureModule)
-
-    val viewModel = koinViewModel<FeatureViewModel>()
-}
-```
-
-### Multiple Modules
-
-```kotlin
-@Composable
-fun FeatureScreen() {
-    rememberKoinModules(
-        featureDataModule,
-        featureDomainModule,
-        featureUiModule
-    )
-}
-```
-
-### Unloading Modules
-
-Control when modules are unloaded:
-
-```kotlin
-@Composable
-fun FeatureScreen() {
-    rememberKoinModules(
-        featureModule,
-        unloadOnForgotten = true,  // Unload when Composable leaves
-        unloadOnAbandoned = true   // Unload if composition fails
-    )
-}
-```
-
-| Option | When Triggered |
-|--------|----------------|
-| `unloadOnForgotten` | Composable removed from composition |
-| `unloadOnAbandoned` | Composition fails or is abandoned |
-
-## Use Cases
-
-### Feature Modules
-
-Load feature-specific dependencies on demand:
-
-```kotlin
-// Feature module in separate Gradle module
 val checkoutModule = module {
-    factory<PaymentProcessor>()
     factory<CheckoutRepository>()
     viewModel<CheckoutViewModel>()
 }
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun CheckoutScreen() {
-    rememberKoinModules(checkoutModule, unloadOnForgotten = true)
+    rememberKoinModules(unloadOnForgotten = true) { listOf(checkoutModule) }
 
     val viewModel = koinViewModel<CheckoutViewModel>()
-    CheckoutContent(viewModel)
 }
 ```
 
-### Lazy Feature Loading
+The lambda returns the modules to load. Koin loads them into the Koin instance of the composition the first time `CheckoutScreen` is composed. Recompositions don't load them again.
 
-Combine with navigation for lazy feature loading:
+Call `rememberKoinModules` before the `koinInject()` or `koinViewModel()` calls that need its definitions.
+
+## Unloading
+
+By default, the modules stay loaded after the Composable leaves the composition. Three parameters control unloading:
+
+| Parameter | Default | Effect |
+|-----------|---------|--------|
+| `unloadOnForgotten` | `unloadModules` | Unload when the Composable leaves the composition |
+| `unloadOnAbandoned` | `unloadModules` | Unload if the composition is abandoned |
+| `unloadModules` | `false` | Default value for both parameters above |
 
 ```kotlin
-NavHost(navController, startDestination = "home") {
-    composable("home") {
-        HomeScreen()  // No extra modules needed
+// unload in both cases
+rememberKoinModules(unloadModules = true) { listOf(checkoutModule) }
+```
+
+Unloading removes the definitions and drops their `single` instances. Code that still holds a reference to an instance keeps it, but Koin can no longer resolve that type. Don't unload a module that another screen still uses.
+
+## Loading per destination
+
+Call `rememberKoinModules` in a navigation destination to load a feature when the user navigates to it:
+
+```kotlin
+NavHost(navController, startDestination = HomeRoute) {
+    composable<HomeRoute> {
+        HomeScreen()
     }
-    composable("checkout") {
-        // Checkout module loaded only when navigating here
-        rememberKoinModules(checkoutModule, unloadOnForgotten = true)
+    composable<CheckoutRoute> {
+        rememberKoinModules(unloadOnForgotten = true) { listOf(checkoutModule) }
         CheckoutScreen()
     }
-    composable("profile") {
-        // Profile module loaded only when navigating here
-        rememberKoinModules(profileModule, unloadOnForgotten = true)
-        ProfileScreen()
-    }
 }
 ```
 
-### Debug/Preview Modules
+## Module styles
 
-Swap implementations for previews:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-val debugModule = module {
-    single<ApiClient> { MockApiClient() }
-}
-
-@Preview
-@Composable
-fun FeatureScreenPreview() {
-    rememberKoinModules(debugModule)
-    FeatureScreen()
+val checkoutModule = module {
+    factory<CheckoutRepository>()
+    viewModel<CheckoutViewModel>()
 }
 ```
 
-### Conditional Modules
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
-Load modules based on conditions:
+`rememberKoinModules` takes `Module` values. Annotated `@Module` classes are loaded at start through `@KoinApplication` (see [Modules](/docs/reference/koin-core/modules)). To load a feature on demand, declare its module with the DSL.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-@Composable
-fun App(isDebug: Boolean) {
-    if (isDebug) {
-        rememberKoinModules(debugModule)
-    }
-
-    MainScreen()
+val checkoutModule = module {
+    factoryOf(::CheckoutRepository)
+    viewModelOf(::CheckoutViewModel)
 }
 ```
 
-## With Lazy Modules
+</TabItem>
+</Tabs>
 
-Combine with Koin's lazy module loading for better performance:
+## Limits
 
-```kotlin
-val featureModule = lazyModule {
-    // Definitions parsed lazily when module is loaded
-    factory<HeavyService>()
-    viewModel<FeatureViewModel>()
-}
+- **Main thread**: modules are loaded synchronously during composition. A large module adds to the time of that frame. To load modules in the background at start, see [Lazy Modules](/docs/reference/koin-core/lazy-modules).
+- **Overrides**: a module loaded later wins over an earlier definition of the same type (see [Definitions](/docs/reference/koin-core/definitions)). Unloading it does not restore the earlier definition.
+- **Previews**: `rememberKoinModules` needs a running Koin instance. For previews, use `KoinApplicationPreview` (see [Compose Testing](/docs/reference/koin-compose/compose-testing)).
 
-@Composable
-fun FeatureScreen() {
-    rememberKoinModules(featureModule, unloadOnForgotten = true)
+## Related
 
-    val viewModel = koinViewModel<FeatureViewModel>()
-}
-```
-
-## Best Practices
-
-1. **Use `unloadOnForgotten = true`** - prevents memory leaks
-   ```kotlin
-   rememberKoinModules(featureModule, unloadOnForgotten = true)
-   ```
-
-2. **One module per feature** - keep modules focused and independent
-
-3. **Combine with lazy modules** - for large apps with many features
-   ```kotlin
-   val featureModule = lazyModule { /* ... */ }
-   ```
-
-4. **Load at navigation level** - load modules in NavHost composables
-
-5. **Avoid circular dependencies** - feature modules should not depend on each other
-
-## Next Steps
-
-- **[Scopes in Compose](/docs/reference/koin-compose/compose-scopes)** - Scope APIs
-- **[Compose Overview](/docs/reference/koin-compose/compose)** - Setup and basic injection
-- **[Isolated Context](/docs/reference/koin-compose/isolated-context)** - SDK isolation
+- [Modules](/docs/reference/koin-core/modules): declare and compose modules.
+- [Lazy Modules](/docs/reference/koin-core/lazy-modules): load modules in the background at start.
+- [Starting Koin](/docs/reference/koin-core/starting-koin): load and unload modules outside Compose.
+- [Scopes in Compose](/docs/reference/koin-compose/compose-scopes): instances bound to a Composable.
+- [Lifecycle and State](/docs/reference/koin-compose/compose-lifecycle): what each Compose API releases and when.

@@ -10,7 +10,6 @@ class ParametersTest {
     // Flaky: asserts a thread-safety guarantee ParametersHolder never had (_values is a
     // plain mutableListOf, concurrent add() loses updates). Ignored until the design
     // question is settled - parameters are per-resolution and thread-confined in practice.
-    // Tracked in KTZ-4165.
     @Ignore
     @Test
     fun `test thread-safety in concurrent access`() {

@@ -1,320 +1,247 @@
 ---
-title: Testing
+title: Ktor Testing
+description: Test Ktor routes that use Koin with testApplication, replace definitions with test modules, and run tests in parallel with KoinIsolated.
 ---
 
-# Testing Ktor with Koin
+This page covers testing a Ktor server that uses Koin: running your routes with `testApplication`, replacing definitions with test modules, and isolating tests from each other. It assumes you know how to [install Koin in Ktor](/docs/reference/koin-ktor/ktor). For tests of plain classes, with no HTTP layer, use the techniques of [Unit Testing](/docs/reference/koin-test/testing).
 
-Best practices for testing Ktor applications that use Koin for dependency injection.
-
-## Test Configuration
-
-### Basic Test Setup
+## Dependencies
 
 ```kotlin
-class UserServiceTest : KoinTest {
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(testModule)
-    }
-
-    private val userService: UserService by inject()
-
-    @Test
-    fun `should return user`() {
-        val user = userService.getUser("123")
-        assertNotNull(user)
-    }
-}
-
-val testModule = module {
-    single<UserRepository> { MockUserRepository() }
-    singleOf(::UserService)
+dependencies {
+    testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation("io.insert-koin:koin-test")
+    testImplementation("io.insert-koin:koin-test-junit4") // or koin-test-junit5
 }
 ```
 
-## Testing with Ktor testApplication
+## Run routes with testApplication
 
-```kotlin
-class ApplicationTest {
-    @Test
-    fun `test hello endpoint`() = testApplication {
-        application {
-            install(Koin) {
-                modules(testModule)
-            }
-            configureRouting()
-        }
+`install(Koin)` works inside `testApplication` as in production. Install it with your test modules, then add your routes:
 
-        client.get("/hello?name=Test").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            assertContains(bodyAsText(), "Test")
-        }
-    }
-}
-```
-
-## Using Isolated Context for Tests
-
-Each test gets its own isolated Koin instance:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
 class UserRoutesTest {
+
     @Test
-    fun `test user endpoint`() = testApplication {
+    fun `returns a user`() = testApplication {
         application {
-            install(KoinIsolated) {
+            install(Koin) {
+                modules(appModule, testModule)
+            }
+            configureRouting()
+        }
+
+        val response = client.get("/users/1")
+        assertEquals(HttpStatusCode.OK, response.status)
+    }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+import org.koin.plugin.module.dsl.withConfiguration
+
+class UserRoutesTest {
+
+    @Test
+    fun `returns a user`() = testApplication {
+        application {
+            install(Koin) {
+                withConfiguration<MyApp>()
                 modules(testModule)
             }
             configureRouting()
         }
 
-        client.get("/users/123").apply {
-            assertEquals(HttpStatusCode.OK, status)
-        }
+        val response = client.get("/users/1")
+        assertEquals(HttpStatusCode.OK, response.status)
     }
 }
 ```
 
-### Parallel Test Execution
-
-With isolated context, tests can run in parallel without interference:
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-class ParallelTests {
-    @Test
-    fun `test A`() = testApplication {
-        application {
-            install(KoinIsolated) {
-                modules(moduleA)
-            }
-        }
-        // ...
-    }
+class UserRoutesTest {
 
     @Test
-    fun `test B`() = testApplication {
+    fun `returns a user`() = testApplication {
         application {
-            install(KoinIsolated) {
-                modules(moduleB)
+            install(Koin) {
+                modules(appModule, testModule)
             }
+            configureRouting()
         }
-        // ...
+
+        val response = client.get("/users/1")
+        assertEquals(HttpStatusCode.OK, response.status)
     }
 }
 ```
 
-## Module Verification
-
-Verify modules at compile time with annotations or at test time:
+</TabItem>
+</Tabs>
 
 ```kotlin
-class ModuleVerificationTest : KoinTest {
-    @Test
-    fun `verify all modules`() {
-        appModule.verify()
-    }
+val testModule = module {
+    single<UserRepository> { InMemoryUserRepository(User("1", "Alice")) }
 }
 ```
 
-### With Extra Types
+The test module is loaded last, so its `UserRepository` replaces the production one (see [Definitions](/docs/reference/koin-core/definitions#overriding-a-definition)). A lambda definition like this one works in every style.
+
+Routes resolve dependencies with `inject()` and `get()` from `org.koin.ktor.ext`, as in production. When `testApplication` ends, Ktor stops the application and the Koin plugin closes its container.
+
+## Reuse your application module
+
+If your production `Application.module()` installs Koin, call it in the test and add overrides with `koinModules()`:
+
+```kotlin
+// production
+fun Application.module() {
+    install(Koin) {
+        modules(appModule)
+    }
+    configureRouting()
+}
+
+// test
+@Test
+fun `returns a user`() = testApplication {
+    application {
+        module()
+        koinModules(testModule)
+    }
+
+    assertEquals(HttpStatusCode.OK, client.get("/users/1").status)
+}
+```
+
+`koinModules()` loads modules into the container created by `install(Koin)`. Ktor plugins can only be installed once, so a second `install(Koin)` in the test would fail.
+
+`koinModules()` loads the overrides after `install(Koin)`. A definition created at install time (for example with `createdAtStart`) keeps the production dependencies.
+
+## Isolate tests
+
+`install(Koin)` starts Koin in the global context. If a container is already running, the plugin stops it first. Tests in sequence are fine, but two tests that run at the same time share the global context and break each other.
+
+Extend `AutoCloseKoinTest` to stop Koin after each test, even when a test fails before the application shuts down:
+
+```kotlin
+class UserRoutesTest : AutoCloseKoinTest() {
+    // tests
+}
+```
+
+For parallel tests, install `KoinIsolated` instead. Each application gets its own container, outside the global context:
 
 ```kotlin
 @Test
-fun `verify modules with extra types`() {
-    appModule.verify(
-        extraTypes = listOf(
-            ApplicationCall::class,
-            Application::class
-        )
-    )
-}
-```
-
-## Mocking Dependencies
-
-### Using Test Modules
-
-```kotlin
-val productionModule = module {
-    singleOf(::UserRepositoryImpl) bind UserRepository::class
-    singleOf(::UserService)
-}
-
-val testModule = module {
-    single<UserRepository> { MockUserRepository() }
-    singleOf(::UserService)
-}
-```
-
-### Using Mockk
-
-```kotlin
-class UserServiceTest : KoinTest {
-    private val mockRepository = mockk<UserRepository>()
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(module {
-            single { mockRepository }
-            singleOf(::UserService)
-        })
+fun `returns a user`() = testApplication {
+    application {
+        install(KoinIsolated) {
+            modules(appModule, testModule)
+        }
+        configureRouting()
     }
 
-    @Test
-    fun `should call repository`() {
-        val userService: UserService by inject()
-
-        every { mockRepository.findById("123") } returns User("123", "Test")
-
-        val user = userService.getUser("123")
-
-        verify { mockRepository.findById("123") }
-        assertEquals("Test", user?.name)
-    }
+    assertEquals(HttpStatusCode.OK, client.get("/users/1").status)
 }
 ```
 
-## Testing Request Scopes
+With `KoinIsolated`, resolve dependencies through the Ktor extensions (`inject()`, `get()`, `call.scope`). A `KoinComponent` or `GlobalContext.get()` does not see the isolated container. See [Isolated Context in Ktor](/docs/reference/koin-ktor/ktor-isolated).
+
+## Mock a dependency
+
+Put the mock in the test module:
 
 ```kotlin
-class RequestScopeTest {
-    @Test
-    fun `test request scoped component`() = testApplication {
-        application {
-            install(Koin) {
-                modules(module {
-                    singleOf(::UserService)
-                    requestScope {
-                        scopedOf(::RequestLogger)
-                    }
-                })
-            }
+@Test
+fun `returns 404 for an unknown user`() = testApplication {
+    val repository = mockk<UserRepository> {
+        every { findById(any()) } returns null
+    }
 
-            routing {
-                get("/test") {
-                    val logger = call.scope.get<RequestLogger>()
-                    logger.log("Test message")
-                    call.respondText("OK")
+    application {
+        install(Koin) {
+            modules(appModule, module { single { repository } })
+        }
+        configureRouting()
+    }
+
+    assertEquals(HttpStatusCode.NotFound, client.get("/users/999").status)
+    verify { repository.findById("999") }
+}
+```
+
+`declareMock` (see [Mocking with declareMock](/docs/reference/koin-test/testing#mocking-with-declaremock)) also works with `install(Koin)`, since it uses the global context. It does not work with `KoinIsolated`.
+
+## Request scope
+
+Definitions declared in `requestScope { }` are created for each call and closed when the response is sent (see [Request Scopes in Ktor](/docs/reference/koin-ktor/ktor-scopes)). Test them through a request:
+
+```kotlin
+@Test
+fun `each call gets its own request logger`() = testApplication {
+    application {
+        install(Koin) {
+            modules(module {
+                requestScope {
+                    scoped { RequestLogger() }
                 }
+            })
+        }
+        routing {
+            get("/id") {
+                call.respondText(call.scope.get<RequestLogger>().id)
             }
         }
-
-        client.get("/test").apply {
-            assertEquals(HttpStatusCode.OK, status)
-        }
     }
+
+    val first = client.get("/id").bodyAsText()
+    val second = client.get("/id").bodyAsText()
+    assertNotEquals(first, second)
 }
 ```
 
-## Testing with DI Bridge
+`call.scope` exists only while a call is processed. Resolving a request-scoped definition outside a route fails.
+
+## Ktor DI bridge
+
+When the [Ktor DI bridge](/docs/reference/koin-ktor/ktor-bridge) is enabled, provide test values with Ktor's `dependencies { }` in the test application, the same way as in production. `koinToKtor()` lets Koin definitions resolve them:
 
 ```kotlin
-class BridgeTest {
-    @Test
-    fun `test with bridge`() = testApplication {
-        application {
-            dependencies {
-                provide<Database> { MockDatabase() }
-            }
-
-            install(Koin) {
-                bridge {
-                    koinToKtor()
-                }
-                modules(appModule)
-            }
-
-            configureRouting()
+@Test
+fun `uses the Ktor-provided database`() = testApplication {
+    application {
+        dependencies {
+            provide<Database> { InMemoryDatabase() }
         }
-
-        client.get("/users").apply {
-            assertEquals(HttpStatusCode.OK, status)
+        install(Koin) {
+            bridge { koinToKtor() }
+            modules(appModule)
         }
+        configureRouting()
     }
+
+    assertEquals(HttpStatusCode.OK, client.get("/users").status)
 }
 ```
 
-## Complete Test Example
+## Check your configuration
 
-```kotlin
-class UserApiTest : KoinTest {
+To check that every definition's dependencies are declared, without starting a server, see [Verifying your Configuration](/docs/reference/koin-test/verify). Types provided by Ktor at runtime, such as `ApplicationCall` in a request scope, go in `extraTypes`.
 
-    @Test
-    fun `should return all users`() = testApplication {
-        application {
-            install(KoinIsolated) {
-                modules(testModule)
-            }
+## Related
 
-            routing {
-                val userService by inject<UserService>()
-
-                get("/api/users") {
-                    call.respond(userService.getAllUsers())
-                }
-            }
-        }
-
-        client.get("/api/users").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            val users = Json.decodeFromString<List<User>>(bodyAsText())
-            assertEquals(2, users.size)
-        }
-    }
-
-    @Test
-    fun `should return user by id`() = testApplication {
-        application {
-            install(KoinIsolated) {
-                modules(testModule)
-            }
-
-            routing {
-                val userService by inject<UserService>()
-
-                get("/api/users/{id}") {
-                    val id = call.parameters["id"]!!
-                    val user = userService.getUser(id)
-                        ?: return@get call.respond(HttpStatusCode.NotFound)
-                    call.respond(user)
-                }
-            }
-        }
-
-        client.get("/api/users/1").apply {
-            assertEquals(HttpStatusCode.OK, status)
-        }
-
-        client.get("/api/users/999").apply {
-            assertEquals(HttpStatusCode.NotFound, status)
-        }
-    }
-}
-
-val testModule = module {
-    single<UserRepository> {
-        MockUserRepository(
-            listOf(
-                User("1", "Alice", "alice@example.com"),
-                User("2", "Bob", "bob@example.com")
-            )
-        )
-    }
-    singleOf(::UserService)
-}
-```
-
-## Best Practices
-
-1. **Use isolated context** - Prevents test interference
-2. **Create test modules** - Override production dependencies with mocks
-3. **Verify modules** - Catch configuration errors early
-4. **Clean up** - Tests using global context should stop Koin after
-5. **Parallel safety** - Use `KoinIsolated` for parallel test execution
-
-## See Also
-
-- **[Koin for Ktor](/docs/reference/koin-ktor/ktor)** - Main Ktor documentation
-- **[Isolated Context](/docs/reference/koin-ktor/ktor-isolated)** - Isolated Koin instances
-- **[Testing](/docs/reference/koin-test/testing)** - Core testing documentation
+- [Koin for Ktor](/docs/reference/koin-ktor/ktor): install the plugin and inject in routes.
+- [Isolated Context in Ktor](/docs/reference/koin-ktor/ktor-isolated): `KoinIsolated` and when to use it.
+- [Request Scopes in Ktor](/docs/reference/koin-ktor/ktor-scopes): definitions bound to a call.
+- [Unit Testing](/docs/reference/koin-test/testing): `KoinTest`, overrides and `declareMock`.
+- [Verifying your Configuration](/docs/reference/koin-test/verify): check modules in a test.

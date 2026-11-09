@@ -1,102 +1,40 @@
 ---
 title: Koin for Ktor
+description: Install the Koin plugin in a Ktor server, inject dependencies in Application, Route and call handlers, and react to Koin lifecycle events.
 ---
 
-The `koin-ktor` module provides dependency injection integration for Ktor applications, working alongside Ktor's built-in DI system.
-
-## Why Koin for Ktor?
-
-Ktor 3.4+ includes a built-in DI system. Here's how they compare:
-
-| Feature | Ktor DI | Koin |
-|---------|---------|------|
-| Basic injection | Yes | Yes |
-| Qualifiers (`@Named`) | Yes | Yes |
-| Property injection | Yes (`@Property`) | Yes |
-| Nullable/optional dependencies | Yes | Yes |
-| Scopes (request, custom) | No | Yes |
-| Module organization | No | Yes |
-| Lazy modules | No | Yes |
-| Annotation-based components | No | Yes |
-| Compiler plugin verification | No | Yes |
-
-### Ktor DI Limitations
-
-- **No scoping** - No request or custom scopes, only singleton-like behavior with cleanup ordering
-- **No annotation-based components** - No `@Singleton`, `@Factory` component scanning like Koin Annotations
-- **No compile-time verification** - No compiler plugin to verify DI configuration before runtime
-- **Limited parameterized types** - Cannot resolve parameterized types across type argument subtypes
-
-**When to use Koin:**
-- Scoped dependencies (request scope, custom scopes)
-- Module-based organization
-- Annotation-based component scanning
-- Compile-time verification with compiler plugin
-
-**When Ktor DI is sufficient:**
-- Simple applications with few dependencies
-- No scoping requirements
-- Basic qualifier needs
+This page shows how to add Koin to a Ktor server application: install the `Koin` plugin, inject dependencies in your routes, load modules from feature functions, and listen to Koin lifecycle events. You should know how to declare [definitions](/docs/reference/koin-core/definitions) and [modules](/docs/reference/koin-core/modules). For a step-by-step project, see the [Ktor tutorial](/docs/quickstart/ktor).
 
 ## Setup
 
-Add the Koin Ktor dependency:
-
 ```kotlin
+// build.gradle.kts
 dependencies {
-    implementation("io.insert-koin:koin-ktor:$koin_version")
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_version") // Optional
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j) // optional, SLF4J logger
 }
 ```
 
-## Declaring Dependencies
+Catalog entries and versions are in [Gradle Setup](/docs/setup/gradle). The `koin-ktor` plugin targets Ktor 3.
 
-Koin supports multiple DSL approaches.
+## Installing the Koin plugin
 
-### Compiler Plugin DSL
+Install `Koin` in your application module. Its configuration block is the same as `startKoin { }`:
 
-The simplest syntax:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+
 val appModule = module {
     single<UserRepositoryImpl>() bind UserRepository::class
-    single<UserServiceImpl>() bind UserService::class
+    single<UserService>()
 }
-```
 
-### Annotations
-
-Spring-like with compile-time verification:
-
-```kotlin
-@Module
-@ComponentScan("com.example")
-class AppModule
-
-@Singleton
-class UserRepositoryImpl : UserRepository
-
-@Singleton
-class UserService(private val repository: UserRepository)
-```
-
-### Classic DSL
-
-Constructor references:
-
-```kotlin
-val appModule = module {
-    singleOf(::UserRepositoryImpl) bind UserRepository::class
-    singleOf(::UserService)
-}
-```
-
-## Installing the Koin Plugin
-
-Install Koin in your `Application` module:
-
-```kotlin
-fun Application.main() {
+fun Application.module() {
     install(Koin) {
         slf4jLogger()
         modules(appModule)
@@ -104,130 +42,179 @@ fun Application.main() {
 }
 ```
 
-### Complete Configuration
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-fun Application.main() {
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+import org.koin.plugin.module.dsl.withConfiguration
+
+@Module
+@ComponentScan("com.example")
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinUserApplication
+
+fun Application.module() {
     install(Koin) {
         slf4jLogger()
-        fileProperties("/application.conf")
-        modules(
-            networkModule,
-            repositoryModule,
-            serviceModule
-        )
-        createEagerInstances()
+        withConfiguration<KoinUserApplication>()
     }
 }
 ```
 
-## Dependency Injection
+`withConfiguration<T>()` loads the modules assembled by the `@KoinApplication` class.
 
-Koin provides extension functions for Ktor's core types.
-
-### Injection Points
-
-`inject()` and `get()` work in:
-- `Application`
-- `Route`
-- `Routing`
-- `ApplicationCall` (within route handlers)
-
-### Application-Level
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-fun Application.main() {
-    val helloService by inject<HelloService>()  // Lazy
-    val configService = get<ConfigService>()     // Eager
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+
+val appModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    singleOf(::UserService)
+}
+
+fun Application.module() {
+    install(Koin) {
+        slf4jLogger()
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+What the plugin does:
+
+- **Global start**: it starts Koin in the global context, like `startKoin`. If a global Koin instance is already running (for example after a Ktor auto-reload), the plugin stops it first. To keep Koin out of the global context, use [`KoinIsolated`](/docs/reference/koin-ktor/ktor-isolated).
+- **Eager instances**: definitions marked `createdAtStart` are created at install time.
+- **Request scope**: it opens a Koin scope for each call. See [Request Scopes](/docs/reference/koin-ktor/ktor-scopes).
+- **Shutdown**: when Ktor raises `ApplicationStopping`, the plugin closes the Koin instance.
+
+Logging, properties and other options of the configuration block are described in [Starting Koin](/docs/reference/koin-core/starting-koin).
+
+## Injecting dependencies
+
+`inject()` (lazy) and `get()` (immediate) are extension functions from `org.koin.ktor.ext` on `Application`, `Route`, `Routing` and `ApplicationCall`:
+
+```kotlin
+import org.koin.ktor.ext.inject
+
+fun Application.module() {
+    install(Koin) { modules(appModule) }
+
+    val userService by inject<UserService>()
 
     routing {
-        get("/hello") {
-            call.respondText(helloService.sayHello())
+        get("/users") {
+            call.respond(userService.getAllUsers())
         }
     }
 }
 ```
 
-### Route-Level
+In a route extension function:
 
 ```kotlin
 fun Route.customerRoutes() {
     val customerService by inject<CustomerService>()
 
-    get("/customers") {
-        call.respond(customerService.getAllCustomers())
-    }
-
     get("/customers/{id}") {
-        val id = call.parameters["id"]?.toInt()
-            ?: return@get call.respond(HttpStatusCode.BadRequest)
+        val id = call.parameters["id"] ?: return@get call.respond(HttpStatusCode.BadRequest)
         call.respond(customerService.getCustomer(id))
     }
 }
 ```
 
-### Request Handler
+Inside a handler, resolve from the call:
 
 ```kotlin
-routing {
-    get("/users/{id}") {
-        val userService = get<UserService>()
-        val userId = call.parameters["id"]!!
-        call.respond(userService.getUser(userId))
-    }
+get("/users/{id}") {
+    val userService = call.get<UserService>()
+    call.respond(userService.getUser(call.parameters["id"]!!))
 }
 ```
 
-## Ktor Events
+All four receivers resolve from the Koin instance stored in the `Application`: the global one with `Koin`, the isolated one with `KoinIsolated`. They accept a `qualifier` and `parameters`, like the core functions (see [Injection](/docs/reference/koin-core/injection)). `getProperty(key)` and `getProperty(key, defaultValue)` read Koin properties from the same receivers.
 
-Monitor Koin lifecycle events:
+## Loading modules from feature functions
 
-| Event | Description |
-|-------|-------------|
-| `KoinApplicationStarted` | Koin container started |
-| `KoinApplicationStopPreparing` | Koin preparing to stop |
-| `KoinApplicationStopped` | Koin container stopped |
+Once the plugin is installed, a feature function can add its own definitions:
 
 ```kotlin
-fun Application.main() {
+import org.koin.ktor.plugin.koinModule
+import org.koin.ktor.plugin.koinModules
+
+fun Application.customerFeature() {
+    koinModule {
+        singleOf(::CustomerRepository)
+        singleOf(::CustomerService)
+    }
+
+    routing { customerRoutes() }
+}
+
+fun Application.orderFeature() {
+    koinModules(orderDataModule, orderServiceModule)
+
+    routing { orderRoutes() }
+}
+
+fun Application.module() {
+    install(Koin) {
+        slf4jLogger()
+        modules(coreModule)
+    }
+    customerFeature()
+    orderFeature()
+}
+```
+
+`koinModule { }` declares a module inline, `koinModules(...)` loads existing `Module` values. Both fail with "Koin plugin is not installed properly" if `install(Koin)` was not called first.
+
+## Lifecycle events
+
+The plugin raises three events on the application monitor:
+
+| Event | Raised |
+|-------|--------|
+| `KoinApplicationStarted` | When the plugin is installed and Koin is started |
+| `KoinApplicationStopPreparing` | On `ApplicationStopping`, before Koin is closed |
+| `KoinApplicationStopped` | After Koin is closed |
+
+```kotlin
+fun Application.module() {
+    monitor.subscribe(KoinApplicationStarted) { koinApp ->
+        log.info("Koin started")
+    }
+    monitor.subscribe(KoinApplicationStopped) {
+        log.info("Koin stopped")
+    }
+
     install(Koin) {
         slf4jLogger()
         modules(appModule)
     }
-
-    environment.monitor.subscribe(KoinApplicationStarted) {
-        log.info("Koin started")
-        get<CacheWarmer>().warmUp()
-    }
-
-    environment.monitor.subscribe(KoinApplicationStopped) {
-        log.info("Koin stopped")
-    }
 }
 ```
 
-## Quick Reference
+`KoinApplicationStarted` is raised during `install(Koin)`. Subscribe before installing the plugin, or the handler never runs. Each handler receives the `KoinApplication`.
 
-| Function | Description |
-|----------|-------------|
-| `install(Koin) { }` | Install Koin plugin |
-| `inject<T>()` | Lazy injection |
-| `get<T>()` | Eager injection |
-| `koinModule { }` | Declare inline module |
-| `koinModules(...)` | Load existing modules |
+## Ktor's own DI
 
-## Documentation
-
-| Topic | Description |
-|-------|-------------|
-| **[DI Bridge](/docs/reference/koin-ktor/ktor-bridge)** | Koin ↔ Ktor DI integration |
-| **[Request Scopes](/docs/reference/koin-ktor/ktor-scopes)** | Request-scoped dependencies |
-| **[Testing](/docs/reference/koin-ktor/ktor-testing)** | Testing Ktor with Koin |
-| **[Isolated Context](/docs/reference/koin-ktor/ktor-isolated)** | Isolated Koin instances |
+Ktor 3.4 has a built-in dependency injection plugin. Koin can share dependencies with it in both directions: see [Ktor DI Bridge](/docs/reference/koin-ktor/ktor-bridge).
 
 ## Related
 
-- **[Tutorial: Ktor](/docs/quickstart/ktor)** - Step-by-step tutorial
-- **[Tutorial: Ktor with Annotations](/docs/quickstart/ktor-annotations)** - Annotations tutorial
-- **[Koin Annotations](/docs/reference/koin-annotations/start)** - Annotation reference
-- **[Ktor Documentation](https://ktor.io/)** - Official Ktor docs
+- [Request Scopes](/docs/reference/koin-ktor/ktor-scopes): instances that live for one HTTP call.
+- [Ktor DI Bridge](/docs/reference/koin-ktor/ktor-bridge): resolve between Koin and Ktor DI.
+- [Isolated Context in Ktor](/docs/reference/koin-ktor/ktor-isolated): Koin without the global context.
+- [Ktor Testing](/docs/reference/koin-ktor/ktor-testing): test routes with Koin.
+- [Ktor tutorial](/docs/quickstart/ktor) and [Ktor tutorial with annotations](/docs/quickstart/ktor-annotations): build a Ktor app with Koin step by step.

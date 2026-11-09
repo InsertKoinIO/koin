@@ -1,121 +1,131 @@
 ---
-title: Introduction
+title: Welcome
+description: Map of the Koin documentation. Find where each topic lives, from first setup to testing, platforms and production.
 ---
 
-# Welcome to Koin
+Koin is a dependency injection framework for Kotlin. You declare how your classes are built in modules, Koin creates and wires the instances at runtime, and the optional Koin Compiler Plugin checks the whole graph when you build. It runs on Android, Compose, Kotlin Multiplatform, Ktor and any Kotlin/JVM application.
 
-**The Pragmatic Kotlin Dependency Injection Framework - Simple AND Powerful**
-
-Koin is a lightweight dependency injection framework for Kotlin developers. Whether you're building Android apps, Kotlin Multiplatform projects, backend services with Ktor, or any Kotlin application, Koin makes dependency injection straightforward and intuitive.
-
-## Why Koin?
-
-Koin was designed with a clear philosophy: **you shouldn't have to choose between simplicity and capability**. With Koin, you get both.
-
-### DSL & Annotations - Choose What You Want
-
-Koin is powerful with both approaches. Prefer a clean Kotlin DSL? Use it. Like annotations? Use them. Both are first-class citizens, equally powerful.
-
-| Value | What it means |
-|-------|---------------|
-| **Productive** | Easy to learn, easy to write. Get DI working in minutes, not hours |
-| **Developer-Friendly** | DSL or Annotations - your choice. Clear errors, easy debugging, best DX |
-| **Scalable** | Powers large enterprise applications with complex dependency graphs |
-| **Safe** | Compile-time safety with Koin Compiler Plugin |
-| **Dynamic** | Runtime flexibility: load modules dynamically, lazy loading, feature flags |
-
-## Where to Start?
-
-Choose your path based on your experience level:
-
-### New to Dependency Injection?
-
-Start with the fundamentals:
-- **[What is Dependency Injection?](/docs/intro/what-is-dependency-injection)** - Understand the core concepts
-
-### Know DI, New to Koin?
-
-Jump right into Koin:
-- **[What is Koin?](/docs/intro/what-is-koin)** - Discover Koin's approach to DI
-- **[Koin Compiler Plugin](/docs/intro/koin-compiler-plugin)** - The recommended, safer way to use Koin
-
-### Coming from Hilt/Dagger?
-
-See how Koin compares:
-- **[Koin vs Hilt/Dagger](/docs/intro/koin-vs-hilt)** - Understand the differences and migration path
-
-### Ready to Code?
-
-- **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
-- **[Tutorials](/docs/tutorials/your-first-app)** - Build your first Koin app
-- **[Koin IDE Plugin](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-)** - Install the official plugin for Android Studio & IntelliJ IDEA — code navigation, live safety checks, dependency graph visualization
-
-## Koin's Approaches
-
-Koin offers flexibility in how you define your dependencies:
-
-| Approach | Status | Description |
-|----------|--------|-------------|
-| **Koin Compiler Plugin** (Kotlin 2.x) | Recommended | DSL: `single<MyService>()`, `factory<MyRepo>()`, `viewModel<MyVM>()`. |
-| **Koin Compiler Plugin** (Kotlin 2.x) | Recommended | Annotations: `@Singleton`, `@Factory`, `@KoinViewModel`. Auto-detects dependencies, compile-time safety. |
-| **Classic DSL** | Fully Supported | `singleOf(::MyService)`, `single { MyService(get()) }`. Works with any Kotlin version. Compiler Plugin adds safety on top when you're ready. |
-| **KSP Processor** (`koin-ksp-compiler`) | Deprecated | Legacy processor for Koin Annotations. Migrate to Compiler Plugin — same annotations, native compiler integration. |
-
-Learn more in [What is Koin?](/docs/intro/what-is-koin) and [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin).
-
-## Platform Support
-
-Koin works everywhere Kotlin runs:
-
-| Platform | Package | Status |
-|----------|---------|--------|
-| **Kotlin/JVM** | `koin-core` | ✅ Full support |
-| **Android** | `koin-android` | ✅ Full support |
-| **Compose (Android & Multiplatform)** | `koin-compose` | ✅ Full support |
-| **iOS** | `koin-core` | ✅ Full support |
-| **Desktop** | `koin-core` | ✅ Full support |
-| **Web (JS/Wasm)** | `koin-core` | ✅ Full support |
-| **Ktor** | `koin-ktor` | ✅ Full support |
-
-## Quick Example
-
-Here's a taste of what Koin looks like:
+This page is a map of the documentation. Each section below says which question it answers and where to start.
 
 ```kotlin
-// Define your classes
 class UserRepository(private val api: ApiService)
-class UserViewModel(private val repository: UserRepository) : ViewModel()
 
-// Define your module with Compiler Plugin DSL
 val appModule = module {
     single<ApiService>()
     single<UserRepository>()
-    viewModel<UserViewModel>()
 }
 
-// Start Koin
-startKoin {
-    modules(appModule)
-}
-
-// Inject in your Activity
-class MainActivity : AppCompatActivity() {
-    private val viewModel: UserViewModel by viewModel()
+fun main() {
+    startKoin { modules(appModule) }
 }
 ```
 
-Or with annotations:
+## I want to...
 
-```kotlin
-@Singleton
-class UserRepository(private val api: ApiService)
+- Understand dependency injection first: [What is Dependency Injection?](/docs/intro/what-is-dependency-injection)
+- Understand how Koin works in five minutes: [Core Concepts](/docs/intro/core-concepts)
+- Pick between DSL and annotations: [Choosing your style](/docs/intro/choosing-your-style)
+- Add Koin to my Gradle build: [Gradle Setup](/docs/setup/gradle)
+- Inject a ViewModel in a Composable: [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel)
+- Inject in an Activity, Fragment or Service: [Android Entry Points](/docs/reference/koin-android/entry-points)
+- Wire Retrofit, Room or OkHttp: [Android Library Integration](/docs/reference/koin-android/binding-patterns)
+- Share modules between Android and iOS: [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules)
+- Pass a runtime value such as an ID to a definition: [Injected Parameters](/docs/reference/koin-core/injection-parameters)
+- Test my Koin configuration: [Verifying your Koin configuration](/docs/reference/koin-test/verify) and [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety)
+- Fix a "No definition found" error: [Troubleshooting](/docs/reference/koin-core/troubleshooting)
+- Migrate from Hilt: [Migrating from Hilt](/docs/reference/koin-android/hilt-migration)
+- Move my annotations from KSP to the Compiler Plugin: [Migrating from KSP](/docs/migration/from-ksp-to-compiler-plugin)
+- See how Koin behaves in production: [Production Monitoring](/docs/tooling/production-monitoring)
 
-@KoinViewModel
-class UserViewModel(private val repository: UserRepository) : ViewModel()
+## Where to go
 
-@Module
-@ComponentScan("com.myapp")
-class AppModule
-```
+### Get Started
 
-Ready to get started? Head to the [Setup Guide](/docs/setup/gradle).
+What is Koin, how does it work, which style should I use?
+
+- [What is Koin?](/docs/intro/what-is-koin): what Koin is and how it works, runtime and compile time.
+- [Core Concepts](/docs/intro/core-concepts): definitions, modules, the container, injection, scopes.
+- [Choosing your style](/docs/intro/choosing-your-style): annotations or the DSL (Compiler Plugin, Constructor or Classic DSL).
+- [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin): what the plugin does at build time.
+
+### Setup
+
+What do I add to my build?
+
+- [Setup](/docs/setup): what to install for each platform.
+- [Gradle Setup](/docs/setup/gradle): the BOM and every Koin artifact.
+- [Compiler Plugin Setup](/docs/setup/compiler-plugin): install and configure the Gradle plugin.
+
+### Tutorials
+
+How do I build a first app with Koin, step by step?
+
+- [Kotlin](/docs/quickstart/kotlin): a plain Kotlin application.
+- [Android - ViewModel](/docs/quickstart/android-viewmodel) and [Android - Jetpack Compose](/docs/quickstart/android-compose).
+- [Compose Multiplatform](/docs/quickstart/cmp): shared UI on Android and iOS.
+- [Ktor](/docs/quickstart/ktor): a server application.
+
+### Core
+
+How do I declare, organize and retrieve dependencies on any platform?
+
+- [Starting Koin](/docs/reference/koin-core/starting-koin): `startKoin`, logging, properties.
+- [Modules](/docs/reference/koin-core/modules) and [Definitions](/docs/reference/koin-core/definitions): declare what Koin builds.
+- [Scopes](/docs/reference/koin-core/scopes): instances tied to a lifecycle.
+- [Troubleshooting](/docs/reference/koin-core/troubleshooting): errors and how to read them.
+
+### Platforms
+
+How do I use Koin with a specific platform or framework?
+
+- Android: [Start Koin on Android](/docs/reference/koin-android/start), [Android ViewModel](/docs/reference/koin-android/viewmodel), [Multi-Module Android Apps](/docs/reference/koin-android/multi-module).
+- Compose: [Koin for Compose](/docs/reference/koin-compose/compose), [ViewModel in Compose](/docs/reference/koin-compose/compose-viewmodel), [Navigation 3](/docs/reference/koin-compose/navigation3).
+- Kotlin Multiplatform: [KMP Setup](/docs/reference/koin-core/kmp-setup), [Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules).
+- Ktor: [Koin for Ktor](/docs/reference/koin-ktor/ktor), [Request Scopes](/docs/reference/koin-ktor/ktor-scopes).
+
+### Testing
+
+How do I test code that uses Koin, and test the configuration itself?
+
+- [Injecting in Tests](/docs/reference/koin-test/testing): `KoinTest`, replacing definitions with fakes.
+- [Verifying your Koin configuration](/docs/reference/koin-test/verify): check modules in a unit test.
+- [Android Instrumented Testing](/docs/reference/koin-android/instrumented-testing) and [Testing Composables](/docs/reference/koin-compose/compose-testing).
+
+### Production & Tooling
+
+Which tools help me write, inspect and run Koin apps?
+
+- [Tooling](/docs/tooling): overview of the tools around Koin.
+- [IDE Plugin](/docs/tooling/ide-plugin): navigation and checks in Android Studio and IntelliJ IDEA.
+- [Monitor](/docs/tooling/monitor) and [Production Monitoring](/docs/tooling/production-monitoring): see what Koin does at runtime.
+
+### Migration
+
+I use another framework or an older Koin setup. How do I move?
+
+- [Koin vs Hilt](/docs/intro/koin-vs-hilt): how the two compare.
+- [Migrating from Hilt](/docs/reference/koin-android/hilt-migration): step-by-step guide.
+- [JSR-330 Compatibility](/docs/reference/koin-android/jsr330): keep `@Inject` and `@Singleton` from `javax.inject`.
+- [Migrating from KSP](/docs/migration/from-ksp-to-compiler-plugin): move annotations to the Compiler Plugin.
+
+### Reference
+
+What are all the keywords, annotations and options?
+
+- [DSL Reference](/docs/reference/koin-core/dsl): every DSL keyword.
+- [Annotations Reference](/docs/reference/koin-annotations/annotations-inventory): every annotation and its parameters.
+- [Compiler Plugin Options](/docs/reference/koin-annotations/options): every Gradle option of the plugin.
+
+### Support
+
+Which version should I use, what changed, where do I get help?
+
+- [Releases](/docs/support/releases): versions, changes and upgrade notes.
+- [API Stability](/docs/support/api-stability): what stable, experimental and internal mean.
+- [Support](/docs/support): roadmap, community and support options.
+
+## Related
+
+- [What is Koin?](/docs/intro/what-is-koin): the next page to read if you are new to Koin.
+- [Core Concepts](/docs/intro/core-concepts): the mental model behind every other page.
+- [Setup](/docs/setup): install Koin for your platform.

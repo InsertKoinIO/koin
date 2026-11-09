@@ -1,185 +1,184 @@
 ---
 title: Kotlin Multiplatform Setup
+description: Add Koin to a Kotlin Multiplatform project, write one shared start function, and call it from Android, iOS, desktop and web entry points.
 ---
 
-# Kotlin Multiplatform Setup
+This page sets up Koin in a Kotlin Multiplatform (KMP) project: Gradle dependencies, where the Koin code goes, one shared function that starts Koin, and how each platform calls it. It assumes you know [modules](/docs/reference/koin-core/modules) and [Starting Koin](/docs/reference/koin-core/starting-koin). How to give each platform its own implementations is covered in [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules).
 
-Koin provides first-class support for Kotlin Multiplatform (KMP) projects. This guide covers setup and configuration.
+## Supported targets
 
-:::info
-For definition types (Single, Factory, ViewModel) and the three declaration approaches (Compiler Plugin DSL, Annotations, Classic DSL), see [Definitions](/docs/reference/koin-core/definitions).
-:::
+`koin-core` and the Compiler Plugin support every Kotlin target:
 
-## Supported Platforms
+| Target | Supported |
+|--------|-----------|
+| Android | Yes |
+| iOS (`iosArm64`, `iosX64`, `iosSimulatorArm64`) | Yes |
+| JVM (desktop, server) | Yes |
+| JS and Wasm (`js`, `wasmJs`) | Yes |
+| macOS, Linux, Windows (Kotlin/Native) | Yes |
 
-| Platform | Status |
-|----------|--------|
-| Android | ✅ Full support |
-| iOS (arm64, x64, simulatorArm64) | ✅ Full support |
-| JVM | ✅ Full support |
-| JS | ✅ Full support |
-| Wasm | ✅ Full support |
-| macOS | ✅ Full support |
-| Linux | ✅ Full support |
-| Windows | ✅ Full support |
+Compose artifacts follow the targets of Compose Multiplatform. See the artifact table in [Gradle Setup](/docs/setup/gradle).
 
-## Dependencies Setup
+## Dependencies
 
-### shared/build.gradle.kts
+Apply the [Koin Compiler Plugin](/docs/setup/compiler-plugin) to the shared module and add Koin to the source sets:
 
 ```kotlin
+// shared/build.gradle.kts
 plugins {
     kotlin("multiplatform")
-    id("io.insert-koin.compiler.plugin")  // Optional: for Compiler Plugin
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
     androidTarget()
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
     jvm()
-    js(IR) { browser() }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(platform("io.insert-koin:koin-bom:4.2.0"))
-            implementation("io.insert-koin:koin-core")
-        }
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.annotations) // only with annotations
 
-        commonTest.dependencies {
-            implementation("io.insert-koin:koin-test")
+            // Compose Multiplatform
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
-
         androidMain.dependencies {
-            implementation("io.insert-koin:koin-android")
+            implementation(libs.koin.android)
+        }
+        commonTest.dependencies {
+            implementation(libs.koin.test)
         }
     }
 }
 ```
 
-### With Compose Multiplatform
+The Compiler Plugin runs on every target from one declaration. There is no per-target configuration, unlike the KSP setup of Koin Annotations 1.x (see [Migrating from KSP](/docs/migration/from-ksp-to-compiler-plugin)).
+
+## Project structure
+
+```
+shared/
+└── src/
+    ├── commonMain/kotlin/di/
+    │   ├── Koin.kt              // modules and initKoin()
+    │   └── PlatformModule.kt    // expect declaration
+    ├── androidMain/kotlin/di/
+    │   └── PlatformModule.android.kt
+    └── iosMain/kotlin/di/
+        └── PlatformModule.ios.kt
+androidApp/   // Application class calls initKoin()
+iosApp/       // Swift App calls initKoin()
+```
+
+Shared definitions live in `commonMain`. Each platform source set only contains what differs per platform.
+
+## Shared start function
+
+Write one function in `commonMain` that starts Koin. Each platform calls it, and can add its own configuration through the `config` parameter:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation(platform("io.insert-koin:koin-bom:4.2.0"))
-            implementation("io.insert-koin:koin-core")
-            implementation("io.insert-koin:koin-compose")
-            implementation("io.insert-koin:koin-compose-viewmodel")
-        }
-    }
-}
-```
-
-## Project Structure
-
-```
-project/
-├── shared/
-│   ├── src/
-│   │   ├── commonMain/
-│   │   │   └── kotlin/
-│   │   │       ├── di/
-│   │   │       │   └── KoinModules.kt
-│   │   │       └── domain/
-│   │   │           └── UserRepository.kt
-│   │   ├── androidMain/
-│   │   │   └── kotlin/
-│   │   │       └── di/
-│   │   │           └── PlatformModule.android.kt
-│   │   └── iosMain/
-│   │       └── kotlin/
-│   │           └── di/
-│   │               └── PlatformModule.ios.kt
-│   └── build.gradle.kts
-├── androidApp/
-│   └── src/main/kotlin/
-│       └── MainApplication.kt
-└── iosApp/
-    └── iOSApp.swift
-```
-
-## Common Module Definition
-
-### commonMain/kotlin/di/KoinModules.kt
-
-```kotlin
-import org.koin.dsl.module
-
-// Shared definitions (Compiler Plugin DSL)
-val sharedModule = module {
-    single<UserRepository>()
-    single<ApiClient>()
-    factory<GetUserUseCase>()
-}
-
-// Platform-specific modules (defined per platform)
-expect val platformModule: Module
-```
-
-:::note
-Compiler Plugin DSL (`single<Type>()`) is recommended for shared modules. It requires the compiler plugin but provides the cleanest syntax with no per-platform KSP configuration.
-:::
-
-## Platform-Specific Modules
-
-Platform modules can use any approach. Classic DSL with lambdas is shown here for cases requiring custom construction logic.
-
-### androidMain/kotlin/di/PlatformModule.android.kt
-
-```kotlin
-import org.koin.dsl.module
-
-actual val platformModule = module {
-    // Classic DSL with lambda for custom construction
-    single<PlatformHelper> { AndroidPlatformHelper(get()) }
-    single<DatabaseDriver> { AndroidDatabaseDriver(get()) }
-}
-```
-
-### iosMain/kotlin/di/PlatformModule.ios.kt
-
-```kotlin
-import org.koin.dsl.module
-
-actual val platformModule = module {
-    // Or use Compiler Plugin DSL / Annotations if no custom logic needed
-    single<IosPlatformHelper>() bind PlatformHelper::class
-    single<IosDatabaseDriver>() bind DatabaseDriver::class
-}
-```
-
-## Shared Initialization
-
-### commonMain/kotlin/di/KoinInit.kt
-
-```kotlin
+// commonMain/kotlin/di/Koin.kt
 import org.koin.core.context.startKoin
-import org.koin.core.KoinApplication
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.dsl.module
+import org.koin.plugin.module.dsl.*
 
-fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
-    return startKoin {
+val dataModule = module {
+    single<UserRepository>()
+    viewModel<UserViewModel>()
+}
+
+val appModule = module {
+    includes(dataModule, platformModule())
+}
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
         includes(config)
-        modules(
-            sharedModule,
-            platformModule
-        )
+        modules(appModule)
     }
 }
 ```
 
-## Platform Entry Points
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+// commonMain/kotlin/di/Koin.kt
+import org.koin.core.annotation.*
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.plugin.module.dsl.startKoin
+
+@Module(includes = [PlatformModule::class])
+@ComponentScan("com.example.app")
+@Configuration
+class AppModule
+
+@KoinApplication
+object KoinApp
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin<KoinApp> {
+        includes(config)
+    }
+}
+```
+
+`@Configuration` modules are found by `@KoinApplication` at build time. `PlatformModule` is an `expect` module class, see [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules).
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+// commonMain/kotlin/di/Koin.kt
+import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.*
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
+import org.koin.dsl.module
+
+val dataModule = module {
+    singleOf(::UserRepository)
+    viewModelOf(::UserViewModel)
+}
+
+val appModule = module {
+    includes(dataModule, platformModule())
+}
+
+fun initKoin(config: KoinAppDeclaration? = null) {
+    startKoin {
+        includes(config)
+        modules(appModule)
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`includes(config)` applies the platform configuration (Android context, logger, extra modules) to the same Koin start. `platformModule()` is an `expect` function, see [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules).
+
+## Platform entry points
 
 ### Android
 
+Call `initKoin` from your `Application` class and pass the Android context:
+
 ```kotlin
-// androidApp/src/main/kotlin/MainApplication.kt
+// androidApp
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-
         initKoin {
             androidContext(this@MainApplication)
             androidLogger()
@@ -188,67 +187,115 @@ class MainApplication : Application() {
 }
 ```
 
+Android definitions can then use `Context` as a constructor parameter. See [Android Start](/docs/reference/koin-android/start).
+
 ### iOS
 
+Add a function without parameters in `iosMain`, and call it from the Swift `App` initializer:
+
 ```kotlin
-// shared/src/iosMain/kotlin/di/KoinInitIos.kt
-fun initKoinIos() {
-    initKoin()
-}
+// iosMain/kotlin/di/KoinIos.kt
+fun initKoinIos() = initKoin()
 ```
 
 ```swift
 // iosApp/iOSApp.swift
-import shared
+import Shared
 
 @main
 struct iOSApp: App {
     init() {
-        KoinInitIosKt.initKoinIos()
+        KoinIosKt.doInitKoinIos()
     }
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+        WindowGroup { ContentView() }
     }
 }
 ```
 
-### JVM
+Kotlin/Native naming rules explain the Swift call. Top-level functions of `KoinIos.kt` are exported in a class named `KoinIosKt`. A function whose name starts with `init` gets a `do` prefix, so `initKoinIos` becomes `doInitKoinIos`. The helper avoids passing a Kotlin lambda (`config`) from Swift.
+
+Calling Koin from Swift code is covered in [KMP Platform Integration](/docs/reference/koin-mp/kmp).
+
+### JVM desktop
 
 ```kotlin
-fun main() {
+// jvmMain
+fun main() = application {
     initKoin {
         printLogger()
     }
-
-    val repository: UserRepository = get()
+    Window(onCloseRequest = ::exitApplication) {
+        App()
+    }
 }
 ```
 
-## DSL Approaches in KMP
+### Web
 
-| Approach | When to Use |
-|----------|-------------|
-| **Compiler Plugin DSL** | Default choice - works everywhere, cleanest syntax |
-| **Annotations** | Default choice - works everywhere, no module code needed |
-| **Classic DSL with lambda** | Builder patterns, custom factory logic, mocks |
+```kotlin
+// jsMain or wasmJsMain
+fun main() {
+    initKoin()
+    // start your UI
+}
+```
 
-:::info
-**Compiler Plugin DSL** and **Annotations** work everywhere. Use **Classic DSL with lambda** only when you need custom construction logic. See [Compiler Plugin Setup](/docs/setup/compiler-plugin) for details.
-:::
+## Compose Multiplatform
 
-## Best Practices
+With Compose Multiplatform, you can start Koin from the root Composable with `KoinApplication` instead of calling `initKoin` on each platform. On Android, it sets the Android context for you:
 
-1. **Put shared code in commonMain** - Business logic, repositories, use cases
-2. **Use expect/actual for platform specifics** - File system, device APIs, platform libraries
-3. **Initialize Koin per platform** - Each platform has its entry point
-4. **Keep platform modules minimal** - Only what's truly platform-specific
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
-## Next Steps
+```kotlin
+// commonMain
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration { modules(appModule) }) {
+        MainScreen()
+    }
+}
+```
 
-- **[Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules)** - Module organization, expect/actual patterns
-- **[ViewModel](/docs/reference/koin-core/viewmodel)** - Multiplatform ViewModel
-- **[Advanced Patterns](/docs/reference/koin-mp/kmp)** - Architecture patterns, testing, platform integration
-- **[Testing](/docs/reference/koin-test/testing)** - Testing KMP projects
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+// commonMain
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration<KoinApp>()) {
+        MainScreen()
+    }
+}
+```
+
+`koinConfiguration<T>()` comes from `org.koin.plugin.module.dsl`.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+// commonMain
+@Composable
+fun App() {
+    KoinApplication(configuration = koinConfiguration { modules(appModule) }) {
+        MainScreen()
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Keep `initKoin` if code outside Compose needs Koin before the first screen (a background service, Swift code). Both options are compared in [Koin for Compose](/docs/reference/koin-compose/compose).
+
+## Related
+
+- [KMP Sharing Patterns](/docs/reference/koin-core/kmp-shared-modules): platform modules and `expect`/`actual` definitions.
+- [KMP Platform Integration](/docs/reference/koin-mp/kmp): Android context in shared code, Swift interop, desktop and web.
+- [Koin for Compose](/docs/reference/koin-compose/compose): `KoinApplication` and `koinInject()`.
+- [ViewModel](/docs/reference/koin-core/viewmodel): ViewModels shared by Android and Compose Multiplatform.
+- [Gradle Setup](/docs/setup/gradle): BOM, version catalog, artifact list.

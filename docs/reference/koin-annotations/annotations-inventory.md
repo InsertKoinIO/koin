@@ -1,934 +1,437 @@
-# Koin Annotations Inventory
-
-This document provides a comprehensive inventory of all Koin annotations, their parameters, behaviors, and usage examples.
-
-## Table of Contents
-
-- [Definition Annotations](#definition-annotations)
-  - [@Single](#single)
-  - [@Factory](#factory)
-  - [@Scoped](#scoped)
-- [Scope Annotations](#scope-annotations)
-  - [@Scope](#scope)
-  - [@ViewModelScope](#viewmodelscope)
-  - [@ActivityScope](#activityscope)
-  - [@ActivityRetainedScope](#activityretainedscope)
-  - [@FragmentScope](#fragmentscope)
-  - [@ScopeId](#scopeid)
-- [ViewModel & Android-Specific Annotations](#viewmodel--android-specific-annotations)
-  - [@KoinViewModel](#koinviewmodel)
-  - [@KoinWorker](#koinworker)
-- [Qualifier Annotations](#qualifier-annotations)
-  - [@Named](#named)
-  - [@Qualifier](#qualifier)
-- [Parameter Annotations](#parameter-annotations)
-  - [@InjectedParam](#injectedparam)
-  - [@Property](#property)
-  - [@PropertyValue](#propertyvalue)
-- [Safety Annotations](#safety-annotations)
-  - [@Provided](#provided)
-- [Module & Application Annotations](#module--application-annotations)
-  - [@Module](#module)
-  - [@ComponentScan](#componentscan)
-  - [@Configuration](#configuration)
-  - [@KoinApplication](#koinapplication)
-- [Monitoring Annotations](#monitoring-annotations)
-  - [@Monitor](#monitor)
-- [Meta Annotations (Internal)](#meta-annotations-internal)
-  - [@ExternalDefinition](#externaldefinition)
-  - [@MetaDefinition](#metadefinition)
-  - [@MetaModule](#metamodule)
-  - [@MetaApplication](#metaapplication)
-
+---
+title: Annotations Reference
+description: Every Koin annotation with its package, targets, parameters and an example, for use with the Koin Compiler Plugin.
 ---
 
-## Definition Annotations
+This page lists every Koin annotation, with its package, where it can be placed, its parameters, and one example. Each entry links to the page that explains the concept. To set up annotations, see [Compiler Plugin Setup](/docs/setup/compiler-plugin). To compare annotations with the DSL, see [Choosing your style](/docs/intro/choosing-your-style).
 
-### @Single / @Singleton
+The annotations come from the `io.insert-koin:koin-annotations` artifact (same version as Koin). The Koin Compiler Plugin reads them at build time and generates the definitions. Most live in `org.koin.core.annotation`, Android-only ones in `org.koin.android.annotation`.
 
-**Package:** `org.koin.core.annotation`
+## At a glance
 
-**Target:** `CLASS`, `FUNCTION`
+| Annotation | Package | Declares |
+|------------|---------|----------|
+| [`@Singleton` / `@Single`](#singleton--single) | `org.koin.core.annotation` | A `single` definition |
+| [`@Factory`](#factory) | `org.koin.core.annotation` | A `factory` definition |
+| [`@Scoped`](#scoped) | `org.koin.core.annotation` | A `scoped` definition |
+| [`@KoinViewModel`](#koinviewmodel) | `org.koin.core.annotation` | A `viewModel` definition |
+| [`@KoinWorker`](#koinworker) | `org.koin.android.annotation` | A WorkManager `worker` definition |
+| [`@Scope`](#scope) | `org.koin.core.annotation` | The scope a definition belongs to |
+| [`@ViewModelScope`](#viewmodelscope) | `org.koin.core.annotation` | A definition in the ViewModel scope |
+| [`@ActivityScope`](#activityscope) | `org.koin.android.annotation` | A definition in the Activity scope |
+| [`@ActivityRetainedScope`](#activityretainedscope) | `org.koin.android.annotation` | A definition in the retained Activity scope |
+| [`@FragmentScope`](#fragmentscope) | `org.koin.android.annotation` | A definition in the Fragment scope |
+| [`@ScopeId`](#scopeid) | `org.koin.core.annotation` | A parameter resolved from a given scope |
+| [`@Named`](#named) | `org.koin.core.annotation` | A string qualifier |
+| [`@Qualifier`](#qualifier) | `org.koin.core.annotation` | A type or string qualifier |
+| [`@InjectedParam`](#injectedparam) | `org.koin.core.annotation` | A parameter passed by the caller |
+| [`@Property`](#property) | `org.koin.core.annotation` | A parameter read from a Koin property |
+| [`@PropertyValue`](#propertyvalue) | `org.koin.core.annotation` | A default value for a property |
+| [`@Provided`](#provided) | `org.koin.core.annotation` | A type provided outside the checked graph |
+| [`@Module`](#module) | `org.koin.core.annotation` | A module class |
+| [`@ComponentScan`](#componentscan) | `org.koin.core.annotation` | Packages to scan for definitions |
+| [`@Configuration`](#configuration) | `org.koin.core.annotation` | Configuration labels for a module |
+| [`@KoinApplication`](#koinapplication) | `org.koin.core.annotation` | The application entry point |
+| [`@Monitor`](#monitor) | `org.koin.core.annotation` | Functions traced by the Kotzilla SDK |
 
-**Description:** Declares a type or function as a `single` (singleton) definition in Koin. A single instance is created and shared across the application. `@Singleton` is the preferred name (standard naming convention); `@Single` is an alias.
+## Definitions
 
-**Parameters:**
-- `binds: Array<KClass<*>> = [Unit::class]` - Explicit types to bind to this definition. Supertypes are automatically detected.
-- `createdAtStart: Boolean = false` - If `true`, the instance is created when Koin starts.
+A definition annotation goes on a class (Koin calls its constructor) or on a function (Koin calls the function, top-level or inside a `@Module` class). Constructor and function parameters are resolved from the container. How each parameter type is resolved: [Definitions](/docs/reference/koin-core/definitions#constructor-parameters).
 
-**Behavior:**
-All dependencies are filled by constructor injection.
+When `binds` is empty, the definition is bound to its class and all its supertypes. List types in `binds` to bind only those.
 
-**Example:**
+### @Singleton / @Single
+
+Target: `CLASS`, `FUNCTION`
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `binds` | `Array<KClass<*>>` | `[]` | Types to bind. Empty binds all supertypes |
+| `createdAtStart` | `Boolean` | `false` | Create the instance when Koin starts |
+
 ```kotlin
-@Single
-class MyClass(val d : MyDependency)
+@Singleton(binds = [UserRepository::class])
+class UserRepositoryImpl(private val api: ApiService) : UserRepository
 ```
 
-**Generated Koin DSL:**
-```kotlin
-single { MyClass(get()) }
-```
-
-**With explicit binding:**
-```kotlin
-@Single(binds = [MyInterface::class])
-class MyClass(val d : MyDependency) : MyInterface
-```
-
-**With creation at start:**
-```kotlin
-@Single(createdAtStart = true)
-class MyClass(val d : MyDependency)
-```
-
----
+`@Singleton` and `@Single` are equivalent; prefer `@Singleton`, the JSR-330 name. One instance is kept for the lifetime of the container. Concept: [Definitions](/docs/reference/koin-core/definitions).
 
 ### @Factory
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`
 
-**Target:** `CLASS`, `FUNCTION`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `binds` | `Array<KClass<*>>` | `[]` | Types to bind. Empty binds all supertypes |
 
-**Description:** Declares a type or function as a `factory` definition in Koin. A new instance is created each time it is requested.
-
-**Parameters:**
-- `binds: Array<KClass<*>> = [Unit::class]` - Explicit types to bind to this definition. Supertypes are automatically detected.
-
-**Behavior:**
-All dependencies are filled by constructor injection. Each request creates a new instance.
-
-**Example:**
 ```kotlin
 @Factory
-class MyClass(val d : MyDependency)
+class UserPresenter(private val repository: UserRepository)
 ```
 
-**Generated Koin DSL:**
-```kotlin
-factory { MyClass(get()) }
-```
-
----
+A new instance is created for each request. Concept: [Definitions](/docs/reference/koin-core/definitions).
 
 ### @Scoped
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`
 
-**Target:** `CLASS`, `FUNCTION`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `binds` | `Array<KClass<*>>` | `[]` | Types to bind. Empty binds all supertypes |
 
-**Description:** Declares a type or function as a `scoped` definition in Koin. Must be associated with `@Scope` annotation. Instance is shared within a specific scope.
-
-**Parameters:**
-- `binds: Array<KClass<*>> = [Unit::class]` - Explicit types to bind to this definition. Supertypes are automatically detected.
-
-**Behavior:**
-Creates a scoped instance that lives within the defined scope's lifetime.
-
-**Example:**
 ```kotlin
-@Scope(MyScope::class)
+@Scope(UserSession::class)
 @Scoped
-class MyClass(val d : MyDependency)
+class SessionCache(private val repository: UserRepository)
 ```
 
-**See Also:** [@Scope](#scope)
-
----
-
-## Scope Annotations
-
-### @Scope
-
-**Package:** `org.koin.core.annotation`
-
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Declares a class in a Koin scope. Scope name is described by either value (class) or name (string). By default, declares a `scoped` definition. Can be overridden with `@Scoped`, `@Factory`, `@KoinViewModel` annotations for explicit bindings.
-
-**Parameters:**
-- `value: KClass<*> = Unit::class` - Scope class value
-- `name: String = ""` - Scope string value
-
-**Behavior:**
-Creates a scope definition associated with the specified scope type or name.
-
-**Example with class:**
-```kotlin
-@Scope(MyScope::class)
-class MyClass(val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-scope<MyScope> {
-    scoped { MyClass(get()) }
-}
-```
-
-**Example with string name:**
-```kotlin
-@Scope(name = "my_custom_scope")
-class MyClass(val d : MyDependency)
-```
-
----
-
-### @ViewModelScope
-
-**Package:** `org.koin.core.annotation`
-
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Declares a class in a ViewModelScope Koin scope. This is a scope archetype for components that should live within a ViewModel's lifecycle.
-
-**Parameters:** None
-
-**Behavior:**
-Creates a scoped definition within the `viewModelScope`.
-
-**Example:**
-```kotlin
-@ViewModelScope
-class MyClass(val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-viewModelScope {
-    scoped { MyClass(get()) }
-}
-```
-
-**Usage:**
-The tagged class is meant to be used with ViewModel and `viewModelScope` function to activate the scope.
-
----
-
-### @ActivityScope
-
-**Package:** `org.koin.android.annotation`
-
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Declares a class in an Activity Koin Scope.
-
-**Parameters:** None
-
-**Behavior:**
-Creates a scoped definition within the `activityScope`.
-
-**Example:**
-```kotlin
-@ActivityScope
-class MyClass(val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-activityScope {
-    scoped { MyClass(get()) }
-}
-```
-
-**Usage:**
-The tagged class is meant to be used with Activity and `activityScope` function to activate the scope.
-
----
-
-### @ActivityRetainedScope
-
-**Package:** `org.koin.android.annotation`
-
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Declares a class in an Activity Koin scope, but retained across configuration changes.
-
-**Parameters:** None
-
-**Behavior:**
-Creates a scoped definition within the `activityRetainedScope`.
-
-**Example:**
-```kotlin
-@ActivityRetainedScope
-class MyClass(val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-activityRetainedScope {
-    scoped { MyClass(get()) }
-}
-```
-
-**Usage:**
-The tagged class is meant to be used with Activity and `activityRetainedScope` function to activate the scope.
-
----
-
-### @FragmentScope
-
-**Package:** `org.koin.android.annotation`
-
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Declares a class in a Fragment Koin scope.
-
-**Parameters:** None
-
-**Behavior:**
-Creates a scoped definition within the `fragmentScope`.
-
-**Example:**
-```kotlin
-@FragmentScope
-class MyClass(val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-fragmentScope {
-    scoped { MyClass(get()) }
-}
-```
-
-**Usage:**
-The tagged class is meant to be used with Fragment and `fragmentScope` function to activate the scope.
-
----
-
-### @ScopeId
-
-**Package:** `org.koin.core.annotation`
-
-**Target:** `VALUE_PARAMETER`
-
-**Description:** Annotates a parameter from class constructor or function to request resolution for a given scope with Scope ID.
-
-**Parameters:**
-- `value: KClass<*> = Unit::class` - Scope type
-- `name: String = ""` - Scope string identifier
-
-**Behavior:**
-Resolves the dependency from a specific scope identified by type or name.
-
-**Example with string name:**
-```kotlin
-@Factory
-class MyClass(@ScopeId(name = "my_scope_id") val d : MyDependency)
-```
-
-**Generated Koin DSL:**
-```kotlin
-factory { MyClass(getScope("my_scope_id").get()) }
-```
-
-**Example with type:**
-```kotlin
-@Factory
-class MyClass(@ScopeId(MyScope::class) val d : MyDependency)
-```
-
----
-
-## ViewModel & Android-Specific Annotations
+One instance per scope, released when the scope closes. Use it with `@Scope` or a scope archetype (`@ViewModelScope`, `@ActivityScope`, ...). Concept: [Scopes](/docs/reference/koin-core/scopes).
 
 ### @KoinViewModel
 
-**Package:** `org.koin.android.annotation`
+Target: `CLASS`, `FUNCTION`
 
-**Target:** `CLASS`, `FUNCTION`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `binds` | `Array<KClass<*>>` | `[]` | Types to bind. Empty binds all supertypes |
 
-**Description:** ViewModel annotation for Koin definition. Declares a type or function as a `viewModel` definition in Koin.
-
-**Platform Support:**
-- ✅ Android
-- ✅ Kotlin Multiplatform (KMP)
-- ✅ Compose Multiplatform (CMP)
-
-**Parameters:**
-- `binds: Array<KClass<*>> = []` - Explicit types to bind to this definition. Supertypes are automatically detected.
-
-**Behavior:**
-All dependencies are filled by constructor injection. Creates a ViewModel instance managed by Koin. Works across all platforms including Android, iOS, Desktop, and Web when using Compose Multiplatform.
-
-**Example (Android/CMP):**
 ```kotlin
 @KoinViewModel
-class MyViewModel(val d : MyDependency) : ViewModel()
+class UserViewModel(private val repository: UserRepository) : ViewModel()
 ```
 
-**Example (KMP/CMP shared):**
-```kotlin
-@KoinViewModel
-class SharedViewModel(
-    val repository: Repository,
-    val analytics: Analytics
-) : ViewModel()
-```
+Works on Android and Compose Multiplatform targets. Requires `io.insert-koin:koin-core-viewmodel` on the classpath (the build fails with `KOIN-A001` otherwise). Concept: [ViewModel](/docs/reference/koin-core/viewmodel).
 
-**Generated Koin DSL:**
-```kotlin
-viewModel { MyViewModel(get()) }
-```
-
----
+:::note
+With the Compiler Plugin, `@KoinViewModel` is in `org.koin.core.annotation`. The KSP processor used `org.koin.android.annotation.KoinViewModel`: update the import when you migrate (see [Migrating from KSP](/docs/migration/from-ksp-to-compiler-plugin)).
+:::
 
 ### @KoinWorker
 
-**Package:** `org.koin.android.annotation`
+Package: `org.koin.android.annotation` (Android only). Target: `CLASS`, `FUNCTION`
 
-**Target:** `CLASS`, `FUNCTION`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `binds` | `Array<KClass<*>>` | `[]` | Types to bind |
 
-**Description:** Worker annotation for Koin Definition. Declares a type as a `worker` definition for WorkManager workers.
-
-**Parameters:**
-- `binds: Array<KClass<*>> = []` - Explicit types to bind to this definition.
-
-**Behavior:**
-Creates a worker definition for Android WorkManager integration.
-
-**Example:**
 ```kotlin
 @KoinWorker
-class MyWorker() : Worker()
+class SyncWorker(
+    context: Context,
+    params: WorkerParameters,
+    private val repository: UserRepository,
+) : CoroutineWorker(context, params)
 ```
 
----
+Requires `io.insert-koin:koin-android-workmanager` (the build fails with `KOIN-A002` otherwise). Concept: [WorkManager](/docs/reference/koin-android/workmanager).
 
-## Qualifier Annotations
+## Scopes
+
+### @Scope
+
+Target: `CLASS`, `FUNCTION`
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `KClass<*>` | `Unit::class` | Scope type |
+| `name` | `String` | `""` | Scope name, instead of a type |
+
+```kotlin
+@Scope(UserSession::class)
+class SessionCache(private val repository: UserRepository)
+
+@Scope(name = "checkout")
+class CheckoutState
+```
+
+Puts the definition in the given scope. On its own, `@Scope` declares a `scoped` definition. Add `@Scoped`, `@Factory` or `@KoinViewModel` to choose another kind or to set `binds`. Concept: [Scopes](/docs/reference/koin-core/scopes).
+
+### @ViewModelScope
+
+Target: `CLASS`, `FUNCTION`. No parameters.
+
+```kotlin
+@ViewModelScope
+class UserSessionCache(private val repository: UserRepository)
+```
+
+Declares a scoped definition in the scope of a ViewModel, created with the ViewModel and closed when it is cleared. Concept: [Scopes](/docs/reference/koin-core/scopes).
+
+### @ActivityScope
+
+Package: `org.koin.android.annotation` (Android only). Target: `CLASS`, `FUNCTION`. No parameters.
+
+```kotlin
+@ActivityScope
+class ScreenTracker(private val analytics: Analytics)
+```
+
+Declares a scoped definition in the Activity scope. The Activity must provide that scope (see [Android Scopes](/docs/reference/koin-android/scope)).
+
+### @ActivityRetainedScope
+
+Package: `org.koin.android.annotation` (Android only). Target: `CLASS`, `FUNCTION`. No parameters.
+
+```kotlin
+@ActivityRetainedScope
+class FormState
+```
+
+Declares a scoped definition in the retained Activity scope, which survives configuration changes. See [Android Scopes](/docs/reference/koin-android/scope).
+
+### @FragmentScope
+
+Package: `org.koin.android.annotation` (Android only). Target: `CLASS`, `FUNCTION`. No parameters.
+
+```kotlin
+@FragmentScope
+class ListAdapterFactory
+```
+
+Declares a scoped definition in the Fragment scope. See [Android Scopes](/docs/reference/koin-android/scope).
+
+### @ScopeId
+
+Target: `VALUE_PARAMETER`
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `KClass<*>` | `Unit::class` | Scope type. The scope ID is the class full name |
+| `name` | `String` | `""` | Scope ID |
+
+```kotlin
+@Factory
+class ProfileService(@ScopeId(name = "user_session") val session: UserSession)
+```
+
+Resolves the parameter from the scope with that ID instead of the current scope (generated as `getScope("user_session").get()`). Compile-time safety does not check it, since the scope exists only at runtime. Concept: [Scopes](/docs/reference/koin-core/scopes).
+
+## Qualifiers
 
 ### @Named
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`, `VALUE_PARAMETER`
 
-**Target:** `CLASS`, `FUNCTION`, `VALUE_PARAMETER`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `String` | `""` | String qualifier |
+| `type` | `KClass<*>` | `Unit::class` | Type qualifier. Use `@Qualifier(Type::class)` instead with the Compiler Plugin |
 
-**Description:** Defines a qualifier for a given definition. Generates `StringQualifier("...")` or type-based qualifier.
-
-**Parameters:**
-- `value: String = ""` - String qualifier
-- `type: KClass<*> = Unit::class` - Class qualifier
-
-**Behavior:**
-Used to distinguish between multiple definitions of the same type.
-
-**Example with string:**
 ```kotlin
-@Single
-@Named("special")
-class MyClass(val d : MyDependency)
+@Singleton
+@Named("local")
+class LocalDatabase : Database
+
+@Singleton
+class UserRepository(@Named("local") private val database: Database)
 ```
 
-**Usage in parameter:**
-```kotlin
-@Single
-class Consumer(@Named("special") val myClass: MyClass)
-```
-
-**Example with type:**
-```kotlin
-@Single
-@Named(type = MyType::class)
-class MyClass(val d : MyDependency)
-```
-
----
+The same string on the definition and on the parameter links them. `jakarta.inject.Named` and `javax.inject.Named` are read the same way. Concept: [Qualifiers](/docs/reference/koin-core/qualifiers).
 
 ### @Qualifier
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`, `VALUE_PARAMETER`
 
-**Target:** `CLASS`, `FUNCTION`, `VALUE_PARAMETER`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `KClass<*>` | `Unit::class` | Type qualifier |
+| `name` | `String` | `""` | String qualifier |
 
-**Description:** Defines a qualifier for a given definition. Similar to `@Named` but with reversed parameter priority.
-
-**Parameters:**
-- `value: KClass<*> = Unit::class` - Class qualifier
-- `name: String = ""` - String qualifier
-
-**Behavior:**
-Used to distinguish between multiple definitions of the same type.
-
-**Example:**
 ```kotlin
-@Single
-@Qualifier(name = "special")
-class MyClass(val d : MyDependency)
+@Singleton
+@Qualifier(Remote::class)
+class RemoteDataSource : DataSource
+
+@Singleton
+class UserRepository(@Qualifier(Remote::class) private val source: DataSource)
 ```
 
----
+`@Qualifier` also marks your own qualifier annotations. Every annotation class annotated with `@Qualifier` or `@Named` (or `jakarta.inject.Qualifier`, `javax.inject.Qualifier`) becomes a qualifier:
 
-## Parameter Annotations
+```kotlin
+@Qualifier
+annotation class IoDispatcher
+
+@Singleton
+@IoDispatcher
+fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
+```
+
+A custom qualifier with no argument is a type qualifier on the annotation class. With a string or enum argument (`@Dispatcher(AppDispatchers.IO)`), the argument value is the qualifier. Concept: [Qualifiers](/docs/reference/koin-core/qualifiers).
+
+## Parameters
 
 ### @InjectedParam
 
-**Package:** `org.koin.core.annotation`
+Target: `VALUE_PARAMETER`. No parameters.
 
-**Target:** `VALUE_PARAMETER`
-
-**Description:** Marks a constructor or function parameter to be resolved from `ParametersHolder` (passed via `parametersOf()` at call site) instead of the DI container.
-
-**Parameters:** None
-
-**Behavior:**
-Resolves the parameter value from `ParametersHolder.get()` at runtime, not from Koin definitions. Compile safety validation skips `@InjectedParam` parameters.
-
-**Example:**
 ```kotlin
 @Factory
-class MyClass(@InjectedParam val id: Int, val service: Service)
+class UserPresenter(@InjectedParam val userId: String, private val repository: UserRepository)
+
+// caller
+val presenter: UserPresenter = get { parametersOf("user-42") }
 ```
 
-**Generated Koin DSL:**
-```kotlin
-factory { params -> MyClass(params.get(), get()) }
-```
-
-**Usage:**
-```kotlin
-val instance = koin.get<MyClass> { parametersOf(42) }
-```
-
----
+The value comes from `parametersOf(...)` at the call site, not from the container. Compile-time safety checks that call sites pass the right number and types of values (`KOIN-D005`, `KOIN-D006`). Concept: [Injected Parameters](/docs/reference/koin-core/injection-parameters).
 
 ### @Property
 
-**Package:** `org.koin.core.annotation`
+Target: `VALUE_PARAMETER`
 
-**Target:** `VALUE_PARAMETER`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `String` | required | Property key |
 
-**Description:** Annotates a constructor parameter or function parameter to resolve as a Koin property.
-
-**Parameters:**
-- `value: String` - Property name
-
-**Behavior:**
-Resolves the parameter value from Koin properties instead of dependency injection.
-
-**Example:**
 ```kotlin
 @Factory
-class MyClass(@Property("name") val name : String)
+class ApiClient(@Property("api_url") val url: String)
 ```
 
-**Generated Koin DSL:**
-```kotlin
-factory { MyClass(getProperty("name")) }
-```
-
-**With default value:**
-```kotlin
-@PropertyValue("name")
-val defaultName = "MyName"
-
-@Factory
-class MyClass(@Property("name") val name : String)
-```
-
-**Generated Koin DSL:**
-```kotlin
-factory { MyClass(getProperty("name", defaultName)) }
-```
-
----
+Resolves the parameter with `getProperty("api_url")`. If a `@PropertyValue` with the same key exists, it is the fallback value. Without one, the build shows warning `KOIN-P001` and the property must be set at startup. Concept: [Properties](/docs/reference/koin-core/starting-koin#properties).
 
 ### @PropertyValue
 
-**Package:** `org.koin.core.annotation`
+Target: `FIELD`
 
-**Target:** `FIELD`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `String` | required | Property key |
 
-**Description:** Annotates a field value that will be a Property default value.
-
-**Parameters:**
-- `value: String` - Property name
-
-**Behavior:**
-Defines a default value for a property that can be used when the property is not found.
-
-**Example:**
 ```kotlin
-@PropertyValue("name")
-val defaultName = "MyName"
+@PropertyValue("api_url")
+val defaultApiUrl = "https://api.example.com"
 
 @Factory
-class MyClass(@Property("name") val name : String)
+class ApiClient(@Property("api_url") val url: String)
 ```
 
-**Generated Koin DSL:**
-```kotlin
-factory { MyClass(getProperty("name", defaultName)) }
-```
-
----
-
-## Safety Annotations
+Declares the default value used when the property is not set (generated as `getProperty("api_url", defaultApiUrl)`).
 
 ### @Provided
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`, `VALUE_PARAMETER`. No parameters.
 
-**Target:** `CLASS`, `VALUE_PARAMETER`
-
-**Description:** Marks a type or parameter as externally provided at runtime (e.g., Android framework types, third-party SDKs). Compile-time safety validation skips these types.
-
-**Parameters:** None
-
-**Behavior:**
-- On a **class**: all usages of that type skip compile safety validation
-- On a **parameter**: only that specific parameter skips validation
-- The type is still resolved via `scope.get<T>()` at runtime — `@Provided` only affects compile-time checks
-
-**Example on class:**
 ```kotlin
-@Provided
-class FirebaseAnalytics  // all usages skip validation
-
 @Singleton
-class AnalyticsService(val analytics: FirebaseAnalytics)
-// No compile error — FirebaseAnalytics is @Provided
+class AnalyticsService(@Provided val firebase: FirebaseAnalytics)
 ```
 
-**Example on parameter:**
-```kotlin
-@Factory
-class PaymentProcessor(@Provided val gateway: PaymentGateway)
-// No compile error — only this parameter skips validation
-```
+Tells compile-time safety that the type is available at runtime without a declaration it can see (platform object, SDK, module loaded later). On a class, every use of the type is skipped. On a parameter, only that parameter. Runtime resolution is unchanged. Common Android types (`Context`, `Activity`, `Fragment`, `SavedStateHandle`, `WorkerParameters`, ...) don't need it. Concept: [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety#external-types-provided).
 
-**Note:** Common Android framework types (`Context`, `Application`, `Activity`, `Fragment`, `SavedStateHandle`, `WorkerParameters`) are automatically whitelisted and don't need `@Provided`.
-
-**See Also:** [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety#external-types-provided)
-
----
-
-## Module & Application Annotations
+## Modules and application
 
 ### @Module
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`
 
-**Target:** `CLASS`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `includes` | `Array<KClass<*>>` | `[]` | Other `@Module` classes to include |
+| `createdAtStart` | `Boolean` | `false` | Create the module's `single` definitions when Koin starts |
 
-**Description:** Class annotation to help gather definitions inside a Koin module. Each function can be annotated with a Koin definition annotation.
-
-**Parameters:**
-- `includes: Array<KClass<*>> = []` - Module classes to include
-- `createdAtStart: Boolean = false` - If `true`, module instances are created at start
-
-**Behavior:**
-Gathers all annotated functions and classes within the module.
-
-**Example:**
 ```kotlin
-@Module
-class MyModule {
-    @Single
-    fun myClass(d : MyDependency) = MyClass(d)
+@Module(includes = [NetworkModule::class])
+class DataModule {
+
+    @Singleton
+    fun database(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "app-db").build()
 }
 ```
 
-**Generated Koin DSL:**
-```kotlin
-val MyModule.module = module {
-    val moduleInstance = MyModule()
-    single { moduleInstance.myClass(get()) }
-}
-```
-
-**With includes:**
-```kotlin
-@Module(includes = [OtherModule::class])
-class MyModule {
-    // definitions
-}
-```
-
----
+Groups definitions: annotated functions inside the class, plus annotated classes found by `@ComponentScan`. Concept: [Modules](/docs/reference/koin-core/modules).
 
 ### @ComponentScan
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FIELD`
 
-**Target:** `CLASS`, `FIELD`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `vararg String` | empty | Packages to scan. Empty scans the package of the annotated class |
 
-**Description:** Gathers definitions declared with Koin definition annotations. Scans current package or explicit package names.
-
-**Parameters:**
-- `value: vararg String = []` - Packages to scan (supports glob patterns)
-
-**Behavior:**
-Scans specified packages for annotated classes. Supports both exact package names and glob patterns.
-
-**Glob Pattern Support:**
-
-1. **Exact package names (no wildcards):**
-   - `com.example.service` - Scans package and all subpackages (equivalent to `com.example**`)
-
-2. **Multi-level scan including root:**
-   - `com.example**` - Scans `com.example` and all subpackages
-
-3. **Multi-level scan excluding root:**
-   - `com.example.**` - Scans only subpackages of `com.example`, excludes root
-
-4. **Single-level wildcard:**
-   - `com.example.*.service` - Matches exactly one level (e.g., `com.example.user.service`)
-
-5. **Combined wildcards:**
-   - `com.**.service.*data` - Complex pattern matching
-   - `com.*.service.**` - Scans subpackages under pattern
-
-**Example - scan current package:**
 ```kotlin
-@ComponentScan
-class MyApp
+@Module
+@ComponentScan("com.myapp.data", "com.myapp.domain")
+class AppModule
 ```
 
-**Example - scan specific packages:**
-```kotlin
-@ComponentScan("com.example.services", "com.example.repositories")
-class MyApp
-```
+Adds to the module every annotated class and top-level function in the given packages and their subpackages, across Gradle modules. Concept: [Modules](/docs/reference/koin-core/modules).
 
-**Example - with glob patterns:**
-```kotlin
-@ComponentScan("com.example.**", "org.app.*.services")
-class MyApp
-```
-
----
+:::note
+The Compiler Plugin matches a package name and its subpackages. The glob patterns of the KSP processor (`com.example.**`, `com.*.service`) are not supported: list the packages instead.
+:::
 
 ### @Configuration
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FIELD`
 
-**Target:** `CLASS`, `FIELD`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `value` | `vararg String` | empty | Configuration labels. Empty means `"default"` |
 
-**Description:** Applied to `@Module` class to associate it with one or more configurations (tags/flavors).
-
-**Parameters:**
-- `value: vararg String = []` - Configuration names
-
-**Behavior:**
-Modules can be grouped into configurations for conditional loading.
-
-**Default Configuration:**
 ```kotlin
 @Module
+@ComponentScan
 @Configuration
-class MyModule
-```
-This module is part of the "default" configuration.
+class CoreModule            // label "default"
 
-**Multiple Configurations:**
-```kotlin
-@Module
-@Configuration("prod", "test")
-class MyModule
-```
-This module is available in both "prod" and "test" configurations.
-
-**With Default:**
-```kotlin
 @Module
 @Configuration("default", "test")
-class MyModule
+class FakeDataModule        // labels "default" and "test"
 ```
-Available in default and test configurations.
 
-**Note:** `@Configuration("default")` is equivalent to `@Configuration`
-
----
+A `@KoinApplication` loads every module that carries one of its configuration labels, including modules from other Gradle modules, without listing them. `@Configuration("default")` is the same as `@Configuration`. Concept: [Modules](/docs/reference/koin-core/modules).
 
 ### @KoinApplication
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`
 
-**Target:** `CLASS`
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `configurations` | `Array<String>` | `[]` | Configuration labels to load. Empty loads `"default"` |
+| `modules` | `Array<KClass<*>>` | `[Unit::class]` (none) | `@Module` classes to load in addition |
 
-**Description:** Tags a class as a Koin application entry point. Generates Koin application bootstrap with `startKoin()` or `koinApplication()` functions.
-
-**Parameters:**
-- `configurations: Array<String> = []` - List of configuration names to scan
-- `modules: Array<KClass<*>> = [Unit::class]` - List of modules to load besides configurations
-
-**Behavior:**
-Generates bootstrap functions that scan for configurations and included modules.
-
-**Example - default configuration:**
 ```kotlin
-@KoinApplication
-class MyApp
-```
+@KoinApplication(modules = [AppModule::class])
+object MyApp
 
-**Generated functions:**
-```kotlin
-MyApp.startKoin()
-MyApp.koinApplication()
-```
-
-**Example - specific configurations:**
-```kotlin
-@KoinApplication(configurations = ["default", "prod"])
-class MyApp
-```
-
-**Example - with modules:**
-```kotlin
-@KoinApplication(
-    configurations = ["default"],
-    modules = [CoreModule::class, ApiModule::class]
-)
-class MyApp
-```
-
-**Usage with custom configuration:**
-```kotlin
-MyApp.startKoin {
-    printLogger()
-    // additional configuration
+fun main() {
+    startKoin<MyApp> {
+        printLogger()
+    }
 }
 ```
 
----
+Marks the entry point. Start it with `startKoin<MyApp>()`, `koinApplication<MyApp>()` or `koinConfiguration<MyApp>()` (package `org.koin.plugin.module.dsl`). This is where compile-time safety checks the full graph. Modules from `@Configuration` load first, then the `modules` list in its order, so the explicit list wins on overrides. Concept: [Starting Koin](/docs/reference/koin-core/starting-koin).
 
-## Monitoring Annotations
+## Monitoring
 
 ### @Monitor
 
-**Package:** `org.koin.core.annotation`
+Target: `CLASS`, `FUNCTION`. No parameters.
 
-**Target:** `CLASS`, `FUNCTION`
-
-**Description:** Marks a class or function for automatic monitoring and performance tracing through Kotzilla Platform, the official tooling platform for Koin.
-
-**Parameters:** None
-
-**Behavior:**
-- When applied to a class: Generates a Koin proxy that monitors all public method calls
-- When applied to a function: Monitors that specific method within a Koin-managed component
-- Automatically captures performance metrics, error rates, and usage patterns
-- Sends data to Kotzilla workspace for real-time analysis
-
-**Requirements:**
-- `implementation 'io.kotzilla:kotzilla-core:latest.version'`
-- Valid Kotzilla Platform account and API key
-
-**Example:**
 ```kotlin
 @Monitor
-class UserService(private val userRepository: UserRepository) {
-    fun findUser(id: String): User? = userRepository.findById(id)
+class UserService(private val repository: UserRepository) {
+    fun findUser(id: String): User? = repository.findById(id)
 }
 ```
 
-**Resources:**
-- [Kotzilla Platform](https://kotzilla.io)
-- [Complete Documentation](https://doc.kotzilla.io)
-- [Latest Version](https://doc.kotzilla.io/docs/releaseNotes/changelogSDK)
+The Compiler Plugin wraps the function body (or every public function of the class) with a Kotzilla SDK trace. It requires the Kotzilla SDK (`io.kotzilla:kotzilla-core`) on the classpath. Without it, the build shows warning `KOIN-M001` and nothing is traced. Setup and data collected: [Monitor](/docs/tooling/monitor).
 
-**Since:** Kotzilla 1.2.1
+## JSR-330 annotations
 
----
+The Compiler Plugin also reads `jakarta.inject` and `javax.inject` annotations: `@Singleton`, `@Named`, `@Inject` and `@Qualifier`. See [JSR-330](/docs/reference/koin-android/jsr330).
 
-## Meta Annotations (Internal)
+## Removed annotations
 
-These annotations are for internal use only by the Koin compiler and code generation.
+`@ExternalDefinition`, `@MetaDefinition`, `@MetaModule` and `@MetaApplication` (package `org.koin.meta.annotations`) were generated by the KSP processor for its own use. The Compiler Plugin does not use them, and you never write them by hand.
 
-### @ExternalDefinition
+## Related
 
-**Package:** `org.koin.meta.annotations`
-
-**Target:** `CLASS`, `FIELD`, `FUNCTION`
-
-**Description:** Internal usage for components discovery in generated package.
-
-**Parameters:**
-- `value: String = ""` - Package of declared definition
-
----
-
-### @MetaDefinition
-
-**Package:** `org.koin.meta.annotations`
-
-**Target:** `CLASS`, `FUNCTION`, `PROPERTY`
-
-**Description:** Meta Definition annotation to help represent definition metadata.
-
-**Parameters:**
-- `value: String = ""` - Definition full path
-- `moduleTagId: String = ""` - Module Tag + ID (format: "module_id:module_tag")
-- `dependencies: Array<String> = []` - Parameters tags to check
-- `binds: Array<String> = []` - Bound types
-- `qualifier: String = ""` - Qualifier
-- `scope: String = ""` - Scope where it's declared
-
----
-
-### @MetaModule
-
-**Package:** `org.koin.meta.annotations`
-
-**Target:** `CLASS`
-
-**Description:** Meta Module annotation to help represent module metadata.
-
-**Parameters:**
-- `value: String = ""` - Module full path
-- `id: String = ""` - Module ID
-- `includes: Array<String> = []` - Includes Module Tags to check
-- `configurations: Array<String> = []` - Module Configurations to check
-- `isObject: Boolean = false` - Whether the module is an object
-
----
-
-### @MetaApplication
-
-**Package:** `org.koin.meta.annotations`
-
-**Target:** `CLASS`
-
-**Description:** Meta Application annotation to help represent application metadata.
-
-**Parameters:**
-- `value: String = ""` - Application full path
-- `includes: Array<String> = []` - Used Module Tags to check
-- `configurations: Array<String> = []` - Used Configurations modules to check
-
----
-
-## Summary Table
-
-| Annotation | Package | Purpose | Common Use Case |
-|------------|---------|---------|-----------------|
-| `@Singleton` / `@Single` | `org.koin.core.annotation` | Singleton definition | Shared application services |
-| `@Factory` | `org.koin.core.annotation` | Factory definition | Per-request instances |
-| `@Scoped` | `org.koin.core.annotation` | Scoped definition | Scope-specific instances |
-| `@Scope` | `org.koin.core.annotation` | Scope declaration | Custom scopes |
-| `@ViewModelScope` | `org.koin.core.annotation` | ViewModel scope | ViewModel-scoped dependencies |
-| `@ActivityScope` | `org.koin.android.annotation` | Activity scope | Activity-scoped dependencies |
-| `@ActivityRetainedScope` | `org.koin.android.annotation` | Retained activity scope | Config-change surviving deps |
-| `@FragmentScope` | `org.koin.android.annotation` | Fragment scope | Fragment-scoped dependencies |
-| `@ScopeId` | `org.koin.core.annotation` | Scope resolution | Resolve from specific scope |
-| `@KoinViewModel` | `org.koin.android.annotation` | ViewModel definition | Android/KMP/CMP ViewModels |
-| `@KoinWorker` | `org.koin.android.annotation` | Worker definition | WorkManager workers |
-| `@Named` | `org.koin.core.annotation` | String/type qualifier | Distinguish same-type beans |
-| `@Qualifier` | `org.koin.core.annotation` | Type/string qualifier | Distinguish same-type beans |
-| `@InjectedParam` | `org.koin.core.annotation` | Runtime parameter | `parametersOf()` values |
-| `@Property` | `org.koin.core.annotation` | Property injection | Configuration values |
-| `@PropertyValue` | `org.koin.core.annotation` | Property default | Default config values |
-| `@Provided` | `org.koin.core.annotation` | Skip safety validation | External/framework types |
-| `@Module` | `org.koin.core.annotation` | Module declaration | Group definitions |
-| `@ComponentScan` | `org.koin.core.annotation` | Package scanning | Auto-discover definitions |
-| `@Configuration` | `org.koin.core.annotation` | Module configuration | Build variants/flavors |
-| `@KoinApplication` | `org.koin.core.annotation` | App entry point | Bootstrap Koin |
-| `@Monitor` | `org.koin.core.annotation` | Performance monitoring | Production monitoring |
-
----
-
-**Document Version:** 1.0
-**Last Updated:** 20-10-2025
-**Koin Annotations Version:** 2.2.x+
+- [Definitions](/docs/reference/koin-core/definitions): definition types, binding, constructor parameters.
+- [Modules](/docs/reference/koin-core/modules): `@Module`, `@ComponentScan` and `@Configuration` in practice.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): what the plugin checks from these annotations.
+- [Compiler Plugin Options](/docs/reference/koin-annotations/options): Gradle options of the plugin.
+- [DSL Reference](/docs/reference/koin-core/dsl): the DSL equivalent of each annotation.

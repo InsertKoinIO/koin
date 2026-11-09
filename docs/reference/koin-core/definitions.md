@@ -1,44 +1,44 @@
 ---
 title: Definitions
+description: Declare how Koin creates your classes with single, factory, scoped and viewModel, bind them to interfaces, and wrap external libraries.
 ---
 
-# Definitions
+A definition tells Koin how to create one type and how long to keep the instance. This page covers the definition types, interface binding, how constructor parameters are resolved, and definitions for classes you don't own. It assumes you know what a module is (see [Core Concepts](/docs/intro/core-concepts)).
 
-Definitions declare how Koin creates and manages your dependencies. This guide covers all definition types using both DSL and Annotations.
+Code samples come in three tabs: Compiler Plugin DSL, Annotations, Constructor / Classic DSL. Pick yours, the choice applies to every page. If you are not sure which style to use, read [Choosing your style](/docs/intro/choosing-your-style).
 
-## Definition Types
+## Definition types
 
-| Type | DSL | Annotation | Lifecycle | Use Case |
-|------|-----|------------|-----------|----------|
-| Singleton | `single()` | `@Singleton` | One instance for app lifetime | Services, repositories, databases |
-| Factory | `factory()` | `@Factory` | New instance each time | Presenters, use cases, stateful objects |
-| Scoped | `scoped()` | `@Scoped` | One instance per scope | Activity-bound, session-bound objects |
-| ViewModel | `viewModel()` | `@KoinViewModel` | Android ViewModel lifecycle | ViewModels |
+| Type | Instance | Typical use |
+|------|----------|-------------|
+| `single` | One instance, kept for the lifetime of the Koin container | Repositories, API clients, databases |
+| `factory` | A new instance each time it is requested | Presenters, use cases, short-lived objects |
+| `scoped` | One instance per scope, released when the scope closes | Objects bound to an Activity, a session, a request |
+| `viewModel` | Managed by the ViewModel lifecycle | ViewModels (Android and Compose Multiplatform) |
+| `worker` | Created by WorkManager | Android `ListenableWorker` |
 
-## Declaring Definitions
+Declaring them:
 
-### Compiler Plugin DSL (Recommended)
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
+import org.koin.dsl.module
 import org.koin.plugin.module.dsl.*
 
 val appModule = module {
-    // Singleton
     single<Database>()
     single<UserRepository>()
-
-    // Factory - new instance each time
     factory<UserPresenter>()
-
-    // ViewModel
     viewModel<UserViewModel>()
 }
 ```
 
-### Annotations
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
-@Singleton  // or @Single
+@Singleton
 class Database
 
 @Singleton
@@ -51,17 +51,27 @@ class UserPresenter(private val repository: UserRepository)
 class UserViewModel(private val repository: UserRepository) : ViewModel()
 ```
 
-### Classic DSL
+`@Singleton` and `@Single` are equivalent. Prefer `@Singleton`, the JSR-330 name.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
+import org.koin.dsl.module
+import org.koin.core.module.dsl.*
+
 val appModule = module {
-    // With constructor reference (autowiring)
     singleOf(::Database)
     singleOf(::UserRepository)
     factoryOf(::UserPresenter)
     viewModelOf(::UserViewModel)
+}
+```
 
-    // With lambda (manual wiring)
+You can also write the constructor call yourself, with `get()` for each dependency:
+
+```kotlin
+val appModule = module {
     single { Database() }
     single { UserRepository(get()) }
     factory { UserPresenter(get()) }
@@ -69,356 +79,271 @@ val appModule = module {
 }
 ```
 
-## Definition Comparison
+</TabItem>
+</Tabs>
 
-| Concept | Compiler Plugin DSL | Classic DSL | Annotation |
-|---------|---------------------|-------------|------------|
-| Singleton | `single<MyClass>()` | `singleOf(::MyClass)` | `@Singleton` / `@Single` |
-| Factory | `factory<MyClass>()` | `factoryOf(::MyClass)` | `@Factory` |
-| Scoped | `scoped<MyClass>()` | `scopedOf(::MyClass)` | `@Scoped` |
-| ViewModel | `viewModel<MyVM>()` | `viewModelOf(::MyVM)` | `@KoinViewModel` |
-| Worker | `worker<MyWorker>()` | `workerOf(::MyWorker)` | `@KoinWorker` |
+With the Compiler Plugin DSL and annotations, you never write `get()`. The [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin) reads the constructor and generates the calls for you, then checks at build time that every dependency is declared.
 
-:::info
-The compiler plugin is analysing your class and function parameters, to generate the right call to Koin with `get()` function you don't have to write anymore.
-:::
+`single` and `factory` are explained above. `scoped` needs a scope declaration: see [Scopes](/docs/reference/koin-core/scopes). `viewModel` has its own page: see [ViewModel](/docs/reference/koin-core/viewmodel). `worker` is covered in [WorkManager](/docs/reference/koin-android/workmanager).
 
-## Single (Singleton)
+### Single or factory?
 
-Creates one instance that's reused throughout the app:
+Use `single` when the object has no per-caller state and is costly to create (a database, an HTTP client). Use `factory` when each caller needs its own instance, or the object holds state that must not be shared. If an instance should live longer than a factory but shorter than the app, you need a [scope](/docs/reference/koin-core/scopes).
 
-```kotlin
-// DSL
-single<DatabaseHelper>()
+## Interface binding
 
-// Annotation
-@Singleton
-class DatabaseHelper
-```
+Most of the time, consumers depend on an interface, not on the implementation. Bind the implementation to the interface:
 
-Both create the same result - a single instance shared across all consumers.
-
-## Factory
-
-Creates a new instance each time:
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
 
 ```kotlin
-// DSL
-factory<UserPresenter>()
+val dataModule = module {
+    single<UserRepositoryImpl>() bind UserRepository::class
 
-// Annotation
-@Factory
-class UserPresenter(private val repository: UserRepository)
-```
-
-## Scoped
-
-Creates one instance per scope:
-
-```kotlin
-// DSL
-scope<MyActivity> {
-    scoped<ActivityPresenter>()
-}
-
-// Annotation
-@Scoped(MyActivityScope::class)
-class ActivityPresenter
-```
-
-## ViewModel
-
-Android ViewModel with proper lifecycle:
-
-```kotlin
-// DSL
-viewModel<UserViewModel>()
-
-// Annotation
-@KoinViewModel
-class UserViewModel(private val repository: UserRepository) : ViewModel()
-```
-
-## Interface Binding
-
-### Compiler Plugin DSL
-
-```kotlin
-single<UserRepositoryImpl>() bind UserRepository::class
-
-// Multiple bindings
-single<MyServiceImpl>() binds arrayOf(ServiceA::class, ServiceB::class)
-```
-
-### Classic DSL
-
-```kotlin
-singleOf(::UserRepositoryImpl) bind UserRepository::class
-
-// Or with lambda
-single<UserRepository> { UserRepositoryImpl(get()) }
-```
-
-### Annotations
-
-**Interface binding is automatic** when your class implements an interface:
-
-```kotlin
-@Singleton
-class UserRepositoryImpl(
-    private val database: Database
-) : UserRepository  // Automatically binds to UserRepository
-```
-
-For explicit binding:
-
-```kotlin
-@Singleton
-@Binds(UserRepository::class)
-class UserRepositoryImpl : UserRepository
-```
-
-## Qualifiers (Named Definitions)
-
-When you have multiple definitions of the same type. See also [Injection with Qualifiers](/docs/reference/koin-core/injection#injection-with-qualifiers) for retrieval.
-
-### Compiler Plugin DSL
-
-With Compiler Plugin DSL, you need to annotate with `@Named` to use string qualifier (like you were previously using `named()`)
-
-```kotlin
-@Named("local")
-class LocalDatabase : Database
-
-@Named("remote")
-class RemoteDatabase : Database
-
-class UserRepository(
-    @Named("local") private val localDb: Database,
-    @Named("remote") private val remoteDb: Database
-)
-
-single<LocalDatabase>()
-single<RemoteDatabase>()
-single<UserRepository>()
-
-// Usage
-val localDb: Database = get(named("local"))
-```
-
-### Classic DSL
-
-```kotlin
-single<Database>(named("local")) { LocalDatabase() }
-single<Database>(named("remote")) { RemoteDatabase() }
-
-// Usage
-val localDb: Database = get(named("local"))
-```
-
-### Annotations
-
-```kotlin
-@Singleton
-@Named("local")
-class LocalDatabase : Database
-
-@Singleton
-@Named("remote")
-class RemoteDatabase : Database
-
-// In a consumer
-@Singleton
-class UserRepository(
-    @Named("local") private val localDb: Database,
-    @Named("remote") private val remoteDb: Database
-)
-```
-
-## Injected Parameters
-
-Pass parameters at injection time:
-
-### Compiler Plugin DSL
-
-Use the `@InjectedParam` to indicate that a parameter will be served by injected parameters.
-
-```kotlin
-class UserPresenter(
-    @InjectedParam userId : String,
-    repository : UserRepository
-)
-
-factory<UserPresenter>()
-```
-
-### Classic DSL
-
-```kotlin
-class UserPresenter(
-    userId : String,
-    repository : UserRepository
-)
-
-factory { params ->
-    UserPresenter(
-        userId = params.get(),
-        repository = get()
-    )
+    // several types at once
+    single<MyServiceImpl>() binds arrayOf(ServiceA::class, ServiceB::class)
 }
 ```
 
-### Annotations
-
-```kotlin
-@Factory
-class UserPresenter(
-    @InjectedParam val userId: String,
-    val repository: UserRepository  // Auto-injected
-)
-
-// Usage
-val presenter: UserPresenter = get { parametersOf("user123") }
-```
-
-## Optional Dependencies
-
-### Compiler Plugin DSL
-
-```kotlin
-class MyService(
-    val required: RequiredDep,
-    val optional: OptionalDep?  // Resolved with getOrNull()
-)
-
-single<MyService>()
-```
-
-### Classic DSL
-
-```kotlin
-single {
-    MyService(
-        required = get(),
-        optional = getOrNull()
-    )
-}
-```
-
-### Annotations
-
-Nullable parameters are handled automatically:
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 @Singleton
-class MyService(
-    val required: RequiredDep,
-    val optional: OptionalDep?  // Resolved with getOrNull()
-)
+class UserRepositoryImpl(private val database: Database) : UserRepository
 ```
 
-## Lazy Injection
-
-Defer instance creation:
-
-### Compiler Plugin DSL
+Binding is automatic: Koin binds the class to all its supertypes. To bind only some of them, list them:
 
 ```kotlin
-class MyService(
-    val lazyDep: Lazy<HeavyDependency>  // Deferred creation
-)
-
-single<MyService>()
+@Singleton(binds = [UserRepository::class])
+class UserRepositoryImpl(private val database: Database) : UserRepository, Closeable
 ```
 
-### Classic DSL
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-single {
-    MyService(
-        lazyDep = inject()  // Lazy<Dependency>
-    )
+val dataModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+
+    // or declare the interface type directly
+    single<UserRepository> { UserRepositoryImpl(get()) }
 }
 ```
 
-### Annotations
+</TabItem>
+</Tabs>
+
+A consumer then asks for `UserRepository` and gets the `UserRepositoryImpl` instance. When two definitions bind the same type, you need a [qualifier](/docs/reference/koin-core/qualifiers) to tell them apart.
+
+## Constructor parameters
+
+Koin resolves each constructor parameter from the container. The parameter type decides how:
+
+| Parameter | Resolved as | Detail |
+|-----------|-------------|--------|
+| `repository: UserRepository` | The `UserRepository` definition. Fails if it is missing | |
+| `logger: Logger?` | The definition if it exists, `null` otherwise | |
+| `heavy: Lazy<HeavyService>` | Created on first access of `heavy.value` | [Injection](/docs/reference/koin-core/injection) |
+| `loggers: List<Logger>` | All definitions bound to `Logger` | [Advanced Patterns](/docs/reference/koin-core/advanced-patterns#collections-of-dependencies) |
+| `@Named("local") db: Database` | The definition with that qualifier | [Qualifiers](/docs/reference/koin-core/qualifiers) |
+| `@InjectedParam userId: String` | A value passed by the caller at resolution time | [Injected Parameters](/docs/reference/koin-core/injection-parameters) |
+| `@Property("api_url") url: String` | A Koin property | [Starting Koin](/docs/reference/koin-core/starting-koin#properties) |
+
+With the Compiler Plugin DSL and annotations, this works from the constructor signature alone:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+class SyncService(
+    private val repository: UserRepository,
+    private val analytics: Analytics?,
+    private val uploader: Lazy<Uploader>,
+)
+
+val appModule = module {
+    single<SyncService>()
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 @Singleton
-class MyService(
-    val lazyDep: Lazy<HeavyDependency>  // Deferred creation
+class SyncService(
+    private val repository: UserRepository,
+    private val analytics: Analytics?,
+    private val uploader: Lazy<Uploader>,
 )
 ```
 
-## Properties
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
-Inject configuration values:
-
-### Compiler Plugin DSL
-
-```kotlin
-class ApiClient(
-    @Property("api_url") val url: String,
-    @Property("api_key") val key: String
-)
-
-single<ApiClient>()
-```
-
-### Classic DSL
+`singleOf(::SyncService)` resolves every parameter with `get()`. For nullable, lazy or list parameters, write the call yourself with the matching function:
 
 ```kotlin
-single {
-    ApiClient(
-        url = getProperty("api_url"),
-        key = getProperty("api_key", "default")
-    )
+val appModule = module {
+    single {
+        SyncService(
+            repository = get(),
+            analytics = getOrNull(),
+            uploader = inject(),
+        )
+    }
 }
 ```
 
-### Annotations
+`getAll()` returns a `List`, `getProperty("key")` reads a property, and `params.get()` reads an injected parameter.
+
+</TabItem>
+</Tabs>
+
+## Classes you don't own
+
+Classes from libraries (Room, Retrofit, OkHttp) can't be annotated and often come from a builder. Declare them with a function whose parameters Koin resolves:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+import org.koin.plugin.module.dsl.create
+
+fun database(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "app-db").build()
+
+fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
+
+val databaseModule = module {
+    single { create(::database) }
+    single { create(::topicDao) }
+}
+```
+
+`create(::function)` resolves the function parameters like a constructor, with the same compile-time checks. Qualifier annotations on the function and its parameters work too.
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+Annotate a top-level function. `@ComponentScan` finds it like a class:
 
 ```kotlin
 @Singleton
-class ApiClient(
-    @Property("api_url") val url: String,
-    @Property("api_key") val key: String
-)
+fun database(context: Context): AppDatabase =
+    Room.databaseBuilder(context, AppDatabase::class.java, "app-db").build()
+
+@Singleton
+fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
 ```
 
-## Callbacks
-
-### onClose Callback
-
-Execute code when instance is released:
+Or group provider functions in a `@Module` class:
 
 ```kotlin
-single {
-    Database()
-} onClose {
-    it?.close()  // Called when Koin stops or scope closes
+@Module
+class DatabaseModule {
+
+    @Singleton
+    fun database(context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "app-db").build()
+
+    @Singleton
+    fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
 }
 ```
 
-### createdAtStart
-
-Create instance eagerly at startup:
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-// Compiler Plugin DSL
-single<ConfigManager>() withOptions {
-    createdAtStart()
-}
-
-// Classic DSL
-single(createdAtStart = true) {
-    ConfigManager()
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "app-db").build()
+    }
+    single { get<AppDatabase>().topicDao() }
 }
 ```
 
-## Definition Override
+</TabItem>
+</Tabs>
 
-### Default: Last Wins
+For complete Retrofit, Room and serialization setups on Android, see [Android Library Integration](/docs/reference/koin-android/binding-patterns).
+
+## Eager creation
+
+Koin creates a `single` the first time someone asks for it. To create it when Koin starts instead, mark it `createdAtStart`:
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+val appModule = module {
+    single<ConfigManager>() withOptions {
+        createdAtStart()
+    }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+@Singleton(createdAtStart = true)
+class ConfigManager
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    single(createdAtStart = true) { ConfigManager() }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Eager creation runs on the thread that starts Koin. On Android this is the main thread during `Application.onCreate()`, so every eager definition adds to app startup time. Keep it for objects that must exist before the first screen. To move work off startup, see [Lazy Modules](/docs/reference/koin-core/lazy-modules).
+
+## Release callback
+
+`onClose` runs when the instance is released: when Koin stops for a `single`, or when its scope closes for a `scoped`.
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+val appModule = module {
+    single<Database>() onClose { it?.close() }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+Annotations have no `onClose` parameter. Declare this definition in a DSL module.
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val appModule = module {
+    single { Database() } onClose { it?.close() }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`onClose` is never called for a `factory`: Koin does not keep factory instances.
+
+## Overriding a definition
+
+When two modules declare the same type, the module loaded last wins:
 
 ```kotlin
 val prodModule = module {
@@ -426,21 +351,19 @@ val prodModule = module {
 }
 
 val testModule = module {
-    single<ApiService> { MockApi() }  // Overrides production
+    single<ApiService> { FakeApi() }
 }
 
 startKoin {
-    modules(prodModule, testModule)
+    modules(prodModule, testModule) // ApiService resolves to FakeApi
 }
 ```
 
-### Explicit Override
-
-In strict mode, mark overrides explicitly:
+This is useful in tests, and a source of bugs when it happens by accident. To make overrides explicit, disable them globally and mark the ones you want:
 
 ```kotlin
 val testModule = module {
-    single<ApiService> { MockApi() }.override()
+    single<ApiService> { FakeApi() }.override()
 }
 
 startKoin {
@@ -449,157 +372,13 @@ startKoin {
 }
 ```
 
-## Safe DSL Patterns
+With `allowOverride(false)`, an unmarked duplicate fails at start.
 
-The Koin Compiler Plugin transforms DSL definitions at compile time — auto-wiring constructor parameters and validating them. Here are the key patterns:
+## Related
 
-### Function Builders with create()
-
-Use `create(::function)` to wrap external libraries you don't own. The function parameters are auto-resolved from the DI container:
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.create
-
-// Builder functions — parameters resolved by Koin
-fun database(context: Context): AppDatabase =
-    Room.databaseBuilder(context, AppDatabase::class.java, "my-db").build()
-
-fun topicDao(db: AppDatabase): TopicDao = db.topicDao()
-fun newsDao(db: AppDatabase): NewsResourceDao = db.newsResourceDao()
-
-val databaseModule = module {
-    single { create(::database) }
-    single { create(::topicDao) }
-    single { create(::newsDao) }
-}
-```
-
-This is the recommended pattern for Room databases, Retrofit services, OkHttp clients, and other external libraries.
-
-### Module Composition with includes()
-
-Organize modules by layer and compose them:
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.*
-
-val networkModule = module {
-    includes(dispatchersModule)
-
-    single { create(::json) }
-    single<AppHttpClient>()
-    single<DemoNetworkDataSource>() bind NetworkDataSource::class
-}
-
-private fun json(): Json = Json { ignoreUnknownKeys = true }
-```
-
-### App Module — Composing Everything
-
-The app module includes all feature modules and declares ViewModels and use cases:
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.*
-import org.koin.androidx.scope.dsl.activityScope
-
-val appModule = module {
-    includes(
-        dispatchersModule,
-        databaseModule,
-        dataStoreModule,
-        networkModule,
-        dataModule,
-        syncModule
-    )
-
-    // Domain use cases — factory (new instance each time)
-    factory<GetFollowableTopicsUseCase>()
-    factory<GetSearchContentsUseCase>()
-
-    // ViewModels
-    viewModel<MainActivityViewModel>()
-    viewModel<HomeViewModel>()
-    viewModel<BookmarksViewModel>()
-
-    // Activity-scoped definitions
-    activityScope {
-        scoped<ActivityTracker>()
-    }
-}
-```
-
-### Custom Qualifiers in DSL
-
-Qualifier annotations work with `create(::function)` too:
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.create
-
-val dispatchersModule = module {
-    single { create(::dispatcherIO) }
-    single { create(::dispatcherDefault) }
-    single { create(::coroutineScope) }
-}
-
-@Dispatcher(NiaDispatchers.IO)
-fun dispatcherIO(): CoroutineDispatcher = Dispatchers.IO
-
-@Dispatcher(NiaDispatchers.Default)
-fun dispatcherDefault(): CoroutineDispatcher = Dispatchers.Default
-
-fun coroutineScope(
-    @Dispatcher(NiaDispatchers.Default) default: CoroutineDispatcher
-) = CoroutineScope(SupervisorJob() + default)
-```
-
-### Worker with DSL
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.*
-import org.koin.dsl.bind
-
-val syncModule = module {
-    single<WorkManagerSyncManager>() bind SyncManager::class
-    worker<SyncWorker>()
-}
-```
-
-### Complete Pattern: Repository with Interface Binding
-
-```kotlin
-import org.koin.dsl.module
-import org.koin.dsl.bind
-import org.koin.plugin.module.dsl.single
-
-val dataModule = module {
-    includes(databaseModule, dataStoreModule, networkModule)
-
-    single<OfflineFirstNewsRepository>() bind NewsRepository::class
-    single<OfflineFirstTopicsRepository>() bind TopicsRepository::class
-    single<OfflineFirstUserDataRepository>() bind UserDataRepository::class
-}
-```
-
-All these definitions are validated at compile time by the Koin Compiler Plugin — missing dependencies, qualifier mismatches, and broken call sites are caught at build time. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
-
-## Best Practices
-
-1. **Prefer Constructor Injection** - Makes code testable without Koin
-2. **Use `single` for stateless services** - Repositories, clients, helpers
-3. **Use `factory` for stateful objects** - Presenters, use cases with state
-4. **Use `scoped` for lifecycle-bound objects** - Activity, Fragment, Session
-5. **Minimize qualifiers** - Use different interfaces instead when possible
-6. **Bind to interfaces** - Depend on abstractions, not implementations
-7. **Use `create(::builder)` for external libraries** - Safer dependency resolution
-
-## Next Steps
-
-- **[Injection](/docs/reference/koin-core/injection)** - Retrieve dependencies
-- **[Qualifiers](/docs/reference/koin-core/qualifiers)** - Named and typed qualifiers
-- **[Advanced Patterns](/docs/reference/koin-core/advanced-patterns)** - Collections, decorators, external libraries
-- **[Scopes](/docs/reference/koin-core/scopes)** - Manage lifecycle
+- [Modules](/docs/reference/koin-core/modules): group definitions and compose modules with `includes()`.
+- [Qualifiers](/docs/reference/koin-core/qualifiers): several definitions of the same type.
+- [Injection](/docs/reference/koin-core/injection): retrieve instances outside of constructors.
+- [Scopes](/docs/reference/koin-core/scopes): instances bound to a lifecycle.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): what the Compiler Plugin checks in your definitions.
+- [DSL Reference](/docs/reference/koin-core/dsl) and [Annotations Reference](/docs/reference/koin-annotations/annotations-inventory): every keyword and annotation.

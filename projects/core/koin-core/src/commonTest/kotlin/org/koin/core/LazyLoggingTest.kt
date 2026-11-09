@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * KTZ-4829: debug messages must not be built when the logger is above DEBUG.
+ * Debug messages must not be built when the logger is above DEBUG.
  *
  * Koin's default logger is EmptyLogger at Level.NONE, yet registration and resolution used to
  * interpolate BeanDefinition.toString() and ResolutionContext.debugTag on every definition and

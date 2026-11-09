@@ -1,80 +1,68 @@
 ---
-title: Koin vs Hilt/Dagger
+title: Koin vs Hilt
+description: A factual comparison of Koin and Hilt/Dagger. How each builds the graph, how the code looks, where each one is stronger, and how concepts map.
 ---
 
-# Koin vs Hilt/Dagger
+This page compares Koin with Hilt (and Dagger, which Hilt is built on) for Android developers who know one and want to understand the other. It covers how each framework builds the dependency graph, what the code looks like, and where each one has the advantage. To move a project from Hilt to Koin, see [Migrating from Hilt](/docs/reference/koin-android/hilt-migration).
 
-This page compares Koin with Hilt and Dagger to help you understand the differences and decide which framework fits your needs.
+Koin samples below use annotations, because they are closest to Hilt. The same definitions can be written with the Koin DSL (see [Choosing your style](/docs/intro/choosing-your-style)).
 
-:::info
-Koin supports both **DSL and Annotations** - choose what fits your team. Both are first-class citizens, equally powerful, and powered by the same Compiler Plugin. This comparison shows annotation examples for fair comparison with Hilt, but Koin's DSL offers equivalent functionality with even less boilerplate.
-:::
+## How each one builds the graph
 
-## Philosophy Differences
+**Hilt** generates the dependency graph as Java source code at build time, with annotation processing (KSP or kapt). Every binding, component and scope is known when the app compiles. At runtime, the app calls generated factories directly, with no lookup.
 
-| Aspect | Koin | Hilt/Dagger |
-|--------|------|-------------|
-| **Learning curve** | Minutes to learn | Hours/days to master |
-| **Code complexity** | Simple DSL or annotations | Complex annotation rules |
-| **Debugging** | Clear errors, no generated code maze | Generated code can be hard to trace |
-| **Setup** | One plugin, minimal config | Multiple annotations, strict rules |
-| **Compile safety** | ✅ With Compiler Plugin | ✅ Always |
-| **Runtime flexibility** | ✅ Dynamic features | ❌ Static only |
+**Koin** keeps the graph in a runtime container. Definitions are registered when Koin starts, and instances are resolved by type when requested. With the [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin), the graph assembled at `startKoin` is also checked at build time, and the plugin generates the constructor wiring. Without the plugin, a missing definition is found at runtime or in a [verification test](/docs/reference/koin-test/verify).
 
-## Annotation Comparison
+This difference explains most of the tradeoffs below.
 
-Even annotations are simpler in Koin:
+## At a glance
 
-| Task | Koin | Hilt |
-|------|------|------|
-| **Singleton** | `@Singleton class MyService` | `@Singleton class MyService @Inject constructor(...)` |
-| **Interface binding** | Automatic | Requires `@Binds` in abstract module |
-| **Component scanning** | `@ComponentScan("package")` | Not available |
-| **Module discovery** | `@Configuration` - auto-discovered | Manual `@InstallIn` per module |
-| **Provide 3rd party** | `@Singleton fun provide()` | `@Provides` in `@Module` + `@InstallIn` |
-| **ViewModel** | `@KoinViewModel class MyVM` | `@HiltViewModel class MyVM @Inject constructor` |
+| Aspect | Koin | Hilt |
+|--------|------|------|
+| Graph built | At runtime, checked at build time with the Compiler Plugin | At build time, generated code |
+| Missing binding detected | Build time with the Compiler Plugin, otherwise at runtime or in a test | Build time, always |
+| Build tooling | Kotlin compiler plugin, optional with the Constructor or Classic DSL | KSP or kapt, Hilt Gradle plugin |
+| Platforms | Kotlin Multiplatform: Android, iOS, desktop, web, JVM server | Android (Dagger alone runs on the JVM) |
+| Languages | Kotlin | Java and Kotlin |
+| Load or unload modules at runtime | Yes (`loadKoinModules`, `unloadKoinModules`, lazy modules) | No |
+| Component hierarchy | Root container plus scopes you declare, with Android scope archetypes | Fixed hierarchy of standard components (`SingletonComponent`, `ActivityComponent`, ...) |
+| Android entry points | `by inject()`, `by viewModel()` in any Activity or Fragment | `@AndroidEntryPoint` on each class |
+| Jetpack integration | ViewModel, WorkManager, Navigation, Compose, through Koin libraries | ViewModel, WorkManager, Navigation, Compose, through AndroidX Hilt libraries |
 
-## Code Comparison
+## Where Hilt is stronger
 
-### Simple Singleton
+- **Complete graph at build time**: Hilt generates the whole graph, so every binding is verified on every build, for every module and scope. The Koin Compiler Plugin validates the graph at entry points, but modules loaded at runtime and library modules alone are outside its view.
+- **No runtime lookup**: generated factories are called directly. Koin resolves each request through its container, which costs a lookup per resolution and registration work at startup.
+- **Java support**: Dagger and Hilt work in Java codebases. Koin's API is designed for Kotlin.
+- **Ecosystem and guidance**: Hilt is the DI library documented in the official Android guides, and many AndroidX libraries and samples ship Hilt integration first.
+- **Detailed errors**: a Dagger error shows the full path from the entry point to the missing binding.
 
-**Koin:**
+## Where Koin is stronger
+
+- **Kotlin Multiplatform**: the same modules run on Android, iOS, desktop, web and Ktor servers. Hilt is Android only.
+- **Runtime flexibility**: modules can be loaded, unloaded or loaded in the background after start, which fits feature flags, dynamic features and plugin architectures.
+- **Less setup**: no annotation processor, no generated sources, no `@AndroidEntryPoint`. With the Constructor or Classic DSL, the build plugin is optional.
+- **Less declaration code**: constructors need no `@Inject`, and interfaces are bound to their implementation without a separate `@Binds` module.
+- **Your choice of style**: DSL or annotations, which can be mixed.
+
+## Code side by side
+
+### A class with dependencies
+
+Koin:
+
 ```kotlin
 @Singleton
-class MyRepository(val api: ApiService)
-
-@Module
-@ComponentScan("com.app")
-class AppModule
+class UserRepositoryImpl(private val api: ApiService) : UserRepository
 ```
 
-**Hilt:**
+Koin binds `UserRepositoryImpl` to `UserRepository` because it implements it.
+
+Hilt:
+
 ```kotlin
 @Singleton
-class MyRepository @Inject constructor(val api: ApiService)
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class AppModule {
-    @Binds
-    abstract fun bindRepository(impl: MyRepository): Repository
-}
-```
-
-### Interface Binding
-
-**Koin - Automatic:**
-```kotlin
-@Singleton
-class UserRepositoryImpl(val db: Database) : UserRepository
-
-// That's it! Koin automatically binds to UserRepository interface
-```
-
-**Hilt - Requires explicit binding:**
-```kotlin
-@Singleton
-class UserRepositoryImpl @Inject constructor(val db: Database) : UserRepository
+class UserRepositoryImpl @Inject constructor(private val api: ApiService) : UserRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -84,277 +72,131 @@ abstract class RepositoryModule {
 }
 ```
 
-### Multi-Module Apps
+### Third-party classes
 
-**Koin - Modules auto-discovered:**
-```kotlin
-// feature/auth/AuthModule.kt
-@Module
-@ComponentScan
-@Configuration  // Auto-discovered!
-class AuthModule
+Koin:
 
-// feature/profile/ProfileModule.kt
-@Module
-@ComponentScan
-@Configuration  // Auto-discovered!
-class ProfileModule
-
-// app/MyApp.kt
-@KoinApplication  // No need to list modules
-class MyApp
-```
-
-**Hilt - Must manually install each module:**
-```kotlin
-// feature/auth/AuthModule.kt
-@Module
-@InstallIn(SingletonComponent::class)
-class AuthModule { ... }
-
-// feature/profile/ProfileModule.kt
-@Module
-@InstallIn(SingletonComponent::class)
-class ProfileModule { ... }
-
-// app/MyApp.kt
-@HiltAndroidApp
-class MyApp  // Still need correct @InstallIn everywhere
-```
-
-### ViewModel
-
-**Koin:**
-```kotlin
-@KoinViewModel
-class UserViewModel(
-    private val repository: UserRepository,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel()
-
-// In Activity/Fragment
-val viewModel: UserViewModel by viewModel()
-
-// In Compose
-val viewModel: UserViewModel = koinViewModel()
-```
-
-**Hilt:**
-```kotlin
-@HiltViewModel
-class UserViewModel @Inject constructor(
-    private val repository: UserRepository,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel()
-
-// In Activity/Fragment
-val viewModel: UserViewModel by viewModels()
-
-// In Compose
-val viewModel: UserViewModel = hiltViewModel()
-```
-
-### Providing Third-Party Libraries
-
-**Koin:**
 ```kotlin
 @Module
 class NetworkModule {
     @Singleton
-    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+    fun retrofit(): Retrofit = Retrofit.Builder()
         .baseUrl("https://api.example.com")
         .build()
 
     @Singleton
-    fun provideApi(retrofit: Retrofit): ApiService =
+    fun apiService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
 }
 ```
 
-**Hilt:**
+Hilt:
+
 ```kotlin
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+    fun retrofit(): Retrofit = Retrofit.Builder()
         .baseUrl("https://api.example.com")
         .build()
 
     @Provides
     @Singleton
-    fun provideApi(retrofit: Retrofit): ApiService =
+    fun apiService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
 }
 ```
 
-## Dynamic Features: Koin's Unique Advantage
+The two are close. Koin needs no `@InstallIn` because the module is not tied to a component, and no `@Provides` because `@Singleton` on a function already declares a definition.
 
-Koin is **runtime-based but performant and compile-safe**. This enables dynamic features that Hilt cannot offer:
+### ViewModel
 
-| Dynamic Feature | Koin | Hilt |
-|-----------------|------|------|
-| Load modules at runtime | ✅ `loadKoinModules()` | ❌ Not possible |
-| Unload modules | ✅ `unloadKoinModules()` | ❌ Not possible |
-| Lazy background loading | ✅ `lazyModules()` | ❌ Not possible |
-| Feature flag injection | ✅ Easy | ⚠️ Complex workarounds |
-| Plugin architectures | ✅ Natural fit | ❌ Very difficult |
-| A/B test implementations | ✅ Runtime swap | ⚠️ Compile-time only |
-| Dynamic configuration | ✅ Supported | ❌ No, Must recompile |
-
-### Example: Dynamic Module Loading
+Koin:
 
 ```kotlin
-// KOIN - Dynamic module loading
-if (userHasPremium) {
-    loadKoinModules(premiumFeatureModule)
-}
+@KoinViewModel
+class UserViewModel(
+    private val repository: UserRepository,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel()
 
-// Later, if subscription expires
-unloadKoinModules(premiumFeatureModule)
+// Activity or Fragment
+val viewModel: UserViewModel by viewModel()
 
-// Lazy loading for faster startup
-startKoin {
-    modules(coreModule)
-    lazyModules(
-        analyticsModule,  // Loaded in background
-        heavyFeatureModule
-    )
-}
+// Compose
+val viewModel: UserViewModel = koinViewModel()
 ```
 
-**This is impossible with Hilt** - all dependencies are wired at compile time.
-
-### Example: Feature Flags
+Hilt:
 
 ```kotlin
-// KOIN - Switch implementations at runtime
-val featureModule = module {
-    if (FeatureFlags.useNewApi) {
-        single<ApiService> { NewApiService() }
-    } else {
-        single<ApiService> { LegacyApiService() }
-    }
-}
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val repository: UserRepository,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel()
 
-// Or dynamically
-fun updateApiImplementation(useNew: Boolean) {
-    unloadKoinModules(apiModule)
-    loadKoinModules(if (useNew) newApiModule else legacyApiModule)
-}
+// Activity or Fragment annotated with @AndroidEntryPoint
+val viewModel: UserViewModel by viewModels()
+
+// Compose
+val viewModel: UserViewModel = hiltViewModel()
 ```
 
-## Setup Comparison
+### Several Gradle modules
 
-### Koin Setup
-
-See the **[Compiler Plugin Setup Guide](/docs/setup/compiler-plugin)** for detailed instructions.
-
-### Hilt Setup
+Koin:
 
 ```kotlin
-// settings.gradle.kts
-plugins {
-    id("com.google.dagger.hilt.android") version "2.x" apply false
-}
+// feature-auth
+@Module
+@ComponentScan
+@Configuration
+class AuthModule
 
-// app/build.gradle.kts
-plugins {
-    id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
-}
-
-dependencies {
-    implementation("com.google.dagger:hilt-android:2.x")
-    ksp("com.google.dagger:hilt-compiler:2.x")
-}
+// app
+@KoinApplication
+class MyApp
 ```
 
-## Error Messages
+Hilt:
 
-### Koin
+```kotlin
+// feature-auth
+@Module
+@InstallIn(SingletonComponent::class)
+class AuthModule { ... }
 
-```
-org.koin.core.error.NoBeanDefFoundException:
-No definition found for class 'com.app.UserRepository'.
-Check your module definitions.
-```
-
-Clear, points directly to the issue.
-
-### Hilt/Dagger
-
-```
-error: [Dagger/MissingBinding] com.app.UserRepository cannot be provided
-without an @Inject constructor or an @Provides-annotated method.
-com.app.UserRepository is injected at
-    com.app.UserService(repository)
-com.app.UserService is injected at
-    com.app.UserActivity.service
-com.app.UserActivity is injected at
-    dagger.hilt.android.internal.managers.ActivityComponentManager.inject
+// app
+@HiltAndroidApp
+class MyApp : Application()
 ```
 
-Longer, requires understanding the component graph.
+Both discover feature modules on the classpath: Koin through `@Configuration`, Hilt through `@InstallIn`. In Koin, `@ComponentScan` also collects every annotated class of the package, so a feature module often needs no provider functions.
 
-## When to Choose Each
-
-### Choose Koin When:
-
-- You value **productivity and simplicity**
-- You need **runtime flexibility** (dynamic modules, feature flags)
-- You're building **Kotlin Multiplatform** apps
-- Your team wants to **learn quickly**
-- You prefer **less boilerplate**
-- You want **easier debugging**
-
-### Choose Hilt When:
-
-- Your team **already knows Dagger**
-- You need **Google-first ecosystem** compatibility
-- You require **Dagger's specific features**
-
-## Migration from Hilt to Koin
-
-If you're considering migration:
-
-### Concept Mapping
+## Concept mapping
 
 | Hilt | Koin |
 |------|------|
-| `@HiltAndroidApp` | `@KoinApplication` and `startKoin<T> { }` |
-| `@AndroidEntryPoint` | `by inject()` |
-| `@HiltViewModel` with `by viewModels()` | `@KoinViewModel` with `by viewModel()` |
-| `@Inject constructor` | Just constructor (auto-detected) |
-| `@Binds` | Automatic or `bind` |
-| `@InstallIn(SingletonComponent)` | `@Configuration` |
-| `@Provides` on a function | `@Factory` on a function |
+| `@HiltAndroidApp` | `@KoinApplication` with `startKoin<MyApp>()`, or `startKoin { }` |
+| `@AndroidEntryPoint` | Not needed: `by inject()` and `by viewModel()` work in any Activity or Fragment |
+| `@Inject constructor` | Not needed: the constructor is read by the Compiler Plugin |
+| `@Binds` | Automatic for annotations, `bind` in the DSL |
+| `@Provides` | `@Singleton` or `@Factory` on a function, or a DSL definition |
+| `@InstallIn(SingletonComponent::class)` | `@Configuration` |
+| `@HiltViewModel` | `@KoinViewModel` |
+| `@Named` | `@Named` |
+| `@ActivityScoped`, `@ViewModelScoped` | `@ActivityScope`, `@ViewModelScope` |
+| `@AssistedInject` | `@InjectedParam` |
 
-### Gradual Migration
+The migration guide has the full mapping, a step-by-step process, and how to run both frameworks side by side during the move: see [Migrating from Hilt](/docs/reference/koin-android/hilt-migration).
 
-You can migrate incrementally:
+## Related
 
-1. Add Koin to your project
-2. Migrate one feature module at a time
-3. Both DI frameworks can coexist during transition (Koin can scan target packages with `@ComponentScan`)
-4. Remove Hilt when migration is complete
-
-See [Migrating from Hilt](/docs/migration/from-hilt) for detailed steps.
-
-## Summary
-
-**Koin: Simple AND Powerful**
-
-- **Compile-time safety** like Hilt (with Compiler Plugin)
-- **DSL or Annotations** - both equally powerful, your choice
-- **Simplicity and productivity** that Hilt can't match
-- **Dynamic runtime features** that Hilt can't do
-
-You don't have to choose between safety and simplicity. With Koin, you get both.
-
-## Next Steps
-
-- **[What is Koin?](/docs/intro/what-is-koin)** - Learn more about Koin
-- **[Setup Guide](/docs/setup/gradle)** - Add Koin to your project
-- **[Migrating from Hilt](/docs/migration/from-hilt)** - Step-by-step migration guide
+- [Migrating from Hilt](/docs/reference/koin-android/hilt-migration): move a project step by step.
+- [JSR-330 Compatibility](/docs/reference/koin-android/jsr330): keep `javax.inject` annotations.
+- [What is Koin?](/docs/intro/what-is-koin): Koin's runtime and compile-time model.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): what Koin checks at build time.
+- [Choosing your style](/docs/intro/choosing-your-style): DSL or annotations.

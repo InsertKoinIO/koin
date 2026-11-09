@@ -1,210 +1,308 @@
 ---
 title: Android Library Integration
+description: Complete Koin setups for Retrofit with OkHttp, Room, JSON serialization and a layered Android architecture.
 ---
 
-This guide covers integrating common Android libraries with Koin.
+This page gives complete Koin setups for libraries most Android apps use: Retrofit with OkHttp, Room and a JSON serializer, then a layered app structure. Library classes come from builders, so they are declared with provider functions. How that works (`create(::function)`, annotated functions) is explained in [Definitions](/docs/reference/koin-core/definitions#classes-you-dont-own); this page only shows the Android setups.
 
-:::info
-For core definition types and external library binding patterns, see [Definitions](/docs/reference/koin-core/definitions). This page focuses on Android-specific library examples.
-:::
-
-## Retrofit
+## Retrofit and OkHttp
 
 ```kotlin
 interface ApiService {
     @GET("users/{id}")
     suspend fun getUser(@Path("id") id: String): User
 }
+```
 
-// Builder functions - Koin resolves parameters automatically
-fun createOkHttpClient(): OkHttpClient =
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+import org.koin.plugin.module.dsl.create
+
+fun okHttpClient(): OkHttpClient =
     OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         })
         .build()
 
-fun createRetrofit(client: OkHttpClient): Retrofit =
+fun retrofit(client: OkHttpClient, json: Json): Retrofit =
     Retrofit.Builder()
-        .baseUrl("https://api.example.com/")
+        .baseUrl(BuildConfig.API_URL)
         .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
 
-fun createApiService(retrofit: Retrofit): ApiService =
-    retrofit.create(ApiService::class.java)
+fun apiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 
 val networkModule = module {
-    single { create(::createOkHttpClient) }
-    single { create(::createRetrofit) }
-    single { create(::createApiService) }
+    single { create(::okHttpClient) }
+    single { create(::retrofit) }
+    single { create(::apiService) }
 }
 ```
 
-Or with Annotations:
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 @Module
 class NetworkModule {
-    @Single
-    fun provideOkHttpClient(): OkHttpClient =
+
+    @Singleton
+    fun okHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            })
             .build()
 
-    @Single
-    fun provideRetrofit(client: OkHttpClient): Retrofit =
+    @Singleton
+    fun retrofit(client: OkHttpClient, json: Json): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://api.example.com/")
+            .baseUrl(BuildConfig.API_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
-    @Single
-    fun provideApiService(retrofit: Retrofit): ApiService =
-        retrofit.create(ApiService::class.java)
+    @Singleton
+    fun apiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 }
 ```
 
-## Room Database
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val networkModule = module {
+    single {
+        OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            })
+            .build()
+    }
+    single {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(get())
+            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+    single { get<Retrofit>().create(ApiService::class.java) }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Declare `OkHttpClient` and `Retrofit` as `single`: each one holds a connection pool and thread pools, and creating several wastes them. `BuildConfig.API_URL` is a `buildConfigField` you define per build type. The `Json` instance comes from the next section.
+
+## JSON serialization
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+fun json(): Json = Json {
+    ignoreUnknownKeys = true
+    explicitNulls = false
+}
+
+val serializationModule = module {
+    single { create(::json) }
+}
+```
+
+</TabItem>
+<TabItem value="annotations" label="Annotations">
+
+```kotlin
+@Module
+class SerializationModule {
+
+    @Singleton
+    fun json(): Json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
+}
+```
+
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
+
+```kotlin
+val serializationModule = module {
+    single {
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+The same pattern works for Gson (`single { create(::gson) }` with `fun gson(): Gson = GsonBuilder().create()`) or Moshi. One shared instance keeps the serializer configuration in one place.
+
+## Room
 
 ```kotlin
 @Database(entities = [User::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 }
+```
 
-fun createDatabase(context: Context): AppDatabase =
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+fun appDatabase(context: Context): AppDatabase =
     Room.databaseBuilder(context, AppDatabase::class.java, "app-database").build()
 
-fun createUserDao(database: AppDatabase): UserDao = database.userDao()
+fun userDao(database: AppDatabase): UserDao = database.userDao()
 
 val databaseModule = module {
-    single { create(::createDatabase) }
-    single { create(::createUserDao) }
+    single { create(::appDatabase) }
+    single { create(::userDao) }
 }
 ```
 
-Or with Annotations:
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 @Module
 class DatabaseModule {
-    @Single
-    fun provideDatabase(context: Context): AppDatabase =
+
+    @Singleton
+    fun appDatabase(context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "app-database").build()
 
-    @Single
-    fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
+    @Singleton
+    fun userDao(database: AppDatabase): UserDao = database.userDao()
 }
 ```
 
-## Gson / Serialization
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-fun createGson(): Gson =
-    GsonBuilder()
-        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        .setPrettyPrinting()
-        .create()
-
-val serializationModule = module {
-    single { create(::createGson) }
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "app-database").build()
+    }
+    single { get<AppDatabase>().userDao() }
 }
 ```
+
+</TabItem>
+</Tabs>
+
+Declare the database as a `single`: a `RoomDatabase` instance is costly, and the Room documentation asks for one instance per database in a process. `Context` here is the `Application`, given by `androidContext()` at start (see [Starting Koin on Android](/docs/reference/koin-android/start)). DAOs are cheap and Room returns the same instance for each call, so `single` or `factory` both work.
 
 ## WorkManager
 
-```kotlin
-class SyncWorker(
-    context: Context,
-    params: WorkerParameters,
-    private val repository: SyncRepository
-) : Worker(context, params) {
+Workers get their dependencies through a dedicated `WorkerFactory`. Setup and the `worker` definition are in [WorkManager](/docs/reference/koin-android/workmanager).
 
-    override fun doWork(): Result {
-        repository.sync()
-        return Result.success()
-    }
+## Layered architecture
+
+A typical Android app has a data layer (network, database, repositories), a domain layer (use cases) and a UI layer (ViewModels). Each layer uses the definition type that matches its lifetime:
+
+| Layer | Classes | Definition |
+|-------|---------|------------|
+| Data | `OkHttpClient`, `Retrofit`, `AppDatabase`, data sources, repositories | `single` |
+| Domain | Use cases, with no state | `factory` |
+| UI | ViewModels | `viewModel` |
+
+<Tabs groupId="koin-style">
+<TabItem value="compiler-dsl" label="Compiler Plugin DSL" default>
+
+```kotlin
+val dataModule = module {
+    includes(networkModule, databaseModule, serializationModule)
+    single<UserRemoteDataSource>()
+    single<UserLocalDataSource>()
+    single<UserRepositoryImpl>() bind UserRepository::class
 }
 
-val workModule = module {
-    workerOf(::SyncWorker)
+val domainModule = module {
+    factory<GetUserUseCase>()
+}
+
+val uiModule = module {
+    viewModel<UserViewModel>()
 }
 ```
 
-:::note
-For WorkManager setup, use the `koin-androidx-workmanager` dependency. See [WorkManager Integration](/docs/reference/koin-android/workmanager) for complete setup.
-:::
-
-## Android Clean Architecture
-
-### Repository Pattern
+</TabItem>
+<TabItem value="annotations" label="Annotations">
 
 ```kotlin
 @Singleton
 class UserRemoteDataSource(private val api: ApiService)
 
 @Singleton
-class UserLocalDataSource(private val database: AppDatabase)
+class UserLocalDataSource(private val dao: UserDao)
 
 @Singleton
 class UserRepositoryImpl(
-    private val remoteDataSource: UserRemoteDataSource,
-    private val localDataSource: UserLocalDataSource
+    private val remote: UserRemoteDataSource,
+    private val local: UserLocalDataSource,
 ) : UserRepository
 
-// DSL
-val dataModule = module {
-    single<UserRemoteDataSource>()
-    single<UserLocalDataSource>()
-    single<UserRepositoryImpl>() bind UserRepository::class
+@Factory
+class GetUserUseCase(private val repository: UserRepository) {
+    suspend operator fun invoke(userId: String): User = repository.getUser(userId)
 }
+
+@KoinViewModel
+class UserViewModel(
+    private val getUser: GetUserUseCase,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel()
 ```
 
-### Use Case Pattern
+</TabItem>
+<TabItem value="classic-dsl" label="Constructor / Classic DSL">
 
 ```kotlin
-@Factory
-class GetUserUseCase(private val userRepository: UserRepository) {
-    suspend operator fun invoke(userId: String): Result<User> = runCatching {
-        userRepository.getUser(userId)
-    }
+val dataModule = module {
+    includes(networkModule, databaseModule, serializationModule)
+    singleOf(::UserRemoteDataSource)
+    singleOf(::UserLocalDataSource)
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
 }
 
 val domainModule = module {
-    factory<GetUserUseCase>()
+    factoryOf(::GetUserUseCase)
+}
+
+val uiModule = module {
+    viewModelOf(::UserViewModel)
 }
 ```
 
-### ViewModel with SavedStateHandle
+</TabItem>
+</Tabs>
 
-```kotlin
-@KoinViewModel
-class UserViewModel(
-    private val getUserUseCase: GetUserUseCase,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+The ViewModel depends on the use case, the use case on the `UserRepository` interface, and only the data module knows `UserRepositoryImpl`. To swap the data source in tests, override the `UserRepository` binding (see [Unit Testing](/docs/reference/koin-test/testing)). When each layer lives in its own Gradle module, see [Multi-Module Apps](/docs/reference/koin-android/multi-module).
 
-    private val userId: String = savedStateHandle["userId"] ?: ""
+## Related
 
-    fun loadUser() {
-        viewModelScope.launch {
-            getUserUseCase(userId)
-        }
-    }
-}
-
-val viewModelModule = module {
-    viewModel<UserViewModel>()
-}
-```
-
-## Next Steps
-
-- **[Definitions](/docs/reference/koin-core/definitions)** - Core definition types
-- **[WorkManager](/docs/reference/koin-android/workmanager)** - Complete WorkManager setup
-- **[Android Scopes](/docs/reference/koin-android/scope)** - Lifecycle-scoped instances
-- **[ViewModel](/docs/reference/koin-android/viewmodel)** - ViewModel injection patterns
+- [Definitions](/docs/reference/koin-core/definitions): definition types, interface binding and provider functions.
+- [Starting Koin on Android](/docs/reference/koin-android/start): `androidContext()` and Android Context in definitions.
+- [Android ViewModel](/docs/reference/koin-android/viewmodel): retrieve ViewModels in Activities and Fragments.
+- [WorkManager](/docs/reference/koin-android/workmanager): constructor injection in Workers.
+- [Multi-Module Apps](/docs/reference/koin-android/multi-module): one Koin module per Gradle module.

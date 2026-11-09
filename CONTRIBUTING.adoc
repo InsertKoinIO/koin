@@ -36,8 +36,8 @@ added after the original pull request but before a merge.
 * If no-one else is using your branch, please rebase it against the current master (or
   other target branch in the main project).
 * When writing a commit message please follow http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html[these conventions],
-  if you are fixing an existing issue please add `Fixes gh-XXXX` at the end of the commit
-  message (where `XXXX` is the issue number).
+  if you are fixing an existing issue please start the commit subject with `Fix #XXXX - `
+  (where `XXXX` is the GitHub issue number), e.g. `Fix #2387 - lost stacked params on linked scopes`.
 
 
 == Working with the code

@@ -1,35 +1,50 @@
 ---
 title: JUnit Tests
+description: Test the Kotlin tutorial app with Koin Test and JUnit 4, start Koin with KoinTestRule, verify the module and replace a dependency with a mock.
 ---
 
-> This tutorial lets you test a Kotlin application and use Koin inject and retrieve your components.
+In this tutorial you write JUnit 4 tests for the app from the [Kotlin tutorial](/docs/quickstart/kotlin). You learn how to start Koin for each test with `KoinTestRule`, check a module with `verify()`, and replace a dependency with a Mockito mock. It takes about 10 minutes. Do the Kotlin tutorial first, or start from its sample.
 
-:::note
-update - 2025-01-28
-:::
+This tutorial follows the Compiler Plugin DSL app. All the testing APIs are described in [Unit Testing](/docs/reference/koin-test/testing).
 
 ## Get the code
 
-:::info
-[The source code is available at on Github](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin)
-:::
+The tests are in the [koin-getting-started/kotlin](https://github.com/InsertKoinIO/koin-getting-started/tree/main/kotlin) sample, under `app/src/test`. Clone the repository and run them from the `kotlin` folder:
 
-## Gradle Setup
+```bash
+./gradlew test
+```
 
-First, add the Koin dependency like below:
+## Gradle setup
 
-```groovy
+The sample adds `koin-test`, `koin-test-junit4` and Mockito as test dependencies:
+
+```toml
+# gradle/libs.versions.toml
+[versions]
+koin = "<KOIN_VERSION>"
+mockito = "<MOCKITO_VERSION>"
+
+[libraries]
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+mockito = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
+```
+
+```kotlin
+// app/build.gradle.kts
 dependencies {
-    // Koin testing tools
-    testImplementation "io.insert-koin:koin-test:$koin_version"
-    // Needed JUnit version
-    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
+    testImplementation(libs.mockito)
 }
 ```
 
-## Declared dependencies
+`koin-test` does not depend on a mocking library, so you add the one you use. For JUnit 5, use `koin-test-junit5` instead (see [Unit Testing](/docs/reference/koin-test/testing)).
 
-We reuse the `koin-core` getting-started project, to use the koin module:
+## The module under test
+
+The tests load the module from the Kotlin tutorial:
 
 ```kotlin
 val appModule = module {
@@ -39,15 +54,16 @@ val appModule = module {
 }
 ```
 
-## Verifying your Modules
+Each test starts Koin with this module, so it runs against the same graph as the app.
 
-:::tip
-The Koin Compiler Plugin now provides compile-time dependency validation, catching missing dependencies at build time without writing test code. See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety).
-:::
+## Let's verify the module
 
-If you're not using the compiler plugin, you can verify modules at runtime. The `verify()` function performs a dry-run check to ensure all dependencies can be resolved:
+`verify()` checks that every constructor parameter in the module has a definition, without creating any instance:
 
 ```kotlin
+import org.koin.test.AutoCloseKoinTest
+import org.koin.test.verify.verify
+
 class ModuleVerificationTest : AutoCloseKoinTest() {
 
     @Test
@@ -57,90 +73,67 @@ class ModuleVerificationTest : AutoCloseKoinTest() {
 }
 ```
 
-This test will fail if any dependency definitions are invalid or if any required dependencies are missing.
+The test fails on a missing or invalid definition. The Compiler Plugin already runs this check at build time, so `verify()` matters most for modules the plugin does not cover. See [Verifying your Configuration](/docs/reference/koin-test/verify) to decide whether you need it.
 
-## Writing Tests with KoinTestRule
+## Let's start Koin in a test
 
-To write tests that inject dependencies, extend `KoinTest` and use `KoinTestRule`:
+Implement `KoinTest` and add a `KoinTestRule`. The rule starts Koin before each test and stops it after:
 
 ```kotlin
-class UserAppTest : KoinTest {
+import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
 
-    val userService by inject<UserService>()
-    val userRepository by inject<UserRepository>()
+class HelloMockTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
-        printLogger()
         modules(appModule)
-    }
-
-    @Test
-    fun `test user service`() {
-        // Load users via service
-        userService.loadUsers()
-
-        // Verify user can be found
-        val user = userService.getUserOrNull("Alice")
-        assertNotNull(user)
-        assertEquals("Alice", user?.name)
     }
 }
 ```
 
-> We use the `KoinTestRule` to start/stop our Koin context for each test
+`KoinTest` gives the test class `get()` and `by inject()`, for example `val userService: UserService by inject()`. Starting a fresh container per test keeps instances from leaking between tests.
 
-## Mocking Dependencies
+## Let's mock a dependency
 
-You can mock dependencies in your tests using `declareMock`. This replaces the real implementation with a mock:
+Add a `MockProviderRule` to tell Koin how to build mocks, then replace `UserRepository` with `declareMock`:
 
 ```kotlin
-class UserMockTest : KoinTest {
+import org.koin.test.mock.MockProviderRule
+import org.koin.test.mock.declareMock
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito
+import org.mockito.Mockito.times
+
+class HelloMockTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
-        printLogger(Level.DEBUG)
         modules(appModule)
     }
 
     @get:Rule
-    val mockProvider = MockProviderRule.create { clazz ->
-        Mockito.mock(clazz.java)
-    }
+    val mockProvider = MockProviderRule.create { clazz -> Mockito.mock(clazz.java) }
 
     @Test
     fun `mock test`() {
-        // Declare a mock for UserRepository
-        val repository = declareMock<UserRepository> {
-            given(findUserOrNull(anyString())).willReturn(
-                User("Mock", "mock@example.com")
-            )
+        val service = declareMock<UserRepository> {
+            given(findUserOrNull(anyString())).willReturn(User("Mock", "mock@example.com"))
         }
 
-        // Use the application with mocked repository
         getKoin().get<UserApplication>().sayHello("Mock")
-
-        // Verify the mock was called
-        Mockito.verify(repository, times(1)).findUserOrNull(anyString())
+        Mockito.verify(service, times(1)).findUserOrNull(anyString())
     }
 }
 ```
 
-The `MockProviderRule` configures Mockito as the mocking framework, and `declareMock` replaces the real `UserRepository` with a mock that returns controlled data.
+`declareMock` replaces the `UserRepository` definition for this test only. `UserApplication` and `UserService` are real, so the test checks that the call goes through `UserService` down to the repository once.
 
-## Key Testing Concepts
+## Next steps
 
-| Concept | Description |
-|---------|-------------|
-| `KoinTest` | Interface to extend for Koin testing support |
-| `AutoCloseKoinTest` | Auto-closes Koin after each test |
-| `KoinTestRule` | JUnit rule to start/stop Koin context |
-| `MockProviderRule` | Configures the mocking framework |
-| `verify()` | Validates module configuration without running |
-| `declareMock<T>()` | Replaces a definition with a mock |
-| `by inject<T>()` | Lazily injects a dependency in tests |
-
-## See Also
-
-- **[Testing Reference](/docs/reference/koin-test/testing)** - Complete testing documentation
-- **[Module Verification](/docs/reference/koin-test/verify)** - verify() and checkModules() details
+- [Unit Testing](/docs/reference/koin-test/testing): every testing API, JUnit 5 and overriding definitions.
+- [Verifying your Configuration](/docs/reference/koin-test/verify): `verify()` options and when the Compiler Plugin replaces it.
+- [Instrumented testing](/docs/reference/koin-android/instrumented-testing): test Android apps that use Koin.
+- [Ktor testing](/docs/reference/koin-ktor/ktor-testing): test Ktor routes with Koin.
+- [Tooling](/docs/tooling): IDE plugin and monitoring tools for Koin.

@@ -35,7 +35,7 @@ allOpen {
 
 benchmark {
     configurations {
-        // KTZ-4829: isolates the three-timer split from the historical rows. kotlinx-benchmark 0.4.16
+        // Isolates the three-timer split from the historical rows. kotlinx-benchmark 0.4.16
         // exposes no JMH profiler passthrough, so allocations per op are measured separately by
         // AllocationProbe (see jvmMain), which reads getThreadAllocatedBytes directly.
         register("perfs") {
@@ -53,10 +53,10 @@ benchmark {
     }
 }
 
-// KTZ-4829: bytes-per-op probe. See AllocationProbe.kt for why this is not a JMH `-prof gc` run.
+// Bytes-per-op probe. See AllocationProbe.kt for why this is not a JMH `-prof gc` run.
 tasks.register<JavaExec>("allocProbe") {
     group = "benchmark"
-    description = "Reports B/op and ns/op for the KTZ-4829 three-timer split"
+    description = "Reports B/op and ns/op for the GetAllBenchmark three-timer split"
     val jvmMain = kotlin.jvm().compilations.getByName("main")
     classpath = files(jvmMain.output.allOutputs, jvmMain.runtimeDependencyFiles)
     mainClass.set("org.koin.benchmark.AllocationProbeKt")

@@ -12,7 +12,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 /**
- * KTZ-4829: InstanceRegistry.getAll was rewritten from filter + distinct + mapNotNull into a
+ * InstanceRegistry.getAll was rewritten from filter + distinct + mapNotNull into a
  * single pass. Its contract is pinned here against an independent oracle built from the public
  * registry view: same candidates, same identity-based dedup, same order as `instances.values`.
  */

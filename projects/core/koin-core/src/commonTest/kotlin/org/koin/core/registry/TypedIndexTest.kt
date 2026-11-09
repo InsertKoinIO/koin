@@ -4,20 +4,23 @@ import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.definition.Kind
+import org.koin.core.definition.indexKey
 import org.koin.core.instance.SingleInstanceFactory
+import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 /**
- * KTZ-4829: resolveDefinition keeps a lazily populated, allocation-free cache in front of the
+ * resolveDefinition keeps a lazily populated, allocation-free cache in front of the
  * String-keyed map. Every write to the registry must drop the affected entries, a repeat lookup
  * must agree with the String map, and a caller that writes a hand-built String key must see
  * exactly the behavior it had before.
@@ -169,5 +172,36 @@ class TypedIndexTest {
         koin.unloadModules(listOf(moduleA))
 
         assertNull(koin.getOrNull<Simple.ComponentA>(), "a cached factory survived unload")
+    }
+
+    interface Foo
+    interface Other
+    class Bar : Foo, Other
+    class Baz : Foo
+
+    // A key's own type can differ from the factory's current types: secondaryTypes reassigned after
+    // bind, or a hand-written key. Eviction must follow the key, not only the factory's types.
+    @Test
+    fun unload_evicts_a_key_whose_type_left_the_definition() {
+        val loaded = module { single { Bar() } bind Foo::class withOptions { secondaryTypes = listOf(Other::class) } }
+        val koin = koinApplication { modules(loaded) }.koin
+        assertNotNull(koin.getOrNull<Foo>())
+
+        koin.unloadModules(listOf(loaded))
+
+        assertNull(koin.getOrNull<Foo>(), "a cached key survived unload because its type left the definition")
+    }
+
+    @Test
+    fun override_of_a_hand_written_key_of_another_type_is_visible() {
+        val koin = koinApplication { }.koin
+        val root = koin.scopeRegistry.rootScope.scopeQualifier
+        val fooKey = indexKey(Foo::class, null, root)
+        koin.instanceRegistry.saveMapping(true, fooKey, SingleInstanceFactory(BeanDefinition(root, Bar::class, null, { Bar() }, Kind.Singleton)))
+        assertIs<Bar>(koin.get<Foo>())
+
+        koin.instanceRegistry.saveMapping(true, fooKey, SingleInstanceFactory(BeanDefinition(root, Baz::class, null, { Baz() }, Kind.Singleton)))
+
+        assertIs<Baz>(koin.get<Foo>(), "the cache kept serving the replaced factory")
     }
 }

@@ -1,45 +1,33 @@
 ---
 title: Compiler Plugin Setup
+description: Install the Koin Compiler Plugin in a Gradle build, for single-module, multi-module and Kotlin Multiplatform projects, and fix common setup problems.
 ---
 
-# Koin Compiler Plugin Setup
-
-The **Koin Compiler Plugin** is the recommended approach for all new Kotlin 2.x projects. It provides auto-wiring, compile-time safety, and a cleaner DSL syntax.
-
-## What is the Compiler Plugin?
-
-The Koin Compiler Plugin is a **native Kotlin Compiler Plugin (K2)** that:
-
-- Auto-detects constructor dependencies
-- Provides compile-time analysis
-- Works with both DSL and Annotations
-- Generates no visible files
-
-See [Introduction to Koin Compiler Plugin](/docs/intro/koin-compiler-plugin) for details on features and benefits.
-
-:::tip IDE Plugin
-Install the **[Koin IDE Plugin](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-)** for Android Studio & IntelliJ IDEA — code navigation between definitions and injection points, live safety checks, and dependency graph visualization.
-:::
+This page installs the Koin Compiler Plugin, the Kotlin compiler plugin behind the Compiler Plugin DSL and annotations. It covers single-module, multi-module and Kotlin Multiplatform builds, the main options, and setup problems. To learn what the plugin does, read [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin). Koin libraries themselves are listed in [Gradle Setup](/docs/setup/gradle).
 
 ## Requirements
 
-- **Kotlin 2.3.20+** (K2 compiler)
-- **Gradle 8.x+**
+- Kotlin 2.3.20 or later (K2 compiler).
+- Koin 4.2.0 or later.
+- Gradle 8 or later.
 
-## Setup
+Current versions:
 
-### Step 1: Add Koin to Version Catalog
-
-First, check latest versions:
 - Koin: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core?label=latest)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
 - Koin Compiler Plugin: [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-compiler-plugin?label=latest)](https://mvnrepository.com/artifact/io.insert-koin/koin-compiler-plugin)
 
-Then, in your `gradle/libs.versions.toml`:
+The plugin has its own version, separate from Koin. `koin-annotations` follows the Koin version.
+
+## Install
+
+### 1. Declare the plugin
+
+In `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-koin = "<KOIN_VERSION>"
-koin-plugin = "<KOIN_PLUGIN_VERSION>"
+koin = "4.2.2"
+koin-plugin = "1.2.1"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -49,9 +37,11 @@ koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 ```
 
-### Step 2: Configure Settings
+If you use the [Koin BOM](/docs/setup/gradle#koin-bom), drop `version.ref` from the libraries. The plugin is not part of the BOM and keeps its version.
 
-In your `settings.gradle.kts`:
+### 2. Plugin repositories
+
+The plugin is published on Maven Central and the Gradle Plugin Portal. In `settings.gradle.kts`:
 
 ```kotlin
 pluginManagement {
@@ -62,9 +52,9 @@ pluginManagement {
 }
 ```
 
-### Step 3: Apply the Plugin
+### 3. Apply the plugin
 
-In your module's `build.gradle.kts`:
+In the `build.gradle.kts` of each Gradle module that declares Koin definitions:
 
 ```kotlin
 plugins {
@@ -72,209 +62,32 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)  // For annotation support
+    implementation(libs.koin.core)          // or koin-android, koin-ktor, ...
+    implementation(libs.koin.annotations)   // for annotations, and for @Named or @InjectedParam in DSL style
 }
 ```
+
+The Compiler Plugin DSL (`single<T>()`, `factory<T>()`, `viewModel<T>()`) ships with the Koin libraries, in the package `org.koin.plugin.module.dsl`. You need `koin-annotations` only if you use annotations, including parameter annotations in DSL style.
 
 :::tip
-**Using `@KoinViewModel` or `@KoinWorker`?** Those annotations need their runtime DSL to be on the classpath:
-
-- `@KoinViewModel` → `implementation("io.insert-koin:koin-core-viewmodel")`
-- `@KoinWorker` → `implementation("io.insert-koin:koin-android-workmanager")`
-
-The compiler will fail with a clear error naming the missing artifact if you add the annotation without its runtime — no more silent `NoDefinitionFoundException` at startup.
+`@KoinViewModel` and `@KoinWorker` need their runtime library on the classpath: `koin-core-viewmodel` (included in `koin-android` and `koin-compose-viewmodel`) and `koin-androidx-workmanager`. If one is missing, the build fails with an error that names the artifact.
 :::
 
-## Complete Example
+### 4. Check that it works
 
-### gradle/libs.versions.toml
-
-```toml
-[versions]
-koin = "<KOIN_VERSION>"
-koin-plugin = "<KOIN_PLUGIN_VERSION>"
-
-[libraries]
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
-
-[plugins]
-koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
-```
-
-### settings.gradle.kts
-
-```kotlin
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-```
-
-### build.gradle.kts
-
-```kotlin
-plugins {
-    alias(libs.plugins.koin.compiler)
-}
-
-dependencies {
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
-}
-```
-
-## Using the Compiler Plugin
-
-### DSL Style
-
-Import from the compiler plugin package:
-
-```kotlin
-import org.koin.plugin.module.dsl.*
-import org.koin.dsl.module
-
-val appModule = module {
-    single<Database>()
-    single<ApiClient>()
-    single<UserRepository>()
-    viewModel<UserViewModel>()
-}
-```
-
-:::info
-The Compiler Plugin DSL is in package **`org.koin.plugin.module.dsl`**. Classic DSL remains in `org.koin.dsl`.
-:::
-
-### Annotation Style
-
-Use annotations on your classes:
-
-```kotlin
-@Singleton
-class Database
-
-@Singleton
-class ApiClient
-
-@Singleton
-class UserRepository(
-    private val database: Database,
-    private val apiClient: ApiClient
-)
-
-@KoinViewModel
-class UserViewModel(private val repository: UserRepository) : ViewModel()
-
-@Module
-@ComponentScan("com.myapp")
-class AppModule
-```
-
-### Starting Koin with Annotations
-
-With the Compiler Plugin, use typed APIs to start Koin - **no generated code needed**:
-
-```kotlin
-@KoinApplication
-@ComponentScan("com.myapp")
-class MyApp
-
-// Start Koin with typed API
-startKoin<MyApp>()
-
-// Or with additional configuration
-startKoin<MyApp> {
-    androidContext(this@MyApplication)
-    printLogger()
-}
-```
-
-**Available typed APIs:**
-
-| API | Description |
-|-----|-------------|
-| `startKoin<T>()` | Start Koin globally with application T |
-| `startKoin<T> { }` | Start Koin with application T and configuration block |
-| `koinApplication<T>()` | Create isolated KoinApplication with T |
-| `koinConfiguration<T>()` | Create KoinConfiguration from T (for Compose KoinApplication, Ktor, etc.) |
-
-Where `T` is a class annotated with `@KoinApplication`.
-
-**Loading individual modules:**
-
-You can also load `@Module` classes directly without `@KoinApplication`, using `module<T>()` or `modules()`:
-
-```kotlin
-startKoin {
-    module<NetworkModule>()                              // Load a single module
-    modules(DataModule::class, CacheModule::class)       // Load multiple modules
-}
-```
-
-| API | Description |
-|-----|-------------|
-| `module<T>()` | Load a single `@Module` class into the KoinApplication |
-| `modules(vararg KClass)` | Load multiple `@Module` classes into the KoinApplication |
-
-Where `T` / each `KClass` is a class annotated with `@Module`. This is useful for tests or when mixing annotation and DSL modules:
-
-```kotlin
-// In tests
-@get:Rule
-val koinTestRule = KoinTestRule.create {
-    module<NetworkModule>()
-}
-```
-
-## Configuration Options
-
-Configure the compiler plugin in your `build.gradle.kts`:
+Turn on the plugin logs for one build:
 
 ```kotlin
 koinCompiler {
     userLogs = true
-    debugLogs = false
-    unsafeDslChecks = true
 }
 ```
 
-### Available Options
+The build output lists each definition the plugin detected. Turn it off again once you have checked. Then start Koin as described in [Starting Koin](/docs/reference/koin-core/starting-koin), with `startKoin { }` or, for annotations, `startKoin<MyApp>()`.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `compileSafety` | Compile-time dependency validation (A2/A3/A4) | `true` |
-| `strictSafety` | Force aggregator's safety pass to re-run on every build (bypasses Kotlin IC) | auto-detected on aggregator modules |
-| `skipDefaultValues` | Skip injection for parameters with Kotlin default values | `true` |
-| `userLogs` | Enable logs for component detection and DSL/annotation processing | `false` |
-| `debugLogs` | Enable verbose debug logs for internal plugin processing | `false` |
-| `unsafeDslChecks` | Validate that `create()` calls inside lambdas are the only instruction | `true` |
+## Multi-module projects
 
-:::tip
-Set `userLogs = true` during development to see which components are detected and processed by the plugin.
-:::
-
-## Compile-Time Safety
-
-The Koin Compiler Plugin provides **compile-time dependency verification** — validating that all your dependencies can be resolved at build time rather than failing at runtime. This is enabled by default.
-
-```kotlin
-koinCompiler {
-    compileSafety = true       // Enabled by default
-    skipDefaultValues = true   // Enabled by default
-}
-```
-
-The plugin validates your graph at three levels: per-module (A2), full graph at `startKoin<T>()` (A3), and every call site (A4). See [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety) for full details.
-
-## Multi-Module Projects
-
-For projects with multiple Gradle modules:
-
-### Library Module
+Apply the plugin in every Gradle module that declares definitions, not only in the app module:
 
 ```kotlin
 // feature/build.gradle.kts
@@ -289,15 +102,6 @@ dependencies {
 ```
 
 ```kotlin
-// feature/src/main/kotlin/FeatureModule.kt
-@Module
-@ComponentScan("com.myapp.feature")
-class FeatureModule
-```
-
-### App Module
-
-```kotlin
 // app/build.gradle.kts
 plugins {
     alias(libs.plugins.koin.compiler)
@@ -305,39 +109,21 @@ plugins {
 
 dependencies {
     implementation(project(":feature"))
-    implementation(libs.koin.core)
+    implementation(libs.koin.android)
     implementation(libs.koin.annotations)
 }
 ```
 
-```kotlin
-// app/src/main/kotlin/MyModule.kt
-@Module
-@Configuration
-class MyModule
-
-// app/src/main/kotlin/MyApp.kt
-@KoinApplication
-class MyApp
-
-class MainApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        startKoin<MyApp>()
-    }
-}
-```
-
-Use `@KoinApplication` for the main application class with typed startup APIs.
+Each module compiled with the plugin carries metadata about its definitions. The app module reads it to check the full graph at `startKoin`. A library module without the plugin is invisible to these checks. How to assemble modules across Gradle modules (`includes`, `@Configuration`) is covered in [Modules](/docs/reference/koin-core/modules) and [Multi-Module Android Apps](/docs/reference/koin-android/multi-module).
 
 ## Kotlin Multiplatform
 
-The Compiler Plugin works with KMP projects:
+Apply the plugin once on the shared module and add the libraries to `commonMain`. There is no per-target configuration:
 
 ```kotlin
 // shared/build.gradle.kts
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.koin.compiler)
 }
 
@@ -351,103 +137,98 @@ kotlin {
 }
 ```
 
+See [Kotlin Multiplatform Setup](/docs/reference/koin-core/kmp-setup) for project structure.
+
+## Options
+
+The `koinCompiler` block configures the plugin. The defaults fit most projects:
+
+```kotlin
+koinCompiler {
+    compileSafety = true      // validate the graph at build time
+    skipDefaultValues = true  // use Kotlin default values instead of injecting
+    userLogs = false          // log detected definitions
+}
+```
+
+Every option, including `strictSafety`, `unsafeDslChecks`, `logSeverity` and `debugLogs`, is described in [Compiler Plugin Options](/docs/reference/koin-annotations/options).
+
+## Kotlin version compatibility
+
+Each plugin release is verified on a list of Kotlin versions:
+
+| Kotlin | Koin Compiler Plugin |
+|--------|----------------------|
+| 2.3.20, 2.4.0, 2.4.10 | 1.2.0+ |
+| 2.4.20 | 1.2.1+ |
+
+On a Kotlin version that is not in the list, the plugin prints a warning and the build continues.
+
+:::warning
+On Kotlin 2.4.20, plugin 1.2.0 fails with `NoSuchMethodError` during IR generation. Use 1.2.1 or later.
+:::
+
 ## Troubleshooting
 
-### Plugin Not Found
+### Plugin not found
 
-Ensure the plugin is in your plugin repositories:
+Gradle can't resolve `io.insert-koin.compiler.plugin`. Check that `mavenCentral()` and `gradlePluginPortal()` are in `pluginManagement.repositories` in `settings.gradle.kts`.
 
-```kotlin
-// settings.gradle.kts
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-```
+### NotImplementedError at runtime
 
-### Kotlin Version Mismatch
+`single<T>()`, `factory<T>()` and `create(::T)` are placeholders that the plugin replaces. If the plugin is not applied to the Gradle module that contains them, the code compiles and throws `NotImplementedError` when the module is created. Apply the plugin to that module.
 
-The Compiler Plugin requires Kotlin 2.3.20+. Check your Kotlin version:
+### Wrong imports
 
-```kotlin
-// build.gradle.kts
-plugins {
-    kotlin("jvm") version "2.3.20"  // Requires 2.3.20+
-}
-```
-
-### Import Errors
-
-Make sure you're importing from the correct package:
+The Compiler Plugin DSL and the Constructor DSL have functions with the same names in different packages:
 
 ```kotlin
 // Compiler Plugin DSL
 import org.koin.plugin.module.dsl.*
 
-// Classic DSL
-import org.koin.dsl.*
+// Constructor DSL: singleOf, factoryOf, viewModelOf
+import org.koin.core.module.dsl.*
+
+// both
+import org.koin.dsl.module
 ```
 
-### Incremental Compilation & Cache Issues
+### Stale results after a refactor
 
-Like other Kotlin compiler plugins (e.g., Compose Compiler, Metro), the Koin Compiler Plugin operates at the IR level. Kotlin's incremental compilation may sometimes produce **stale or inconsistent results** after certain changes:
+Like other Kotlin IR plugins (the Compose compiler, for example), the Koin Compiler Plugin can produce stale results with incremental compilation. Symptoms:
 
-**Symptoms:**
-- Compile safety errors that shouldn't appear (false positives)
-- Missing compile safety errors after removing a definition (false negatives)
-- `NoSuchMethodError` or `ClassNotFoundException` at runtime after refactoring
+- A compile safety error that should not appear, or none after you removed a definition.
+- `NoSuchMethodError` or `ClassNotFoundException` at runtime after a refactor.
 
-**When this typically happens:**
-- Changing annotations on a class (`@Single` → `@Factory`, adding/removing `@Named`)
-- Moving classes between packages (affects `@ComponentScan` discovery)
-- Changing module `includes` or `@Configuration` labels
-- Adding/removing definitions in a library module that another module depends on
+It usually follows these changes:
 
-**Fix:** Run a clean build:
+- Changing an annotation on a class (`@Singleton` to `@Factory`, adding or removing `@Named`).
+- Moving classes between packages scanned by `@ComponentScan`.
+- Changing module `includes` or `@Configuration` labels.
+- Adding or removing definitions in a library module another module depends on.
 
-```bash
-./gradlew clean build
-```
+Run a clean build: `./gradlew clean build`, or in Android Studio, Build > Clean Project then Build > Rebuild Project.
 
-Or in Android Studio: **Build → Clean Project**, then **Build → Rebuild Project**.
+For changes inside `module { }` lambdas, the plugin turns on `strictSafety` for modules that contain an entry point (`startKoin`, `koinApplication`, `@KoinApplication`). It re-runs the full graph check on each build of those modules. See [`strictSafety`](/docs/reference/koin-annotations/options).
 
-:::tip
-If you encounter unexpected compile safety errors after a refactor, try a clean build first. This is a known limitation of incremental compilation with compiler plugins — not specific to Koin.
+### Missing dependency reported across modules
 
-For graph-level changes (DSL definitions inside `module { }` lambdas, classes added to `@ComponentScan` packages), the plugin's `strictSafety` option auto-enables on aggregator modules to force the full-graph safety pass to re-run each build. See [`strictSafety`](/docs/reference/koin-annotations/options#strictsafety) for details.
-:::
+If the plugin reports a missing dependency that a library module does declare:
 
-### Compile Safety False Positives in Multi-Module Projects
+1. Apply the plugin to the library module too. Without it, the library carries no metadata.
+2. Make sure the library is built before the module that uses it. `implementation(project(":lib"))` normally does this.
+3. Run a clean build after adding the plugin to a library for the first time.
+4. Use plugin 1.2.1 or later. Earlier versions missed definitions two or more `implementation` levels away and merged `@Named` providers across modules. If you turned `compileSafety` off because of false `KOIN-D001` errors, turn it back on.
 
-If the plugin reports a missing dependency that exists in a library module, ensure:
+## Moving to the Compiler Plugin
 
-1. **The library module also applies the Koin Compiler Plugin** — it generates hint functions that downstream modules read
-2. **The library builds before the consuming module** — Gradle usually handles this via `implementation(project(":lib"))`, but check your task dependencies
-3. **Run a clean build** after adding the plugin to a library module for the first time
+- **From the Constructor or Classic DSL**: apply the plugin. Your existing `singleOf(::T)` definitions and `get()` calls are checked at build time without changes. You can then replace them with `single<T>()` module by module. See [Choosing your style](/docs/intro/choosing-your-style).
+- **From the KSP processor**: remove KSP and `koin-ksp-compiler`, apply the plugin, and replace the generated `.module` extensions with `startKoin<MyApp>()`. Your annotations stay the same. See [Migrating from KSP](/docs/migration/from-ksp-to-compiler-plugin).
 
-## Migration
+## Related
 
-### From Classic DSL
-
-1. Add the Compiler Plugin
-2. Update imports to `org.koin.plugin.module.dsl.*`
-3. Replace `single { Class(get() ...) }` or `singleOf(::Class)` with `single<Class>()`
-
-See the [DSL Style](#dsl-style) reference above for the compile-time safe syntax.
-
-### From the KSP Processor (`koin-ksp-compiler`)
-
-1. Remove KSP plugin and `koin-ksp-compiler` dependency
-2. Add the Koin Compiler Plugin
-3. Update `startKoin { modules(...) }` to `startKoin<MyApp>()`
-4. **Your annotations stay the same!** The `koin-annotations` library remains — only the processor changes.
-
-See **[Migrating from KSP to Compiler Plugin](/docs/migration/from-ksp-to-compiler-plugin)** for the complete guide.
-
-## Next Steps
-
-- **[DSL Reference](/docs/reference/dsl-reference)** - Complete DSL documentation
-- **[Annotations Reference](/docs/reference/annotations-reference)** - Complete annotations documentation
-- **[Starting Koin](/docs/reference/koin-core/starting-koin)** - Configure your application
+- [Koin Compiler Plugin](/docs/intro/koin-compiler-plugin): what the plugin does and how it works.
+- [Compiler Plugin Options](/docs/reference/koin-annotations/options): every Gradle option.
+- [Compile-Time Safety](/docs/reference/koin-compiler/compile-safety): every check and error code.
+- [Gradle Setup](/docs/setup/gradle): Koin libraries and the BOM.
+- [Starting Koin](/docs/reference/koin-core/starting-koin): typed start APIs such as `startKoin<MyApp>()`.
