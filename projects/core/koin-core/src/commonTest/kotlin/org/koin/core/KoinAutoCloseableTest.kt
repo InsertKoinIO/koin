@@ -23,11 +23,10 @@ class KoinAutoCloseableTest {
     fun `Koin use closes on exception`() {
         val app = newApp()
 
-        assertFailsWith<IllegalStateException>("test exception") {
-            app.koin.use {
-                error("test exception")
-            }
+        val e = assertFailsWith<IllegalStateException> {
+            app.koin.use { error("test exception") }
         }
+        assertEquals("test exception", e.message)
         assertFailsWith<ClosedScopeException> { app.koin.get<Simple.ComponentA>() }
     }
 
@@ -44,9 +43,26 @@ class KoinAutoCloseableTest {
     fun `KoinApplication use closes on exception`() {
         val app = newApp()
 
-        assertFailsWith<IllegalStateException>("test exception") {
+        val e = assertFailsWith<IllegalStateException> {
             app.use { error("test exception") }
         }
+        assertEquals("test exception", e.message)
         assertFailsWith<ClosedScopeException> { app.koin.get<Simple.ComponentA>() }
+    }
+
+    @Test
+    fun `Koin close after use does not throw`() {
+        val app = newApp()
+
+        app.koin.use { }
+        app.koin.close()
+    }
+
+    @Test
+    fun `KoinApplication close after use does not throw`() {
+        val app = newApp()
+
+        app.use { }
+        app.close()
     }
 }
