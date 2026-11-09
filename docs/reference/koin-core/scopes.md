@@ -146,8 +146,19 @@ val sessionModule = module {
 
 To run code when the scope itself closes, register a `ScopeCallback` with `scope.registerCallback()`.
 
+`Scope` implements `AutoCloseable`, so `use { }` closes a scope you created, even when the block throws. Use it for short-lived scopes (request handling, transactions, batch jobs):
+
+```kotlin
+getKoin().createScope("my_scope_id", named("session")).use { scope ->
+    val sessionData: SessionData = scope.get()
+}
+// scope is closed here, even on exceptions
+```
+
+Use it only on a scope you created. A scope returned by `getScope`, or a lifecycle scope such as `activityScope()`, belongs to its owner, and `use { }` would close it while the owner still uses it.
+
 :::warning
-A scope you create by hand stays open until you close it. Every instance it holds stays in memory. Close it at the end of its lifecycle (logout, end of flow). On Android, `activityScope()` and `fragmentScope()` close the scope for you: see [Android Scopes](/docs/reference/koin-android/scope).
+A scope you create by hand stays open until you close it. Every instance it holds stays in memory. Close it at the end of its lifecycle (logout, end of flow), or with `use { }` for a short-lived scope. On Android, `activityScope()` and `fragmentScope()` close the scope for you: see [Android Scopes](/docs/reference/koin-android/scope).
 :::
 
 ## Scope components
