@@ -250,6 +250,20 @@ koinApp.close()
 
 In tests, stop Koin after each test so the next one starts clean. [Testing](/docs/reference/koin-test/testing) shows the JUnit rules that do it for you.
 
+### Using `use { }` for Safe Cleanup
+
+Both `KoinApplication` and `Koin` implement `AutoCloseable`, so you can use Kotlin's `use { }` block for automatic cleanup. This is useful for testing, short-lived contexts, or any situation where you want to ensure resources are released:
+
+```kotlin
+koinApplication {
+    modules(myModule)
+}.use { app ->
+    val service: MyService = app.koin.get()
+    // work with service
+}
+// app.close() called automatically, even on exceptions
+```
+
 ## Logging
 
 Koin logs nothing by default (`EmptyLogger`). Turn logging on in the start block:
