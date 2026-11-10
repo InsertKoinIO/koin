@@ -2,6 +2,8 @@
 
 Koin is a pragmatic, lightweight dependency injection framework for Kotlin Multiplatform (Android, JVM, iOS/native, JS, WasmJS). This directory (`projects/`) is the Gradle build root.
 
+Shared agent notes (layout, build commands, contributing rules, how to write Koin code): [`../AGENTS.md`](../AGENTS.md). This file adds the Claude-specific detail; keep both consistent.
+
 ## Doctrine
 
 - **Evidence-based claims.** "fixed/verified/done" must cite file:line, test output, or a repro run — never "looks right + tests pass".
