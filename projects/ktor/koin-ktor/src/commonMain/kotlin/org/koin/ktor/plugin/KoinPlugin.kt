@@ -30,6 +30,7 @@ import io.ktor.server.application.pluginOrNull
 import io.ktor.util.AttributeKey
 import io.ktor.util.cio.ChannelIOException
 import io.ktor.util.pipeline.PipelinePhase
+import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.isActive
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
@@ -88,10 +89,17 @@ fun Application.setKoinApplication(koinApplication: KoinApplication) {
 internal fun PluginBuilder<KoinKtorApplication>.setupMonitoring(koinApplication: KoinKtorApplication) {
     val monitor = application.monitor
     monitor.raise(KoinApplicationStarted, koinApplication)
-    monitor.subscribe(ApplicationStopping) { stoppingApplication ->
+    // The monitor is shared by every application of a reloading server: a subscription left on it keeps this
+    // application and its Koin reachable for the server's lifetime.
+    var subscription: DisposableHandle? = null
+    subscription = monitor.subscribe(ApplicationStopping) { stoppingApplication ->
         if (stoppingApplication !== application) return@subscribe
+        subscription?.dispose()
         monitor.raise(KoinApplicationStopPreparing, koinApplication)
-        koinApplication.koin.close()
+        // Free the global context only when it still holds this Koin: an isolated Koin never does, and a
+        // reload that starts the next application first has already replaced it.
+        val koin = koinApplication.koin
+        if (KoinPlatformTools.defaultContext().getOrNull() === koin) stopKoin() else koin.close()
         monitor.raise(KoinApplicationStopped, koinApplication)
     }
 }

@@ -96,7 +96,11 @@ What the plugin does:
 - **Global start**: it starts Koin in the global context, like `startKoin`. If a global Koin instance is already running (for example after a Ktor auto-reload), the plugin stops it first. To keep Koin out of the global context, use [`KoinIsolated`](/docs/reference/koin-ktor/ktor-isolated).
 - **Eager instances**: definitions marked `createdAtStart` are created at install time.
 - **Request scope**: it opens a Koin scope for each call. See [Request Scopes](/docs/reference/koin-ktor/ktor-scopes).
-- **Shutdown**: when Ktor raises `ApplicationStopping`, the plugin closes the Koin instance.
+- **Shutdown**: when Ktor raises `ApplicationStopping` for its application, the plugin closes the Koin instance and frees the global context, so `startKoin` can be called again.
+
+:::note
+On Ktor 3.5.0 to 3.5.2, auto-reload builds the new application before it stops the previous one. If that reload fails after `install(Koin)`, Ktor keeps serving the previous application, whose Koin instance the new one has already stopped: requests fail until the next successful reload. Ktor 3.6 stops the previous application first, and [`KoinIsolated`](/docs/reference/koin-ktor/ktor-isolated) is not affected.
+:::
 
 Logging, properties and other options of the configuration block are described in [Starting Koin](/docs/reference/koin-core/starting-koin).
 
