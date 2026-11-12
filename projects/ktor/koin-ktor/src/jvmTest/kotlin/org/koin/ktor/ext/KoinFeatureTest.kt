@@ -6,12 +6,15 @@ import io.ktor.server.application.install
 import io.ktor.server.testing.TestApplication
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
+import org.koin.ktor.plugin.KoinApplicationStopped
 import org.koin.ktor.plugin.KoinIsolated
 import org.koin.mp.KoinPlatform
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -99,5 +102,65 @@ class KoinFeatureTest {
         assertNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
         runCatching { testApplication.stop() }
         runCatching { otherApplication.stop() }
+    }
+
+    @Test
+    fun `stopping the application frees the global context`() = runTest {
+        val testApplication = TestApplication { application { install(Koin) } }
+        testApplication.start()
+
+        testApplication.application.monitor.raise(ApplicationStopping, testApplication.application)
+
+        assertNull(KoinPlatform.getKoinOrNull())
+        startKoin { }
+        runCatching { testApplication.stop() }
+    }
+
+    // The monitor outlives every application of a reloading server, so a subscription left on it
+    // keeps its stopped application and Koin reachable.
+    @Test
+    fun `stop subscription is released once the application has stopped`() = runTest {
+        val testApplication = TestApplication { application { install(Koin) } }
+        testApplication.start()
+        val application = testApplication.application
+        var stops = 0
+        application.monitor.subscribe(KoinApplicationStopped) { stops++ }
+
+        application.monitor.raise(ApplicationStopping, application)
+        application.monitor.raise(ApplicationStopping, application)
+
+        assertEquals(1, stops)
+        runCatching { testApplication.stop() }
+    }
+
+    // Ktor 3.5 reloads by starting the new application before it stops the previous one.
+    @Test
+    fun `stopping the previous application keeps the Koin of the one that replaced it`() = runTest {
+        val previousApplication = TestApplication { application { install(Koin) } }
+        previousApplication.start()
+        val testApplication = TestApplication {
+            application {
+                install(Koin) { modules(module { single { Foo("bar") } }) }
+            }
+        }
+        testApplication.start()
+
+        previousApplication.application.monitor.raise(ApplicationStopping, previousApplication.application)
+
+        assertNotNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
+        runCatching { testApplication.stop() }
+        runCatching { previousApplication.stop() }
+    }
+
+    @Test
+    fun `stopping an isolated application keeps the global Koin`() = runTest {
+        startKoin { modules(module { single { Foo("bar") } }) }
+        val testApplication = TestApplication { application { install(KoinIsolated) } }
+        testApplication.start()
+
+        testApplication.application.monitor.raise(ApplicationStopping, testApplication.application)
+
+        assertNotNull(KoinPlatform.getKoinOrNull()?.getOrNull<Foo>())
+        runCatching { testApplication.stop() }
     }
 }
