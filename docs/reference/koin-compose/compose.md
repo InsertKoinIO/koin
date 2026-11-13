@@ -114,14 +114,14 @@ Automatically injects `androidContext` and `androidLogger` on Android.
 
 ## Basic Injection
 
-### koinInject() - Get Dependencies
+### koinGet() - Get Dependencies
 
-Inject any Koin-managed dependency:
+Resolve any Koin-managed dependency eagerly (uses `Scope.get()` under the hood):
 
 ```kotlin
 @Composable
 fun UserScreen() {
-    val repository = koinInject<UserRepository>()
+    val repository = koinGet<UserRepository>()
     // Use repository...
 }
 ```
@@ -131,11 +131,15 @@ fun UserScreen() {
 ```kotlin
 @Composable
 fun UserScreen(
-    repository: UserRepository = koinInject()
+    repository: UserRepository = koinGet()
 ) {
     // Testable without Koin
 }
 ```
+
+:::note
+`koinInject()` is deprecated in favor of `koinGet()`. The name `koinGet` is consistent with `Scope.get()` / `KoinComponent.get()`, which performs eager resolution. The `inject` naming in Koin implies lazy resolution (`Lazy<T>`).
+:::
 
 ### koinViewModel() - Get ViewModels
 
@@ -213,7 +217,7 @@ val appModule = module {
 
 | Function | Purpose |
 |----------|---------|
-| `koinInject<T>()` | Inject any dependency |
+| `koinGet<T>()` | Get any dependency (replaces deprecated `koinInject`) |
 | `koinViewModel<T>()` | Inject ViewModel |
 | `koinNavViewModel<T>()` | ViewModel with Navigation args |
 | `koinActivityViewModel<T>()` | Activity-scoped ViewModel (Android) |
