@@ -75,6 +75,49 @@ class ParametersHolderTest {
     }
 
     @Test
+    fun `destructure 6 parameters`() {
+        val parameterHolder = parametersOf(1, 2, 3, 4, 5, 6)
+
+        val (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) = parameterHolder
+        assertEquals(1, a)
+        assertEquals(2, b)
+        assertEquals(3, c)
+        assertEquals(4, d)
+        assertEquals(5, e)
+        assertEquals(6, f)
+    }
+
+    @Test
+    fun `destructure 10 parameters`() {
+        val parameterHolder = parametersOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+        val (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int, i: Int, j: Int) = parameterHolder
+        assertEquals(1, a)
+        assertEquals(2, b)
+        assertEquals(3, c)
+        assertEquals(4, d)
+        assertEquals(5, e)
+        assertEquals(6, f)
+        assertEquals(7, g)
+        assertEquals(8, h)
+        assertEquals(9, i)
+        assertEquals(10, j)
+    }
+
+    @Test
+    fun `destructure 6 parameters of mixed types`() {
+        val parameterHolder = parametersOf("empty", 42, 1.5, true, 'k', 7L)
+
+        val (s: String, i: Int, d: Double, b: Boolean, c: Char, l: Long) = parameterHolder
+        assertEquals("empty", s)
+        assertEquals(42, i)
+        assertEquals(1.5, d)
+        assertEquals(true, b)
+        assertEquals('k', c)
+        assertEquals(7L, l)
+    }
+
+    @Test
     fun `can't create parameters more than max params`() {
         assertNotNull(parametersOf(1, 2, 3, 4, 5, 6))
     }

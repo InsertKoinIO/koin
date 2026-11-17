@@ -52,6 +52,11 @@ open class ParametersHolder(
     inline operator fun <reified T> component3(): T = elementAt(2, T::class)
     inline operator fun <reified T> component4(): T = elementAt(3, T::class)
     inline operator fun <reified T> component5(): T = elementAt(4, T::class)
+    inline operator fun <reified T> component6(): T = elementAt(5, T::class)
+    inline operator fun <reified T> component7(): T = elementAt(6, T::class)
+    inline operator fun <reified T> component8(): T = elementAt(7, T::class)
+    inline operator fun <reified T> component9(): T = elementAt(8, T::class)
+    inline operator fun <reified T> component10(): T = elementAt(9, T::class)
 
     var index: Int = 0
 
